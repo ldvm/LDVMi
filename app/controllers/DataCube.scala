@@ -6,7 +6,7 @@ import play.api.mvc._
 object DataCube extends Controller {
 
   def cached(cacheId: String) = Action {
-    Ok(views.html.index("Your new application is ready."))
+    Ok(views.html.dataCube("Your new application is ready."))
   }
 
 }
