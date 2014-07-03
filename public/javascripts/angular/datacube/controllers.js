@@ -1,10 +1,10 @@
 define(['angular'], function (ng) {
-        'use strict';
+    'use strict';
 
-        ng.module('dataCube.controllers', []).
-            controller('DataCube',
-            ['$scope', 'DataCubeService', 'analysisId', 'evaluationId', '$q', '$location', function ($scope, DataCubeService,
-                analysisId, evaluationId, $q, $location) {
+    ng.module('dataCube.controllers', []).
+        controller('DataCube',
+        ['$scope', 'DataCubeService', '$q', '$location', '$routeParams', '$http',
+            function ($scope, DataCubeService, $q, $location, $routeParams, $http) {
 
                 var URI_rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
                 var URI_dsd = "http://purl.org/linked-data/cube#DataStructureDefinition";
@@ -14,15 +14,18 @@ define(['angular'], function (ng) {
                 var URI_QB_ORDER = "http://purl.org/linked-data/cube#order";
                 var URI_attribute = "http://purl.org/linked-data/cube#attribute";
                 var URI_label = "http://www.w3.org/2000/01/rdf-schema#label";
-                var URI_sparqlResultValue = "http://www.w3.org/2005/sparql-results#value";
                 var URI_binding = "http://www.w3.org/2005/sparql-results#binding";
                 var URI_variable = "http://www.w3.org/2005/sparql-results#variable";
                 var URI_value = "http://www.w3.org/2005/sparql-results#value";
                 var URI_concept = "http://purl.org/linked-data/cube#concept";
 
+                $http.jsonp('http://www.reddit.com/r/AdviceAnimals.json?limit=50&jsonp=JSON_CALLBACK').success(function(data) {
+                    $scope.posts = data.data.children;
+                });
+
                 $scope.initDone = false;
                 $scope.dataStructures = [];
-                $scope.evaluationId = evaluationId;
+                $scope.evaluationId = $routeParams.evaluationId;
                 $scope.selectedDataStructure = null;
                 $scope.XAxisDimension = null;
                 $scope.activeMeasure = null;
@@ -33,10 +36,16 @@ define(['angular'], function (ng) {
                 $scope.mapVisible = false;
                 $scope.chartVisible = true;
 
-                $scope.showMap = function(){ $scope.mapVisible = true; $scope.chartVisible = false; };
-                $scope.showChart = function(){ $scope.mapVisible = false; $scope.chartVisible = true; };
+                $scope.showMap = function () {
+                    $scope.mapVisible = true;
+                    $scope.chartVisible = false;
+                };
+                $scope.showChart = function () {
+                    $scope.mapVisible = false;
+                    $scope.chartVisible = true;
+                };
 
-                $scope.czRegionData = {title:"Mapdata", data: []};
+                $scope.czRegionData = {title: "Mapdata", data: []};
 
                 $scope.highcharts = {
                     options: {
@@ -117,8 +126,8 @@ define(['angular'], function (ng) {
                         callback();
                     };
                 };
-
-                DataCubeService.get({queryName: "list-cubes", analysisId: analysisId, evaluationId: evaluationId},
+/*
+                DataCubeService.get({queryName: "list-cubes", evaluationId: $scope.evaluationId},
                     function (data) {
 
                         ng.forEach(data, function (node, uri) {
@@ -131,7 +140,7 @@ define(['angular'], function (ng) {
 
                         $scope.loadingDataDone();
                     });
-
+*/
                 $scope.buildUI = function (callback) {
 
                     var promises = [];
@@ -148,7 +157,7 @@ define(['angular'], function (ng) {
 
                                 def.values = [];
 
-                                promises.push(DataCubeService.get({queryName: "distinct-values", evaluationId: evaluationId, property: uri, isDate: def.isDate},
+                                promises.push(DataCubeService.get({queryName: "distinct-values", evaluationId: $scope.evaluationId, property: uri, isDate: def.isDate},
                                         function (data) {
 
                                             ng.forEach(data, function (value) {
@@ -280,8 +289,8 @@ define(['angular'], function (ng) {
 
                                 var tick;
                                 var tickVal;
-                                if(res.d.datatype == "http://www.w3.org/2001/XMLSchema#date"){
-                                    tickVal = res.d.value.substr(0,4);
+                                if (res.d.datatype == "http://www.w3.org/2001/XMLSchema#date") {
+                                    tickVal = res.d.value.substr(0, 4);
                                 } else {
                                     tickVal = res.d.value;
                                 }
@@ -364,7 +373,7 @@ define(['angular'], function (ng) {
                         var serie = {name: v.prefLabel || v.uri || v.value, data: []};
                         $scope.highcharts.series.push(serie);
 
-                        promises.push(DataCubeService.get({queryName: "data", evaluationId: evaluationId, measure: measureUri, dimension: $scope.XAxisDimension.uri, filters: localFilters.map(function (x) {
+                        promises.push(DataCubeService.get({queryName: "data", evaluationId: $scope.evaluationId, measure: measureUri, dimension: $scope.XAxisDimension.uri, filters: localFilters.map(function (x) {
                             return (x.positive ? "+" : "-") + x.component + "$:$:$" + x.value + "$:$:$" + x.isDate;
                         })}, function (data) {
                             max = $scope.parseCubeJson(serie, data, max, dataQueue);
@@ -530,5 +539,5 @@ define(['angular'], function (ng) {
                 }
 
             }])
-        ;
+    ;
 });

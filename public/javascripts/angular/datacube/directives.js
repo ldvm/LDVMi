@@ -139,6 +139,11 @@ define(['angular'], function (ng) {
                 }
 
                 function settingsChanged() {
+
+                    if(!scope.dataSetSimple){
+                        return false;
+                    }
+
                     var newData = [];
                     var dataObject;
                     var i;
@@ -413,7 +418,7 @@ define(['angular'], function (ng) {
 
             return {
                 restrict: 'E',
-                templateUrl: '/assets/javascripts/ng/datacube/partials/CZMap.html',
+                templateUrl: '/assets/javascripts/angular/datacube/partials/CZMap.html',
                 link: link,
                 scope: {data: "="}
             };

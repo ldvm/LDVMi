@@ -1,5 +1,4 @@
-@(title: String, scripts: Html = Html(""))(content: Html)
-
+@(title: String, scripts: Html = Html(""), styles: Html = Html(""))(content: Html)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +11,8 @@
 
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
     <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
+
+    @styles
 </head>
 <body>
 
@@ -41,5 +42,11 @@
     </div>
 
     @content
+
+    <hr>
+
+    <footer>
+        <p>&copy; Payola 2014</p>
+    </footer>
 </body>
 </html>

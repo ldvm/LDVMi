@@ -4,7 +4,11 @@ define([
         './directives',
         './filters',
         './services',
-        'angular-resource'
+        'angular-resource',
+        'angular-route',
+        'angular-ui',
+        'ui.bootstrap',
+        'angular-loading-bar'
     ],
     function (ng) {
         'use strict';
@@ -14,8 +18,9 @@ define([
             'dataCube.controllers',
             'dataCube.filters',
             'dataCube.directives',
-            'dataCube.runtimeServices',
             'ngRoute',
-            'ngResource'
+            'ngResource',
+            'ui.bootstrap',
+            'angular-loading-bar'
         ]);
     });

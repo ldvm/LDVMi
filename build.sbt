@@ -1,7 +1,7 @@
 import com.typesafe.sbt.jse.JsEngineImport.JsEngineKeys
 import play.PlayScala
 
-name := """play-scala"""
+name := """payola-viz"""
 
 version := "1.0-SNAPSHOT"
 
@@ -20,7 +20,13 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angularjs" % "1.2.18",
   "org.webjars" % "bootstrap" % "3.1.1-2",
   "org.webjars" % "requirejs" % "2.1.14-1",
-  "org.webjars" % "requirejs-domready" % "2.0.1-1"
+  "org.webjars" % "requirejs-domready" % "2.0.1-1",
+  "org.webjars" % "angular-ui" % "0.4.0-3",
+  "org.webjars" % "angular-ui-bootstrap" % "0.11.0-2",
+  "org.webjars" % "angular-loading-bar" % "0.4.3",
+  "org.scaldi" % "scaldi-play_2.10" % "0.3.3",
+  "org.apache.jena" % "jena" % "2.11.2",
+  "org.apache.jena" % "jena-arq" % "2.11.2"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
