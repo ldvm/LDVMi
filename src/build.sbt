@@ -14,6 +14,7 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   ws,
+  "com.typesafe.slick" %% "slick" % "2.0.2",
   "org.webjars" %% "webjars-play" % "2.3.0",
   "org.webjars" % "angularjs" % "1.2.18",
   "org.webjars" % "bootstrap" % "3.1.1-2",
@@ -25,7 +26,7 @@ libraryDependencies ++= Seq(
   "org.scaldi" % "scaldi-play_2.10" % "0.3.3",
   "org.apache.jena" % "jena" % "2.11.2",
   "org.apache.jena" % "jena-arq" % "2.11.2",
-  "org.virtuslab" %% "unicorn-play" % "0.5.2"
+  "com.typesafe.play" %% "play-slick" % "0.7.0"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
