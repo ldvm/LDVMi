@@ -5,6 +5,8 @@ define(['angular'], function (ng) {
     // In this case it is a simple value service.
     ng.module('dataCube.services', ['ngResource'])
         .factory('DataCubeService', ['$resource', function ($resource) {
-            return $resource('/evaluation/query/:queryName/:evaluationId', null, {});
+            return $resource('', null, {
+                getDatasets: {url: '/api/datacube/datasets/:visualizationId', isArray: true}
+            });
         }]);
 });

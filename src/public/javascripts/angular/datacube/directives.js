@@ -179,6 +179,10 @@ define(['angular'], function (ng) {
 
                 function updateFunc(oldval, newval) {
 
+                    if(!scope.data){
+                        return;
+                    }
+
                     dataTitle = scope.data.title;
                     scope.mapMode = 0;
 
