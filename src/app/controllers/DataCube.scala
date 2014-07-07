@@ -7,7 +7,7 @@ import scaldi.{Injectable, Injector}
 
 class DataCube(implicit inj: Injector) extends Controller with Injectable {
 
-  def internal(id: Long) = Action {
+  def visualize(id: Long) = Action {
     Ok(views.html.dataCube("Your new application is ready."))
   }
 
