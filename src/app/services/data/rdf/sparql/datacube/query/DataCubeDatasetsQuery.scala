@@ -3,7 +3,7 @@ package services.data.rdf.sparql.datacube.query
 import services.data.rdf.sparql.SparqlQuery
 
 
-class DatasetsDataCubeQuery extends SparqlQuery {
+class DataCubeDatasetsQuery extends SparqlQuery {
 
   def get: String =
     """
@@ -14,8 +14,15 @@ class DatasetsDataCubeQuery extends SparqlQuery {
       | PREFIX dct:      <http://purl.org/dc/terms/>
       |
       | CONSTRUCT {
-      |   ?ds a qb:DataSet .
+      |   ?ds a qb:DataSet ;
+      |       dct:title ?title ;
+      |       rdfs:label ?label ;
+      |       rdfs:comment ?comment ;
+      |       dct:description ?description ;
+      |       dct:publisher ?publisher ;
+      |       dct:issued ?issued .
       | } WHERE {
+      |   ?ds a qb:DataSet .
       |
       |   OPTIONAL {
       |    ?ds dct:title ?title .
@@ -35,8 +42,7 @@ class DatasetsDataCubeQuery extends SparqlQuery {
       |   OPTIONAL {
       |    ?ds dct:issued ?issued .
       |   }
-      |
       | }
-    """.stripMargin
+    """.stripMargin.replaceAll("[\n\r]","")
 
 }

@@ -31,7 +31,7 @@ class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List
 
   private def namedGraphUrlString: Option[String] = {
     if(namedGraphs.size > 0){
-      Some("default-graph-uri="+namedGraphs.mkString("&default-graph-uri="))
+      Some("default-graph-uri="+namedGraphs.map(java.net.URLEncoder.encode(_, "UTF-8")).mkString("&default-graph-uri="))
     } else {
       None
     }

@@ -16,6 +16,10 @@ define(['angular'], function (ng) {
 
                 });
 
+                DataCubeService.getDataStructures({ visualizationId: $id }, function(){
+
+                });
+
                 /*                var URI_rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
                  var URI_dsd = "http://purl.org/linked-data/cube#DataStructureDefinition";
                  var URI_component = "http://purl.org/linked-data/cube#component";
