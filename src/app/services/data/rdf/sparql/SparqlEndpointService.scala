@@ -1,7 +1,12 @@
 package services.data.rdf.sparql
 
+import data.models.DataSource
+import services.data.rdf.sparql.jena.JenaLang
+
 trait SparqlEndpointService {
 
-  def query(endpoint: SparqlEndpoint, query: SparqlQuery) : com.hp.hpl.jena.query.Dataset
+  def getSparqlQueryResult[Q <: SparqlQuery, D <: JenaLang, R](dataSource: DataSource, query: Q, extractor: SparqlResultExtractor[Q, D, R]): R
+
+  def query(endpoint: SparqlEndpoint, query: SparqlQuery): com.hp.hpl.jena.query.Dataset
 
 }

@@ -3,17 +3,16 @@ package services.data.rdf.sparql.datacube
 import com.hp.hpl.jena.query.Dataset
 import data.models.DataSource
 import scaldi.{Injectable, Injector}
-import services.data.rdf.sparql.SparqlQuery
+import services.data.rdf.sparql.{SparqlResultExtractor, SparqlQuery, SparqlEndpointService, GenericSparqlEndpoint}
+import services.data.rdf.sparql.datacube.extractor.DataCubeDatasetsExtractor
 import services.data.rdf.sparql.datacube.query.{DataCubeDataStructuresQuery, DataCubeDatasetsQuery}
-import services.data.rdf.sparql.{SparqlEndpointService, GenericSparqlEndpoint}
 
 class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with Injectable {
 
   var sparqlEndpointService = inject[SparqlEndpointService]
 
   def getDatasets(dataSource: DataSource): Seq[DataCubeDataset] = {
-    _get(dataSource, new DataCubeDatasetsQuery)
-    List(new DataCubeDataset("a"))
+    sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDatasetsQuery, new DataCubeDatasetsExtractor)
   }
 
   def getDataStructures(dataSource: DataSource): Seq[DataCubeDataStructure] = {

@@ -9,8 +9,13 @@ import data.models.DataSource
 
 import services.data.http.HttpStringRetriever
 import services.data.rdf.RdfRepresentation
+import services.data.rdf.sparql.jena.JenaLang
 
 class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
+
+  def executeQuery[D <: JenaLang](query: SparqlQuery): Option[String] = {
+    new HttpStringRetriever(queryUrl(query.get), "magic").retrieve()
+  }
 
   def executeQuery(query: String): com.hp.hpl.jena.query.Dataset = {
     try {
@@ -30,39 +35,29 @@ class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List
   }
 
   private def namedGraphUrlString: Option[String] = {
-    if(namedGraphs.size > 0){
-      Some("default-graph-uri="+namedGraphs.map(java.net.URLEncoder.encode(_, "UTF-8")).mkString("&default-graph-uri="))
+    if (namedGraphs.size > 0) {
+      Some("default-graph-uri=" + namedGraphs.map(java.net.URLEncoder.encode(_, "UTF-8")).mkString("&default-graph-uri="))
     } else {
       None
     }
   }
 
   private def queryUrl(query: String) = {
-    endpointURL + namedGraphUrlString.map{s => "?"+s+"&" }.getOrElse("?") + "query=" + java.net.URLEncoder.encode(query, "UTF-8")
+    endpointURL + namedGraphUrlString.map { s => "?" + s + "&"}.getOrElse("?") + "query=" + java.net.URLEncoder.encode(query, "UTF-8")
   }
 
-  private def rdf2JenaDataset(representation: RdfRepresentation.Type, data: String): Dataset = {
+  private def rdf2JenaDataset(representation: Lang, data: String): Dataset = {
     try {
       val dataInputStream = new ByteArrayInputStream(data.getBytes("UTF-8"))
-      val jenaLanguage = representationToJenaLanguage(representation)
 
       val dataSet = DatasetFactory.createMem()
-      RDFDataMgr.read(dataSet, dataInputStream, jenaLanguage)
+      RDFDataMgr.read(dataSet, dataInputStream, representation)
       dataSet
     } catch {
       case e: org.apache.jena.riot.RiotException => {
         throw new IllegalArgumentException("Query failed, returned non-XML data: " + data.substring(0, 500))
       }
       case e: Exception => throw new IllegalArgumentException(e.getMessage)
-    }
-  }
-
-
-  private def representationToJenaLanguage(representation: RdfRepresentation.Type) = {
-    representation match {
-      case RdfRepresentation.RdfXml => Lang.RDFXML
-      case RdfRepresentation.Turtle => Lang.TURTLE
-      case RdfRepresentation.Trig => Lang.TRIG
     }
   }
 
