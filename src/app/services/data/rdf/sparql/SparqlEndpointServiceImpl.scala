@@ -13,7 +13,7 @@ class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointSe
     }
   }
 
-  def executeQuery[D <: JenaLang](dataSource: DataSource, query: SparqlQuery): Option[String] = {
+  def executeQuery[D <: JenaLang](dataSource: DataSource, query: SparqlQuery): Option[SparqlResult[D]] = {
     GenericSparqlEndpoint(dataSource).executeQuery[D](query)
   }
 

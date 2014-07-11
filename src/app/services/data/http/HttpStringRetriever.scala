@@ -10,15 +10,11 @@ class HttpStringRetriever(val url: String, val accept: String = "", val encoding
 
   def retrieve(): Option[String] = {
 
-    println(url)
-
     val connection = new java.net.URL(url).openConnection()
     connection.setRequestProperty("Accept", accept)
 
     val inputStream = connection.getInputStream
     val result = Some(Source.fromInputStream(inputStream, encoding).mkString)
-
-    print(result)
 
     inputStream.close()
     result

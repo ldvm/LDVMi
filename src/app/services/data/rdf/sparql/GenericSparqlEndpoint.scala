@@ -1,37 +1,31 @@
 package services.data.rdf.sparql
 
-import java.io.{IOException, ByteArrayInputStream}
-
-import org.apache.jena.riot._
-import com.hp.hpl.jena.query._
-
+import java.io.IOException
 import data.models.DataSource
 
 import services.data.http.HttpStringRetriever
-import services.data.rdf.RdfRepresentation
-import services.data.rdf.sparql.jena.JenaLang
+import services.data.rdf.sparql.jena.{JenaLangRdfXml, JenaLang}
+import services.data.rdf.sparql.result.RdfXmlSparqlResult
+import scala.reflect.runtime.universe._
 
 class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
 
-  def executeQuery[D <: JenaLang](query: SparqlQuery): Option[String] = {
-    new HttpStringRetriever(queryUrl(query.get), "magic").retrieve()
-  }
-
-  def executeQuery(query: String): com.hp.hpl.jena.query.Dataset = {
+  def executeQuery[D <: JenaLang](query: SparqlQuery): Option[SparqlResult[D]] = {
     try {
       val result = new HttpStringRetriever(queryUrl(query), "application/rdf+xml").retrieve()
-
-      result.map { data =>
-        rdf2JenaDataset(RdfRepresentation.RdfXml, data)
-      }.getOrElse {
-        throw new Exception
-      }
+      result.map(wrapResult[D])
     } catch {
       case e: IOException if e.getMessage.contains("Server returned HTTP response code: 400 for URL") =>
         throw new BadQueryException(e, Some("The SPARQL endpoint is unable to parse the query"))
       case e: IOException if e.getMessage.contains("Server returned HTTP response code: 406 for URL") =>
         throw new NotAcceptableException(e, Some("The SPARQL endpoint is unable to provide requested content type"))
     }
+  }
+
+  private def wrapResult[D <: JenaLang](data: String)(implicit tag: TypeTag[D]): SparqlResult[D] = {
+    //typeOf[D] match {
+      /*case t if t =:= typeOf[JenaLangRdfXml] => */new RdfXmlSparqlResult(data)
+    //}
   }
 
   private def namedGraphUrlString: Option[String] = {
@@ -42,23 +36,8 @@ class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List
     }
   }
 
-  private def queryUrl(query: String) = {
-    endpointURL + namedGraphUrlString.map { s => "?" + s + "&"}.getOrElse("?") + "query=" + java.net.URLEncoder.encode(query, "UTF-8")
-  }
-
-  private def rdf2JenaDataset(representation: Lang, data: String): Dataset = {
-    try {
-      val dataInputStream = new ByteArrayInputStream(data.getBytes("UTF-8"))
-
-      val dataSet = DatasetFactory.createMem()
-      RDFDataMgr.read(dataSet, dataInputStream, representation)
-      dataSet
-    } catch {
-      case e: org.apache.jena.riot.RiotException => {
-        throw new IllegalArgumentException("Query failed, returned non-XML data: " + data.substring(0, 500))
-      }
-      case e: Exception => throw new IllegalArgumentException(e.getMessage)
-    }
+  private def queryUrl(query: SparqlQuery) = {
+    endpointURL + namedGraphUrlString.map { s => "?" + s + "&"}.getOrElse("?") + "query=" + java.net.URLEncoder.encode(query.get, "UTF-8")
   }
 
 }
