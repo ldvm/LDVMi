@@ -1,8 +1,9 @@
 package services.data.rdf.sparql
 
-import scaldi.{Injector}
+import scaldi.Injector
 import data.models.DataSource
-import services.data.rdf.sparql.jena.JenaLang
+import services.data.rdf.sparql.jena.{JenaLangRdfXml, JenaLang}
+import services.data.rdf.sparql.transformer.RdfXmlJenaModelTransformer
 
 class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointService {
 
@@ -18,7 +19,8 @@ class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointSe
   }
 
   def query(endpoint: SparqlEndpoint, query: SparqlQuery): com.hp.hpl.jena.query.Dataset = {
-    endpoint.executeQuery(query.get)
+    val t = new RdfXmlJenaModelTransformer
+    endpoint.executeQuery[JenaLangRdfXml](query).map(t.transform).getOrElse(throw new Exception)
   }
 
 }

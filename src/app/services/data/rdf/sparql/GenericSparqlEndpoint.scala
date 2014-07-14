@@ -4,9 +4,7 @@ import java.io.IOException
 import data.models.DataSource
 
 import services.data.http.HttpStringRetriever
-import services.data.rdf.sparql.jena.{JenaLangRdfXml, JenaLang}
-import services.data.rdf.sparql.result.RdfXmlSparqlResult
-import scala.reflect.runtime.universe._
+import services.data.rdf.sparql.jena.JenaLang
 
 class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
 
@@ -22,10 +20,8 @@ class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List
     }
   }
 
-  private def wrapResult[D <: JenaLang](data: String)(implicit tag: TypeTag[D]): SparqlResult[D] = {
-    //typeOf[D] match {
-      /*case t if t =:= typeOf[JenaLangRdfXml] => */new RdfXmlSparqlResult(data)
-    //}
+  private def wrapResult[D <: JenaLang](data: String): SparqlResult[D] = {
+    new SparqlResult[D](data)
   }
 
   private def namedGraphUrlString: Option[String] = {

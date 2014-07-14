@@ -7,6 +7,7 @@ import org.apache.jena.riot.RDFDataMgr
 import services.data.rdf.sparql.{SparqlResult, SparqlResultTransformer}
 import services.data.rdf.sparql.jena.JenaLang
 import org.apache.jena.riot.Lang
+import scala.reflect.runtime._
 import scala.reflect.runtime.universe._
 
 
@@ -25,8 +26,12 @@ abstract class JenaDatasetTransformer[D <: JenaLang](implicit tag: TypeTag[D]) e
     }
   }
 
-  private def getLang : Lang = {
-    tag.tpe.getClass.newInstance().asInstanceOf[D].get
+  private def getLang: Lang = {
+    currentMirror.reflectClass(tag.tpe.typeSymbol.asClass).reflectConstructor(
+      tag.tpe.members.filter(m =>
+        m.isMethod && m.asMethod.isConstructor
+      ).iterator.toSeq(0).asMethod
+    )().asInstanceOf[D].get
   }
 
 }

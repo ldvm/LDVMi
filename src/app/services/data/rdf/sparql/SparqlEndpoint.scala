@@ -1,5 +1,7 @@
 package services.data.rdf.sparql
 
+import services.data.rdf.sparql.jena.JenaLang
+
 trait SparqlEndpoint {
-  def executeQuery(query: String) : com.hp.hpl.jena.query.Dataset
+  def executeQuery[D <: JenaLang](query: SparqlQuery): Option[SparqlResult[D]]
 }
