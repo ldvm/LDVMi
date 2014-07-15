@@ -28,7 +28,7 @@ class DataCubeDataStructuresQuery extends SparqlQuery {
       |         qb:order ?aOrder .
       | } WHERE
       |  { {
-      |    ?d <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> qb:DataStructureDefinition .
+      |    ?d a qb:DataStructureDefinition .
       |    ?d qb:component ?c .
       |    ?c qb:dimension ?dim .
       |    ?c rdfs:label ?l .
@@ -37,17 +37,17 @@ class DataCubeDataStructuresQuery extends SparqlQuery {
       |    ?c2 qb:measure ?m .
       |    ?c2 rdfs:label ?l2
       |    }
-      |    UNION
+      |    OPTIONAL
       |      { ?m qb:order ?mOrder }
-      |    UNION
+      |    OPTIONAL
       |      { ?d qb:component ?c3 .
       |        ?c3 qb:attribute ?a .
       |        ?c3 rdfs:label ?lattr .
       |        ?c3 qb:order ?aOrder
       |      }
-      |    UNION
+      |    OPTIONAL
       |      { ?dim qb:concept ?concept }
-      |    UNION
+      |    OPTIONAL
       |      { ?d rdfs:label ?dsdLabel
       |        FILTER ( lang(?dsdLabel) = "en" )
       |      }
