@@ -1,6 +1,6 @@
 package services.data.rdf.sparql.datacube.query
 
-import services.data.rdf.sparql.SparqlQuery
+import services.data.rdf.sparql.query.SparqlQuery
 
 
 class DataCubeDataStructuresQuery extends SparqlQuery {
@@ -48,9 +48,7 @@ class DataCubeDataStructuresQuery extends SparqlQuery {
       |    OPTIONAL
       |      { ?dim qb:concept ?concept }
       |    OPTIONAL
-      |      { ?d rdfs:label ?dsdLabel
-      |        FILTER ( lang(?dsdLabel) = "en" )
-      |      }
+      |      { ?d rdfs:label ?dsdLabel }
       |  }
     """.stripMargin.replaceAll("[\n\r]","")
 

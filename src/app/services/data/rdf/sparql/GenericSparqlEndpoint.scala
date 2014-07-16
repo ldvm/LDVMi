@@ -5,6 +5,7 @@ import data.models.DataSource
 
 import services.data.http.HttpStringRetriever
 import services.data.rdf.sparql.jena.JenaLang
+import services.data.rdf.sparql.query.SparqlQuery
 
 class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
 

@@ -4,7 +4,7 @@ import java.io.ByteArrayInputStream
 
 import com.hp.hpl.jena.query.{DatasetFactory, Dataset}
 import org.apache.jena.riot.RDFDataMgr
-import services.data.rdf.sparql.{SparqlResult, SparqlResultTransformer}
+import services.data.rdf.sparql.SparqlResult
 import services.data.rdf.sparql.jena.JenaLang
 import org.apache.jena.riot.Lang
 import scala.reflect.runtime._

@@ -12,13 +12,35 @@ define(['angular'], function (ng) {
                     return;
                 }
 
-                DataCubeService.getDatasets({ visualizationId: $id }, function(){
+                $scope.dataStructures = [];
+                $scope.activeDSD = null;
+
+                $scope.language = "cs";
+
+                $scope.setLang = function (language) {
+                    $scope.language = language;
+                };
+
+                $scope.availableLanguages = ["cs", "en"];
+
+                DataCubeService.getDatasets({ visualizationId: $id }, function () {
 
                 });
 
-                DataCubeService.getDataStructures({ visualizationId: $id }, function(){
-
+                DataCubeService.getDataStructures({ visualizationId: $id }, function (data) {
+                    $scope.dataStructures = data;
+                    if ($scope.dataStructures[0]) {
+                        $scope.switchDSD($scope.dataStructures[0]);
+                    }
                 });
+
+                $scope.switchDSD = function (dsd) {
+                    $scope.dataStructures.forEach(function (ds) {
+                        ds.isActive = false;
+                    });
+                    dsd.isActive = true;
+                    $scope.activeDSD = dsd;
+                };
 
                 /*                var URI_rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
                  var URI_dsd = "http://purl.org/linked-data/cube#DataStructureDefinition";

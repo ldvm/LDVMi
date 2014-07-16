@@ -1,14 +1,15 @@
 package services.data.rdf.sparql.datacube.extractor
 
-import com.hp.hpl.jena.rdf.model.{Resource, Property, ModelFactory}
-import com.hp.hpl.jena.vocabulary.{RDFS, RDF}
-import services.data.rdf.LocalizedLiteral
-import services.data.rdf.sparql.datacube.DataCubeDataStructure
+import com.hp.hpl.jena.rdf.model.{Statement, Property, Resource, ModelFactory}
+import com.hp.hpl.jena.shared.PropertyNotFoundException
+import com.hp.hpl.jena.vocabulary.{DCTerms, RDFS, RDF}
+import services.data.rdf.sparql.datacube._
 import services.data.rdf.sparql.datacube.query.DataCubeDataStructuresQuery
+import services.data.rdf.sparql.extractor.{Descriptions, ExtractorHelpers, SparqlResultExtractor}
 import services.data.rdf.sparql.jena.JenaLangRdfXml
 import services.data.rdf.sparql.transformer.RdfXmlJenaModelTransformer
-import services.data.rdf.sparql.{SparqlResult, SparqlResultExtractor}
-import services.data.rdf.sparql.datacube.QB
+import services.data.rdf.sparql.SparqlResult
+import services.data.rdf.vocabulary.{SDMX, SKOS, QB}
 import scala.collection.JavaConversions._
 
 class DataCubeDataStructuresExtractor extends SparqlResultExtractor[DataCubeDataStructuresQuery, JenaLangRdfXml, Seq[DataCubeDataStructure]] {
@@ -19,26 +20,118 @@ class DataCubeDataStructuresExtractor extends SparqlResultExtractor[DataCubeData
 
   def extract(data: SparqlResult[JenaLangRdfXml]): Seq[DataCubeDataStructure] = {
     val dataset = transformer.transform(data)
-    val iterator = dataset.getDefaultModel.listSubjectsWithProperty(RDF.`type`, model.createResource(QB.DSD.getURI))
+    val iterator = dataset.getDefaultModel.listSubjectsWithProperty(RDF.`type`, model.createResource(QB.dataStructureDefinition.getURI))
 
-    iterator.toList.map { dsdResource =>
-      val label = _getLocalizedLiteral(dsdResource, RDFS.label)
-      val comment = _getLocalizedLiteral(dsdResource, RDFS.comment)
+    iterator.toList.map { resource =>
 
-      new DataCubeDataStructure(dsdResource.getURI, label = label, comment = comment)
+      val descriptions = ExtractorHelpers.extractDescriptions(resource)
+      new DataCubeDataStructure(
+        resource.getURI,
+        extractComponents(resource),
+        descriptions.DCT_title,
+        descriptions.RDFS_label,
+        descriptions.RDFS_comment,
+        descriptions.DCT_description,
+        descriptions.SKOS_prefLabel
+      )
+    }.filter(_.components.nonEmpty)
+  }
+
+  private def extractComponents(dataStructure: Resource): Seq[DataCubeComponent] = {
+    val iterator = dataStructure.listProperties(QB.component)
+    iterator.map { node =>
+      val component = node.getResource
+      val descriptions = ExtractorHelpers.extractDescriptions(component)
+
+      new DataCubeComponent(
+        component.getURI,
+        getDimension(component),
+        getMeasure(component),
+        getAttribute(component),
+        order = getOrder(component),
+        descriptions.DCT_title,
+        descriptions.RDFS_label,
+        descriptions.RDFS_comment,
+        descriptions.DCT_description,
+        descriptions.SKOS_prefLabel
+      )
+    }.toSeq
+  }
+
+  private def getDimension(component: Resource): Option[DataCubeDimensionProperty] = {
+    getComponentProperty(component, QB.dimension) { case (d, s) =>
+
+      Some(new DataCubeDimensionProperty(
+        component.getURI,
+        title = d.DCT_title,
+        comment = d.RDFS_comment,
+        label = d.RDFS_label,
+        prefLabel = d.SKOS_prefLabel,
+        conceptUri = getConcept(component)
+      ))
     }
   }
 
-  private def _getLocalizedLiteral(node: Resource, property: Property): Option[LocalizedLiteral] = {
-    val list = node.listProperties(property)
-    if(!list.nonEmpty) {
-      None
-    }else{
-      val l = new LocalizedLiteral
-      list.foreach{ n =>
-        l.put(n.getLanguage, n.getString)
-      }
-      Some(l)
+  private def getMeasure(component: Resource): Option[DataCubeMeasureProperty] = {
+    getComponentProperty(component, QB.measure) { case (d, s) =>
+
+      Some(new DataCubeMeasureProperty(
+        component.getURI,
+        title = d.DCT_title,
+        comment = d.RDFS_comment,
+        label = d.RDFS_label,
+        prefLabel = d.SKOS_prefLabel,
+        conceptUri = getConcept(component),
+        rangeUri = getRange(component)
+      ))
     }
   }
+
+  private def getAttribute(component: Resource): Option[DataCubeAttributeProperty] = {
+    getComponentProperty(component, QB.attribute) { case (d, s) =>
+      Some(new DataCubeAttributeProperty(
+        component.getURI,
+        title = d.DCT_title,
+        comment = d.RDFS_comment,
+        label = d.RDFS_label,
+        prefLabel = d.SKOS_prefLabel,
+        conceptUri = getConcept(component)
+      ))
+    }
+  }
+
+  private def getOrder(component: Resource): Option[Int] = {
+    try {
+      Option(component.getProperty(QB.order)).map(_.getInt)
+    } catch {
+      case e: PropertyNotFoundException => None
+    }
+  }
+
+  private def getConcept(componentProperty: Resource) : Option[String] = {
+    try {
+      Option(componentProperty.getProperty(QB.concept)).map(_.getResource.getURI)
+    } catch {
+      case e: PropertyNotFoundException => None
+    }
+  }
+
+  private def getRange(componentProperty: Resource) : Option[String] = {
+    try {
+      Option(componentProperty.getProperty(QB.concept)).map(_.getResource.getURI)
+    } catch {
+      case e: PropertyNotFoundException => None
+    }
+  }
+
+  private def getComponentProperty[D](component: Resource, property: Property)
+                                     (extractor: (Descriptions, Statement) => Option[D]): Option[D] = {
+
+    val componentProperty = component.getProperty(property)
+    Option(componentProperty).map { c =>
+      val descriptions = ExtractorHelpers.extractDescriptions(c.getResource)
+      extractor(descriptions, c)
+    }.flatten
+  }
+
 }

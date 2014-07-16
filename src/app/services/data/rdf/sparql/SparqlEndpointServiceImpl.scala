@@ -2,7 +2,9 @@ package services.data.rdf.sparql
 
 import scaldi.Injector
 import data.models.DataSource
+import services.data.rdf.sparql.extractor.SparqlResultExtractor
 import services.data.rdf.sparql.jena.{JenaLangRdfXml, JenaLang}
+import services.data.rdf.sparql.query.SparqlQuery
 import services.data.rdf.sparql.transformer.RdfXmlJenaModelTransformer
 
 class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointService {

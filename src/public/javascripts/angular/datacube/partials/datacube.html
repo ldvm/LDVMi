@@ -12,6 +12,18 @@
             <div class="panel-footer"></div>
         </div>
 -->
+        <div class="panel panel-default" ng-show="availableLanguages.length > 0">
+            <div class="panel-heading">
+                <h3 class="panel-title">Switch labels display language</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-unstyled">
+                    <li ng-repeat="l in availableLanguages" style="display: inline; margin-right: 3px;"><span ng-click="setLang(l)" class="flag-icon flag-icon-{{l}}"></span></li>
+                </ul>
+            </div>
+            <div class="panel-footer"></div>
+        </div>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Available data structures</h3>
@@ -19,7 +31,7 @@
             <div class="panel-body">
                 <p ng-show="dataStructures.length == 0">No data structures found in the supplied datasource.</p>
                 <ul class="list-unstyled" ng-show="dataStructures.length > 0">
-                    <li ng-repeat="ds in dataStructures"><input type="checkbox" ng-model="ds.active" ng-change="switchDSD($index, false, true)" />&nbsp;{{ds.label}}</li>
+                    <li ng-repeat="ds in dataStructures"><input type="checkbox" ng-model="ds.isActive" ng-change="switchDSD(ds)" />&nbsp;{{ds.label.variants[language]}}</li>
                 </ul>
             </div>
             <div class="panel-footer"></div>
@@ -43,9 +55,9 @@
             </div>
             <div class="panel-body">
                 <ol class="list-unstyled">
-                    <li ng-repeat="dimension in dataStructures[selectedDataStructure].dimensionsOrdered | orderBy:'order'">
-                        {{dimension.label || dimension.uri}}
-                        <ul style="max-height: 200px; overflow: scroll;">
+                    <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component.dimension">
+                        {{component.label.variants[language]}}
+                        <ul style="max-height: 200px; overflow-y: scroll;">
                             <li ng-repeat="v in dimension.values | orderBy:['prefLabel', 'label', 'notion', 'uri', 'value']"><input type="checkbox" ng-model="v.active" ng-change="setActiveValue(dimension.uri, v)" />&nbsp;{{v.prefLabel || v.label || v.notion || v.uri || v.value}}</li>
                         </ul>
                         <p class="alert alert-danger" ng-show="dimension.values.length == 0">This dimension has no values. That's why your chart is empty.</p>
@@ -61,8 +73,8 @@
             </div>
             <div class="panel-body">
                 <ul class="list-unstyled">
-                    <li ng-repeat="(uri, measure) in dataStructures[selectedDataStructure].measures | orderBy: 'order'">
-                        {{measure.label || uri}}
+                    <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component.measure">
+                        {{component.label.variants[language]}}
                         <ul>
                             <li ng-repeat="v in measure.values">{{v.uri}}{{v.value}}</li>
                         </ul>
@@ -71,15 +83,14 @@
             </div>
             <div class="panel-footer"></div>
         </div>
-<!--
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Attributes settings</h3>
             </div>
             <div class="panel-body">
                 <ul class="list-unstyled">
-                    <li ng-repeat="(uri, attr) in dataStructures[selectedDataStructure].attributes">
-                        {{uri}}
+                    <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component.attribute">
+                        {{component.label.variants[language]}}
                         <ul>
                             <li ng-repeat="v in attribute.values">{{v.uri}}{{v.value}}</li>
                         </ul>
@@ -87,7 +98,7 @@
                 </ul>
             </div>
             <div class="panel-footer"></div>
-        </div>-->
+        </div>
 
     </div>
 

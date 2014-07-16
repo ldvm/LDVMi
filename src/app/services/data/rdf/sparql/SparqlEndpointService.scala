@@ -1,7 +1,9 @@
 package services.data.rdf.sparql
 
 import data.models.DataSource
+import services.data.rdf.sparql.extractor.SparqlResultExtractor
 import services.data.rdf.sparql.jena.JenaLang
+import services.data.rdf.sparql.query.SparqlQuery
 
 trait SparqlEndpointService {
 

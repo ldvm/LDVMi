@@ -1,6 +1,6 @@
 package services.data.rdf.sparql.datacube.query
 
-import services.data.rdf.sparql.SparqlQuery
+import services.data.rdf.sparql.query.SparqlQuery
 
 
 class DataCubeDatasetsQuery extends SparqlQuery {
