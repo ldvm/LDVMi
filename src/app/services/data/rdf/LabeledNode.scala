@@ -1,15 +1,15 @@
 package services.data.rdf
 
-trait LabeledNode {
+trait LabeledNode extends Node {
 
-  def title: Option[LocalizedLiteral]
+  def title: Option[LocalizedValue]
 
-  def label: Option[LocalizedLiteral]
+  def label: Option[LocalizedValue]
 
-  def comment: Option[LocalizedLiteral]
+  def comment: Option[LocalizedValue]
 
-  def description: Option[LocalizedLiteral]
+  def description: Option[LocalizedValue]
 
-  def prefLabel: Option[LocalizedLiteral]
+  def prefLabel: Option[LocalizedValue]
 
 }

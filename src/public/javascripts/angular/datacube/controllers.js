@@ -13,6 +13,7 @@ define(['angular'], function (ng) {
                 }
 
                 $scope.dataStructures = [];
+                $scope.datasets = [];
                 $scope.activeDSD = null;
 
                 $scope.language = "cs";
@@ -40,6 +41,31 @@ define(['angular'], function (ng) {
                     });
                     dsd.isActive = true;
                     $scope.activeDSD = dsd;
+                    $scope.loadComponentsValues();
+                };
+
+                $scope.loadComponentsValues = function () {
+
+                    var uris = [];
+                    $scope.activeDSD.components.forEach(function (c) {
+
+                        function pushUri(component) {
+                            if (component && component.uri) {
+                                uris.push(component.uri);
+                            }
+                        }
+
+                        pushUri(c.dimension);
+                        pushUri(c.attribute);
+                        pushUri(c.measure);
+                    });
+
+                    DataCubeService.getValues({ visualizationId: $id}, {uris: uris }, function (data) {
+                        $scope.dataStructures = data;
+                        if ($scope.dataStructures[0]) {
+                            $scope.switchDSD($scope.dataStructures[0]);
+                        }
+                    });
                 };
 
                 /*                var URI_rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";

@@ -15,13 +15,16 @@ abstract class JenaDatasetTransformer[D <: JenaLang](implicit tag: TypeTag[D]) e
 
   def transform(data: SparqlResult[D]): Dataset = {
     try {
-      val dataInputStream = new ByteArrayInputStream(data.stringValue.getBytes("UTF-8"))
+      val dataInputStream = new ByteArrayInputStream(("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + data.stringValue).getBytes("UTF-8"))
 
       val dataSet = DatasetFactory.createMem()
       RDFDataMgr.read(dataSet, dataInputStream, getLang)
       dataSet
     } catch {
-      case e: org.apache.jena.riot.RiotException => throw new IllegalArgumentException("Transformation failed, data format mismatch: " + data.stringValue.substring(0, 500))
+      case e: org.apache.jena.riot.RiotException => {
+        println(e)
+        throw new IllegalArgumentException("Transformation failed, data format mismatch: " + data.stringValue.substring(0, 500))
+      }
       case e: Exception => throw new IllegalArgumentException(e.getMessage)
     }
   }

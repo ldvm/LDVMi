@@ -7,7 +7,8 @@ define(['angular'], function (ng) {
         .factory('DataCubeService', ['$resource', function ($resource) {
             return $resource('', null, {
                 getDatasets: {url: '/api/datacube/datasets/:visualizationId', isArray: true},
-                getDataStructures: {url: '/api/datacube/datastructures/:visualizationId', isArray: true}
+                getDataStructures: {url: '/api/datacube/datastructures/:visualizationId', isArray: true},
+                getValues: {url: '/api/datacube/values/:visualizationId', method: 'post'}
             });
         }]);
 });

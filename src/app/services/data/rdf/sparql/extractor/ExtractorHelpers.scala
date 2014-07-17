@@ -6,9 +6,9 @@ import services.data.rdf.vocabulary.SKOS
 import scala.collection.JavaConversions._
 
 import com.hp.hpl.jena.rdf.model.{Property, Resource}
-import services.data.rdf.LocalizedLiteral
+import services.data.rdf.LocalizedValue
 
-case class Descriptions(DCT_title: Option[LocalizedLiteral] = None, RDFS_label: Option[LocalizedLiteral] = None, RDFS_comment: Option[LocalizedLiteral] = None, DCT_description: Option[LocalizedLiteral] = None, SKOS_prefLabel: Option[LocalizedLiteral] = None)
+case class Descriptions(DCT_title: Option[LocalizedValue] = None, RDFS_label: Option[LocalizedValue] = None, RDFS_comment: Option[LocalizedValue] = None, DCT_description: Option[LocalizedValue] = None, SKOS_prefLabel: Option[LocalizedValue] = None)
 
 object ExtractorHelpers {
 
@@ -22,13 +22,13 @@ object ExtractorHelpers {
     )
   }
 
-  def getLocalizedLiteral(resource: Resource, property: Property): Option[LocalizedLiteral] = {
+  def getLocalizedLiteral(resource: Resource, property: Property): Option[LocalizedValue] = {
     val list = resource.listProperties(property)
 
     if(list.isEmpty) {
       None
     }else{
-      val l = new LocalizedLiteral
+      val l = new LocalizedValue
       list.foreach{ n =>
         l.put(n.getLanguage, n.getString)
       }

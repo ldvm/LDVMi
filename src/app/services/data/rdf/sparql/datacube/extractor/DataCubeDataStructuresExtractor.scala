@@ -2,14 +2,14 @@ package services.data.rdf.sparql.datacube.extractor
 
 import com.hp.hpl.jena.rdf.model.{Statement, Property, Resource, ModelFactory}
 import com.hp.hpl.jena.shared.PropertyNotFoundException
-import com.hp.hpl.jena.vocabulary.{DCTerms, RDFS, RDF}
+import com.hp.hpl.jena.vocabulary.RDF
 import services.data.rdf.sparql.datacube._
 import services.data.rdf.sparql.datacube.query.DataCubeDataStructuresQuery
 import services.data.rdf.sparql.extractor.{Descriptions, ExtractorHelpers, SparqlResultExtractor}
 import services.data.rdf.sparql.jena.JenaLangRdfXml
 import services.data.rdf.sparql.transformer.RdfXmlJenaModelTransformer
 import services.data.rdf.sparql.SparqlResult
-import services.data.rdf.vocabulary.{SDMX, SKOS, QB}
+import services.data.rdf.vocabulary.QB
 import scala.collection.JavaConversions._
 
 class DataCubeDataStructuresExtractor extends SparqlResultExtractor[DataCubeDataStructuresQuery, JenaLangRdfXml, Seq[DataCubeDataStructure]] {
@@ -62,7 +62,7 @@ class DataCubeDataStructuresExtractor extends SparqlResultExtractor[DataCubeData
     getComponentProperty(component, QB.dimension) { case (d, s) =>
 
       Some(new DataCubeDimensionProperty(
-        component.getURI,
+        s.getResource.getURI,
         title = d.DCT_title,
         comment = d.RDFS_comment,
         label = d.RDFS_label,
@@ -76,7 +76,7 @@ class DataCubeDataStructuresExtractor extends SparqlResultExtractor[DataCubeData
     getComponentProperty(component, QB.measure) { case (d, s) =>
 
       Some(new DataCubeMeasureProperty(
-        component.getURI,
+        s.getResource.getURI,
         title = d.DCT_title,
         comment = d.RDFS_comment,
         label = d.RDFS_label,
@@ -90,7 +90,7 @@ class DataCubeDataStructuresExtractor extends SparqlResultExtractor[DataCubeData
   private def getAttribute(component: Resource): Option[DataCubeAttributeProperty] = {
     getComponentProperty(component, QB.attribute) { case (d, s) =>
       Some(new DataCubeAttributeProperty(
-        component.getURI,
+        s.getResource.getURI,
         title = d.DCT_title,
         comment = d.RDFS_comment,
         label = d.RDFS_label,
@@ -108,7 +108,7 @@ class DataCubeDataStructuresExtractor extends SparqlResultExtractor[DataCubeData
     }
   }
 
-  private def getConcept(componentProperty: Resource) : Option[String] = {
+  private def getConcept(componentProperty: Resource): Option[String] = {
     try {
       Option(componentProperty.getProperty(QB.concept)).map(_.getResource.getURI)
     } catch {
@@ -116,7 +116,7 @@ class DataCubeDataStructuresExtractor extends SparqlResultExtractor[DataCubeData
     }
   }
 
-  private def getRange(componentProperty: Resource) : Option[String] = {
+  private def getRange(componentProperty: Resource): Option[String] = {
     try {
       Option(componentProperty.getProperty(QB.concept)).map(_.getResource.getURI)
     } catch {

@@ -2,7 +2,7 @@ package services.data.rdf
 
 import scala.collection.mutable
 
-class LocalizedLiteral {
+class LocalizedValue {
 
   private val languageMap = new mutable.HashMap[String, String]
 
@@ -34,17 +34,17 @@ class LocalizedLiteral {
 
 }
 
-object LocalizedLiteral {
+object LocalizedValue {
 
   def apply(variants: Map[String, String]) = {
-    val l = new LocalizedLiteral
+    val l = new LocalizedValue
     variants.foreach { p =>
       l.put(p._1, p._2)
     }
     l
   }
 
-  def unapply(l: LocalizedLiteral) : Option[Map[String, String]] = {
+  def unapply(l: LocalizedValue) : Option[Map[String, String]] = {
     if(l.languageMap.nonEmpty){
       Some(l.languageMap.toMap)
     }else{

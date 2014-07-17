@@ -13,7 +13,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import scaldi.{Injectable, Injector}
-import services.data.rdf.LocalizedLiteral
+import services.data.rdf.{Node, LocalizedValue}
 import services.data.rdf.sparql.datacube._
 
 
@@ -21,7 +21,7 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
 
   val dataCubeService = inject[DataCubeService]
 
-  implicit val localizedLiteralWrites = Json.writes[LocalizedLiteral]
+  implicit val localizedLiteralWrites = Json.writes[LocalizedValue]
   implicit val dataCubeDatasetWrites = Json.writes[DataCubeDataset]
   implicit val dataCubeDimensionPropertyWrites = Json.writes[DataCubeDimensionProperty]
   implicit val dataCubeMeasurePropertyWrites = Json.writes[DataCubeMeasureProperty]
@@ -38,6 +38,16 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
   def dataStructures(id: Long) = DBAction { implicit rs =>
     _withVisualizationAndDataSource(id){ (v, d) =>
       Ok(Json.toJson(dataCubeService.getDataStructures(d)))
+    }
+  }
+
+  def values(id: Long) = DBAction(parse.json) { implicit rs =>
+
+    val json : JsValue = rs.request.body
+    val uris = json \ "uris"
+
+    _withVisualizationAndDataSource(id){ (v, d) =>
+      Ok(Json.toJson(dataCubeService.getValues(d, uris.as[List[String]])))
     }
   }
 
