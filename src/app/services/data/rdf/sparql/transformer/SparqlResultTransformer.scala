@@ -7,4 +7,6 @@ trait SparqlResultTransformer[D <: JenaLang, R] {
 
   def transform(data: SparqlResult[D]) : R
 
+  def getLang: D
+
 }

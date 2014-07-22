@@ -134,4 +134,6 @@ class DataCubeDataStructuresExtractor extends SparqlResultExtractor[DataCubeData
     }.flatten
   }
 
+  override def getLang: JenaLangRdfXml = transformer.getLang
+
 }

@@ -17,6 +17,15 @@ class DataCubeValuesQuery(uri: String) extends SparqlQuery {
       |     OPTIONAL { ?o rdfs:label ?l . }
       |     OPTIONAL { ?o skos:notion ?sn . }
       | }
-    """.stripMargin.replaceAll("[\n\r]","").replace("%s", uri)
+    """.stripMargin.replaceAll("[\n\r]", "").replace("%s", uri)
+
+}
+
+object DataCubeValuesQuery {
+
+  val VALUE_PROPERTY_VARIABLE = "o"
+  val VALUE_LABEL_VARIABLE = "l"
+  val VALUE_PREFLABEL_VARIABLE = "spl"
+  val VALUE_NOTION_VARIABLE = "sn"
 
 }

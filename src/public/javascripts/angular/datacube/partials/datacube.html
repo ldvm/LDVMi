@@ -57,11 +57,11 @@
             <div class="panel-body">
                 <ol class="list-unstyled">
                     <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component.dimension">
-                        {{component.label.variants[language]}}
+                        {{component.label.variants[language] || component.label.variants["en"]}}
                         <ul style="max-height: 200px; overflow-y: scroll;">
-                            <li ng-repeat="v in dimension.values | orderBy:['prefLabel', 'label', 'notion', 'uri', 'value']"><input type="checkbox" ng-model="v.active" ng-change="setActiveValue(dimension.uri, v)" />&nbsp;{{v.prefLabel || v.label || v.notion || v.uri || v.value}}</li>
+                            <li ng-repeat="v in values[component.dimension.uri]"><input type="checkbox" ng-model="v.active" ng-change="setActiveValue(dimension.uri, v)" />&nbsp;{{v}}</li>
                         </ul>
-                        <p class="alert alert-danger" ng-show="dimension.values.length == 0">This dimension has no values. That's why your chart is empty.</p>
+                        <p class="alert alert-danger" ng-show="values[component.dimension.uri].length == 0">This dimension has no values. That's why your chart is empty.</p>
                     </li>
                 </ol>
             </div>
@@ -76,9 +76,6 @@
                 <ul class="list-unstyled">
                     <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component.measure">
                         {{component.label.variants[language]}}
-                        <ul>
-                            <li ng-repeat="v in measure.values">{{v.uri}}{{v.value}}</li>
-                        </ul>
                     </li>
                 </ul>
             </div>
@@ -91,7 +88,7 @@
             <div class="panel-body">
                 <ul class="list-unstyled">
                     <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component.attribute">
-                        {{component.label.variants[language]}}
+                        {{component.label.variants[language] || component.label.variants["en"]}}
                         <ul>
                             <li ng-repeat="v in attribute.values">{{v.uri}}{{v.value}}</li>
                         </ul>

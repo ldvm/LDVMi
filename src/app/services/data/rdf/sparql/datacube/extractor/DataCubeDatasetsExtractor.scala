@@ -34,4 +34,6 @@ class DataCubeDatasetsExtractor extends SparqlResultExtractor[DataCubeDatasetsQu
       )
     }
   }
+
+  override def getLang: JenaLangRdfXml = transformer.getLang
 }

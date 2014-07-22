@@ -57,14 +57,11 @@ define(['angular'], function (ng) {
 
                         pushUri(c.dimension);
                         pushUri(c.attribute);
-                        pushUri(c.measure);
+                        //pushUri(c.measure);
                     });
 
                     DataCubeService.getValues({ visualizationId: $id}, {uris: uris }, function (data) {
-                        $scope.dataStructures = data;
-                        if ($scope.dataStructures[0]) {
-                            $scope.switchDSD($scope.dataStructures[0]);
-                        }
+                        $scope.values = data;
                     });
                 };
 

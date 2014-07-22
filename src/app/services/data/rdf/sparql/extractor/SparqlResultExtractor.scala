@@ -8,4 +8,6 @@ trait SparqlResultExtractor[Q <: SparqlQuery, D <: JenaLang, R] {
 
   def extract(data: SparqlResult[D]) : R
 
+  def getLang: D
+
 }

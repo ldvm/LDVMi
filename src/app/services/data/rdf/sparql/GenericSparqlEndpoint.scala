@@ -7,11 +7,13 @@ import services.data.http.HttpStringRetriever
 import services.data.rdf.sparql.jena.JenaLang
 import services.data.rdf.sparql.query.SparqlQuery
 
+import scala.reflect.ClassTag
+
 class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
 
-  def executeQuery[D <: JenaLang](query: SparqlQuery): Option[SparqlResult[D]] = {
+  def executeQuery[D <: JenaLang](query: SparqlQuery, lang: D): Option[SparqlResult[D]] = {
     try {
-      val result = new HttpStringRetriever(queryUrl(query), "application/rdf+xml").retrieve()
+      val result = new HttpStringRetriever(queryUrl(query), lang.acceptType).retrieve()
       result.map(wrapResult[D])
     } catch {
       case e: IOException if e.getMessage.contains("Server returned HTTP response code: 400 for URL") =>
