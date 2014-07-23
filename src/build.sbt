@@ -30,10 +30,6 @@ libraryDependencies ++= Seq(
   "com.newrelic.agent.java" % "newrelic-api" % "3.8.1"
 )
 
-requireJs += "angular/datacube/main.js"
-
-requireJsShim += "angular/datacube/main.js"
-
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
 
 pipelineStages := Seq(rjs, digest, gzip)
