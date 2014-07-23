@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingHeader())
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -48,5 +49,6 @@
     <footer>
         <p>&copy; Payola 2014</p>
     </footer>
+    @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
 </body>
 </html>

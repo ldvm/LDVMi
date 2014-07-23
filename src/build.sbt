@@ -26,7 +26,8 @@ libraryDependencies ++= Seq(
   "org.scaldi" % "scaldi-play_2.10" % "0.3.3",
   "org.apache.jena" % "jena" % "2.11.2",
   "org.apache.jena" % "jena-arq" % "2.11.2",
-  "com.typesafe.play" %% "play-slick" % "0.7.0"
+  "com.typesafe.play" %% "play-slick" % "0.7.0",
+  "com.newrelic.agent.java" % "newrelic-api" % "3.8.1"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
