@@ -30,6 +30,12 @@ libraryDependencies ++= Seq(
   "com.newrelic.agent.java" % "newrelic-api" % "3.8.1"
 )
 
+RjsKeys.modules := Seq(
+  WebJs.JS.Object("name" -> "angular/datacube/main")
+)
+
+RjsKeys.mainConfig := "main"
+
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
 
 pipelineStages := Seq(rjs, digest, gzip)
