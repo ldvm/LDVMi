@@ -22,10 +22,14 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDataStructuresQuery, new DataCubeDataStructuresExtractor)
   }
 
-  def getValues(dataSource: DataSource, uris: List[String]): Map[String, Seq[String]] = {
+  def getValues(dataSource: DataSource, uris: List[String]): Map[String, Seq[DataCubeComponentValue]] = {
     uris.par.map{ uri =>
       uri -> sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
     }.toList.toMap
+  }
+
+  def queryCube(dataSource: DataSource) : String = {
+    ""
   }
 
   private def get(dataSource: DataSource, query: SparqlQuery): Dataset = {

@@ -1,7 +1,6 @@
 package services.data.rdf.sparql.datacube
 
 import data.models.DataSource
-import services.data.rdf.Node
 
 trait DataCubeService {
 
@@ -9,6 +8,8 @@ trait DataCubeService {
 
   def getDataStructures(dataSource: DataSource): Seq[DataCubeDataStructure]
 
-  def getValues(dataSource: DataSource, uris: List[String]): Map[String, Seq[String]]
+  def getValues(dataSource: DataSource, uris: List[String]): Map[String, Seq[DataCubeComponentValue]]
+
+  def queryCube(dataSource: DataSource) : String
 
 }

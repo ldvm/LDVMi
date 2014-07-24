@@ -12,32 +12,22 @@
             <div class="panel-footer"></div>
         </div>
         -->
-        <div class="panel panel-default" ng-show="availableLanguages.length > 0">
-            <div class="panel-heading">
-                <h3 class="panel-title">Switch labels display language</h3>
-            </div>
-            <div class="panel-body">
-                <ul class="list-unstyled">
-                    <li ng-repeat="l in availableLanguages" style="display: inline; margin-right: 3px;"><span ng-click="setLang(l)" class="flag-icon flag-icon-{{l}}"></span></li>
-                </ul>
-            </div>
-            <div class="panel-footer"></div>
+
+        <div class="well well-sm">
+            <ul class="list-unstyled" style="margin-bottom: 0px">
+                <li ng-repeat="l in availableLanguages" style="display: inline; margin-right: 3px;"><span ng-click="setLang(l)" class="flag-icon flag-icon-{{l}}"></span></li>
+            </ul>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Available data structures</h3>
-            </div>
-            <div class="panel-body">
-                <p ng-show="dataStructures.length == 0">No data structures found in the supplied datasource.</p>
-                <ul class="list-unstyled" ng-show="dataStructures.length > 0">
-                    <li ng-repeat="ds in dataStructures"><input type="checkbox" ng-model="ds.isActive" ng-change="switchDSD(ds)" />&nbsp;{{ds.label.variants[language]}}</li>
-                </ul>
-            </div>
-            <div class="panel-footer"></div>
-        </div>
+        <p ng-show="dataStructures.length == 0">No data structures found in the supplied datasource.</p>
+        <ul class="list-group" ng-show="dataStructures.length > 0">
+            <li class="list-group-item active">Available data structures</h3>
+            <li ng-repeat="ds in dataStructures" class="list-group-item">
+                <input type="checkbox" ng-model="ds.isActive" ng-change="switchDSD(ds)" />&nbsp;{{ds.label.variants[language]}}
+            </li>
+        </ul>
 
-        <div class="panel panel-default">
+        <div class="panel panel-default" ng-show="datasets.length > 0">
             <div class="panel-heading">
                 <h3 class="panel-title">Available datasets</h3>
             </div>
@@ -50,52 +40,19 @@
             <div class="panel-footer"></div>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Dimensions settings</h3>
-            </div>
-            <div class="panel-body">
-                <ol class="list-unstyled">
-                    <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component.dimension">
-                        {{component.label.variants[language] || component.label.variants["en"]}}
-                        <ul style="max-height: 200px; overflow-y: scroll;">
-                            <li ng-repeat="v in values[component.dimension.uri]"><input type="checkbox" ng-model="v.active" ng-change="setActiveValue(dimension.uri, v)" />&nbsp;{{v}}</li>
-                        </ul>
-                        <p class="alert alert-danger" ng-show="values[component.dimension.uri].length == 0">This dimension has no values. That's why your chart is empty.</p>
-                    </li>
-                </ol>
-            </div>
-            <div class="panel-footer"></div>
-        </div>
+        <div ng-repeat="type in componentTypes">
+            <ul class="list-group">
+                <li class="list-group-item active">{{type.plural}} settings</li>
+                <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component[type.key]" class="list-group-item" ng-class="{'list-group-item-danger': values[component[type.key].uri].length == 0}">
+                    <i class="glyphicon glyphicon-cog" ng-click="component.settingsVisible = !component.settingsVisible"></i>
+                    {{component.label.variants[language] || component.label.variants["en"]}}
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Measures settings</h3>
-            </div>
-            <div class="panel-body">
-                <ul class="list-unstyled">
-                    <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component.measure">
-                        {{component.label.variants[language]}}
-                    </li>
-                </ul>
-            </div>
-            <div class="panel-footer"></div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Attributes settings</h3>
-            </div>
-            <div class="panel-body">
-                <ul class="list-unstyled">
-                    <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component.attribute">
-                        {{component.label.variants[language] || component.label.variants["en"]}}
-                        <ul>
-                            <li ng-repeat="v in attribute.values">{{v.uri}}{{v.value}}</li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="panel-footer"></div>
+                    <ul style="position: absolute; top: 70px; left: 100%; width: 100%" ng-show="component.settingsVisible">
+                        <li ng-repeat="v in values[component[type.key].uri]"><input type="checkbox" ng-model="v.active" />&nbsp;{{v.label || v.uri}}</li>
+                    </ul>
+                    <p ng-show="values[component[type.key].uri].length == 0"><br />This {{type.key}} has no values. That's why your chart is empty.</p>
+                </li>
+            </ul>
         </div>
 
     </div>
@@ -104,6 +61,8 @@
         <div class="alert alert-danger" ng-show="dataStructures.length == 0"><p>The chosen datasource does not contain any DataCube vocabularies.</p></div>
 
         <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+
+        <input type="text" ng-model="permalink" readonly ng-if="permalink" />
 
         <div class="btn-group">
             <button class="btn btn-default" ng-click="showChart()" ng-class="{'btn-success': chartVisible}"><i class="glyphicon glyphicon-signal"></i> Chart</button>

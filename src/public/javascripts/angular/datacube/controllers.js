@@ -3,8 +3,8 @@ define(['angular'], function (ng) {
 
     ng.module('dataCube.controllers', []).
         controller('DataCube',
-        ['$scope', 'DataCubeService', '$q', '$location', '$routeParams', '$http',
-            function ($scope, DataCubeService, $q, $location, $routeParams, $http) {
+        ['$scope', 'DataCubeService', '$q', '$location', '$routeParams',
+            function ($scope, DataCubeService, $q, $location, $routeParams) {
 
                 var $id = $routeParams.id;
 
@@ -15,8 +15,13 @@ define(['angular'], function (ng) {
                 $scope.dataStructures = [];
                 $scope.datasets = [];
                 $scope.activeDSD = null;
-
                 $scope.language = "cs";
+
+                $scope.componentTypes = [
+                    {name: "Dimension", key: "dimension", plural: "Dimensions"},
+                    {name: "Measure", key: "measure", plural: "Measures"},
+                    {name: "Attribute", key: "attribute", plural: "Attributes"},
+                ];
 
                 $scope.setLang = function (language) {
                     $scope.language = language;
@@ -64,6 +69,38 @@ define(['angular'], function (ng) {
                         $scope.values = data;
                     });
                 };
+
+                $scope.refresh = function () {
+                    DataCubeService.queryCube({visualizationId: $id}, {filters: collectFilters()}, function (response) {
+                        $scope.permalink = "#/id/" + $id + "/" + response.permalinkToken;
+
+
+                    });
+                };
+
+                function collectFilters() {
+                    var filters = {
+                        dsdUri: $scope.activeDSD.uri,
+                        components: []
+                    };
+
+                    $scope.activeDSD.components.forEach(function (c) {
+                        var componentProperty = c.dimension || c.measure || c.attribute;
+
+                        if (componentProperty && componentProperty.uri) {
+                            var filter = {
+                                componentUri: componentProperty.uri,
+                                values: $scope.values[componentProperty.uri]
+                            };
+                            filters.components.push(filter);
+                        } else {
+                            throw "The component property has no URI. This is not supported";
+                        }
+
+                    });
+
+                    return filters;
+                }
 
                 /*                var URI_rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
                  var URI_dsd = "http://purl.org/linked-data/cube#DataStructureDefinition";

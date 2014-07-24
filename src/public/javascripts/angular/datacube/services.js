@@ -8,7 +8,8 @@ define(['angular'], function (ng) {
             return $resource('', null, {
                 getDatasets: {url: '/api/datacube/datasets/:visualizationId', isArray: true},
                 getDataStructures: {url: '/api/datacube/datastructures/:visualizationId', isArray: true},
-                getValues: {url: '/api/datacube/values/:visualizationId', method: 'post'}
+                getValues: {url: '/api/datacube/values/:visualizationId', method: 'post'},
+                queryCube: {url: '/api/datacube/query-cube/:visualizationId', method: 'post'}
             });
         }]);
 });
