@@ -48,7 +48,7 @@
                     {{component.label.variants[language] || component.label.variants["en"]}}
 
                     <ul style="position: absolute; top: 70px; left: 100%; width: 100%" ng-show="component.settingsVisible">
-                        <li ng-repeat="v in values[component[type.key].uri]"><input type="checkbox" ng-model="v.active" />&nbsp;{{v.label || v.uri}}</li>
+                        <li ng-repeat="v in values[component[type.key].uri]"><input type="checkbox" ng-model="v.isActive" />&nbsp;{{v.label || v.uri}}</li>
                     </ul>
                     <p ng-show="values[component[type.key].uri].length == 0"><br />This {{type.key}} has no values. That's why your chart is empty.</p>
                 </li>

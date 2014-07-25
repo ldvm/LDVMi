@@ -10,6 +10,6 @@ trait DataCubeService {
 
   def getValues(dataSource: DataSource, uris: List[String]): Map[String, Seq[DataCubeComponentValue]]
 
-  def queryCube(dataSource: DataSource) : String
+  def queryCube(dataSource: DataSource, queryData: DataCubeQueryData) : DataCubeQueryResult
 
 }

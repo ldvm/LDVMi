@@ -3,6 +3,7 @@ package services.data.rdf.sparql.datacube
 import com.hp.hpl.jena.query.Dataset
 import data.models.DataSource
 import scaldi.{Injectable, Injector}
+import services.MD5
 import services.data.rdf.sparql.query.SparqlQuery
 import services.data.rdf.sparql.{SparqlEndpointService, GenericSparqlEndpoint}
 import services.data.rdf.sparql.datacube.extractor.{DataCubeValuesExtractor, DataCubeDataStructuresExtractor, DataCubeDatasetsExtractor}
@@ -28,8 +29,8 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     }.toList.toMap
   }
 
-  def queryCube(dataSource: DataSource) : String = {
-    ""
+  def queryCube(dataSource: DataSource, queryData: DataCubeQueryData) : DataCubeQueryResult = {
+    new DataCubeQueryResult(MD5.hash(queryData.toString))
   }
 
   private def get(dataSource: DataSource, query: SparqlQuery): Dataset = {

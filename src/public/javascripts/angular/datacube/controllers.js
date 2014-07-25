@@ -90,7 +90,8 @@ define(['angular'], function (ng) {
                         if (componentProperty && componentProperty.uri) {
                             var filter = {
                                 componentUri: componentProperty.uri,
-                                values: $scope.values[componentProperty.uri]
+                                type: c.dimension ? "dimension" : (c.measure ? "measure" : "attribute"),
+                                values: $scope.values[componentProperty.uri] || []
                             };
                             filters.components.push(filter);
                         } else {
