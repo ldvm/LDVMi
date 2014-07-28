@@ -31,6 +31,4 @@ define(['./app'], function (app) {
             cfpLoadingBarProvider.includeSpinner = false;
             cfpLoadingBarProvider.latencyThreshold = 0;
         }]);
-
-
 });

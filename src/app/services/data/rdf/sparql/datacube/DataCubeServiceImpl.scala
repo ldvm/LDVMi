@@ -29,8 +29,14 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     }.toList.toMap
   }
 
-  def queryCube(dataSource: DataSource, queryData: DataCubeQueryData) : DataCubeQueryResult = {
-    new DataCubeQueryResult(MD5.hash(queryData.toString))
+  def queryCube(dataSource: DataSource, queryData: DataCubeQueryData) : String = {
+    ""
+  }
+
+  def processCubeQuery(dataSource: DataSource, queryData: DataCubeQueryData): DataCubeQueryResult = {
+    val token = MD5.hash(queryData.toString)
+    val result = queryCube(dataSource, queryData)
+    new DataCubeQueryResult(token)
   }
 
   private def get(dataSource: DataSource, query: SparqlQuery): Dataset = {

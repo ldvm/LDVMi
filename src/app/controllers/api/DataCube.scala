@@ -50,7 +50,7 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
 
         val queryData: DataCubeQueryData = s.get
         _withVisualizationAndDataSource(id) { (v, d) =>
-          val result = dataCubeService.queryCube(d, queryData)
+          val result = dataCubeService.processCubeQuery(d, queryData)
           Ok(Json.toJson(result))
         }
 

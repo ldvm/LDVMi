@@ -4,7 +4,8 @@
 
 # Home page
 GET         /                                       @controllers.Application.index
-GET         /visualize/datacube/                    @controllers.DataCube.visualize
+GET         /@db                                    @controllers.Application.populateDB
+GET         /visualize/datacube                     @controllers.DataCube.visualize
 
 GET         /api/datacube/datasets/:id              @controllers.api.DataCube.datasets(id: Long)
 GET         /api/datacube/datastructures/:id        @controllers.api.DataCube.dataStructures(id: Long)
