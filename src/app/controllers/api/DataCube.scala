@@ -45,12 +45,13 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
   }
 
   def queryCube(id: Long) = DBAction(parse.json) { implicit rs =>
-    rs.request.body.validate[DataCubeQueryData] match {
+    val json: JsValue = rs.request.body
+    json.validate[DataCubeQueryData] match {
       case s: JsSuccess[DataCubeQueryData] => {
 
         val queryData: DataCubeQueryData = s.get
         _withVisualizationAndDataSource(id) { (v, d) =>
-          val result = dataCubeService.processCubeQuery(d, queryData)
+          val result = dataCubeService.processCubeQuery(v, d, queryData, json)
           Ok(Json.toJson(result))
         }
 

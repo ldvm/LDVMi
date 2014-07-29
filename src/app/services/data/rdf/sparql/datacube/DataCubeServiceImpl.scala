@@ -1,7 +1,7 @@
 package services.data.rdf.sparql.datacube
 
 import com.hp.hpl.jena.query.Dataset
-import data.models.DataSource
+import data.models._
 import scaldi.{Injectable, Injector}
 import services.MD5
 import services.data.rdf.sparql.query.SparqlQuery
@@ -10,6 +10,10 @@ import services.data.rdf.sparql.datacube.extractor.{DataCubeValuesExtractor, Dat
 import services.data.rdf.sparql.datacube.query.{DataCubeValuesQuery, DataCubeDataStructuresQuery, DataCubeDatasetsQuery}
 
 import scala.collection.parallel
+import scala.slick.lifted.TableQuery
+import play.api.db.slick._
+import play.api.db.slick.Config.driver.simple._
+import play.api.libs.json.JsValue
 
 class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with Injectable {
 
@@ -24,17 +28,22 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
   }
 
   def getValues(dataSource: DataSource, uris: List[String]): Map[String, Seq[DataCubeComponentValue]] = {
-    uris.par.map{ uri =>
+    uris.par.map { uri =>
       uri -> sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
     }.toList.toMap
   }
 
-  def queryCube(dataSource: DataSource, queryData: DataCubeQueryData) : String = {
+  def queryCube(dataSource: DataSource, queryData: DataCubeQueryData): String = {
     ""
   }
 
-  def processCubeQuery(dataSource: DataSource, queryData: DataCubeQueryData): DataCubeQueryResult = {
+  def processCubeQuery(v: Visualization, dataSource: DataSource, queryData: DataCubeQueryData, jsonQueryData: JsValue)(implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
     val token = MD5.hash(queryData.toString)
+
+    val queries = TableQuery[VisualizationQueries]
+    queries.filter(_.token === token).delete
+    queries += VisualizationQuery(0, v.id, token, jsonQueryData.toString)
+
     val result = queryCube(dataSource, queryData)
     new DataCubeQueryResult(token)
   }

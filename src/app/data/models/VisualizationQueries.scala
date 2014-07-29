@@ -2,12 +2,14 @@ package data.models
 
 import play.api.db.slick.Config.driver.simple._
 
-case class VisualizationQuery(id: Long, visualizationId: Long, storedData: String)
+case class VisualizationQuery(id: Long, visualizationId: Long, token: String, storedData: String)
 
 class VisualizationQueries(tag: Tag) extends Table[VisualizationQuery](tag, "VISUALIZATION_QUERIES") {
   def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
 
   def data = column[String]("DATA", O.NotNull)
+
+  def token = column[String]("TOKEN", O.NotNull)
 
   def visualizationId = column[Long]("VISUALIZATION_ID")
 
@@ -15,7 +17,7 @@ class VisualizationQueries(tag: Tag) extends Table[VisualizationQuery](tag, "VIS
 
   def visualization = foreignKey("VISUALIZATION_QUERY_VISUALIZATION_FK", visualizationId, visualizations)(_.id)
 
-  def * = (id, visualizationId, data) <> (VisualizationQuery.tupled, VisualizationQuery.unapply _)
+  def * = (id, visualizationId, token, data) <> (VisualizationQuery.tupled, VisualizationQuery.unapply _)
 }
 
 object VisualizationQueries {

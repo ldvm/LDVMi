@@ -1,6 +1,7 @@
 package services.data.rdf.sparql.datacube
 
-import data.models.DataSource
+import data.models.{Visualization, DataSource}
+import play.api.libs.json.JsValue
 
 trait DataCubeService {
 
@@ -10,7 +11,7 @@ trait DataCubeService {
 
   def getValues(dataSource: DataSource, uris: List[String]): Map[String, Seq[DataCubeComponentValue]]
 
-  def processCubeQuery(dataSource: DataSource, queryData: DataCubeQueryData) : DataCubeQueryResult
+  def processCubeQuery(visualization: Visualization, dataSource: DataSource, queryData: DataCubeQueryData, queryDataJson: JsValue)(implicit rs: play.api.db.slick.Config.driver.simple.Session) : DataCubeQueryResult
 
   def queryCube(dataSource: DataSource, queryData: DataCubeQueryData) : String
 
