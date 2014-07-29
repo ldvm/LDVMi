@@ -33,19 +33,21 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     }.toList.toMap
   }
 
-  def queryCube(dataSource: DataSource, queryData: DataCubeQueryData): String = {
-    ""
+  def queryCube(dataSource: DataSource, queryData: DataCubeQueryData): Option[DataCube] = {
+    val slices = Map("x" -> Map(CubeKey("a", "b") -> Map(CubeKey("c") -> 2)))
+    Some(DataCube(2,1,slices))
   }
 
-  def processCubeQuery(v: Visualization, dataSource: DataSource, queryData: DataCubeQueryData, jsonQueryData: JsValue)(implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
+  def processCubeQuery(v: Visualization, dataSource: DataSource, queryData: DataCubeQueryData, jsonQueryData: JsValue)
+                      (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
     val token = MD5.hash(queryData.toString)
 
     val queries = TableQuery[VisualizationQueries]
     queries.filter(_.token === token).delete
     queries += VisualizationQuery(0, v.id, token, jsonQueryData.toString)
 
-    val result = queryCube(dataSource, queryData)
-    new DataCubeQueryResult(token)
+    val cube = queryCube(dataSource, queryData)
+    new DataCubeQueryResult(token, cube)
   }
 
   private def get(dataSource: DataSource, query: SparqlQuery): Dataset = {

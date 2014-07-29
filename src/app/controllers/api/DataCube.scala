@@ -17,6 +17,15 @@ import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 
+import scala.annotation.implicitNotFound
+import scala.collection._
+import scala.reflect.ClassTag
+
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.{ArrayNode, ObjectNode}
+
+import Json._
+
 
 import scaldi.{Injectable, Injector}
 import services.MD5
@@ -82,8 +91,18 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
   implicit val dataCubeComponentWrites = Json.writes[DataCubeComponent]
   implicit val dataCubeDataStructureWrites = Json.writes[DataCubeDataStructure]
   implicit val dataCubeComponentValueWrites = Json.writes[DataCubeComponentValue]
-  implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
 
+
+  implicit val dataCubeKeysWrites: Writes[CubeKey] = Writes {
+    (key: CubeKey) => JsArray(key.keys.map(JsString(_)))
+  }
+
+  implicit def mapWrites[V](implicit fmtv: Writes[V], ckw: Writes[CubeKey]): Writes[collection.immutable.Map[services.data.rdf.sparql.datacube.CubeKey, V]] = Writes[collection.immutable.Map[services.data.rdf.sparql.datacube.CubeKey, V]] { ts: collection.immutable.Map[services.data.rdf.sparql.datacube.CubeKey, V] =>
+    JsArray(ts.map { case (k, v) => (toJson(k)(ckw), toJson(v)(fmtv))}.toList.map(t => JsObject(Seq(("key", t._1), ("value", t._2)))))
+  }
+
+  implicit val dataCubeWrites = Json.writes[services.data.rdf.sparql.datacube.DataCube]
+  implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
 
   implicit val cubeQueryValueFilter: Reads[DataCubeQueryValueFilter] = (
     (JsPath \ "label").readNullable[String] and
