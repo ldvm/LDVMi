@@ -1,4 +1,4 @@
-define(['angular'], function (ng) {
+define(['angular', 'underscore'], function (ng, _) {
     'use strict';
 
     ng.module('dataCube.controllers', []).
@@ -16,6 +16,7 @@ define(['angular'], function (ng) {
                 $scope.datasets = [];
                 $scope.activeDSD = null;
                 $scope.language = "cs";
+                $scope.measuresSelectedCount = 0;
 
                 $scope.componentTypes = [
                     {name: "Dimension", key: "dimension", plural: "Dimensions"},
@@ -35,9 +36,6 @@ define(['angular'], function (ng) {
 
                 DataCubeService.getDataStructures({ visualizationId: $id }, function (data) {
                     $scope.dataStructures = data;
-                    if ($scope.dataStructures[0]) {
-                        $scope.switchDSD($scope.dataStructures[0]);
-                    }
                 });
 
                 $scope.switchDSD = function (dsd) {
@@ -62,7 +60,6 @@ define(['angular'], function (ng) {
 
                         pushUri(c.dimension);
                         pushUri(c.attribute);
-                        //pushUri(c.measure);
                     });
 
                     DataCubeService.getValues({ visualizationId: $id}, {uris: uris }, function (data) {
@@ -77,6 +74,87 @@ define(['angular'], function (ng) {
                     });
                 };
 
+                $scope.toggleMeasure = function (measureComponent) {
+
+                    measureComponent.isActive = !(measureComponent.isActive || false);
+
+                    var count = 0;
+                    if ($scope.activeDSD) {
+                        var activeMeasures = _.filter($scope.activeDSD.components, function (c) {
+                            return c.measure && c.isActive;
+                        });
+                        count = activeMeasures.length;
+                    }
+                    $scope.measuresSelectedCount = count;
+                    computeSlicing();
+                };
+
+                $scope.toggleDimensionValue = function (value) {
+                    value.isActive = !value.isActive;
+
+                    computeSlicing();
+                };
+
+                $scope.toggleDimensionSettings = function (uri) {
+                    if ($scope.settingsVisible == uri) {
+                        $scope.settingsVisible = "";
+                    } else {
+                        $scope.settingsVisible = uri;
+                    }
+                };
+
+                $scope.toggleValues = function (uri) {
+                    $scope.values[uri].forEach(function (v) {
+                        v.isActive = !v.isActive;
+                    });
+
+                    computeSlicing();
+                };
+
+                $scope.selectAllValues = function(uri){
+                    $scope.values[uri].forEach(function (v) {
+                        v.isActive = true;
+                    });
+
+                    computeSlicing();
+                };
+
+                $scope.deselectAllValues = function(uri){
+                    $scope.values[uri].forEach(function (v) {
+                        v.isActive = false;
+                    });
+
+                    computeSlicing();
+                };
+
+                function computeSlicing() {
+                    var dimensions = _.filter($scope.activeDSD.components, function (c) {
+                        return c.dimension;
+                    });
+                    dimensions.forEach(function (d) {
+                        var values = $scope.values[d.dimension.uri];
+                        var activeValues = _.where(values, {isActive: true});
+                        $scope.dimensionValuesActiveCount = $scope.dimensionValuesActiveCount || {};
+                        $scope.dimensionValuesActiveCount[d.dimension.uri] = activeValues.length;
+                    });
+
+                    var dimensionsWithMultipleCount = _.filter($scope.dimensionValuesActiveCount, function (c) {
+                        return c > 1;
+                    }).length;
+
+                    $scope.slicesSelected = false;
+
+                    if ($scope.measuresSelectedCount == 1) {
+                        $scope.slicesSelected = dimensionsWithMultipleCount >= 1;
+                    } else if ($scope.measuresSelectedCount > 1) {
+                        $scope.slicesSelected = dimensionsWithMultipleCount == 1;
+                    }
+
+                    $scope.slicesSelected &= _.every($scope.dimensionValuesActiveCount, function (c) {
+                        return c >= 1;
+                    });
+                }
+
                 function collectFilters() {
                     var filters = {
                         dsdUri: $scope.activeDSD.uri,
@@ -89,12 +167,13 @@ define(['angular'], function (ng) {
                         if (componentProperty && componentProperty.uri) {
                             var filter = {
                                 componentUri: componentProperty.uri,
+                                isActive: c.isActive || false,
                                 type: c.dimension ? "dimension" : (c.measure ? "measure" : "attribute"),
-                                values: ($scope.values[componentProperty.uri] || []).map(function(v){
+                                values: ($scope.values[componentProperty.uri] || []).map(function (v) {
                                     var r = {};
-                                    if(v.uri){
+                                    if (v.uri) {
                                         r.uri = v.uri;
-                                    }else{
+                                    } else {
                                         r.label = v.label;
                                     }
                                     r.isActive = v.isActive;

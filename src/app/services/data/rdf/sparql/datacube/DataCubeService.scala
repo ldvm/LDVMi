@@ -14,6 +14,4 @@ trait DataCubeService {
   def processCubeQuery(visualization: Visualization, dataSource: DataSource, queryData: DataCubeQueryData, queryDataJson: JsValue)
                       (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult
 
-  def queryCube(dataSource: DataSource, queryData: DataCubeQueryData): Option[DataCube]
-
 }

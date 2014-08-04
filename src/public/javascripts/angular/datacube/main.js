@@ -1,3 +1,3 @@
-require(['../../main'], function (common) {
+require(['../../main'], function (main) {
     require(['./bootstrap']);
 });

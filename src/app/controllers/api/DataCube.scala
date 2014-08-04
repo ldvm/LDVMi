@@ -91,15 +91,8 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
   implicit val dataCubeComponentWrites = Json.writes[DataCubeComponent]
   implicit val dataCubeDataStructureWrites = Json.writes[DataCubeDataStructure]
   implicit val dataCubeComponentValueWrites = Json.writes[DataCubeComponentValue]
-
-
-  implicit val dataCubeKeysWrites: Writes[CubeKey] = Writes {
-    (key: CubeKey) => JsArray(key.keys.map(JsString(_)))
-  }
-
-  implicit def mapWrites[V](implicit fmtv: Writes[V], ckw: Writes[CubeKey]): Writes[collection.immutable.Map[services.data.rdf.sparql.datacube.CubeKey, V]] = Writes[collection.immutable.Map[services.data.rdf.sparql.datacube.CubeKey, V]] { ts: collection.immutable.Map[services.data.rdf.sparql.datacube.CubeKey, V] =>
-    JsArray(ts.map { case (k, v) => (toJson(k)(ckw), toJson(v)(fmtv))}.toList.map(t => JsObject(Seq(("key", t._1), ("value", t._2)))))
-  }
+  implicit val dataCubeKeyWrites = Json.writes[DataCubeKey]
+  implicit val dataCubeCellWrites = Json.writes[DataCubeCell]
 
   implicit val dataCubeWrites = Json.writes[services.data.rdf.sparql.datacube.DataCube]
   implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
