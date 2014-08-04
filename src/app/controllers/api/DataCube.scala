@@ -36,10 +36,49 @@ import services.data.rdf.sparql.datacube._
 class DataCube(implicit inj: Injector) extends Controller with Injectable {
 
   val dataCubeService = inject[DataCubeService]
+  implicit val localizedLiteralWrites = Json.writes[LocalizedValue]
+  implicit val dataCubeDatasetWrites = Json.writes[DataCubeDataset]
+  implicit val dataCubeDimensionPropertyWrites = Json.writes[DataCubeDimensionProperty]
+  implicit val dataCubeMeasurePropertyWrites = Json.writes[DataCubeMeasureProperty]
+  implicit val dataCubeAttributePropertyWrites = Json.writes[DataCubeAttributeProperty]
+  implicit val dataCubeComponentWrites = Json.writes[DataCubeComponent]
+  implicit val dataCubeDataStructureWrites = Json.writes[DataCubeDataStructure]
+  implicit val dataCubeComponentValueWrites = Json.writes[DataCubeComponentValue]
+  implicit val dataCubeKeyWrites = Json.writes[DataCubeKey]
+  implicit val dataCubeCellWrites = Json.writes[DataCubeCell]
+  implicit val dataCubeWrites = Json.writes[services.data.rdf.sparql.datacube.DataCube]
+  implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
+  implicit val cubeQueryValueFilter: Reads[DataCubeQueryValueFilter] = (
+    (JsPath \ "label").readNullable[String] and
+      (JsPath \ "uri").readNullable[String] and
+      (JsPath \ "isActive").readNullable[Boolean]
+    )(DataCubeQueryValueFilter.apply _)
+  implicit val cubeQueryComponentFilter: Reads[DataCubeQueryComponentFilter] = (
+    (JsPath \ "componentUri").read[String] and
+      (JsPath \ "type").read[String] and
+      (JsPath \ "values").read[Seq[DataCubeQueryValueFilter]] and
+      (JsPath \ "isActive").readNullable[Boolean]
+    )(DataCubeQueryComponentFilter.apply _)
+  implicit val cubeQueryFiltersReads: Reads[DataCubeQueryFilter] = (
+    (JsPath \ "dsdUri").read[String] and
+      (JsPath \ "components").read[Seq[DataCubeQueryComponentFilter]]
+    )(DataCubeQueryFilter.apply _)
+  implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData(_))
 
   def dataStructures(id: Long) = DBAction { implicit rs =>
     _withVisualizationAndDataSource(id) { (v, d) =>
       Ok(Json.toJson(dataCubeService.getDataStructures(d)))
+    }
+  }
+
+  private def _withVisualizationAndDataSource(id: Long)
+    (func: (Visualization, DataSource) => Result)
+    (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
+
+    Visualizations.findByIdWithDataSource(id).map { case (visualization, datasource) =>
+      func(visualization, datasource)
+    }.getOrElse {
+      NotFound
     }
   }
 
@@ -53,15 +92,23 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
     }
   }
 
-  def queryCube(id: Long) = DBAction(parse.json) { implicit rs =>
+  def sliceCube(id: Long) = DBAction(parse.json) { implicit rs =>
     val json: JsValue = rs.request.body
+    _withVisualizationDataSourceAndCubeQuery(id, json) { case (v, d, q) =>
+      Ok(Json.toJson(dataCubeService.sliceCubeAndPersist(v, d, q, json)))
+    }
+  }
+
+  private def _withVisualizationDataSourceAndCubeQuery(id: Long, json: JsValue)
+    (func: (Visualization, DataSource, DataCubeQueryData) => Result)
+    (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
+
     json.validate[DataCubeQueryData] match {
       case s: JsSuccess[DataCubeQueryData] => {
 
         val queryData: DataCubeQueryData = s.get
         _withVisualizationAndDataSource(id) { (v, d) =>
-          val result = dataCubeService.processCubeQuery(v, d, queryData, json)
-          Ok(Json.toJson(result))
+          func(v, d, queryData)
         }
 
       }
@@ -70,51 +117,8 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
         error("Query not valid")
       }
     }
+
   }
-
-  private def _withVisualizationAndDataSource(id: Long)
-                                             (func: (Visualization, DataSource) => Result)
-                                             (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
-
-    Visualizations.findByIdWithDataSource(id).map { case (visualization, datasource) =>
-      func(visualization, datasource)
-    }.getOrElse {
-      NotFound
-    }
-  }
-
-  implicit val localizedLiteralWrites = Json.writes[LocalizedValue]
-  implicit val dataCubeDatasetWrites = Json.writes[DataCubeDataset]
-  implicit val dataCubeDimensionPropertyWrites = Json.writes[DataCubeDimensionProperty]
-  implicit val dataCubeMeasurePropertyWrites = Json.writes[DataCubeMeasureProperty]
-  implicit val dataCubeAttributePropertyWrites = Json.writes[DataCubeAttributeProperty]
-  implicit val dataCubeComponentWrites = Json.writes[DataCubeComponent]
-  implicit val dataCubeDataStructureWrites = Json.writes[DataCubeDataStructure]
-  implicit val dataCubeComponentValueWrites = Json.writes[DataCubeComponentValue]
-  implicit val dataCubeKeyWrites = Json.writes[DataCubeKey]
-  implicit val dataCubeCellWrites = Json.writes[DataCubeCell]
-
-  implicit val dataCubeWrites = Json.writes[services.data.rdf.sparql.datacube.DataCube]
-  implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
-
-  implicit val cubeQueryValueFilter: Reads[DataCubeQueryValueFilter] = (
-    (JsPath \ "label").readNullable[String] and
-      (JsPath \ "uri").readNullable[String] and
-      (JsPath \ "isActive").readNullable[Boolean]
-    )(DataCubeQueryValueFilter.apply _)
-
-  implicit val cubeQueryComponentFilter: Reads[DataCubeQueryComponentFilter] = (
-    (JsPath \ "componentUri").read[String] and
-      (JsPath \ "type").read[String] and
-      (JsPath \ "values").read[Seq[DataCubeQueryValueFilter]]
-    )(DataCubeQueryComponentFilter.apply _)
-
-  implicit val cubeQueryFiltersReads: Reads[DataCubeQueryFilter] = (
-    (JsPath \ "dsdUri").read[String] and
-      (JsPath \ "components").read[Seq[DataCubeQueryComponentFilter]]
-    )(DataCubeQueryFilter.apply _)
-
-  implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData(_))
 
   def datasets(id: Long) = DBAction { implicit rs =>
     _withVisualizationAndDataSource(id) { (v, d) =>

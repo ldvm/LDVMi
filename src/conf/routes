@@ -10,7 +10,7 @@ GET         /visualize/datacube                     @controllers.DataCube.visual
 GET         /api/datacube/datasets/:id              @controllers.api.DataCube.datasets(id: Long)
 GET         /api/datacube/datastructures/:id        @controllers.api.DataCube.dataStructures(id: Long)
 POST        /api/datacube/values/:id                @controllers.api.DataCube.values(id: Long)
-POST        /api/datacube/query-cube/:id            @controllers.api.DataCube.queryCube(id: Long)
+POST        /api/datacube/slices/:id                @controllers.api.DataCube.sliceCube(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                           controllers.Assets.versioned(path="/public", file)

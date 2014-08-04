@@ -68,10 +68,14 @@ define(['angular', 'underscore'], function (ng, _) {
                 };
 
                 $scope.refresh = function () {
-                    DataCubeService.queryCube({visualizationId: $id}, {filters: collectFilters()}, function (response) {
-                        $location.search({p: response.permalinkToken});
-                        $scope.permalink = window.location.href;
-                    });
+                    if ($scope.slicesSelected) {
+                        DataCubeService.slices({visualizationId: $id}, {filters: collectFilters()}, function (response) {
+                            $location.search({p: response.permalinkToken});
+                            $scope.permalink = window.location.href;
+                        });
+                    } else {
+                        alert("Not supported.");
+                    }
                 };
 
                 $scope.toggleMeasure = function (measureComponent) {
@@ -111,7 +115,7 @@ define(['angular', 'underscore'], function (ng, _) {
                     computeSlicing();
                 };
 
-                $scope.selectAllValues = function(uri){
+                $scope.selectAllValues = function (uri) {
                     $scope.values[uri].forEach(function (v) {
                         v.isActive = true;
                     });
@@ -119,7 +123,7 @@ define(['angular', 'underscore'], function (ng, _) {
                     computeSlicing();
                 };
 
-                $scope.deselectAllValues = function(uri){
+                $scope.deselectAllValues = function (uri) {
                     $scope.values[uri].forEach(function (v) {
                         v.isActive = false;
                     });
