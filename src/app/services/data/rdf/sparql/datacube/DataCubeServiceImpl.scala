@@ -1,4 +1,5 @@
 package services.data.rdf.sparql.datacube
+
 import data.models._
 import scaldi.{Injectable, Injector}
 import services.MD5
@@ -39,10 +40,13 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     new DataCubeQueryResult(token, sliceCube(dataSource, queryData))
   }
 
+  def combine[A](xs: Traversable[Traversable[A]]): Seq[Seq[A]] = xs.foldLeft(Seq(Seq.empty[A])) { (x, y) =>
+    for (a <- x.view; b <- y) yield a :+ b
+  }
+
   private def sliceCube(dataSource: DataSource, queryData: DataCubeQueryData): Option[DataCube] = {
 
-    def hasActiveValue(cf: DataCubeQueryComponentFilter): Boolean = cf.valuesSettings.exists(_.isActive.getOrElse(false))
-    val allDimensionsHaveActiveValue = queryData.filters.componentFilters.filter(_.componentType == "dimension").forall(hasActiveValue)
+    val allDimensionsHaveActiveValue = queryData.filters.componentFilters.filter(_.componentType == "dimension").forall(componentHasActiveValue)
 
     if (allDimensionsHaveActiveValue) {
 
@@ -51,26 +55,87 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
         sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeCellQuery(ObservationPattern(k)), new DataCubeCellExtractor(k))
       }.toList
 
-      //val slices = slice(cells, queryData)
-
-      //Some(DataCube(cells, slices))
-      None
+      Some(DataCube(cells, slice(cells, queryData)))
     } else {
       None
     }
   }
 
+  private def componentHasActiveValue(cf: DataCubeQueryComponentFilter): Boolean = {
+    cf.valuesSettings.exists(_.isActive.getOrElse(false))
+  }
+
+  private def slice(cells: Seq[DataCubeCell], queryData: DataCubeQueryData): Option[SlicesByKey] = {
+    val dimensions = queryData.filters.componentFilters.filter(_.componentType == "dimension")
+    val activeMeasures = queryData.filters.componentFilters.filter(_.componentType == "measure").filter(_.isActive.getOrElse(false))
+    val activeMeasuresCount = activeMeasures.size
+
+    if (dimensions.nonEmpty) {
+      val xAxis = dimensions.find(_.valuesSettings.count(_.isActive.getOrElse(false)) > 1).getOrElse(dimensions.head)
+
+      activeMeasuresCount match {
+        case 0 => None
+        case 1 => dimensionSlices(cells, queryData, xAxis, dimensions)
+        case _ if activeMeasuresCount > 1 => measuresSlices(cells, queryData, xAxis, activeMeasures)
+      }
+    } else {
+      None
+    }
+
+  }
+
+  private def dimensionSlices(cells: Seq[DataCubeCell], queryData: DataCubeQueryData, xAxis: DataCubeQueryComponentFilter, dimensions: Seq[DataCubeQueryComponentFilter]): Option[SlicesByKey] = {
+    val dimensionsWithMoreValues = dimensions.filter(_.valuesSettings.count(_.isActive.getOrElse(false)) > 1)
+    val measureUri = List(queryData.filters.componentFilters.find(c => c.componentType == "measure" && c.isActive.getOrElse(false)).head)
+    dimensionsWithMoreValues.size match {
+      case 0 => None
+      case 1 => measuresSlices(cells, queryData, dimensionsWithMoreValues.head, measureUri)
+      case 2 =>
+        val secondaryAxis = dimensionsWithMoreValues(1)
+        Some(xAxis.valuesSettings.filter(_.isActive.getOrElse(false)).map { value =>
+          val keyFilterTuple = getKeyAndFilter(xAxis, value)
+
+          measuresSlices(cells, queryData, secondaryAxis, measureUri, List(getKeyAndFilter(xAxis, value)._2)).map { slice =>
+            keyFilterTuple._1 -> slice.map(_._2).reduce(_ ++ _)
+          }
+        }.filter(_.isDefined)
+          .map(_.get)
+          .toMap
+        )
+      case _ => None
+    }
+  }
+
+  private def measuresSlices(cells: Seq[DataCubeCell], queryData: DataCubeQueryData, xAxis: DataCubeQueryComponentFilter, activeMeasures: Seq[DataCubeQueryComponentFilter], additionalConditions: Seq[DataCubeCell => Boolean] = List()): Option[SlicesByKey] = {
+    Some(activeMeasures.map { m =>
+      m.uri -> xAxis.valuesSettings.filter(_.isActive.getOrElse(false)).map { xValue =>
+
+        val keyFilterTuple = getKeyAndFilter(xAxis, xValue)
+        val allRules = additionalConditions ++ List(keyFilterTuple._2)
+
+        keyFilterTuple._1 -> cells.find(allRules.reduceLeft((a, b) => c => a(c) && b(c))).map(_.measureValues(m.uri))
+
+      }.toMap
+    }.toMap)
+  }
+
+  private def getKeyAndFilter(xAxis: DataCubeQueryComponentFilter, xValue: DataCubeQueryValueFilter): (String, DataCubeCell => Boolean) = {
+    (xValue.uri.getOrElse(xValue.label.get),
+      if (xValue.label.isDefined) {
+        c => c.key.dimensionLiteralKeys(xAxis.uri) == xValue.label.get
+      } else {
+        // (xValue.uri.isDefined)
+        c => c.key.dimensionUriKeys(xAxis.uri) == xValue.uri.get
+      })
+  }
+
   private def getCubeKeys(queryData: DataCubeQueryData): Seq[DataCubeKey] = {
-    val measures = queryData.filters.componentFilters.filter(_.componentType == "measure").filter(_.isActive.getOrElse(false)).map(_.uri)
+    val measures = queryData.filters.componentFilters.filter(_.componentType == "measure").map(_.uri)
 
     val activeOnly = queryData.filters.componentFilters.map { cf =>
       cf.valuesSettings.filter(_.isActive.getOrElse(false)).map(cf.uri -> _)
     }.filterNot(_.isEmpty)
 
     combine(activeOnly).map(DataCubeKey.create(_, measures))
-  }
-
-  def combine[A](xs: Traversable[Traversable[A]]): Seq[Seq[A]] = xs.foldLeft(Seq(Seq.empty[A])) { (x, y) =>
-    for (a <- x.view; b <- y) yield a :+ b
   }
 }

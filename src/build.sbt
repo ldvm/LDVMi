@@ -23,12 +23,15 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angular-ui" % "0.4.0-3",
   "org.webjars" % "angular-ui-bootstrap" % "0.11.0-2",
   "org.webjars" % "angular-loading-bar" % "0.4.3",
+  "org.webjars" % "underscorejs" % "1.6.0-3",
+  "org.scalaj" %% "scalaj-http" % "0.3.16",
+  "org.webjars" % "highcharts" % "4.0.3",
+  "org.webjars" % "highcharts-ng" % "0.0.6",
   "org.scaldi" % "scaldi-play_2.10" % "0.3.3",
   "org.apache.jena" % "jena" % "2.11.2",
   "org.apache.jena" % "jena-arq" % "2.11.2",
   "com.typesafe.play" %% "play-slick" % "0.7.0",
-  "com.newrelic.agent.java" % "newrelic-api" % "3.8.1",
-  "org.webjars" % "underscorejs" % "1.6.0-3"
+  "com.newrelic.agent.java" % "newrelic-api" % "3.8.1"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node

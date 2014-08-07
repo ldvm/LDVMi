@@ -20,7 +20,6 @@ abstract class JenaDatasetTransformer[D <: JenaLang] extends SparqlResultTransfo
       dataSet
     } catch {
       case e: org.apache.jena.riot.RiotException => {
-        println(data.stringValue.substring(0, 1000))
         Logger.error("Jena Riot loader failed", e)
         throw new IllegalArgumentException("Transformation failed, data format mismatch: " + data.stringValue.substring(0, Math.min(data.stringValue.length, 500)))
       }

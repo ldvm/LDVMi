@@ -24,6 +24,29 @@ define(['angular', 'underscore'], function (ng, _) {
                     {name: "Attribute", key: "attribute", plural: "Attributes"},
                 ];
 
+                $scope.highcharts = {
+                    options: {
+                        chart: {
+                            type: 'line',
+                            height: 650
+                        }
+                    },
+                    series: [
+                    ],
+                    title: {
+                        text: 'DataCube'
+                    },
+                    yAxis: {
+                        title: {
+                            text: ""
+                        }/*,
+                        currentMin: 0,
+                        currentMax: 100*/
+                    },
+                    loading: false
+                };
+
+
                 $scope.setLang = function (language) {
                     $scope.language = language;
                 };
@@ -72,6 +95,15 @@ define(['angular', 'underscore'], function (ng, _) {
                         DataCubeService.slices({visualizationId: $id}, {filters: collectFilters()}, function (response) {
                             $location.search({p: response.permalinkToken});
                             $scope.permalink = window.location.href;
+
+                            $scope.highcharts.series = [];
+                            $scope.highcharts.xAxis = {categories: []};
+
+                            if (response.cube && response.cube.slices) {
+                                for (var k in response.cube.slices) {
+                                    $scope.highcharts.series.push({name: k, data: _.values(response.cube.slices[k])});
+                                }
+                            }
                         });
                     } else {
                         alert("Not supported.");

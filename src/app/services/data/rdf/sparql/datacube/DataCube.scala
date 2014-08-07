@@ -4,7 +4,7 @@ case class DataCubeKey(dimensionUriKeys: Map[String, String], dimensionLiteralKe
 
 case class DataCubeCell(key: DataCubeKey, measureValues: Map[String, Int])
 
-case class DataCube(cells: Seq[DataCubeCell], slices: Option[Map[String, Seq[Map[String, Int]]]] = None)
+case class DataCube(cells: Seq[DataCubeCell], slices: Option[SlicesByKey] = None)
 
 object DataCubeKey {
   def create(rules: Seq[(String, DataCubeQueryValueFilter)], measureUris: Seq[String]): DataCubeKey = {

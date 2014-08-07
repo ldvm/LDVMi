@@ -8,7 +8,9 @@ define([
         'angular-route',
         'angular-ui',
         'ui.bootstrap',
-        'angular-loading-bar'
+        'angular-loading-bar',
+        'highcharts',
+        'highcharts-ng'
     ],
     function (ng) {
         'use strict';
@@ -21,6 +23,7 @@ define([
             'ngRoute',
             'ngResource',
             'ui.bootstrap',
+            'highcharts-ng',
             'angular-loading-bar'
         ]);
     });
