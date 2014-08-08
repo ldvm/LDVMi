@@ -17,6 +17,7 @@ define(['angular', 'underscore'], function (ng, _) {
                 $scope.activeDSD = null;
                 $scope.language = "cs";
                 $scope.measuresSelectedCount = 0;
+                $scope.chartVisible = true;
 
                 $scope.componentTypes = [
                     {name: "Dimension", key: "dimension", plural: "Dimensions"},
@@ -40,12 +41,24 @@ define(['angular', 'underscore'], function (ng, _) {
                         title: {
                             text: ""
                         }/*,
-                        currentMin: 0,
-                        currentMax: 100*/
+                         currentMin: 0,
+                         currentMax: 100*/
                     },
                     loading: false
                 };
 
+                $scope.labelsRegistry = {};
+
+                $scope.showMap = function(){ $scope.euMapVisible = false; $scope.mapVisible = true; $scope.chartVisible = false; };
+                $scope.showEuMap = function(){ $scope.euMapVisible = true; $scope.chartVisible = false; $scope.mapVisible = false; };
+                $scope.showChart = function(){ $scope.euMapVisible = false; $scope.mapVisible = false; $scope.chartVisible = true; };
+
+                $scope.switchChart = function (chartType, setUrl) {
+                    $scope.highcharts.options.chart.type = chartType;
+                    if (setUrl) {
+                        $location.search("chartType", chartType);
+                    }
+                };
 
                 $scope.setLang = function (language) {
                     $scope.language = language;
@@ -70,6 +83,28 @@ define(['angular', 'underscore'], function (ng, _) {
                     $scope.loadComponentsValues();
                 };
 
+                function fillLabelsRegistry() {
+                    $scope.activeDSD.components.forEach(function (c) {
+                        ["dimension", "attribute", "measure"].forEach(function (type) {
+                            if (c[type]) {
+                                $scope.labelsRegistry[c[type].uri] = c.label;
+
+                                if ($scope.values) {
+                                    var values = $scope.values[c[type].uri];
+                                    if (values) {
+                                        values.forEach(function (v) {
+                                            if (v.uri) {
+                                                $scope.labelsRegistry[v.uri] = v.label;
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        });
+                    });
+
+                }
+
                 $scope.loadComponentsValues = function () {
 
                     var uris = [];
@@ -87,8 +122,61 @@ define(['angular', 'underscore'], function (ng, _) {
 
                     DataCubeService.getValues({ visualizationId: $id}, {uris: uris }, function (data) {
                         $scope.values = data;
+                        fillLabelsRegistry();
                     });
                 };
+
+                function label(uri) {
+                    return $scope.labelsRegistry[uri] || uri;
+                }
+
+                function newChart() {
+                    $scope.highcharts.series = [];
+                    $scope.highcharts.xAxis = {categories: []};
+                    $scope._series = [];
+                    $scope._categories = {};
+                }
+
+                function addSeries(series) {
+                    $scope._series.push(series);
+
+                    ng.forEach(series.data, function (value, key) {
+                        var categoryLabel = $scope.labelsRegistry[key] || key;
+                        $scope._categories[categoryLabel] = 1;
+                    });
+                }
+
+                function pushDataToChart() {
+                    var sortedCategories = _.keys($scope._categories).sort();
+                    var categoriesCount = sortedCategories.length;
+
+                    var i = 0;
+                    sortedCategories.forEach(function (c) {
+                        $scope._categories[c] = i++;
+                    });
+
+                    $scope._series = $scope._series.map(function (series) {
+                        var formattedData = {};
+
+                        ng.forEach(series.data,function (value, key) {
+                            var categoryLabel = $scope.labelsRegistry[key] || key;
+                            formattedData[$scope._categories[categoryLabel]] = value;
+                        });
+
+                        var r = [];
+
+                        for (var l = 0; l < categoriesCount; ++l) {
+                            r.push(formattedData[l] || null);
+                        }
+
+                        return {name: series.name, data: r};
+                    });
+
+                    $scope._series = _.sortBy($scope._series, "name");
+
+                    $scope.highcharts.series = $scope._series;
+                    $scope.highcharts.xAxis.categories = sortedCategories;
+                }
 
                 $scope.refresh = function () {
                     if ($scope.slicesSelected) {
@@ -96,14 +184,15 @@ define(['angular', 'underscore'], function (ng, _) {
                             $location.search({p: response.permalinkToken});
                             $scope.permalink = window.location.href;
 
-                            $scope.highcharts.series = [];
-                            $scope.highcharts.xAxis = {categories: []};
+                            newChart();
 
                             if (response.cube && response.cube.slices) {
                                 for (var k in response.cube.slices) {
-                                    $scope.highcharts.series.push({name: k, data: _.values(response.cube.slices[k])});
+                                    addSeries({name: label(k), data: response.cube.slices[k]});
                                 }
                             }
+
+                            pushDataToChart();
                         });
                     } else {
                         alert("Not supported.");
