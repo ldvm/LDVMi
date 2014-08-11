@@ -1,6 +1,6 @@
 package controllers
 
-import data.models.{Visualization, DataSource, DataSources, Visualizations}
+import data.models._
 import play.api._
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
@@ -21,16 +21,17 @@ class Application(implicit inj: Injector) extends Controller with Injectable {
     val visualizations = TableQuery[Visualizations]
     val dataSources = TableQuery[DataSources]
 
-    visualizations.drop(1000)
-    dataSources.drop(1000)
+    TableQuery[VisualizationQueries].delete
+    visualizations.delete
+    dataSources.delete
 
-    dataSources += DataSource(1, "Payola Live", "http://live.payola.cz:8890/sparql", Some("http://3373037d-48fa-4023-91ed-37112448f0c0"))
-    visualizations += Visualization(1, "Population QB", 1)
+    val did1 = (dataSources returning dataSources.map(_.id)) += DataSource(1, "Payola Live", "http://live.payola.cz:8890/sparql", Some("http://3373037d-48fa-4023-91ed-37112448f0c0"))
+    val vid1 = (visualizations returning visualizations.map(_.id)) += Visualization(1, "Population QB", did1)
 
-    dataSources += DataSource(2, "Payola Live", "http://live.payola.cz:8890/sparql", Some("http://9db45e76-41e6-4aa3-a137-1536ffbd6aa2"))
-    visualizations += Visualization(2, "MFCR QB", 2)
+    val did2 = (dataSources returning dataSources.map(_.id)) += DataSource(2, "Payola Live", "http://live.payola.cz:8890/sparql", Some("http://9db45e76-41e6-4aa3-a137-1536ffbd6aa2"))
+    val vid2 = (visualizations returning visualizations.map(_.id)) += Visualization(2, "MFCR QB", did2)
 
-    Ok("")
+    Ok(vid1 + "::" + vid2)
 
   }
 
