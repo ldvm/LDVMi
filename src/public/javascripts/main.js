@@ -31,6 +31,10 @@
             "ngHighcharts": {
                 deps: ['angular'],
                 exports: 'angular'
+            },
+            "ui.bootstrap": {
+                deps: ['angular'],
+                exports: 'angular'
             }
         },
         paths: {
