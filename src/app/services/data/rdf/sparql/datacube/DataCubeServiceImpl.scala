@@ -108,14 +108,14 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
 
   private def measuresSlices(cells: Seq[DataCubeCell], queryData: DataCubeQueryData, xAxis: DataCubeQueryComponentFilter, activeMeasures: Seq[DataCubeQueryComponentFilter], additionalConditions: Seq[DataCubeCell => Boolean] = List()): Option[SlicesByKey] = {
     Some(activeMeasures.map { m =>
-      m.uri -> xAxis.valuesSettings.filter(_.isActive.getOrElse(false)).map { xValue =>
+      m.uri -> xAxis.valuesSettings.filter(_.isActive.getOrElse(false)).par.map { xValue =>
 
         val keyFilterTuple = getKeyAndFilter(xAxis, xValue)
         val allRules = additionalConditions ++ List(keyFilterTuple._2)
 
-        keyFilterTuple._1 -> cells.find(allRules.reduceLeft((a, b) => c => a(c) && b(c))).map(_.measureValues(m.uri))
+        keyFilterTuple._1 -> cells.par.find(allRules.reduceLeft((a, b) => c => a(c) && b(c))).map(_.measureValues(m.uri))
 
-      }.toMap
+      }.toList.toMap
     }.toMap)
   }
 
