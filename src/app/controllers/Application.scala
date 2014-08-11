@@ -24,6 +24,9 @@ class Application(implicit inj: Injector) extends Controller with Injectable {
     dataSources += DataSource(1, "Payola Live", "http://live.payola.cz:8890/sparql", Some("http://3373037d-48fa-4023-91ed-37112448f0c0"))
     visualizations += Visualization(1, "Population QB", 1)
 
+    dataSources += DataSource(2, "Payola Live", "http://live.payola.cz:8890/sparql", Some("http://9db45e76-41e6-4aa3-a137-1536ffbd6aa2"))
+    visualizations += Visualization(2, "MFCR QB", 2)
+
     Ok("")
 
   }
