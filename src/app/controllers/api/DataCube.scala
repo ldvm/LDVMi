@@ -71,17 +71,6 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
     }
   }
 
-  private def _withVisualizationAndDataSource(id: Long)
-    (func: (Visualization, DataSource) => Result)
-    (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
-
-    Visualizations.findByIdWithDataSource(id).map { case (visualization, datasource) =>
-      func(visualization, datasource)
-    }.getOrElse {
-      NotFound
-    }
-  }
-
   def values(id: Long) = DBAction(parse.json) { implicit rs =>
 
     val json: JsValue = rs.request.body
@@ -92,7 +81,7 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
     }
   }
 
-  def sliceCube(id: Long) = DBAction(parse.json) { implicit rs =>
+  def sliceCube(id: Long) = DBAction(parse.json(1024*1024*100)) { implicit rs =>
     val json: JsValue = rs.request.body
     _withVisualizationDataSourceAndCubeQuery(id, json) { case (v, d, q) =>
       Ok(Json.toJson(dataCubeService.sliceCubeAndPersist(v, d, q, json)))
@@ -120,9 +109,25 @@ class DataCube(implicit inj: Injector) extends Controller with Injectable {
 
   }
 
+  def queries(id: Long, permaLinkToken: String) = DBAction { implicit rs =>
+    //VisualizationQueries.findByIdAndToken(id, permaLinkToken)
+    Ok("")
+  }
+
   def datasets(id: Long) = DBAction { implicit rs =>
     _withVisualizationAndDataSource(id) { (v, d) =>
       Ok(Json.toJson(dataCubeService.getDatasets(d)))
+    }
+  }
+
+  private def _withVisualizationAndDataSource(id: Long)
+    (func: (Visualization, DataSource) => Result)
+    (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
+
+    Visualizations.findByIdWithDataSource(id).map { case (visualization, datasource) =>
+      func(visualization, datasource)
+    }.getOrElse {
+      NotFound
     }
   }
 

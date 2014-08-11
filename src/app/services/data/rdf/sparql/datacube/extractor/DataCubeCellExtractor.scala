@@ -21,7 +21,7 @@ class DataCubeCellExtractor(k: DataCubeKey) extends SparqlResultExtractor[DataCu
       val measureProperty = dataset.getDefaultModel.getProperty(uri)
       dataset.getDefaultModel.listObjectsOfProperty(measureProperty).map { o =>
         val value = if (o.isLiteral) {
-          o.asLiteral().getInt
+          o.asLiteral().getFloat
         } else {
           0
         }

@@ -7,9 +7,16 @@ define(['angular', 'underscore'], function (ng, _) {
             function ($scope, DataCubeService, $q, $location, $routeParams) {
 
                 var $id = $routeParams.id;
+                var $permaToken = $routeParams.p;
 
                 if (!$id) {
                     return;
+                }
+
+                if ($permaToken) {
+                    DataCubeService.getQuery({ visualizationId: $id, permalinkToken: $permaToken}, function (data) {
+
+                    });
                 }
 
                 $scope.dataStructures = [];
@@ -49,9 +56,21 @@ define(['angular', 'underscore'], function (ng, _) {
 
                 $scope.labelsRegistry = {};
 
-                $scope.showMap = function(){ $scope.euMapVisible = false; $scope.mapVisible = true; $scope.chartVisible = false; };
-                $scope.showEuMap = function(){ $scope.euMapVisible = true; $scope.chartVisible = false; $scope.mapVisible = false; };
-                $scope.showChart = function(){ $scope.euMapVisible = false; $scope.mapVisible = false; $scope.chartVisible = true; };
+                $scope.showMap = function () {
+                    $scope.euMapVisible = false;
+                    $scope.mapVisible = true;
+                    $scope.chartVisible = false;
+                };
+                $scope.showEuMap = function () {
+                    $scope.euMapVisible = true;
+                    $scope.chartVisible = false;
+                    $scope.mapVisible = false;
+                };
+                $scope.showChart = function () {
+                    $scope.euMapVisible = false;
+                    $scope.mapVisible = false;
+                    $scope.chartVisible = true;
+                };
 
                 $scope.switchChart = function (chartType, setUrl) {
                     $scope.highcharts.options.chart.type = chartType;
@@ -158,7 +177,7 @@ define(['angular', 'underscore'], function (ng, _) {
                     $scope._series = $scope._series.map(function (series) {
                         var formattedData = {};
 
-                        ng.forEach(series.data,function (value, key) {
+                        ng.forEach(series.data, function (value, key) {
                             var categoryLabel = $scope.labelsRegistry[key] || key;
                             formattedData[$scope._categories[categoryLabel]] = value;
                         });

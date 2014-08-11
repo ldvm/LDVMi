@@ -30,7 +30,7 @@ object Visualizations {
 
   def findByIdWithDataSource(id: Long)(implicit s: Session) : Option[(Visualization, DataSource)] = {
     (for {
-      (v, d) <- visualizations innerJoin dataSources on (_.dataSourceId === _.id)
+      (v, d) <- visualizations.filter(_.id === id) innerJoin dataSources on (_.dataSourceId === _.id)
     } yield (v, d)).list().headOption
   }
 
