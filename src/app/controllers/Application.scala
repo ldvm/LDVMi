@@ -21,6 +21,9 @@ class Application(implicit inj: Injector) extends Controller with Injectable {
     val visualizations = TableQuery[Visualizations]
     val dataSources = TableQuery[DataSources]
 
+    visualizations.drop(1000)
+    dataSources.drop(1000)
+
     dataSources += DataSource(1, "Payola Live", "http://live.payola.cz:8890/sparql", Some("http://3373037d-48fa-4023-91ed-37112448f0c0"))
     visualizations += Visualization(1, "Population QB", 1)
 
