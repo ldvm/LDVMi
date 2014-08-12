@@ -29,6 +29,10 @@ object VisualizationQueries {
     visualizationQueries.filter(_.id === id).firstOption
   }
 
+  def findByIdAndToken(id: Long, token: String)(implicit s: Session) : Option[VisualizationQuery] = {
+    visualizationQueries.filter(v => v.visualizationId === id && v.token === token).firstOption
+  }
+
   def findByIdWithVisualization(id: Long)(implicit s: Session) : Option[(VisualizationQuery, Visualization)] = {
     (for {
       (vq, v) <- visualizationQueries innerJoin visualizations on (_.visualizationId === _.id)

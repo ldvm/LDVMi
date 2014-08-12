@@ -13,18 +13,13 @@ define(['angular', 'underscore'], function (ng, _) {
                     return;
                 }
 
-                if ($permaToken) {
-                    DataCubeService.getQuery({ visualizationId: $id, permalinkToken: $permaToken}, function (data) {
-
-                    });
-                }
-
                 $scope.dataStructures = [];
                 $scope.datasets = [];
                 $scope.activeDSD = null;
                 $scope.language = "cs";
                 $scope.measuresSelectedCount = 0;
                 $scope.chartVisible = true;
+                $scope.init = true;
 
                 $scope.componentTypes = [
                     {name: "Dimension", key: "dimension", plural: "Dimensions"},
@@ -79,6 +74,16 @@ define(['angular', 'underscore'], function (ng, _) {
                     }
                 };
 
+                $scope.switchLinear = function () {
+                    $scope.highcharts.options.yAxis = $scope.highcharts.options.yAxis || {};
+                    $scope.highcharts.options.yAxis.type = 'linear';
+                };
+
+                $scope.switchLog = function () {
+                    $scope.highcharts.options.yAxis = $scope.highcharts.options.yAxis || {};
+                    $scope.highcharts.options.yAxis.type = 'logarithmic';
+                };
+
                 $scope.setLang = function (language) {
                     $scope.language = language;
                 };
@@ -91,15 +96,21 @@ define(['angular', 'underscore'], function (ng, _) {
 
                 DataCubeService.getDataStructures({ visualizationId: $id }, function (data) {
                     $scope.dataStructures = data;
+
+                    if ($scope.init && $permaToken) {
+                        DataCubeService.getQuery({ visualizationId: $id, permalinkToken: $permaToken}, applyFilters);
+                    }
+
+                    $scope.init = false;
                 });
 
-                $scope.switchDSD = function (dsd) {
+                $scope.switchDSD = function (dsd, callback) {
                     $scope.dataStructures.forEach(function (ds) {
                         ds.isActive = false;
                     });
                     dsd.isActive = true;
                     $scope.activeDSD = dsd;
-                    $scope.loadComponentsValues();
+                    $scope.loadComponentsValues(callback);
                 };
 
                 function fillLabelsRegistry() {
@@ -124,7 +135,7 @@ define(['angular', 'underscore'], function (ng, _) {
 
                 }
 
-                $scope.loadComponentsValues = function () {
+                $scope.loadComponentsValues = function (callback) {
 
                     var uris = [];
                     $scope.activeDSD.components.forEach(function (c) {
@@ -142,6 +153,10 @@ define(['angular', 'underscore'], function (ng, _) {
                     DataCubeService.getValues({ visualizationId: $id}, {uris: uris }, function (data) {
                         $scope.values = data;
                         fillLabelsRegistry();
+
+                        if (callback) {
+                            callback();
+                        }
                     });
                 };
 
@@ -233,8 +248,12 @@ define(['angular', 'underscore'], function (ng, _) {
                     computeSlicing();
                 };
 
-                $scope.toggleDimensionValue = function (value) {
-                    value.isActive = !value.isActive;
+                $scope.toggleDimensionValue = function (value, override) {
+                    if (typeof (override) !== "undefined") {
+                        value.isActive = override || false;
+                    } else {
+                        value.isActive = !value.isActive;
+                    }
 
                     computeSlicing();
                 };
@@ -333,6 +352,62 @@ define(['angular', 'underscore'], function (ng, _) {
 
                     return filters;
                 }
+
+                function applyFilters(data) {
+                    var filters = data.filters;
+                    var dsdUri = filters.dsdUri;
+
+                    if (dsdUri) {
+                        var dsd = _.find($scope.dataStructures, function (d) {
+                            return d.uri == dsdUri;
+                        });
+                        if (dsd) {
+                            $scope.switchDSD(dsd, function () {
+                                applyDimensionFilters(data);
+                            });
+                        }
+                    }
+                }
+
+                function applyDimensionFilters(data) {
+                    var components = data.filters.components;
+                    if (components) {
+                        angular.forEach(components, function (c) {
+                            if (c.type == "measure" && c.isActive) {
+                                var measure = _.find($scope.activeDSD.components, function (adc) {
+                                    return adc.measure && adc.measure.uri == c.componentUri;
+                                });
+
+                                if (measure) {
+                                    $scope.toggleMeasure(measure);
+                                }
+                            } else {
+                                var values = c.values;
+                                if (values) {
+                                    values.forEach(function (fValue) {
+                                        if (fValue.isActive) {
+
+                                            var cValue = _.find($scope.values[c.componentUri], function (cv) {
+                                                if (typeof (cv.uri) !== "undefined") {
+                                                    return cv.uri == fValue.uri;
+                                                } else if (typeof (cv.label) !== "undefined") {
+                                                    return cv.label == fValue.label;
+                                                }
+                                                return false;
+                                            });
+
+                                            if (cValue) {
+                                                $scope.toggleDimensionValue(cValue, true);
+                                            }
+                                        }
+                                    });
+                                }
+
+                            }
+                        });
+
+                        $scope.refresh();
+                    }
+                }
             }])
-    ;
 });
