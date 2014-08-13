@@ -8,6 +8,9 @@ define(['angular', 'underscore'], function (ng, _) {
 
                 var $id = $routeParams.id;
                 var $permaToken = $routeParams.p;
+                var $view = $routeParams.view;
+                var $chartType = $routeParams.chartType;
+                var $isPolar = $routeParams.isPolar === true;
 
                 if (!$id) {
                     return;
@@ -74,6 +77,13 @@ define(['angular', 'underscore'], function (ng, _) {
                     }
                 };
 
+                $scope.switchPolar = function (isPolar, setUrl) {
+                    $scope.highcharts.options.chart.polar = isPolar === true;
+                    if (setUrl) {
+                        $location.search("isPolar", isPolar === true);
+                    }
+                };
+
                 $scope.switchLinear = function () {
                     $scope.highcharts.options.yAxis = $scope.highcharts.options.yAxis || {};
                     $scope.highcharts.options.yAxis.type = 'linear';
@@ -87,6 +97,22 @@ define(['angular', 'underscore'], function (ng, _) {
                 $scope.setLang = function (language) {
                     $scope.language = language;
                 };
+
+                /******************/
+
+
+                if ($view == "chart") {
+                    $scope.showChart();
+                    if ($chartType) {
+                        $scope.switchChart($chartType);
+                    }
+                    if ($isPolar) {
+                        $scope.switchPolar(true);
+                    }
+                }
+
+                /****************/
+
 
                 $scope.availableLanguages = ["cs", "en"];
 
@@ -214,8 +240,18 @@ define(['angular', 'underscore'], function (ng, _) {
 
                 $scope.refresh = function () {
                     if ($scope.slicesSelected) {
+
+                        var search = {};
+                        if ($scope.chartVisible) {
+                            search.view = "chart";
+                            search.chartType = $scope.highcharts.options.chart.type;
+                            search.isPolar = $scope.highcharts.options.chart.polar === true;
+                        }
+
+
                         DataCubeService.slices({visualizationId: $id}, {filters: collectFilters()}, function (response) {
-                            $location.search({p: response.permalinkToken});
+                            search.p = response.permalinkToken;
+                            $location.search(search);
                             $scope.permalink = window.location.href;
 
                             newChart();
