@@ -11,7 +11,8 @@ define(['angular'], function (ng) {
                 getValues: {url: '/api/datacube/values/:visualizationId', method: 'post'},
                 queryCube: {url: '/api/datacube/query-cube/:visualizationId', method: 'post'},
                 slices: {url: '/api/datacube/slices/:visualizationId', method: 'post'},
-                getQuery: {url: '/api/visualization/queries/:visualizationId', method: 'get'}
+                getQuery: {url: '/api/visualization/queries/:visualizationId', method: 'get'},
+                getCached: {url: '/api/visualization/cached/:visualizationId/:token', method: 'get'}
             });
         }]);
 });

@@ -43,4 +43,6 @@ package object api {
       (JsPath \ "components").read[Seq[DataCubeQueryComponentFilter]]
     )(DataCubeQueryFilter.apply _)
   implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData(_))
+
+  def jsonCacheKey(id: Long, token: String) = "/visualizations/" + id + "/" + token
 }

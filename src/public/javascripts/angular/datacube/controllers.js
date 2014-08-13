@@ -3,8 +3,8 @@ define(['angular', 'underscore'], function (ng, _) {
 
     ng.module('dataCube.controllers', []).
         controller('DataCube',
-        ['$scope', 'DataCubeService', '$q', '$location', '$routeParams',
-            function ($scope, DataCubeService, $q, $location, $routeParams) {
+        ['$scope', 'DataCubeService', '$q', '$location', '$routeParams', '$timeout',
+            function ($scope, DataCubeService, $q, $location, $routeParams, $timeout) {
 
                 var $id = $routeParams.id;
                 var $permaToken = $routeParams.p;
@@ -124,7 +124,17 @@ define(['angular', 'underscore'], function (ng, _) {
                     $scope.dataStructures = data;
 
                     if ($scope.init && $permaToken) {
-                        DataCubeService.getQuery({ visualizationId: $id, permalinkToken: $permaToken}, applyFilters);
+                        var promise = DataCubeService.getQuery({ visualizationId: $id, permalinkToken: $permaToken});
+                        DataCubeService.getCached({visualizationId: $id, token: $permaToken}, function (response) {
+                            if (response.error) {
+                                promise.$promise.then(function (data) {
+                                    applyFilters(data, $scope.refresh);
+                                });
+                            } else {
+                                promise.$promise.then(applyFilters);
+                                queryResultsLoaded(response, $location.search());
+                            }
+                        });
                     }
 
                     $scope.init = false;
@@ -248,26 +258,31 @@ define(['angular', 'underscore'], function (ng, _) {
                             search.isPolar = $scope.highcharts.options.chart.polar === true;
                         }
 
-
                         DataCubeService.slices({visualizationId: $id}, {filters: collectFilters()}, function (response) {
-                            search.p = response.permalinkToken;
-                            $location.search(search);
-                            $scope.permalink = window.location.href;
-
-                            newChart();
-
-                            if (response.cube && response.cube.slices) {
-                                for (var k in response.cube.slices) {
-                                    addSeries({name: label(k), data: response.cube.slices[k]});
-                                }
-                            }
-
-                            pushDataToChart();
+                            queryResultsLoaded(response, search);
                         });
                     } else {
                         alert("Not supported.");
                     }
                 };
+
+                function queryResultsLoaded(response, search) {
+                    search.p = response.permalinkToken;
+                    $location.search(search);
+                    $timeout(function () {
+                        $scope.permalink = window.location.href;
+                    });
+
+                    newChart();
+
+                    if (response.cube && response.cube.slices) {
+                        for (var k in response.cube.slices) {
+                            addSeries({name: label(k), data: response.cube.slices[k]});
+                        }
+                    }
+
+                    pushDataToChart();
+                }
 
                 $scope.toggleMeasure = function (measureComponent) {
 
@@ -389,7 +404,7 @@ define(['angular', 'underscore'], function (ng, _) {
                     return filters;
                 }
 
-                function applyFilters(data) {
+                function applyFilters(data, callback) {
                     var filters = data.filters;
                     var dsdUri = filters.dsdUri;
 
@@ -399,13 +414,13 @@ define(['angular', 'underscore'], function (ng, _) {
                         });
                         if (dsd) {
                             $scope.switchDSD(dsd, function () {
-                                applyDimensionFilters(data);
+                                applyDimensionFilters(data, callback);
                             });
                         }
                     }
                 }
 
-                function applyDimensionFilters(data) {
+                function applyDimensionFilters(data, callback) {
                     var components = data.filters.components;
                     if (components) {
                         angular.forEach(components, function (c) {
@@ -442,7 +457,9 @@ define(['angular', 'underscore'], function (ng, _) {
                             }
                         });
 
-                        $scope.refresh();
+                        if (callback) {
+                            callback();
+                        }
                     }
                 }
             }])
