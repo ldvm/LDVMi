@@ -1,7 +1,15 @@
 import play.api._
-import services.RdfModule
+import play.api.mvc.WithFilters
+import play.filters.gzip.GzipFilter
 import scaldi.play.ScaldiSupport
+import services.RdfModule
 
-object Global extends GlobalSettings with ScaldiSupport {
+object Global extends WithFilters(
+  new GzipFilter(
+    shouldGzip = (request, response) => response.headers.get("Content-Type").exists(
+      t => t.startsWith("text/html") || t.startsWith("application/json")
+    )
+  )
+) with ScaldiSupport with GlobalSettings {
   def applicationModule = new RdfModule :: new WebModule
 }

@@ -14,6 +14,7 @@ libraryDependencies ++= Seq(
   anorm,
   cache,
   ws,
+  filters,
   "com.typesafe.slick" %% "slick" % "2.0.2",
   "org.webjars" %% "webjars-play" % "2.3.0",
   "org.webjars" % "angularjs" % "1.2.18",
