@@ -1,21 +1,18 @@
 package services.data.http
 
-import java.io.IOException
-
 import services.data.StringRetriever
 
-import scala.io.Source
+import scalaj.http.{Http, HttpOptions}
 
-class HttpGetStringRetriever(val url: String, val accept: String = "", val encoding: String = "UTF-8") extends StringRetriever {
+class HttpGetStringRetriever(val url: String, val params: List[(String, String)], val accept: String = "", val encoding: String = "UTF-8") extends StringRetriever {
 
   def retrieve(): Option[String] = {
-    val connection = new java.net.URL(url).openConnection()
-    connection.setRequestProperty("Accept", accept)
+    val queryObj = Http.get(url).option(HttpOptions.readTimeout(Int.MaxValue)).params(params)
+      //.header("Accept-Encoding", "compress, gzip")
+      .header("Accept", accept)
 
-    val inputStream = connection.getInputStream
-    val result = Some(Source.fromInputStream(inputStream, encoding).mkString)
+    println(queryObj.getUrl)
 
-    inputStream.close()
-    result
+    Some (queryObj.asString)
   }
 }

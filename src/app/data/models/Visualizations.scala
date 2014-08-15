@@ -1,22 +1,25 @@
 package data.models
 
-import data.models.DataSource
 import play.api.db.slick.Config.driver.simple._
 
-case class Visualization(id: Long, name: String, dataSourceId: Long)
+case class Visualization(id: Long, name: String, dataSourceId: Long, dsdDataSourceId: Long)
 
 class Visualizations(tag: Tag) extends Table[Visualization](tag, "VISUALIZATIONS") {
+  val dataSources = TableQuery[DataSources]
+
+  def dataSource = foreignKey("VISUALIZATION_DATASOURCE_FK", dataSourceId, dataSources)(_.id)
+
+  def dsdDataSource = foreignKey("VISUALIZATION_DSD_DATASOURCE_FK", dsdDataSourceId, dataSources)(_.id)
+
+  def dsdDataSourceId = column[Long]("DSD_DATASOURCE_ID")
+
+  def * = (id, name, dataSourceId, dsdDataSourceId) <>(Visualization.tupled, Visualization.unapply _)
+
   def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
 
   def name = column[String]("NAME", O.NotNull)
 
   def dataSourceId = column[Long]("DATASOURCE_ID")
-
-  val dataSources = TableQuery[DataSources]
-
-  def dataSource = foreignKey("VISUALIZATION_DATASOURCE_FK", dataSourceId, dataSources)(_.id)
-
-  def * = (id, name, dataSourceId) <> (Visualization.tupled, Visualization.unapply _)
 }
 
 object Visualizations {
@@ -28,10 +31,10 @@ object Visualizations {
     visualizations.filter(_.id === id).firstOption
   }
 
-  def findByIdWithDataSource(id: Long)(implicit s: Session) : Option[(Visualization, DataSource)] = {
+  def findByIdWithDataSource(id: Long)(implicit s: Session): Option[(Visualization, DataSource, DataSource)] = {
     (for {
-      (v, d) <- visualizations.filter(_.id === id) innerJoin dataSources on (_.dataSourceId === _.id)
-    } yield (v, d)).list().headOption
+      ((v, d), d2) <- visualizations.filter(_.id === id) innerJoin dataSources on (_.dataSourceId === _.id) innerJoin dataSources on (_._1.dsdDataSourceId === _.id)
+    } yield (v, d, d2)).list().headOption
   }
 
 }

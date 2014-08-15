@@ -3,7 +3,7 @@ package services.data.rdf.sparql.datacube.query
 import services.data.rdf.sparql.query.SparqlQuery
 
 
-class DataCubeValuesQuery(uri: String) extends SparqlQuery {
+class DataCubeValuesQuery(val uri: String) extends SparqlQuery {
 
   def get: String =
     """

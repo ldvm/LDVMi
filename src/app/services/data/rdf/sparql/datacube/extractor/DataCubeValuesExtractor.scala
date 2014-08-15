@@ -15,6 +15,8 @@ class DataCubeValuesExtractor extends SparqlResultExtractor[DataCubeValuesQuery,
 
   def extract(data: SparqlResult[JenaLangTtl]) : Seq[DataCubeComponentValue] = {
 
+    println("===============================")
+
     val results = transformer.transform(data)
 
     results.map(_.solutions.map{ s =>
