@@ -1,6 +1,7 @@
 package services.data.rdf.sparql.datacube
 
 import data.models._
+import play.api.libs.iteratee.Enumerator
 import scaldi.{Injectable, Injector}
 import services.MD5
 import services.data.rdf.sparql.SparqlEndpointService
@@ -23,10 +24,10 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDataStructuresQuery, new DataCubeDataStructuresExtractor)
   }
 
-  def getValues(dataSource: DataSource, uris: List[String]): Map[String, Seq[DataCubeComponentValue]] = {
-    uris.par.map { uri =>
-      uri -> sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
-    }.toList.toMap
+  def getValues(dataSource: DataSource, uris: List[String]): Map[String, Enumerator[Option[DataCubeComponentValue]]] = {
+    uris.reverse.map { uri =>
+      uri -> sparqlEndpointService.getSelectQueryResult(dataSource, new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
+    }.toMap
   }
 
   def sliceCubeAndPersist(v: Visualization, dataSource: DataSource, queryData: DataCubeQueryData, jsonQueryData: JsValue)
@@ -108,12 +109,14 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
 
   private def measuresSlices(cells: Seq[DataCubeCell], queryData: DataCubeQueryData, xAxis: DataCubeQueryComponentFilter, activeMeasures: Seq[DataCubeQueryComponentFilter], additionalConditions: Seq[DataCubeCell => Boolean] = List()): Option[SlicesByKey] = {
     Some(activeMeasures.map { m =>
-      m.uri -> xAxis.valuesSettings.filter(_.isActive.getOrElse(false)).par.map { xValue =>
+      val activeValues = xAxis.valuesSettings.filter(_.isActive.getOrElse(false))
+      m.uri -> activeValues.par.map { xValue =>
 
         val keyFilterTuple = getKeyAndFilter(xAxis, xValue)
         val allRules = additionalConditions ++ List(keyFilterTuple._2)
+        val matchingCells = cells.find(allRules.reduceLeft((a, b) => c => a(c) && b(c)))
 
-        keyFilterTuple._1 -> cells.par.find(allRules.reduceLeft((a, b) => c => a(c) && b(c))).map(_.measureValues(m.uri))
+        keyFilterTuple._1 -> matchingCells.map(_.measureValues(m.uri)).flatten
 
       }.toList.toMap
     }.toMap)
@@ -130,7 +133,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
   }
 
   private def getCubeKeys(queryData: DataCubeQueryData): Seq[DataCubeKey] = {
-    val measures = queryData.filters.componentFilters.filter(_.componentType == "measure").map(_.uri)
+    val measures = queryData.filters.componentFilters.filter(m => m.componentType == "measure" && m.isActive.getOrElse(false)).map(_.uri)
 
     val activeOnly = queryData.filters.componentFilters.map { cf =>
       cf.valuesSettings.filter(_.isActive.getOrElse(false)).map(cf.uri -> _)

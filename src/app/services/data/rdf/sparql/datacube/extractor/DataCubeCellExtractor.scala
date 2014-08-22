@@ -19,16 +19,12 @@ class DataCubeCellExtractor(k: DataCubeKey) extends SparqlResultExtractor[DataCu
     val dataset = transformer.transform(data)
     val values = k.measureUris.map { uri =>
       val measureProperty = dataset.getDefaultModel.getProperty(uri)
-      dataset.getDefaultModel.listObjectsOfProperty(measureProperty).map { o =>
-        val value = if (o.isLiteral) {
-          o.asLiteral().getFloat
-        } else {
-          0
-        }
-        uri -> value
+      val measureNodes = dataset.getDefaultModel.listObjectsOfProperty(measureProperty)
+      uri -> measureNodes.collectFirst {
+        case o if o.isLiteral => o.asLiteral().getFloat
       }
     }
-    new DataCubeCell(k, values.flatten.toMap)
+    new DataCubeCell(k, values.toMap)
   }
 
   override def getLang: JenaLangTtl = transformer.getLang

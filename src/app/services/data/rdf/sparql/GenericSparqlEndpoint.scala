@@ -4,15 +4,15 @@ import java.io.IOException
 import data.models.DataSource
 
 import services.data.http.{HttpPostStringRetriever, HttpGetStringRetriever}
-import services.data.rdf.sparql.jena.JenaLang
+import services.data.rdf.sparql.jena.{SparqlResultLang, JenaLang}
 import services.data.rdf.sparql.query.SparqlQuery
 import scalaj.http.HttpException
 
 import scala.reflect.ClassTag
 
-class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
+class GenericSparqlEndpoint(val endpointURL: String, val namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
 
-  def executeQuery[D <: JenaLang](query: SparqlQuery, lang: D): Option[SparqlResult[D]] = {
+  def executeQuery[D <: SparqlResultLang](query: SparqlQuery, lang: D): Option[SparqlResult[D]] = {
     try {
       val result = new HttpPostStringRetriever(queryUrl(query), params(query), lang.acceptType).retrieve()
       result.map(wrapResult[D])
@@ -25,7 +25,7 @@ class GenericSparqlEndpoint(endpointURL: String, namedGraphs: Seq[String] = List
     }
   }
 
-  private def wrapResult[D <: JenaLang](data: String): SparqlResult[D] = {
+  private def wrapResult[D <: SparqlResultLang](data: String): SparqlResult[D] = {
     new SparqlResult[D](data)
   }
 

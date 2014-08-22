@@ -1,24 +1,35 @@
 package services.data.rdf.sparql
 
-import org.apache.jena.riot.Lang
-import scaldi.Injector
+import com.hp.hpl.jena.query.{QueryExecution, QueryExecutionFactory}
 import data.models.DataSource
-import services.data.rdf.sparql.extractor.SparqlResultExtractor
-import services.data.rdf.sparql.jena.{JenaLangRdfXml, JenaLang}
+import scaldi.Injector
+import services.data.rdf.sparql.extractor.{QueryExecutionResultExtractor, SparqlResultExtractor}
+import services.data.rdf.sparql.jena.{QueryExecutionLang, JenaLangRdfXml, SelectLang, SparqlResultLang}
 import services.data.rdf.sparql.query.SparqlQuery
 import services.data.rdf.sparql.transformer.RdfXmlJenaModelTransformer
+import scala.collection.JavaConversions._
 
 class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointService {
 
-  def getSparqlQueryResult[Q <: SparqlQuery, D <: JenaLang, R](dataSource: DataSource, query: Q, extractor: SparqlResultExtractor[Q, D, R]): R = {
+  def getSparqlQueryResult[Q <: SparqlQuery, D <: SparqlResultLang, R](dataSource: DataSource, query: Q, extractor: SparqlResultExtractor[Q, D, R]): R = {
     executeQuery[D](dataSource, query, extractor.getLang).map { data =>
-      extractor.extract(data)}.getOrElse {
+      extractor.extract(data)
+    }.getOrElse {
       throw new Exception
     }
   }
 
-  def executeQuery[D <: JenaLang](dataSource: DataSource, query: SparqlQuery, lang: D): Option[SparqlResult[D]] = {
+  private def executeQuery[D <: SparqlResultLang](dataSource: DataSource, query: SparqlQuery, lang: D): Option[SparqlResult[D]] = {
     GenericSparqlEndpoint(dataSource).executeQuery[D](query, lang)
+  }
+
+  def getSelectQueryResult[Q <: SparqlQuery, R](dataSource: DataSource, query: Q, extractor: QueryExecutionResultExtractor[Q, R]): R = {
+    extractor.extract(executeJena(dataSource, query))
+  }
+
+  private def executeJena(dataSource: DataSource, query: SparqlQuery): QueryExecution = {
+    val sparqlEndpoint = GenericSparqlEndpoint(dataSource)
+    QueryExecutionFactory.sparqlService(sparqlEndpoint.endpointURL, query.get, sparqlEndpoint.namedGraphs, List())
   }
 
   def query(endpoint: SparqlEndpoint, query: SparqlQuery): com.hp.hpl.jena.query.Dataset = {

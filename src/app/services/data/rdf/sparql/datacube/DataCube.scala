@@ -2,7 +2,7 @@ package services.data.rdf.sparql.datacube
 
 case class DataCubeKey(dimensionUriKeys: Map[String, String], dimensionLiteralKeys: Map[String, String], measureUris: Seq[String])
 
-case class DataCubeCell(key: DataCubeKey, measureValues: Map[String, Float])
+case class DataCubeCell(key: DataCubeKey, measureValues: Map[String, Option[Float]])
 
 case class DataCube(cells: Seq[DataCubeCell], slices: Option[SlicesByKey] = None)
 

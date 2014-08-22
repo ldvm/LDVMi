@@ -1,40 +1,54 @@
 package services.data.rdf.sparql.datacube.extractor
 
-import com.hp.hpl.jena.rdf.model.ModelFactory
-import services.data.rdf.sparql.SparqlResult
+import com.hp.hpl.jena.query.{QueryExecution, QuerySolution}
+import play.api.libs.iteratee.{Enumeratee, Enumerator}
 import services.data.rdf.sparql.datacube.DataCubeComponentValue
 import services.data.rdf.sparql.datacube.query.DataCubeValuesQuery
-import services.data.rdf.sparql.extractor.SparqlResultExtractor
-import services.data.rdf.sparql.jena.{JenaLangTtl, JenaLangRdfXml}
-import services.data.rdf.sparql.transformer.{JenaSparqlSelectResultTransformer, TtlJenaModelTransformer, RdfXmlJenaModelTransformer}
+import services.data.rdf.sparql.extractor.QueryExecutionResultExtractor
 
-class DataCubeValuesExtractor extends SparqlResultExtractor[DataCubeValuesQuery, JenaLangTtl, Seq[DataCubeComponentValue]] {
+import scala.collection.JavaConversions._
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  val transformer = new JenaSparqlSelectResultTransformer
-  lazy val model = ModelFactory.createDefaultModel()
 
-  def extract(data: SparqlResult[JenaLangTtl]) : Seq[DataCubeComponentValue] = {
+class DataCubeValuesExtractor extends QueryExecutionResultExtractor[DataCubeValuesQuery, Enumerator[Option[DataCubeComponentValue]]] {
 
-    println("===============================")
+  def extract(data: QueryExecution): Enumerator[Option[DataCubeComponentValue]] = {
 
-    val results = transformer.transform(data)
+    val enumerator = Enumerator.enumerate(data.execSelect().asInstanceOf[java.util.Iterator[QuerySolution]])
+    enumerator.onDoneEnumerating(() => data.close())
 
-    results.map(_.solutions.map{ s =>
+    enumerator through Enumeratee.map { qs =>
 
-      val labels = List(
-        s.bindings.get(DataCubeValuesQuery.VALUE_PREFLABEL_VARIABLE),
-        s.bindings.get(DataCubeValuesQuery.VALUE_LABEL_VARIABLE),
-        s.bindings.get(DataCubeValuesQuery.VALUE_NOTION_VARIABLE)
-      )
+      if (qs.contains(DataCubeValuesQuery.VALUE_PROPERTY_VARIABLE)) {
+        val node = qs.get(DataCubeValuesQuery.VALUE_PROPERTY_VARIABLE)
 
-      val label = labels.find(_.isDefined).map(_.get.toString)
+        if (node.isResource) {
+          val resource = node.asResource()
+          val label = getLabel(qs)
+          Some(new DataCubeComponentValue(label, Some(resource.getURI)))
+        } else if (node.isLiteral) {
+          val literal = node.asLiteral()
+          Some(new DataCubeComponentValue(Some(literal.getString), None))
+        } else {
+          None
+        }
+      } else {
+        None
+      }
+    }
 
-      new DataCubeComponentValue(label, s.bindings.get(DataCubeValuesQuery.VALUE_PROPERTY_VARIABLE).map(_.asInstanceOf[Map[String, Any]].get("uri").map(_.toString)).flatten)
-
-    }).head // what if multiple results?
-      .filter(v => v.label.isDefined || v.uri.isDefined)
-      .sortBy(v => v.label.getOrElse(v.uri.get))
   }
 
-  override def getLang: JenaLangTtl = transformer.getLang
+  private def getLabel(solution: QuerySolution): Option[String] = {
+    if (solution.contains(DataCubeValuesQuery.VALUE_PREFLABEL_VARIABLE)) {
+      Some(solution.get(DataCubeValuesQuery.VALUE_PREFLABEL_VARIABLE).asLiteral().getString)
+    } else if (solution.contains(DataCubeValuesQuery.VALUE_NOTION_VARIABLE)) {
+      Some(solution.get(DataCubeValuesQuery.VALUE_NOTION_VARIABLE).asLiteral().getString)
+    } else if (solution.contains(DataCubeValuesQuery.VALUE_LABEL_VARIABLE)) {
+      Some(solution.get(DataCubeValuesQuery.VALUE_LABEL_VARIABLE).asLiteral().getString)
+    }
+
+    None
+  }
+
 }

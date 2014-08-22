@@ -4,10 +4,14 @@ import data.models._
 import play.api.Play.current
 import play.api.cache.Cache
 import play.api.db.slick._
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.iteratee.{Iteratee, Enumeratee}
 import play.api.libs.json._
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
 import services.data.rdf.sparql.datacube._
+
+import scala.concurrent.Future
 
 
 class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
@@ -20,13 +24,44 @@ class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
     }
   }
 
-  def values(id: Long) = DBAction(parse.json) { implicit rs =>
+  private def withVisualizationAndDataSources(id: Long)
+      (func: (Visualization, DataSource, DataSource) => Result)
+      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
 
-    val json: JsValue = rs.request.body
+    Visualizations.findByIdWithDataSource(id).map { case (visualization, datasource, dsdDataSource) =>
+      func(visualization, datasource, dsdDataSource)
+    }.getOrElse {
+      NotFound
+    }
+  }
+
+  def values(id: Long) = Action.async(parse.json) { implicit request =>
+
+    val json: JsValue = request.body
     val uris = json \ "uris"
 
-    withVisualizationAndDataSources(id) { (v, d, d2) =>
-      Ok(Json.toJson(dataCubeService.getValues(d, uris.as[List[String]])))
+    DB.withSession { s =>
+      withVisualizationAndDataSourcesFuture(id) { (v, d, d2) =>
+        val futures = dataCubeService.getValues(d, uris.as[List[String]]).map(m =>
+          (m._2 through Enumeratee.filter(_.isDefined))
+            .run(
+              Iteratee.fold(List.empty[DataCubeComponentValue])((list, item) => list :+ item.get)
+            ).transform(values => m._1 -> values, t => t)
+        )
+
+        Future.sequence(futures).transform(s => Ok(Json.toJson(s.toMap)), t => t)
+      }(s)
+    }
+  }
+
+  private def withVisualizationAndDataSourcesFuture(id: Long)
+      (func: (Visualization, DataSource, DataSource) => Future[Result])
+      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {
+
+    Visualizations.findByIdWithDataSource(id).map { case (visualization, datasource, dsdDataSource) =>
+      func(visualization, datasource, dsdDataSource)
+    }.getOrElse {
+      Future { NotFound }
     }
   }
 
@@ -59,17 +94,6 @@ class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
       }
     }
 
-  }
-
-  private def withVisualizationAndDataSources(id: Long)
-      (func: (Visualization, DataSource, DataSource) => Result)
-      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
-
-    Visualizations.findByIdWithDataSource(id).map { case (visualization, datasource, dsdDataSource) =>
-      func(visualization, datasource, dsdDataSource)
-    }.getOrElse {
-      NotFound
-    }
   }
 
   def datasets(id: Long) = DBAction { implicit rs =>

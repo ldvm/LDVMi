@@ -1,54 +1,59 @@
 @(title: String, scripts: Html = Html(""), styles: Html = Html(""))(content: Html)
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingHeader())
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@title</title>
+    <head>
+        @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingHeader())
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>@title</title>
 
-    @scripts
+        @scripts
 
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-    <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
 
-    @styles
-</head>
-<body>
+        @styles
+    </head>
+    <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">Payola visualizations</a>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Payola visualizations</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <form class="navbar-form navbar-right" role="form">
+                        <div class="form-group">
+                            <input type="text" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Password" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-success">Sign in</button>
+                    </form>
+                </div><!--/.navbar-collapse -->
             </div>
-            <div class="navbar-collapse collapse">
-                <form class="navbar-form navbar-right" role="form">
-                    <div class="form-group">
-                        <input type="text" placeholder="Email" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" placeholder="Password" class="form-control">
-                    </div>
-                    <button type="submit" class="btn btn-success">Sign in</button>
-                </form>
-            </div><!--/.navbar-collapse -->
         </div>
-    </div>
 
-    @content
+        @content
 
-    <hr>
+        <hr>
 
-    <footer>
-        <p>&copy; Payola 2014</p>
-    </footer>
-    @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
-</body>
+        <footer>
+            <div class="container-fluid">
+                <p>
+                        &copy; Payola 2014
+                    <span class="pull-right"><a href="https://github.com/payola/payola-viz"><img src="@routes.Assets.versioned("images/github.png")" /></a></span>
+                </p>
+            </div>
+        </footer>
+        @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
+    </body>
 </html>

@@ -2,7 +2,6 @@ package services.data.rdf.sparql.jena
 
 import org.apache.jena.riot.Lang
 
-trait JenaLang {
+trait JenaLang extends SparqlResultLang {
   def get: Lang
-  def acceptType: String
 }

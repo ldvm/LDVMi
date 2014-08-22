@@ -1,8 +1,8 @@
 package services.data.rdf.sparql
 
-import services.data.rdf.sparql.jena.JenaLang
+import services.data.rdf.sparql.jena.SparqlResultLang
 
-class SparqlResult[D <: JenaLang](data: String) {
+class SparqlResult[D <: SparqlResultLang](data: String) {
 
   def stringValue : String = data
 

@@ -23,6 +23,7 @@ define(['angular', 'underscore'], function (ng, _) {
                 $scope.measuresSelectedCount = 0;
                 $scope.chartVisible = true;
                 $scope.init = true;
+                $scope.queryingDataset = null;
 
                 $scope.componentTypes = [
                     {name: "Dimension", key: "dimension", plural: "Dimensions"},
@@ -116,28 +117,39 @@ define(['angular', 'underscore'], function (ng, _) {
 
                 $scope.availableLanguages = ["cs", "en"];
 
-                DataCubeService.getDatasets({ visualizationId: $id }, function () {
+                /*DataCubeService.getDatasets({ visualizationId: $id }, function () {
 
-                });
+                 });*/
 
+                $scope.queryingDataset = "QB datastructure definitions";
                 DataCubeService.getDataStructures({ visualizationId: $id }, function (data) {
+                    $scope.queryingDataset = null;
                     $scope.dataStructures = data;
 
                     if ($scope.init && $permaToken) {
+                        $scope.queryingDataset = "chart data";
                         var promise = DataCubeService.getQuery({ visualizationId: $id, permalinkToken: $permaToken});
                         DataCubeService.getCached({visualizationId: $id, token: $permaToken}, function (response) {
                             if (response.error) {
                                 promise.$promise.then(function (data) {
+                                    $scope.queryingDataset = null;
                                     applyFilters(data, $scope.refresh);
                                 });
                             } else {
-                                promise.$promise.then(applyFilters);
+                                promise.$promise.then(function (data) {
+                                    $scope.queryingDataset = null;
+                                    applyFilters(data)
+                                });
                                 queryResultsLoaded(response, $location.search());
                             }
+                        }, function () {
+                            $scope.queryingDataset = null;
                         });
                     }
 
                     $scope.init = false;
+                }, function () {
+                    $scope.queryingDataset = null;
                 });
 
                 $scope.switchDSD = function (dsd, callback) {
@@ -153,7 +165,7 @@ define(['angular', 'underscore'], function (ng, _) {
                     $scope.activeDSD.components.forEach(function (c) {
                         ["dimension", "attribute", "measure"].forEach(function (type) {
                             if (c[type]) {
-                                $scope.labelsRegistry[c[type].uri] = c.label;
+                                $scope.labelsRegistry[c[type].uri] = c.label[$scope.language];
 
                                 if ($scope.values) {
                                     var values = $scope.values[c[type].uri];
@@ -186,13 +198,17 @@ define(['angular', 'underscore'], function (ng, _) {
                         pushUri(c.attribute);
                     });
 
+                    $scope.queryingDataset = "distinct values of all QB components";
                     DataCubeService.getValues({ visualizationId: $id}, {uris: uris }, function (data) {
+                        $scope.queryingDataset = null;
                         $scope.values = data;
                         fillLabelsRegistry();
 
                         if (callback) {
                             callback();
                         }
+                    }, function () {
+                        $scope.queryingDataset = null;
                     });
                 };
 
@@ -258,8 +274,12 @@ define(['angular', 'underscore'], function (ng, _) {
                             search.isPolar = $scope.highcharts.options.chart.polar === true;
                         }
 
+                        $scope.queryingDataset = "chart data";
                         DataCubeService.slices({visualizationId: $id}, {filters: collectFilters()}, function (response) {
+                            $scope.queryingDataset = null;
                             queryResultsLoaded(response, search);
+                        }, function () {
+                            $scope.queryingDataset = null;
                         });
                     } else {
                         alert("Not supported.");
