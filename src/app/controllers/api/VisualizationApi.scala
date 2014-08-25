@@ -32,9 +32,20 @@ class VisualizationApi(implicit inj: Injector) extends Controller with Injectabl
 
   def addVisualization(dataDataSource: Long, dsdDataSource: Long) = DBAction { implicit rs =>
     val visualizations = TableQuery[Visualizations]
-    val vid = (visualizations returning visualizations.map(_.id)) += Visualization(2, "MFCR QB", dataDataSource, dsdDataSource)
+    val vid = (visualizations returning visualizations.map(_.id)) += Visualization(2, "anonymous", dataDataSource, dsdDataSource)
 
     Ok(JsNumber(vid))
+  }
+
+  def addPayola(evaluationId: String) = DBAction { implicit rs =>
+    val dataSources = TableQuery[DataSources]
+    val endpointUri = "http://live.payola.cz:8890/sparql"
+    val did = (dataSources returning dataSources.map(_.id)) += DataSource(1, "Payola "+evaluationId, endpointUri, Some("http://"+evaluationId))
+
+    val visualizations = TableQuery[Visualizations]
+    val vid = (visualizations returning visualizations.map(_.id)) += Visualization(2, "Payola "+evaluationId, did, did)
+
+    Redirect("/visualize/datacube#/id/"+vid)
   }
 
 }
