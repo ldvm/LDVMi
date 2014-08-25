@@ -1,0 +1,19 @@
+@()
+
+    @scripts = {
+        <script data-main="@routes.Assets.versioned("javascripts/angular/visualization/list/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))" type="text/javascript"></script>
+    }
+
+    @styles = {
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("loading-bar.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("ng-table.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
+    }
+
+@main("List of available visualizations", scripts, styles) {
+
+    <div class="container-fluid" style="padding-top : 60 px ;">
+        <div ng-view></div>
+    </div> <!-- /container -->
+
+}

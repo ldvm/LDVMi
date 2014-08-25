@@ -32,7 +32,8 @@ libraryDependencies ++= Seq(
   "org.apache.jena" % "jena" % "2.11.2",
   "org.apache.jena" % "jena-arq" % "2.11.2",
   "com.typesafe.play" %% "play-slick" % "0.7.0",
-  "com.newrelic.agent.java" % "newrelic-api" % "3.8.1"
+  "com.newrelic.agent.java" % "newrelic-api" % "3.8.1",
+  "org.webjars" % "ng-table" % "0.3.3"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node

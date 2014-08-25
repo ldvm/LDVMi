@@ -35,6 +35,10 @@
             "ui.bootstrap": {
                 deps: ['angular'],
                 exports: 'angular'
+            },
+            "ngTable": {
+                deps: ['angular'],
+                exports: 'angular'
             }
         },
         paths: {
@@ -46,6 +50,7 @@
             "ngRoute": "/webjars/angularjs/1.2.18/angular-route",
             "ngUi": "/webjars/angular-ui/0.4.0/angular-ui",
             "ngHighcharts": "/webjars/highcharts-ng/0.0.6/highcharts-ng",
+            "ngTable": "/webjars/ng-table/0.3.3/ng-table",
             "ui.bootstrap": "/webjars/angular-ui-bootstrap/0.11.0/ui-bootstrap",
             "ngLoadingBar": "/webjars/angular-loading-bar/0.4.3/loading-bar",
             "underscore": "/webjars/underscorejs/1.6.0/underscore"

@@ -40,15 +40,15 @@ class DataCubeValuesExtractor extends QueryExecutionResultExtractor[DataCubeValu
   }
 
   private def getLabel(solution: QuerySolution): Option[String] = {
-    if (solution.contains(DataCubeValuesQuery.VALUE_PREFLABEL_VARIABLE)) {
-      Some(solution.get(DataCubeValuesQuery.VALUE_PREFLABEL_VARIABLE).asLiteral().getString)
-    } else if (solution.contains(DataCubeValuesQuery.VALUE_NOTION_VARIABLE)) {
+    if (solution.contains(DataCubeValuesQuery.VALUE_NOTION_VARIABLE)) {
       Some(solution.get(DataCubeValuesQuery.VALUE_NOTION_VARIABLE).asLiteral().getString)
+    } else if (solution.contains(DataCubeValuesQuery.VALUE_PREFLABEL_VARIABLE)) {
+      Some(solution.get(DataCubeValuesQuery.VALUE_PREFLABEL_VARIABLE).asLiteral().getString)
     } else if (solution.contains(DataCubeValuesQuery.VALUE_LABEL_VARIABLE)) {
       Some(solution.get(DataCubeValuesQuery.VALUE_LABEL_VARIABLE).asLiteral().getString)
+    } else {
+      None
     }
-
-    None
   }
 
 }
