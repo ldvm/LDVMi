@@ -5,8 +5,8 @@ define(['angular'], function (ng) {
     // In this case it is a simple value service.
     ng.module('visualizationList.services', ['ngResource'])
         .factory('VisualizationService', ['$resource', function ($resource) {
-            return $resource('', null, {
-                /*getDatasets: {url: '/api/datacube/datasets/:visualizationId', isArray: true} */
+            return $resource('/api/visualization', null, {
+                query: {url: '/api/visualization/list', isArray: false}
             });
         }]);
 });

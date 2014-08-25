@@ -25,10 +25,10 @@ class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
   }
 
   private def withVisualizationAndDataSources(id: Long)
-      (func: (Visualization, DataSource, DataSource) => Result)
+      (func: (VisualizationRow, DataSourceRow, DataSourceRow) => Result)
       (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
 
-    Visualizations.findByIdWithDataSource(id).map { case (visualization, datasource, dsdDataSource) =>
+    VisualizationsTable.findByIdWithDataSources(id).map { case (visualization, datasource, dsdDataSource) =>
       func(visualization, datasource, dsdDataSource)
     }.getOrElse {
       NotFound
@@ -55,10 +55,10 @@ class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
   }
 
   private def withVisualizationAndDataSourcesFuture(id: Long)
-      (func: (Visualization, DataSource, DataSource) => Future[Result])
+      (func: (VisualizationRow, DataSourceRow, DataSourceRow) => Future[Result])
       (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {
 
-    Visualizations.findByIdWithDataSource(id).map { case (visualization, datasource, dsdDataSource) =>
+    VisualizationsTable.findByIdWithDataSources(id).map { case (visualization, datasource, dsdDataSource) =>
       func(visualization, datasource, dsdDataSource)
     }.getOrElse {
       Future { NotFound }
@@ -77,7 +77,7 @@ class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
   }
 
   private def _withVisualizationDataSourceAndCubeQuery(id: Long, json: JsValue)
-      (func: (Visualization, DataSource, DataCubeQueryData) => Result)
+      (func: (VisualizationRow, DataSourceRow, DataCubeQueryData) => Result)
       (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
 
     json.validate[DataCubeQueryData] match {

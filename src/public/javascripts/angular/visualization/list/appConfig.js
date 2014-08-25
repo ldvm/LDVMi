@@ -2,6 +2,7 @@ define(['./app'], function (app) {
     'use strict';
 
     app.config(['$routeProvider', '$locationProvider', function ($routeProvider) {
+        $routeProvider.when('/', {templateUrl: '/assets/javascripts/angular/visualization/list/partials/list.html', controller: 'List', reloadOnSearch: false});
         $routeProvider.when('/:page', {templateUrl: '/assets/javascripts/angular/visualization/list/partials/list.html', controller: 'List', reloadOnSearch: false});
         $routeProvider.otherwise({redirectTo: '/'});
     }])

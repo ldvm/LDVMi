@@ -1,7 +1,7 @@
 package services.data.rdf.sparql
 
 import java.io.IOException
-import data.models.DataSource
+import data.models.DataSourceRow
 
 import services.data.http.{HttpPostStringRetriever, HttpGetStringRetriever}
 import services.data.rdf.sparql.jena.{SparqlResultLang, JenaLang}
@@ -48,7 +48,7 @@ class GenericSparqlEndpoint(val endpointURL: String, val namedGraphs: Seq[String
 }
 
 object GenericSparqlEndpoint {
-  def apply(dataSource: DataSource) = {
+  def apply(dataSource: DataSourceRow) = {
     new GenericSparqlEndpoint(dataSource.endpointUrl, dataSource.namedGraphs.map { s => s.split("\n").toList }.getOrElse(List()))
   }
 }

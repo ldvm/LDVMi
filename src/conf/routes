@@ -13,6 +13,7 @@ GET         /api/datacube/datastructures/:id               @controllers.api.Data
 POST        /api/datacube/values/:id                       @controllers.api.DataCubeApi.values(id: Long)
 POST        /api/datacube/slices/:id                       @controllers.api.DataCubeApi.sliceCube(id: Long)
 
+GET         /api/visualization/list                        @controllers.api.VisualizationApi.list(skip: Int = 0, take: Int = 10)
 GET         /api/visualization/queries/:id                 @controllers.api.VisualizationApi.queries(id: Long, permalinkToken: String)
 GET         /api/visualization/cached/:id/:token           @controllers.api.VisualizationApi.getCachedResult(id: Long, token: String)
 

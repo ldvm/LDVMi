@@ -16,21 +16,21 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
 
   var sparqlEndpointService = inject[SparqlEndpointService]
 
-  def getDatasets(dataSource: DataSource): Seq[DataCubeDataset] = {
+  def getDatasets(dataSource: DataSourceRow): Seq[DataCubeDataset] = {
     sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDatasetsQuery, new DataCubeDatasetsExtractor)
   }
 
-  def getDataStructures(dataSource: DataSource): Seq[DataCubeDataStructure] = {
+  def getDataStructures(dataSource: DataSourceRow): Seq[DataCubeDataStructure] = {
     sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDataStructuresQuery, new DataCubeDataStructuresExtractor)
   }
 
-  def getValues(dataSource: DataSource, uris: List[String]): Map[String, Enumerator[Option[DataCubeComponentValue]]] = {
+  def getValues(dataSource: DataSourceRow, uris: List[String]): Map[String, Enumerator[Option[DataCubeComponentValue]]] = {
     uris.reverse.map { uri =>
       uri -> sparqlEndpointService.getSelectQueryResult(dataSource, new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
     }.toMap
   }
 
-  def sliceCubeAndPersist(v: Visualization, dataSource: DataSource, queryData: DataCubeQueryData, jsonQueryData: JsValue)
+  def sliceCubeAndPersist(v: VisualizationRow, dataSource: DataSourceRow, queryData: DataCubeQueryData, jsonQueryData: JsValue)
     (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
     val token = MD5.hash(queryData.toString)
 
@@ -45,7 +45,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     for (a <- x.view; b <- y) yield a :+ b
   }
 
-  private def sliceCube(dataSource: DataSource, queryData: DataCubeQueryData): Option[DataCube] = {
+  private def sliceCube(dataSource: DataSourceRow, queryData: DataCubeQueryData): Option[DataCube] = {
 
     val allDimensionsHaveActiveValue = queryData.filters.componentFilters.filter(_.componentType == "dimension").forall(componentHasActiveValue)
 

@@ -13,7 +13,7 @@ class VisualizationQueries(tag: Tag) extends Table[VisualizationQuery](tag, "VIS
 
   def visualizationId = column[Long]("VISUALIZATION_ID")
 
-  val visualizations = TableQuery[Visualizations]
+  val visualizations = TableQuery[VisualizationsTable]
 
   def visualization = foreignKey("VISUALIZATION_QUERY_VISUALIZATION_FK", visualizationId, visualizations)(_.id)
 
@@ -23,7 +23,7 @@ class VisualizationQueries(tag: Tag) extends Table[VisualizationQuery](tag, "VIS
 object VisualizationQueries {
 
   val visualizationQueries = TableQuery[VisualizationQueries]
-  val visualizations = TableQuery[Visualizations]
+  val visualizations = TableQuery[VisualizationsTable]
 
   def findById(id: Long)(implicit s: Session): Option[VisualizationQuery] = {
     visualizationQueries.filter(_.id === id).firstOption
@@ -33,7 +33,7 @@ object VisualizationQueries {
     visualizationQueries.filter(v => v.visualizationId === id && v.token === token).firstOption
   }
 
-  def findByIdWithVisualization(id: Long)(implicit s: Session) : Option[(VisualizationQuery, Visualization)] = {
+  def findByIdWithVisualization(id: Long)(implicit s: Session) : Option[(VisualizationQuery, VisualizationRow)] = {
     (for {
       (vq, v) <- visualizationQueries innerJoin visualizations on (_.visualizationId === _.id)
     } yield (vq, v)).list().headOption

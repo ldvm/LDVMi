@@ -1,0 +1,21 @@
+
+<table ng-table="tableParams" class="table table-striped">
+    <tr ng-repeat="visualizationTuple in $data">
+        <td data-title="'ID'">{{visualizationTuple.visualization.id}}</td>
+        <td data-title="'Title'">{{visualizationTuple.visualization.name}}</td>
+        <td data-title="'Endpoint'">{{visualizationTuple.datasource.endpointUrl}}</td>
+        <td data-title="'DSD Endpoint'">{{visualizationTuple.dsdDatasource.endpointUrl}}</td>
+        <td data-title="'Last modified'">-</td>
+        <td data-title="'Actions'">
+            <span class="btn btn-primary">
+                <i class="glyphicon glyphicon-th"></i> DataCube
+            </span>
+            <span class="btn btn-default">
+                <i class="glyphicon glyphicon-pencil"></i> Edit
+            </span>
+            <span class="btn btn-default">
+                <i class="glyphicon glyphicon-time"></i> Versions
+            </span>
+        </td>
+    </tr>
+</table>
