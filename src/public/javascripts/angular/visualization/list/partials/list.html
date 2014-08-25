@@ -3,11 +3,17 @@
     <tr ng-repeat="visualizationTuple in $data">
         <td data-title="'ID'">{{visualizationTuple.visualization.id}}</td>
         <td data-title="'Title'">{{visualizationTuple.visualization.name}}</td>
-        <td data-title="'Endpoint'">{{visualizationTuple.datasource.endpointUrl}}</td>
-        <td data-title="'DSD Endpoint'">{{visualizationTuple.dsdDatasource.endpointUrl}}</td>
+        <td data-title="'Endpoint'">
+            <strong>{{visualizationTuple.datasource.endpointUrl}}</strong>
+            <p>{{visualizationTuple.datasource.namedGraphs}}</p>
+        </td>
+        <td data-title="'DSD Endpoint'">
+            <strong>{{visualizationTuple.dsdDatasource.endpointUrl}}</strong>
+            <p>{{visualizationTuple.dsdDatasource.namedGraphs}}</p>
+        </td>
         <td data-title="'Last modified'">-</td>
         <td data-title="'Actions'">
-            <a class="btn btn-primary" href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}">
+            <a class="btn btn-default" href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}">
                 <i class="glyphicon glyphicon-th"></i> DataCube
             </a>
             <span class="btn btn-default">
@@ -15,6 +21,9 @@
             </span>
             <span class="btn btn-default">
                 <i class="glyphicon glyphicon-time"></i> Versions
+            </span>
+            <span class="btn btn-primary">
+                <i class="glyphicon glyphicon-eye-open"></i> Last cached
             </span>
         </td>
     </tr>
