@@ -48,7 +48,7 @@ package object api {
       (JsPath \ "isActive").readNullable[Boolean]
     )(DataCubeQueryComponentFilter.apply _)
   implicit val cubeQueryFiltersReads: Reads[DataCubeQueryFilter] = (
-    (JsPath \ "dsdUri").read[String] and
+    (JsPath \ "dsdUri").readNullable[String] and
       (JsPath \ "components").read[Seq[DataCubeQueryComponentFilter]]
     )(DataCubeQueryFilter.apply _)
   implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData)

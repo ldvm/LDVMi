@@ -2,7 +2,7 @@ package services.data.rdf.sparql.datacube
 
 case class DataCubeQueryData(filters: DataCubeQueryFilter)
 
-case class DataCubeQueryFilter(dsdUri: String, componentFilters: Seq[DataCubeQueryComponentFilter])
+case class DataCubeQueryFilter(dsdUri: Option[String], componentFilters: Seq[DataCubeQueryComponentFilter])
 
 case class DataCubeQueryComponentFilter(uri: String, componentType: String, valuesSettings: Seq[DataCubeQueryValueFilter], isActive: Option[Boolean] = Some(false))
 
