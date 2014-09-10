@@ -56,7 +56,7 @@
                                 <span ng-if="type.key == 'dimension'"> ({{dimensionValuesActiveCount[component[type.key].uri] || 0}})</span>
                             </td>
                             <td style="padding-left: 10px;">
-                                {{component.label.variants[language] || component.label.variants["en"] || component[type.key].uri}}
+                                {{component.label.variants[language] || component.label.variants["en"] || component.label.variants[""] || component[type.key].uri}}
                             </td>
                         </tr>
                     </table>

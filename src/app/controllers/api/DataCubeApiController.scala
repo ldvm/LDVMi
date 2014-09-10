@@ -9,14 +9,16 @@ import play.api.libs.iteratee.{Iteratee, Enumeratee}
 import play.api.libs.json._
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
+import services.data.VisualizationService
 import services.data.rdf.sparql.datacube._
 
 import scala.concurrent.Future
 
 
-class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
+class DataCubeApiController(implicit inj: Injector) extends Controller with Injectable {
 
   val dataCubeService = inject[DataCubeService]
+  val visualizationService = inject[VisualizationService]
 
   def dataStructures(id: Long) = DBAction { implicit rs =>
     withVisualizationAndDataSources(id) { (v, d, d2) =>
@@ -25,11 +27,11 @@ class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
   }
 
   private def withVisualizationAndDataSources(id: Long)
-      (func: (VisualizationRow, DataSourceRow, DataSourceRow) => Result)
+      (func: (Visualization, DataSource, DataSource) => Result)
       (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
 
-    VisualizationsTable.findByIdWithDataSources(id).map { case (visualization, datasource, dsdDataSource) =>
-      func(visualization, datasource, dsdDataSource)
+    visualizationService.getByIdWithEager(id).map { veb =>
+      func(veb.visualization, veb.dataSource, veb.dsdDataSource)
     }.getOrElse {
       NotFound
     }
@@ -55,11 +57,11 @@ class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
   }
 
   private def withVisualizationAndDataSourcesFuture(id: Long)
-      (func: (VisualizationRow, DataSourceRow, DataSourceRow) => Future[Result])
+      (func: (Visualization, DataSource, DataSource) => Future[Result])
       (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {
 
-    VisualizationsTable.findByIdWithDataSources(id).map { case (visualization, datasource, dsdDataSource) =>
-      func(visualization, datasource, dsdDataSource)
+    visualizationService.getByIdWithEager(id).map { veb =>
+      func(veb.visualization, veb.dataSource, veb.dsdDataSource)
     }.getOrElse {
       Future { NotFound }
     }
@@ -77,7 +79,7 @@ class DataCubeApi(implicit inj: Injector) extends Controller with Injectable {
   }
 
   private def _withVisualizationDataSourceAndCubeQuery(id: Long, json: JsValue)
-      (func: (VisualizationRow, DataSourceRow, DataCubeQueryData) => Result)
+      (func: (Visualization, DataSource, DataCubeQueryData) => Result)
       (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
 
     json.validate[DataCubeQueryData] match {

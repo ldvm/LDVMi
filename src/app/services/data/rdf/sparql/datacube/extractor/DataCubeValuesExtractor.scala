@@ -28,7 +28,7 @@ class DataCubeValuesExtractor extends QueryExecutionResultExtractor[DataCubeValu
           Some(new DataCubeComponentValue(label, Some(resource.getURI)))
         } else if (node.isLiteral) {
           val literal = node.asLiteral()
-          Some(new DataCubeComponentValue(Some(literal.getString), None))
+          Some(new DataCubeComponentValue(Some(literal.getString), None, Some(literal.getDatatypeURI)))
         } else {
           None
         }

@@ -6,4 +6,4 @@ case class DataCubeQueryFilter(dsdUri: Option[String], componentFilters: Seq[Dat
 
 case class DataCubeQueryComponentFilter(uri: String, componentType: String, valuesSettings: Seq[DataCubeQueryValueFilter], isActive: Option[Boolean] = Some(false))
 
-case class DataCubeQueryValueFilter(label: Option[String] = None, uri: Option[String] = None, isActive: Option[Boolean] = Some(false))
+case class DataCubeQueryValueFilter(label: Option[String] = None, dataType: Option[String], uri: Option[String] = None, isActive: Option[Boolean] = Some(false))

@@ -2,7 +2,7 @@ package services.data.rdf.sparql.datacube
 
 import services.data.rdf.sparql.Pattern
 
-class ObservationPattern(dimensionUriKeys: Map[String, String], dimensionLiteralKeys: Map[String, String], measureUris: Seq[String]) extends Pattern {
+class ObservationPattern(dimensionUriKeys: Map[String, String], dimensionLiteralKeys: Map[String, String], dimensionLiteralTypes: Map[String,Option[String]], measureUris: Seq[String]) extends Pattern {
   override def getSPARQLPattern: String =
     "?o a qb:Observation ; \n" + rulesPatterns.mkString(";\n") + " .\n"
 
@@ -12,7 +12,7 @@ class ObservationPattern(dimensionUriKeys: Map[String, String], dimensionLiteral
       "    <" + dimensionUri + ">    <" + valueUri + ">"
 
     } ++ dimensionLiteralKeys.map { case (dimensionUri, value) =>
-      "    <" + dimensionUri + ">    \"" + value.toString + "\""
+      "    <" + dimensionUri + ">    \"" + value.toString + "\""+dimensionLiteralTypes(dimensionUri).map("^^<"+_+">").getOrElse("")
     } ++ measureUris.map { uri =>
       i += 1
       "    <" + uri + ">   ?m" + i
@@ -23,6 +23,6 @@ class ObservationPattern(dimensionUriKeys: Map[String, String], dimensionLiteral
 
 object ObservationPattern {
   def apply(key: DataCubeKey): ObservationPattern = {
-    new ObservationPattern(key.dimensionUriKeys, key.dimensionLiteralKeys, key.measureUris)
+    new ObservationPattern(key.dimensionUriKeys, key.dimensionLiteralKeys, key.dimensionLiteralTypes, key.measureUris)
   }
 }

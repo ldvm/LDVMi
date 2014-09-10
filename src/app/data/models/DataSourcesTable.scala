@@ -2,10 +2,10 @@ package data.models
 
 import play.api.db.slick.Config.driver.simple._
 
-case class DataSourceRow(id: Long, name: String, endpointUrl: String, namedGraphs: Option[String] = None)
+case class DataSource(id: Long, name: String, endpointUrl: String, namedGraphs: Option[String] = None)
 
 
-class DataSourcesTable(tag: Tag) extends Table[DataSourceRow](tag, "DATASOURCES") {
+class DataSourcesTable(tag: Tag) extends Table[DataSource](tag, "DATASOURCES") with IdentifiedEntityTable[DataSource]  {
   def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
 
   def name = column[String]("NAME", O.NotNull)
@@ -14,5 +14,5 @@ class DataSourcesTable(tag: Tag) extends Table[DataSourceRow](tag, "DATASOURCES"
 
   def namedGraphs = column[Option[String]]("NAMED_GRAPHS")
 
-  def * = (id, name, endpointUrl, namedGraphs) <> (DataSourceRow.tupled, DataSourceRow.unapply _)
+  def * = (id, name, endpointUrl, namedGraphs) <> (DataSource.tupled, DataSource.unapply _)
 }

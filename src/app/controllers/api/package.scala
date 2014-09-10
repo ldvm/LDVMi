@@ -1,6 +1,6 @@
 package controllers
 
-import data.models.{DataSourceRow, VisualizationRow}
+import data.models.{DataSource, Visualization}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import services.data.rdf.LocalizedValue
@@ -21,11 +21,11 @@ package object api {
   implicit val dataCubeWrites = Json.writes[services.data.rdf.sparql.datacube.DataCube]
   implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
 
-  implicit val visualizationWrites = Json.writes[VisualizationRow]
-  implicit val dataSourceWrites = Json.writes[DataSourceRow]
+  implicit val visualizationWrites = Json.writes[Visualization]
+  implicit val dataSourceWrites = Json.writes[DataSource]
 
-  implicit val visualizationWithDataSourcesWrites: Writes[(VisualizationRow, DataSourceRow, DataSourceRow)] = Writes {
-    (vdd: (VisualizationRow, DataSourceRow, DataSourceRow)) =>
+  implicit val visualizationWithDataSourcesWrites: Writes[(Visualization, DataSource, DataSource)] = Writes {
+    (vdd: (Visualization, DataSource, DataSource)) =>
       JsObject(
         Seq(
           ("visualization", Json.toJson(vdd._1)),
@@ -38,6 +38,7 @@ package object api {
 
   implicit val cubeQueryValueFilter: Reads[DataCubeQueryValueFilter] = (
     (JsPath \ "label").readNullable[String] and
+      (JsPath \ "dataType").readNullable[String] and
       (JsPath \ "uri").readNullable[String] and
       (JsPath \ "isActive").readNullable[Boolean]
     )(DataCubeQueryValueFilter.apply _)
