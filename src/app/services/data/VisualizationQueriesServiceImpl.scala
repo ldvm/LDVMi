@@ -21,9 +21,13 @@ class VisualizationQueriesServiceImpl extends VisualizationQueriesService {
     } yield (vq, v)).firstOption.map((VisualizationQueryEagerBox.apply _).tupled)
   }
 
-  override def listWithEager(skip: Int, take: Int)(implicit s: Session): Seq[VisualizationQueryEagerBox] = {
+  def listWithEager(skip: Int, take: Int)(implicit s: Session): Seq[VisualizationQueryEagerBox] = {
     (for {
       (vq, v) <- tableReference innerJoin visualizations on (_.visualizationId === _.id)
     } yield (vq, v)).list().map((VisualizationQueryEagerBox.apply _).tupled)
+  }
+
+  def deleteByToken(token: String)(implicit s: Session) = {
+    tableReference.filter(_.token === token).delete
   }
 }

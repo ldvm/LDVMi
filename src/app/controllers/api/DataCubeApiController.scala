@@ -21,19 +21,8 @@ class DataCubeApiController(implicit inj: Injector) extends Controller with Inje
   val visualizationService = inject[VisualizationService]
 
   def dataStructures(id: Long) = DBAction { implicit rs =>
-    withVisualizationAndDataSources(id) { (v, d, d2) =>
-      Ok(Json.toJson(dataCubeService.getDataStructures(d2)))
-    }
-  }
-
-  private def withVisualizationAndDataSources(id: Long)
-      (func: (Visualization, DataSource, DataSource) => Result)
-      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
-
-    visualizationService.getByIdWithEager(id).map { veb =>
-      func(veb.visualization, veb.dataSource, veb.dsdDataSource)
-    }.getOrElse {
-      NotFound
+    withVisualizationEagerBox(id) { visualizationEagerBox =>
+      Ok(Json.toJson(dataCubeService.getDataStructures(visualizationEagerBox.dsdDataSource)))
     }
   }
 
@@ -43,8 +32,8 @@ class DataCubeApiController(implicit inj: Injector) extends Controller with Inje
     val uris = json \ "uris"
 
     DB.withSession { s =>
-      withVisualizationAndDataSourcesFuture(id) { (v, d, d2) =>
-        val futures = dataCubeService.getValues(d, uris.as[List[String]]).map(m =>
+      withVisualizationAndDataSourcesFuture(id) { visualizationEagerBox =>
+        val futures = dataCubeService.getValues(visualizationEagerBox.dsdDataSource, uris.as[List[String]]).map(m =>
           (m._2 through Enumeratee.filter(_.isDefined))
             .run(
               Iteratee.fold(List.empty[DataCubeComponentValue])((list, item) => list :+ item.get)
@@ -57,11 +46,11 @@ class DataCubeApiController(implicit inj: Injector) extends Controller with Inje
   }
 
   private def withVisualizationAndDataSourcesFuture(id: Long)
-      (func: (Visualization, DataSource, DataSource) => Future[Result])
+      (func: VisualizationEagerBox => Future[Result])
       (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {
 
-    visualizationService.getByIdWithEager(id).map { veb =>
-      func(veb.visualization, veb.dataSource, veb.dsdDataSource)
+    visualizationService.getByIdWithEager(id).map { visualizationEagerBox =>
+      func(visualizationEagerBox)
     }.getOrElse {
       Future { NotFound }
     }
@@ -70,38 +59,45 @@ class DataCubeApiController(implicit inj: Injector) extends Controller with Inje
   def sliceCube(id: Long) = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
     val json: JsValue = rs.request.body
 
-    _withVisualizationDataSourceAndCubeQuery(id, json) { case (v, d, q) =>
-      val result = dataCubeService.sliceCubeAndPersist(v, d, q, json)
+    withVisualizationEagerBox(id, json) { case (visualizationEagerBox, queryData) =>
+      val result = dataCubeService.sliceCubeAndPersist(visualizationEagerBox, queryData, json)
       val jsonResult = Json.toJson(result)
       Cache.set(jsonCacheKey(id, result.permalinkToken), jsonResult)
       Ok(jsonResult)
     }
   }
 
-  private def _withVisualizationDataSourceAndCubeQuery(id: Long, json: JsValue)
-      (func: (Visualization, DataSource, DataCubeQueryData) => Result)
+  def datasets(id: Long) = DBAction { implicit rs =>
+    withVisualizationEagerBox(id) { visualizationEagerBox =>
+      Ok(Json.toJson(dataCubeService.getDatasets(visualizationEagerBox.dataSource)))
+    }
+  }
+
+  private def withVisualizationEagerBox(id: Long)
+      (func: VisualizationEagerBox => Result)
+      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
+
+    visualizationService.getByIdWithEager(id).map { visualizationEagerBox =>
+      func(visualizationEagerBox)
+    }.getOrElse {
+      NotFound
+    }
+  }
+
+  private def withVisualizationEagerBox(id: Long, json: JsValue)
+      (func: (VisualizationEagerBox, DataCubeQueryData) => Result)
       (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
 
     json.validate[DataCubeQueryData] match {
-      case s: JsSuccess[DataCubeQueryData] => {
+      case s: JsSuccess[DataCubeQueryData] =>
 
-        val queryData: DataCubeQueryData = s.get
-        withVisualizationAndDataSources(id) { (v, d, d2) =>
-          func(v, d, queryData)
+        withVisualizationEagerBox(id) { visualizationEagerBox =>
+          func(visualizationEagerBox, s.get)
         }
 
-      }
-      case e: JsError => {
-        UnprocessableEntity
-      }
+      case e: JsError => UnprocessableEntity
     }
 
-  }
-
-  def datasets(id: Long) = DBAction { implicit rs =>
-    withVisualizationAndDataSources(id) { (v, d, d2) =>
-      Ok(Json.toJson(dataCubeService.getDatasets(d)))
-    }
   }
 
 }

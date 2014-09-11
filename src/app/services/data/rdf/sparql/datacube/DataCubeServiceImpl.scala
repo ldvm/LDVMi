@@ -2,19 +2,18 @@ package services.data.rdf.sparql.datacube
 
 import data.models._
 import play.api.libs.iteratee.Enumerator
+import play.api.libs.json._
 import scaldi.{Injectable, Injector}
 import services.MD5
+import services.data.VisualizationQueriesService
 import services.data.rdf.sparql.SparqlEndpointService
 import services.data.rdf.sparql.datacube.extractor.{DataCubeCellExtractor, DataCubeDataStructuresExtractor, DataCubeDatasetsExtractor, DataCubeValuesExtractor}
 import services.data.rdf.sparql.datacube.query.{DataCubeCellQuery, DataCubeDataStructuresQuery, DataCubeDatasetsQuery, DataCubeValuesQuery}
-import play.api.libs.json._
-import play.api.db.slick.Config.driver.simple._
-
-import scala.slick.lifted.TableQuery
 
 class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with Injectable {
 
   var sparqlEndpointService = inject[SparqlEndpointService]
+  var visualizationQueriesService = inject[VisualizationQueriesService]
 
   def getDatasets(dataSource: DataSource): Seq[DataCubeDataset] = {
     sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDatasetsQuery, new DataCubeDatasetsExtractor)
@@ -30,15 +29,14 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     }.toMap
   }
 
-  def sliceCubeAndPersist(v: Visualization, dataSource: DataSource, queryData: DataCubeQueryData, jsonQueryData: JsValue)
-    (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
+  def sliceCubeAndPersist(visualizationEagerBox: VisualizationEagerBox, queryData: DataCubeQueryData, jsonQueryData: JsValue)
+      (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
     val token = MD5.hash(queryData.toString)
 
-    val queries = TableQuery[VisualizationQueriesTable]
-    queries.filter(_.token === token).delete
-    queries += VisualizationQuery(0, v.id, token, jsonQueryData.toString)
+    visualizationQueriesService.deleteByToken(token)
+    visualizationQueriesService.insert(VisualizationQuery(0, visualizationEagerBox.visualization.id, token, jsonQueryData.toString))
 
-    new DataCubeQueryResult(token, sliceCube(dataSource, queryData))
+    new DataCubeQueryResult(token, sliceCube(visualizationEagerBox.dataSource, queryData))
   }
 
   def combine[A](xs: Traversable[Traversable[A]]): Seq[Seq[A]] = xs.foldLeft(Seq(Seq.empty[A])) { (x, y) =>
@@ -127,7 +125,6 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
       if (xValue.label.isDefined) {
         c => c.key.dimensionLiteralKeys(xAxis.uri) == xValue.label.get
       } else {
-        // (xValue.uri.isDefined)
         c => c.key.dimensionUriKeys(xAxis.uri) == xValue.uri.get
       })
   }

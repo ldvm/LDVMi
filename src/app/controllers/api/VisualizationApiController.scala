@@ -28,14 +28,14 @@ class VisualizationApiController(implicit inj: Injector) extends Controller with
     Ok(mayBeResult.getOrElse(JsObject(Seq(("error", JsString("notfound"))))))
   }
 
-  def addDataSource(endpointUri: String, graphUri: String) = DBAction { implicit rs =>
-    val did = dataSourceService.insertAndGetId(DataSource(1, "anonymous", endpointUri, Some(graphUri)))
+  def addDataSource(endpointUri: String, graphUri: String, name: String = "anonymous") = DBAction { implicit rs =>
+    val did = dataSourceService.insertAndGetId(DataSource(1, name, endpointUri, Some(graphUri)))
 
     Ok(JsNumber(did))
   }
 
-  def addVisualization(dataDataSource: Long, dsdDataSource: Long) = DBAction { implicit rs =>
-    val vid = visualizationService.insertAndGetId(Visualization(2, "anonymous", dataDataSource, dsdDataSource))
+  def addVisualization(dataDataSource: Long, dsdDataSource: Long, name: String = "anonymous") = DBAction { implicit rs =>
+    val vid = visualizationService.insertAndGetId(Visualization(2, name, dataDataSource, dsdDataSource))
 
     Ok(JsNumber(vid))
   }
@@ -56,7 +56,7 @@ class VisualizationApiController(implicit inj: Injector) extends Controller with
     Ok(JsObject(
       Seq(
         ("count", JsNumber(count)),
-        ("data", Json.toJson(visualizationService.list(skip, take)))
+        ("data", Json.toJson(visualizationService.listWithEager(skip, take)))
       )
     ))
   }

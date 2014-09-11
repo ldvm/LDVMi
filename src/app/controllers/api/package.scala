@@ -1,6 +1,6 @@
 package controllers
 
-import data.models.{DataSource, Visualization}
+import data.models.{DataSource, Visualization, VisualizationEagerBox}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import services.data.rdf.LocalizedValue
@@ -24,13 +24,13 @@ package object api {
   implicit val visualizationWrites = Json.writes[Visualization]
   implicit val dataSourceWrites = Json.writes[DataSource]
 
-  implicit val visualizationWithDataSourcesWrites: Writes[(Visualization, DataSource, DataSource)] = Writes {
-    (vdd: (Visualization, DataSource, DataSource)) =>
+  implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
+    visualizationEagerBox =>
       JsObject(
         Seq(
-          ("visualization", Json.toJson(vdd._1)),
-          ("datasource", Json.toJson(vdd._2)),
-          ("dsdDatasource", Json.toJson(vdd._3))
+          ("visualization", Json.toJson(visualizationEagerBox.visualization)),
+          ("datasource", Json.toJson(visualizationEagerBox.dataSource)),
+          ("dsdDatasource", Json.toJson(visualizationEagerBox.dsdDataSource))
         )
       )
   }

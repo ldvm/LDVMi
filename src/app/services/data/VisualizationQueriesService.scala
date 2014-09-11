@@ -7,4 +7,6 @@ trait VisualizationQueriesService extends CRUDService[VisualizationQuery, Visual
 
   def findByIdAndToken(id: Long, token: String)(implicit s: Session): Option[VisualizationQuery]
 
+  def deleteByToken(token: String)(implicit s: Session)
+
 }
