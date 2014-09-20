@@ -1,12 +1,17 @@
 package data.models
 
+import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
+import PortableJodaSupport._
 import services.data.EagerBox
 
-case class Visualization(id: Long, name: String, dataSourceId: Long, dsdDataSourceId: Long)
-case class VisualizationEagerBox(visualization: Visualization, dataSource: DataSource, dsdDataSource: DataSource) extends EagerBox[Visualization]
+case class Visualization(id: Long, name: String, dataSourceId: Long, dsdDataSourceId: Long, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdentifiedEntity
 
-class VisualizationTable(tag: Tag) extends Table[Visualization](tag, "VISUALIZATIONS") with IdentifiedEntityTable[Visualization]  {
+case class VisualizationEagerBox(visualization: Visualization, dataSource: DataSource, dsdDataSource: DataSource, token: Option[String]) extends EagerBox[Visualization] {
+  override def mainEntity: Visualization = visualization
+}
+
+class VisualizationTable(tag: Tag) extends Table[Visualization](tag, "VISUALIZATIONS") with IdentifiedEntityTable[Visualization] {
   val dataSources = TableQuery[DataSourcesTable]
 
   def dataSource = foreignKey("VISUALIZATION_DATASOURCE_FK", dataSourceId, dataSources)(_.id)
@@ -15,11 +20,16 @@ class VisualizationTable(tag: Tag) extends Table[Visualization](tag, "VISUALIZAT
 
   def dsdDataSourceId = column[Long]("DSD_DATASOURCE_ID")
 
-  def * = (id, name, dataSourceId, dsdDataSourceId) <>(Visualization.tupled, Visualization.unapply _)
-
   def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
 
   def name = column[String]("NAME", O.NotNull)
 
+  def createdUtc = column[Option[DateTime]]("created")
+
+  def modifiedUtc = column[Option[DateTime]]("modified")
+
   def dataSourceId = column[Long]("DATASOURCE_ID")
+
+  def * = (id, name, dataSourceId, dsdDataSourceId, createdUtc, modifiedUtc) <>(Visualization.tupled, Visualization.unapply _)
+
 }

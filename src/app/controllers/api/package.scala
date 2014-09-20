@@ -30,7 +30,8 @@ package object api {
         Seq(
           ("visualization", Json.toJson(visualizationEagerBox.visualization)),
           ("datasource", Json.toJson(visualizationEagerBox.dataSource)),
-          ("dsdDatasource", Json.toJson(visualizationEagerBox.dsdDataSource))
+          ("dsdDatasource", Json.toJson(visualizationEagerBox.dsdDataSource)),
+          ("token", Json.toJson(visualizationEagerBox.token))
         )
       )
   }

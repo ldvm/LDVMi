@@ -1,8 +1,11 @@
 package data.models
 
+import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
+import PortableJodaSupport._
 
-case class DataSource(id: Long, name: String, endpointUrl: String, namedGraphs: Option[String] = None)
+
+case class DataSource(id: Long, name: String, endpointUrl: String, namedGraphs: Option[String] = None, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdentifiedEntity
 
 
 class DataSourcesTable(tag: Tag) extends Table[DataSource](tag, "DATASOURCES") with IdentifiedEntityTable[DataSource]  {
@@ -14,5 +17,9 @@ class DataSourcesTable(tag: Tag) extends Table[DataSource](tag, "DATASOURCES") w
 
   def namedGraphs = column[Option[String]]("NAMED_GRAPHS")
 
-  def * = (id, name, endpointUrl, namedGraphs) <> (DataSource.tupled, DataSource.unapply _)
+  def createdUtc = column[Option[DateTime]]("created")
+
+  def modifiedUtc = column[Option[DateTime]]("modified")
+
+  def * = (id, name, endpointUrl, namedGraphs, createdUtc, modifiedUtc) <> (DataSource.tupled, DataSource.unapply _)
 }

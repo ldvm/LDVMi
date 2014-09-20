@@ -1,4 +1,6 @@
-
+<div>
+    <div class="pull-right"><a ng-click="add" class="btn btn-success">Add new</a></div>
+</div>
 <table ng-table="tableParams" class="table table-striped">
     <tr ng-repeat="visualizationTuple in $data">
         <td data-title="'ID'">{{visualizationTuple.visualization.id}}</td>
@@ -11,7 +13,7 @@
             <strong>{{visualizationTuple.dsdDatasource.endpointUrl}}</strong>
             <p>{{visualizationTuple.dsdDatasource.namedGraphs}}</p>
         </td>
-        <td data-title="'Last modified'">-</td>
+        <td data-title="'Last modified'">{{visualizationTuple.visualization.modifiedUtc || visualizationTuple.visualization.createdUtc | date: 'medium' }}</td>
         <td data-title="'Actions'">
             <a class="btn btn-default" href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}">
                 <i class="glyphicon glyphicon-th"></i> DataCube
@@ -19,12 +21,12 @@
             <span class="btn btn-default">
                 <i class="glyphicon glyphicon-pencil"></i> Edit
             </span>
-            <span class="btn btn-default">
+            <span class="btn btn-default" ng-if="visualizationTuple.token">
                 <i class="glyphicon glyphicon-time"></i> Versions
             </span>
-            <span class="btn btn-primary">
+            <a class="btn btn-primary" href="#" ng-if="visualizationTuple.token">
                 <i class="glyphicon glyphicon-eye-open"></i> Last cached
-            </span>
+            </a>
         </td>
     </tr>
 </table>

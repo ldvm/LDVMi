@@ -43,16 +43,16 @@
         },
         paths: {
             "lib": "lib",
-            "angular": "/webjars/angularjs/1.2.18/angular",
+            "angular": "/webjars/angularjs/1.2.24/angular",
             "highcharts": "/webjars/highcharts/4.0.3/highcharts-all",
             "domReady": "/webjars/requirejs-domready/2.0.1/domReady",
-            "ngResource": "/webjars/angularjs/1.2.18/angular-resource",
-            "ngRoute": "/webjars/angularjs/1.2.18/angular-route",
+            "ngResource": "/webjars/angularjs/1.2.24/angular-resource",
+            "ngRoute": "/webjars/angularjs/1.2.24/angular-route",
             "ngUi": "/webjars/angular-ui/0.4.0/angular-ui",
             "ngHighcharts": "/webjars/highcharts-ng/0.0.6/highcharts-ng",
             "ngTable": "/webjars/ng-table/0.3.3/ng-table",
             "ui.bootstrap": "/webjars/angular-ui-bootstrap/0.11.0/ui-bootstrap",
-            "ngLoadingBar": "/webjars/angular-loading-bar/0.4.3/loading-bar",
+            "ngLoadingBar": "/webjars/angular-loading-bar/0.5.1/loading-bar",
             "underscore": "/webjars/underscorejs/1.6.0/underscore"
         }
     });

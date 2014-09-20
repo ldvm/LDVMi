@@ -5,7 +5,7 @@ import scaldi.{Injectable, Injector}
 
 class VisualizationController(implicit inj: Injector) extends Controller with Injectable {
 
-  def list = Action {
+  def list() = Action {
     Ok(views.html.visualization.list())
   }
 
