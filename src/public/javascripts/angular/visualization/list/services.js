@@ -6,7 +6,13 @@ define(['angular'], function (ng) {
     ng.module('visualizationList.services', ['ngResource'])
         .factory('VisualizationService', ['$resource', function ($resource) {
             return $resource('/api/visualization', null, {
-                query: {url: '/api/visualization/list', isArray: false}
+                query: {url: '/api/visualization/list', isArray: false},
+                add: {url: '/api/visualization/add', isArray: false}
+            });
+        }])
+        .factory('DatasourceService', ['$resource', function ($resource) {
+            return $resource('/api/visualization', null, {
+                add: {url: '/api/visualization/add-datasource', isArray: false}
             });
         }]);
 });

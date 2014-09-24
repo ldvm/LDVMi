@@ -3,14 +3,11 @@ package controllers.api
 import data.models._
 import play.api.Play.current
 import play.api.cache.Cache
-import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
 import play.api.libs.json._
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
-import services.data.{VisualizationQueriesService, DataSourceService, VisualizationService}
-
-import scala.slick.lifted.TableQuery
+import services.data.{DataSourceService, VisualizationQueriesService, VisualizationService}
 
 class VisualizationApiController(implicit inj: Injector) extends Controller with Injectable {
 
@@ -31,13 +28,13 @@ class VisualizationApiController(implicit inj: Injector) extends Controller with
   def addDataSource(endpointUri: String, graphUri: String, name: String = "anonymous") = DBAction { implicit rs =>
     val did = dataSourceService.insertAndGetId(DataSource(1, name, endpointUri, Some(graphUri)))
 
-    Ok(JsNumber(did))
+    Ok(JsObject(Seq(("id", JsNumber(did)))))
   }
 
-  def addVisualization(dataDataSource: Long, dsdDataSource: Long, name: String = "anonymous") = DBAction { implicit rs =>
-    val vid = visualizationService.insertAndGetId(Visualization(2, name, dataDataSource, dsdDataSource))
+  def addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String]) = DBAction { implicit rs =>
+    val vid = visualizationService.insertAndGetId(Visualization(2, name.getOrElse("anonymous"), dataDataSource, dsdDataSource))
 
-    Ok(JsNumber(vid))
+    Ok(JsObject(Seq(("id", JsNumber(vid)))))
   }
 
   def addPayola(evaluationId: String) = DBAction { implicit rs =>

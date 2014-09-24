@@ -7,8 +7,8 @@ import scaldi.{Injectable, Injector}
 import services.MD5
 import services.data.VisualizationQueriesService
 import services.data.rdf.sparql.SparqlEndpointService
-import services.data.rdf.sparql.datacube.extractor.{DataCubeCellExtractor, DataCubeDataStructuresExtractor, DataCubeDatasetsExtractor, DataCubeValuesExtractor}
-import services.data.rdf.sparql.datacube.query.{DataCubeCellQuery, DataCubeDataStructuresQuery, DataCubeDatasetsQuery, DataCubeValuesQuery}
+import services.data.rdf.sparql.datacube.extractor._
+import services.data.rdf.sparql.datacube.query._
 
 class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with Injectable {
 
@@ -21,6 +21,12 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
 
   def getDataStructures(dataSource: DataSource): Seq[DataCubeDataStructure] = {
     sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDataStructuresQuery, new DataCubeDataStructuresExtractor)
+  }
+
+  def getDataStructureComponents(dataSource: DataSource, uri: String): Seq[DataCubeComponent] = {
+    List("dimension", "measure", "attribute").par.map { componentType =>
+      sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeComponentsQuery(uri, componentType), new DataCubeComponentsExtractor)
+    }.toList.flatten
   }
 
   def getValues(dataSource: DataSource, uris: List[String]): Map[String, Enumerator[Option[DataCubeComponentValue]]] = {

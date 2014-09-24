@@ -11,13 +11,13 @@ class DataCubeValuesQuery(val uri: String) extends SparqlQuery {
       | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       |
       | SELECT DISTINCT ?o ?l ?spl ?sn WHERE {
-      |     [] <%s> ?o .
+      |     [] <@s> ?o .
       |
       |     OPTIONAL { ?o skos:prefLabel ?spl . }
       |     OPTIONAL { ?o rdfs:label ?l . }
       |     OPTIONAL { ?o skos:notion ?sn . }
       | }
-    """.stripMargin.replaceAll("[\n\r]", "").replace("%s", uri)
+    """.stripMargin.replaceAll("[\n\r]", "").replace("@s", uri)
 
 }
 

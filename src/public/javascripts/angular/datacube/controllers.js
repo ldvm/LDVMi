@@ -152,20 +152,29 @@ define(['angular', 'underscore'], function (ng, _) {
                     $scope.queryingDataset = null;
                 });
 
+                $scope.loadDSDDetails = function (dsd, callback) {
+                    DataCubeService.getComponents({id: $id, uri: dsd.uri}, function (data) {
+                        dsd.components = data.components;
+                        callback();
+                    });
+                };
+
                 $scope.switchDSD = function (dsd, callback) {
                     $scope.dataStructures.forEach(function (ds) {
                         ds.isActive = false;
                     });
                     dsd.isActive = true;
                     $scope.activeDSD = dsd;
-                    $scope.loadComponentsValues(callback);
+                    $scope.loadDSDDetails(dsd, function () {
+                        $scope.loadComponentsValues(callback);
+                    });
                 };
 
                 function fillLabelsRegistry() {
                     $scope.activeDSD.components.forEach(function (c) {
                         ["dimension", "attribute", "measure"].forEach(function (type) {
                             if (c[type]) {
-                                $scope.labelsRegistry[c[type].uri] = c.label[$scope.language];
+                                $scope.labelsRegistry[c[type].uri] = (c.label || {})[$scope.language];
 
                                 if ($scope.values) {
                                     var values = $scope.values[c[type].uri];

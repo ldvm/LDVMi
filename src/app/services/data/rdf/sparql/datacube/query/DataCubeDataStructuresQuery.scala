@@ -9,47 +9,20 @@ class DataCubeDataStructuresQuery extends SparqlQuery {
     """
       | PREFIX qb: <http://purl.org/linked-data/cube#>
       | PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       |
       | CONSTRUCT {
       |     ?d a qb:DataStructureDefinition ;
-      |        rdfs:label ?dsdLabel ;
-      |        qb:component ?c ;
-      |        qb:component ?c2 ;
-      |        qb:component ?c3 .
-      |     ?c qb:dimension ?dim ;
       |        rdfs:label ?l ;
-      |        qb:order ?dimOrder ;
-      |        qb:concept ?concept .
-      |     ?c2 qb:measure ?m ;
-      |         rdfs:label ?l2 ;
-      |         qb:order ?mOrder .
-      |     ?c3 qb:attribute ?a ;
-      |         rdfs:label ?lattr ;
-      |         qb:order ?aOrder .
+      |        skos:prefLabel ?spl ;
+      |        skos:notion ?sn .
       | } WHERE
-      |  { {
+      | {
       |    ?d a qb:DataStructureDefinition .
-      |    ?d qb:component ?c .
-      |    ?c qb:dimension ?dim .
-      |    ?c rdfs:label ?l .
-      |    ?c qb:order ?dimOrder .
-      |    ?d qb:component ?c2 .
-      |    ?c2 qb:measure ?m .
-      |    ?c2 rdfs:label ?l2
-      |    }
-      |    OPTIONAL
-      |      { ?m qb:order ?mOrder }
-      |    OPTIONAL
-      |      { ?d qb:component ?c3 .
-      |        ?c3 qb:attribute ?a .
-      |        ?c3 rdfs:label ?lattr .
-      |        ?c3 qb:order ?aOrder
-      |      }
-      |    OPTIONAL
-      |      { ?dim qb:concept ?concept }
-      |    OPTIONAL
-      |      { ?d rdfs:label ?dsdLabel }
-      |  }
-    """.stripMargin.replaceAll("[\n\r]","")
+      |    OPTIONAL { ?d skos:prefLabel ?spl . }
+      |    OPTIONAL { ?d rdfs:label ?l . }
+      |    OPTIONAL { ?d skos:notion ?sn . }
+      | }
+    """.stripMargin.replaceAll("[\n\r]", "")
 
 }

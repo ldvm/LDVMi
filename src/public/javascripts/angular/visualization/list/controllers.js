@@ -26,4 +26,32 @@ define(['angular', 'underscore'], function (ng, _) {
                 });
 
             }])
+        .controller('Add', ['$scope', 'VisualizationService', 'DatasourceService', function ($scope, VisualizationService, DatasourceService) {
+            $scope.dsdInSeparateDatasource = false;
+            $scope.datasource = {};
+            $scope.dsdDatasource = {};
+            $scope.visualizationName = null;
+
+            $scope.submit = function () {
+
+                var addDataSource = function (ds, callback) {
+                    DatasourceService.add(ds, callback);
+                };
+
+                var addVisualization = function (ds, dsdDs) {
+                    VisualizationService.add({name: $scope.visualizationName, dataDataSource: ds.id, dsdDataSource: (dsdDs.id || ds.id)}, function (v) {
+                        location.href = "/visualize/datacube#/id/"+ v.id
+                    });
+                };
+
+                var addDsdDataSource = function (ds) {
+                    addDataSource($scope.dsdDatasource, function (dsdDs) {
+                        addVisualization(ds, dsdDs);
+                    });
+                };
+
+                var callback = $scope.dsdInSeparateDatasource ? addDsdDataSource : addVisualization;
+                addDataSource($scope.datasource, callback);
+            };
+        }]);
 });

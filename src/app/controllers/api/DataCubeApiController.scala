@@ -26,6 +26,12 @@ class DataCubeApiController(implicit inj: Injector) extends Controller with Inje
     }
   }
 
+  def dataStructureComponents(id: Long, uri: String) = DBAction { implicit rs =>
+    withVisualizationEagerBox(id) { visualizationEagerBox =>
+      Ok(Json.toJson(Seq("components" -> dataCubeService.getDataStructureComponents(visualizationEagerBox.dsdDataSource, uri)).toMap))
+    }
+  }
+
   def values(id: Long) = Action.async(parse.json) { implicit request =>
 
     val json: JsValue = request.body
@@ -33,7 +39,7 @@ class DataCubeApiController(implicit inj: Injector) extends Controller with Inje
 
     DB.withSession { s =>
       withVisualizationAndDataSourcesFuture(id) { visualizationEagerBox =>
-        val futures = dataCubeService.getValues(visualizationEagerBox.dsdDataSource, uris.as[List[String]]).map(m =>
+        val futures = dataCubeService.getValues(visualizationEagerBox.dataSource, uris.as[List[String]]).map(m =>
           (m._2 through Enumeratee.filter(_.isDefined))
             .run(
               Iteratee.fold(List.empty[DataCubeComponentValue])((list, item) => list :+ item.get)
@@ -42,17 +48,6 @@ class DataCubeApiController(implicit inj: Injector) extends Controller with Inje
 
         Future.sequence(futures).transform(s => Ok(Json.toJson(s.toMap)), t => t)
       }(s)
-    }
-  }
-
-  private def withVisualizationAndDataSourcesFuture(id: Long)
-      (func: VisualizationEagerBox => Future[Result])
-      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {
-
-    visualizationService.getByIdWithEager(id).map { visualizationEagerBox =>
-      func(visualizationEagerBox)
-    }.getOrElse {
-      Future { NotFound }
     }
   }
 
@@ -70,6 +65,17 @@ class DataCubeApiController(implicit inj: Injector) extends Controller with Inje
   def datasets(id: Long) = DBAction { implicit rs =>
     withVisualizationEagerBox(id) { visualizationEagerBox =>
       Ok(Json.toJson(dataCubeService.getDatasets(visualizationEagerBox.dataSource)))
+    }
+  }
+
+  private def withVisualizationAndDataSourcesFuture(id: Long)
+      (func: VisualizationEagerBox => Future[Result])
+      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {
+
+    visualizationService.getByIdWithEager(id).map { visualizationEagerBox =>
+      func(visualizationEagerBox)
+    }.getOrElse {
+      Future { NotFound }
     }
   }
 
