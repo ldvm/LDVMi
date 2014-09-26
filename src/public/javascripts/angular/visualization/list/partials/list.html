@@ -13,20 +13,23 @@
             <strong>{{visualizationTuple.dsdDatasource.endpointUrl}}</strong>
             <p>{{visualizationTuple.dsdDatasource.namedGraphs}}</p>
         </td>
-        <td data-title="'Last modified'">{{visualizationTuple.visualization.modifiedUtc || visualizationTuple.visualization.createdUtc | date: 'medium' }}</td>
+        <td data-title="'Last modified'"><span am-time-ago="time(visualizationTuple.visualization.modifiedUtc, visualizationTuple.visualization.createdUtc)"></span></td>
         <td data-title="'Actions'">
-            <a class="btn btn-default" href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}">
-                <i class="glyphicon glyphicon-th"></i> DataCube
-            </a>
-            <span class="btn btn-default">
-                <i class="glyphicon glyphicon-pencil"></i> Edit
-            </span>
-            <span class="btn btn-default" ng-if="visualizationTuple.token">
-                <i class="glyphicon glyphicon-time"></i> Versions
-            </span>
-            <a class="btn btn-primary" href="#" ng-if="visualizationTuple.token">
-                <i class="glyphicon glyphicon-eye-open"></i> Last cached
-            </a>
+
+            <div class="btn-group">
+                <a href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}?p={{visualizationTuple.token}}" class="btn btn-primary" ng-if="visualizationTuple.token">Last cached</a>
+                <a href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}" class="btn btn-primary" ng-if="!visualizationTuple.token">DataCube</a>
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}" ng-if="visualizationTuple.token">DataCube</a></li>
+                    <li><a href="#" ng-if="visualizationTuple.token">Versions</a></li>
+                    <li class="divider" ng-if="visualizationTuple.token"></li>
+                    <li><a href="#">Edit</a></li>
+                </ul>
+            </div>
         </td>
     </tr>
 </table>

@@ -22,5 +22,6 @@ GET         /api/visualization/add                         @controllers.api.Visu
 GET         /api/visualization/payola/:evaluationId        @controllers.api.VisualizationApiController.addPayola(evaluationId: String)
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                                  controllers.Assets.versioned(path="/public", file)
+GET         /vassets/*file                                 controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                  controllers.Assets.at(path="/public", file)
 GET         /webjars/*file                                 controllers.WebJarAssets.at(file)

@@ -1,21 +1,33 @@
 @(title: String)
 
-@scripts = {
-    <script data-main="@routes.Assets.versioned("javascripts/angular/datacube/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))" type="text/javascript"></script>
-}
+    @scripts = {
+        <script>
+            var require = {
+                callback: function() {
+                    // default requirejs configs
+                    @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
+                        requirejs.config(@Html(webJarJson.toString));
+                    }
 
-@styles = {
-    <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("loading-bar.css"))'>
-    <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
-    <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/flag-icon.min.css")'>
-    <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("underscore.js"))'>
-}
+                requirejs.config({ paths: { "highcharts-all": "/webjars/highcharts/4.0.3/highcharts-all" } });
+                requirejs.config({"paths":{"highcharts-ng":["/webjars/highcharts-ng/0.0.6/highcharts-ng","highcharts-ng"]},"shim":{"highcharts-ng":["angular","highcharts-all"]}});
+                }
+            };
+        </script>
+        <script data-main="@routes.Assets.versioned("javascripts/angular/datacube/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+    }
+
+    @styles = {
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("loading-bar.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
+        <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/flag-icon.min.css")'>
+    }
 
 @main("DataCube", scripts, styles) {
 
-<div class="container-fluid" style="padding-top: 60px;">
+    <div class="container-fluid" style="padding-top : 60px;">
 
-    <div ng-view></div>
-</div> <!-- /container -->
+        <div ng-view></div>
+    </div> <!-- /container -->
 
 }

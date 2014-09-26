@@ -1,0 +1,31 @@
+body, html {
+    margin: 0;
+    overflow: hidden;
+    height: 100%;
+}
+
+@media (min-width: 768px) {
+    #left {
+        position: absolute;
+        top: 60px;
+        bottom: 0;
+        left: 0;
+        overflow-y: scroll;
+    }
+
+    #right {
+        position: absolute;
+        top: 60px;
+        bottom: 0;
+        right: 0;
+        overflow-y: scroll;
+    }
+}
+
+#left {
+    height: 100%;
+}
+
+#right {
+    height: 100%;
+}

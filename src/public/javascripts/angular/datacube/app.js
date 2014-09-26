@@ -4,13 +4,13 @@ define([
         './directives',
         './filters',
         './services',
-        'ngResource',
-        'ngRoute',
-        'ngUi',
-        'ui.bootstrap',
-        'ngLoadingBar',
-        'highcharts',
-        'ngHighcharts'
+        'angular-resource',
+        'angular-route',
+        'angular-ui',
+        'ui-bootstrap',
+        'angular-loading-bar',
+        'highcharts-all',
+        'highcharts-ng'
     ],
     function (ng) {
         'use strict';

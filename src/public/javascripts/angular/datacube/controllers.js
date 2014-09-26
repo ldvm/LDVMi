@@ -1,4 +1,4 @@
-define(['angular', 'underscore'], function (ng, _) {
+define(['angular', 'underscorejs'], function (ng, _) {
     'use strict';
 
     ng.module('dataCube.controllers', []).

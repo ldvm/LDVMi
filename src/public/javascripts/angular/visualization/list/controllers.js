@@ -1,4 +1,4 @@
-define(['angular', 'underscore'], function (ng, _) {
+define(['angular', 'underscorejs'], function (ng, _) {
     'use strict';
 
     ng.module('visualizationList.controllers', []).
@@ -25,6 +25,10 @@ define(['angular', 'underscore'], function (ng, _) {
                     }
                 });
 
+                $scope.time = function (a, b) {
+                    return a || b;
+                };
+
             }])
         .controller('Add', ['$scope', 'VisualizationService', 'DatasourceService', function ($scope, VisualizationService, DatasourceService) {
             $scope.dsdInSeparateDatasource = false;
@@ -40,7 +44,7 @@ define(['angular', 'underscore'], function (ng, _) {
 
                 var addVisualization = function (ds, dsdDs) {
                     VisualizationService.add({name: $scope.visualizationName, dataDataSource: ds.id, dsdDataSource: (dsdDs.id || ds.id)}, function (v) {
-                        location.href = "/visualize/datacube#/id/"+ v.id
+                        location.href = "/visualize/datacube#/id/" + v.id
                     });
                 };
 

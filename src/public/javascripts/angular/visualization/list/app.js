@@ -4,12 +4,14 @@ define([
         './directives',
         './filters',
         './services',
-        'ngResource',
-        'ngRoute',
-        'ngUi',
-        'ui.bootstrap',
-        'ngLoadingBar',
-        'ngTable'
+        'angular-resource',
+        'angular-route',
+        'angular-ui',
+        'ui-bootstrap',
+        'angular-loading-bar',
+        'ng-table',
+        "bootstrap",
+        "angular-moment"
     ],
     function (ng) {
         'use strict';
@@ -23,6 +25,7 @@ define([
             'ngResource',
             'ui.bootstrap',
             'ngTable',
-            'angular-loading-bar'
+            'angular-loading-bar',
+            'angularMoment'
         ]);
     });

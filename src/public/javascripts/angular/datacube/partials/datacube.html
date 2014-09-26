@@ -1,6 +1,6 @@
-<div class="row">
+<div class="row clearfix">
 
-    <div class="col-lg-3">
+    <div class="col-lg-3" id="left">
 
         <!--<div class="panel panel-default">
             <div class="panel-heading">
@@ -74,7 +74,7 @@
         </div>
     </div>
 
-    <div class="col-lg-9" ng-if="queryingDataset">
+    <div class="col-lg-9" ng-if="queryingDataset" id="right">
         <div class="alert alert-info">
             <p>
                 <strong>Querying the dataset.</strong>
@@ -90,7 +90,7 @@
     </div>
 
     <div ng-if="!queryingDataset">
-        <div class="col-lg-9" ng-if="settingsVisible">
+        <div class="col-lg-9" id="right" ng-if="settingsVisible">
             <div ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component['dimension']">
                 <div class="panel panel-default" ng-show="settingsVisible == component.dimension.uri">
                     <div class="panel-heading">
@@ -114,7 +114,7 @@
             </div>
         </div>
 
-        <div class="col-lg-9" ng-if="!settingsVisible">
+        <div class="col-lg-9" id="right" ng-if="!settingsVisible">
             <div class="alert alert-danger" ng-show="dataStructures.length == 0"><p>The chosen datasource does not contain any DataCube vocabularies.</p></div>
 
             <div ng-if="activeDSD">

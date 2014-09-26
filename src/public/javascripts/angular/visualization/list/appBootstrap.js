@@ -9,7 +9,7 @@ define([
 ], function (require, ng) {
     'use strict';
 
-    require(['domReady!'], function (document) {
+    require(['requirejs-domready!'], function (document) {
         ng.bootstrap(document, ['visualizationList']);
     });
 });
