@@ -13,8 +13,10 @@
             <strong>{{visualizationTuple.dsdDatasource.endpointUrl}}</strong>
             <p>{{visualizationTuple.dsdDatasource.namedGraphs}}</p>
         </td>
-        <td data-title="'Last modified'"><span am-time-ago="time(visualizationTuple.visualization.modifiedUtc, visualizationTuple.visualization.createdUtc)"></span></td>
-        <td data-title="'Actions'">
+        <td data-title="'Last modified'" style="white-space: nowrap;" title="{{time(visualizationTuple.visualization.modifiedUtc, visualizationTuple.visualization.createdUtc) | date}}">
+            <span am-time-ago="time(visualizationTuple.visualization.modifiedUtc, visualizationTuple.visualization.createdUtc)"></span>
+        </td>
+        <td data-title="'Actions'" style="min-width: 150px;">
 
             <div class="btn-group">
                 <a href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}?p={{visualizationTuple.token}}" class="btn btn-primary" ng-if="visualizationTuple.token">Last cached</a>
