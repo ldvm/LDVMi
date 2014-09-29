@@ -49,13 +49,18 @@
                 <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component[type.key]" class="list-group-item" ng-class="{'list-group-item-danger': values[component[type.key].uri].length == 0}">
                     <table>
                         <tr>
-                            <td style="border-right: 1px solid #ddd; padding-right: 10px;">
+                            <td style="border-right: 1px solid #ddd; padding-right: 10px; text-align: center">
+                                <i class="glyphicon glyphicon-chevron-up" ng-if="type.key == 'dimension'" ng-click="component.order=component.order-1"></i>
+                                <br/>
                                 <i class="glyphicon glyphicon-cog" ng-click="toggleDimensionSettings(component[type.key].uri)" ng-if="type.key != 'measure'" style="cursor: pointer;"></i>
                                 <input type="checkbox" ng-click="toggleMeasure(component)" ng-if="type.key == 'measure'" ng-checked="component.isActive" />
                                 <br/>
                                 <span ng-if="type.key == 'dimension'"> ({{dimensionValuesActiveCount[component[type.key].uri] || 0}})</span>
+                                <br/>
+                                <i class="glyphicon glyphicon-chevron-down" ng-if="type.key == 'dimension'" ng-click="component.order=component.order+1"></i>
                             </td>
                             <td style="padding-left: 10px;">
+                                <span ng-if="component.order" ng-if="type.key == 'dimension'">{{component.order}}.</span>
                                 {{component.label.variants[language] || component.label.variants["en"] || component.label.variants[""] || component[type.key].uri}}
                             </td>
                         </tr>

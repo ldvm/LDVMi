@@ -404,7 +404,10 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         components: []
                     };
 
-                    $scope.activeDSD.components.forEach(function (c) {
+                    var i = 100;
+                    _.sortBy($scope.activeDSD.components, function (c) {
+                        return c.order || i++;
+                    }).forEach(function (c) {
                         var componentProperty = c.dimension || c.measure || c.attribute;
 
                         if (componentProperty && componentProperty.uri) {
