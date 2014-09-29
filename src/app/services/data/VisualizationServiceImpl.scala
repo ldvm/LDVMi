@@ -21,12 +21,33 @@ class VisualizationServiceImpl extends VisualizationService {
   }
 
   def listWithEager(skip: Int, take: Int)(implicit s: Session): Seq[VisualizationEagerBox] = {
-    (for {
-      (((v, d), d2), vq) <- tableReference
-        .sortBy(v => (v.modifiedUtc.desc, v.createdUtc.desc, v.name))
-        .drop(skip)
-        .take(take) leftJoin dataSources on (_.dataSourceId === _.id) leftJoin dataSources on (_._1.dsdDataSourceId === _.id) leftJoin visualizationQueries on (_._1._1.id === _.visualizationId)
-    } yield (v, d, d2, vq.token.?)).list.map((VisualizationEagerBox.apply _).tupled)
+
+    val visualizationsWithSources = (for {
+      v <- tableReference
+      d <- dataSources if v.dataSourceId === d.id
+      d2 <- dataSources if v.dsdDataSourceId === d2.id
+    } yield (v, d, d2)).drop(skip).take(take)
+
+    val recentQueries = (for {
+      vq <- visualizationQueries
+    } yield vq)
+      .groupBy(_.visualizationId)
+      .map {
+        case (visualizationId, group) => (
+            visualizationId,
+            group.map(_.id).max
+          )
+      }
+
+    val withQueryIds = for {
+      vb <- visualizationsWithSources leftJoin recentQueries on (_._1.id === _._1)
+    } yield (vb._1, vb._2._2)
+
+    val withTokens = for {
+      r <- withQueryIds leftJoin visualizationQueries on (_._2 === _.id)
+    } yield (r._1._1._1, r._1._1._2, r._1._1._3, r._2.token.?)
+
+    withTokens.list.map((VisualizationEagerBox.apply _).tupled)
   }
 
 }
