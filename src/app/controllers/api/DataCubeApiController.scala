@@ -5,20 +5,16 @@ import play.api.Play.current
 import play.api.cache.Cache
 import play.api.db.slick._
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.iteratee.{Iteratee, Enumeratee}
+import play.api.libs.iteratee.{Enumeratee, Iteratee}
 import play.api.libs.json._
 import play.api.mvc._
-import scaldi.{Injectable, Injector}
-import services.data.VisualizationService
+import scaldi.Injector
 import services.data.rdf.sparql.datacube._
 
 import scala.concurrent.Future
 
 
-class DataCubeApiController(implicit inj: Injector) extends Controller with Injectable {
-
-  val dataCubeService = inject[DataCubeService]
-  val visualizationService = inject[VisualizationService]
+class DataCubeApiController(implicit inj: Injector) extends ApiController {
 
   def dataStructures(id: Long) = DBAction { implicit rs =>
     withVisualizationEagerBox(id) { visualizationEagerBox =>
@@ -65,28 +61,6 @@ class DataCubeApiController(implicit inj: Injector) extends Controller with Inje
   def datasets(id: Long) = DBAction { implicit rs =>
     withVisualizationEagerBox(id) { visualizationEagerBox =>
       Ok(Json.toJson(dataCubeService.getDatasets(visualizationEagerBox.dataSource)))
-    }
-  }
-
-  private def withVisualizationAndDataSourcesFuture(id: Long)
-      (func: VisualizationEagerBox => Future[Result])
-      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {
-
-    visualizationService.getByIdWithEager(id).map { visualizationEagerBox =>
-      func(visualizationEagerBox)
-    }.getOrElse {
-      Future { NotFound }
-    }
-  }
-
-  private def withVisualizationEagerBox(id: Long)
-      (func: VisualizationEagerBox => Result)
-      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
-
-    visualizationService.getByIdWithEager(id).map { visualizationEagerBox =>
-      func(visualizationEagerBox)
-    }.getOrElse {
-      NotFound
     }
   }
 

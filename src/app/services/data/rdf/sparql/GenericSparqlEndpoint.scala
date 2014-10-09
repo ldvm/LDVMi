@@ -1,20 +1,19 @@
 package services.data.rdf.sparql
 
 import java.io.IOException
+
 import data.models.DataSource
-
-import services.data.http.{HttpPostStringRetriever, HttpGetStringRetriever}
-import services.data.rdf.sparql.jena.{SparqlResultLang, JenaLang}
+import services.data.http.HttpGetStringRetriever
+import services.data.rdf.sparql.jena.SparqlResultLang
 import services.data.rdf.sparql.query.SparqlQuery
-import scalaj.http.HttpException
 
-import scala.reflect.ClassTag
+import scalaj.http.HttpException
 
 class GenericSparqlEndpoint(val endpointURL: String, val namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
 
   def executeQuery[D <: SparqlResultLang](query: SparqlQuery, lang: D): Option[SparqlResult[D]] = {
     try {
-      val result = new HttpPostStringRetriever(queryUrl(query), params(query), lang.acceptType).retrieve()
+      val result = new HttpGetStringRetriever(queryUrl(query), params(query), lang.acceptType).retrieve()
       result.map(wrapResult[D])
     } catch {
       case e: HttpException => throw new BadQueryException(e)

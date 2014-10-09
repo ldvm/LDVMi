@@ -5,6 +5,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import services.data.rdf.LocalizedValue
 import services.data.rdf.sparql.datacube._
+import services.data.rdf.sparql.geo.{Coordinate, Polygon, PolygonEntity}
 
 package object api {
 
@@ -23,6 +24,10 @@ package object api {
 
   implicit val visualizationWrites = Json.writes[Visualization]
   implicit val dataSourceWrites = Json.writes[DataSource]
+
+  implicit val coordinatesWrites = Json.writes[Coordinate]
+  implicit val polygonWrites = Json.writes[Polygon]
+  implicit val polygonEntitiesWrites = Json.writes[PolygonEntity]
 
   implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
     visualizationEagerBox =>

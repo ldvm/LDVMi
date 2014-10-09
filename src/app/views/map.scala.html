@@ -1,0 +1,24 @@
+@(title: String)
+
+    @scripts = {
+        <script>
+            @Html(org.webjars.RequireJS.getSetupJavaScript(routes.WebJarAssets.at("").url))
+        </script>
+        <script data-main="@routes.Assets.versioned("javascripts/angular/maps/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+    }
+
+    @styles = {
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("loading-bar.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
+        <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/flag-icon.min.css")'>
+        <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
+    }
+
+@main("Map", scripts, styles) {
+
+    <div class="container-fluid" style="padding-top : 60px;">
+
+        <div ng-view></div>
+    </div> <!-- /container -->
+
+}
