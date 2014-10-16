@@ -23,8 +23,6 @@ class PolygonEntitiesQuery(queryData: PolygonQueryData) extends SparqlQuery {
           "%r", getRestrictions(queryData.filters))
         .
         stripMargin
-
-    println(q)
     q
   }
 
