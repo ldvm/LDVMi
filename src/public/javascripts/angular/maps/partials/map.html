@@ -5,7 +5,7 @@
         <div ng-repeat="property in properties">
             <ul class="list-group">
                 <li class="list-group-item active">http://...{{property.uri | limitTo: -20}}
-                <li class="list-group-item" ng-repeat="value in values[property.uri]" ng-show="value.label"><input type="checkbox" ng-model="value.active" /> {{value.label.variants[""]}}</li>
+                <li class="list-group-item" ng-repeat="value in values[property.uri]" ng-show="value.label"><input type="checkbox" ng-model="value.isActive" /> {{value.label.variants[""]}}</li>
             </ul>
         </div>
 

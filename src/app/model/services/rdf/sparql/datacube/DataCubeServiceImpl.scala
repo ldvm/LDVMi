@@ -5,7 +5,7 @@ import model.services.VisualizationQueriesService
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json._
 import scaldi.{Injectable, Injector}
-import model.services.rdf.sparql.SparqlEndpointService
+import model.services.rdf.sparql.{ValueFilter, SparqlEndpointService}
 import model.services.rdf.sparql.datacube.extractor._
 import model.services.rdf.sparql.datacube.query._
 import utils.MD5
@@ -126,7 +126,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     }.toMap)
   }
 
-  private def getKeyAndFilter(xAxis: DataCubeQueryComponentFilter, xValue: DataCubeQueryValueFilter): (String, DataCubeCell => Boolean) = {
+  private def getKeyAndFilter(xAxis: DataCubeQueryComponentFilter, xValue: ValueFilter): (String, DataCubeCell => Boolean) = {
     (xValue.uri.getOrElse(xValue.label.get),
       if (xValue.label.isDefined) {
         c => c.key.dimensionLiteralKeys(xAxis.uri) == xValue.label.get

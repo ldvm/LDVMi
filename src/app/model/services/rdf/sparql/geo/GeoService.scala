@@ -6,7 +6,7 @@ import model.services.rdf.Property
 
 trait GeoService {
 
-  def polygonEntities(dataSource: DataSource): Enumerator[Option[WKTEntity]]
+  def polygonEntities(dataSource: DataSource, queryData: PolygonQueryData): Enumerator[Option[WKTEntity]]
 
   def polygonEntitiesProperties(dataSource: DataSource): Enumerator[Option[Property]]
 

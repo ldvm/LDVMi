@@ -54,6 +54,17 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
     }
   }
 
+  protected def simpleParsingFuture[E, JsonType](id: Long)
+      (enumeratorGetter: (VisualizationEagerBox, JsonType, JsValue) => Enumerator[Option[E]])
+      (jsonValidate: JsValue => JsResult[JsonType])
+      (jsonFormatter: List[E] => JsValue) = parsingFuture(id) { (visualizationEagerBox, entity: JsonType, json) =>
+
+        val enumerator = enumeratorGetter(visualizationEagerBox, entity, json)
+        futureToResult(enumeratorToSeq(enumerator), jsonFormatter)
+
+  }(jsonValidate)
+
+
   protected def withVisualizationAndDataSourcesFuture(id: Long)
       (func: VisualizationEagerBox => Future[Result])
       (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {

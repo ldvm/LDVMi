@@ -14,6 +14,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 }
 
                 $scope.init = true;
+                $scope.currentLanguage = "";
 
                 $scope.queryingDataset = "properties of geolocated entities";
                 MapService.polygonEntitiesProperties({visualizationId: $id}, function (data) {
@@ -33,24 +34,24 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 $scope.refresh = function () {
                     $scope.queryingDataset = "geolocated entities";
 
-                    var query = {filters: {}};
+                    var filters = {};
 
-                    angular.forEach($scope.values, function(array, k){
-                        if(k.substr(0,1) != "$"){
-                            angular.forEach(array, function(v, key){
-                                if(parseInt(key) > -1){
-                                    var rule = v.uri || v.label;
-                                    if(rule){
-                                        rule.active = rule.active || false;
-                                        query.enabledFilters[k] = query.enabledFilters[k] || [];
-                                        query.enabledFilters[k].push(rule);
-                                    }
+                    angular.forEach($scope.values, function (array, k) {
+                        if (k.substr(0, 1) != "$") {
+                            angular.forEach(array, function (v, key) {
+                                if (parseInt(key) > -1) {
+                                    filters[k] = filters[k] || [];
+                                    filters[k].push({
+                                        label: v.label.variants[$scope.currentLanguage],
+                                        uri: v.uri,
+                                        isActive: v.isActive || false
+                                    });
                                 }
                             });
                         }
                     });
 
-                    MapService.polygonEntities({visualizationId: $id, query: query}, function (data) {
+                    MapService.polygonEntities({visualizationId: $id}, {filters: filters}, function (data) {
                         $scope.queryingDataset = null;
                         $scope.polygons = data;
                     });

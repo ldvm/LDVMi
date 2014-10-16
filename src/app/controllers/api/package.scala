@@ -1,8 +1,9 @@
 package controllers
 
 import model.dao.{DataSource, Visualization, VisualizationEagerBox}
+import model.services.rdf.sparql.ValueFilter
 import model.services.rdf.sparql.datacube._
-import model.services.rdf.sparql.geo.{Coordinate, Polygon, WKTEntity}
+import model.services.rdf.sparql.geo._
 import model.services.rdf.{LocalizedValue, Property}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
@@ -43,23 +44,26 @@ package object api {
   }
 
 
-  implicit val cubeQueryValueFilter: Reads[DataCubeQueryValueFilter] = (
-    (JsPath \ "label").readNullable[String] and
-      (JsPath \ "dataType").readNullable[String] and
-      (JsPath \ "uri").readNullable[String] and
-      (JsPath \ "isActive").readNullable[Boolean]
-    )(DataCubeQueryValueFilter.apply _)
+  val filterPath = (JsPath \ "label").readNullable[String] and
+    (JsPath \ "dataType").readNullable[String] and
+    (JsPath \ "uri").readNullable[String] and
+    (JsPath \ "isActive").readNullable[Boolean]
+
+  implicit val valueFilterReads: Reads[ValueFilter] = filterPath(ValueFilter.apply _)
   implicit val cubeQueryComponentFilter: Reads[DataCubeQueryComponentFilter] = (
     (JsPath \ "componentUri").read[String] and
       (JsPath \ "type").read[String] and
-      (JsPath \ "values").read[Seq[DataCubeQueryValueFilter]] and
+      (JsPath \ "values").read[Seq[ValueFilter]] and
       (JsPath \ "isActive").readNullable[Boolean]
     )(DataCubeQueryComponentFilter.apply _)
   implicit val cubeQueryFiltersReads: Reads[DataCubeQueryFilter] = (
     (JsPath \ "dsdUri").readNullable[String] and
       (JsPath \ "components").read[Seq[DataCubeQueryComponentFilter]]
     )(DataCubeQueryFilter.apply _)
+
   implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData)
+
+  implicit val polygonQueryReads: Reads[PolygonQueryData] = (JsPath \ "filters").read[Map[String, Seq[ValueFilter]]].map(PolygonQueryData)
 
   def jsonCacheKey(id: Long, token: String) = "/visualizations/" + id + "/" + token
 }

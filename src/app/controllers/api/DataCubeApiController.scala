@@ -23,7 +23,9 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
 
   def dataStructureComponents(id: Long, uri: String) = DBAction { implicit rs =>
     withVisualizationEagerBox(id) { visualizationEagerBox =>
-      Ok(Json.toJson(Seq("components" -> dataCubeService.getDataStructureComponents(visualizationEagerBox.dsdDataSource, uri)).toMap))
+      val components = dataCubeService.getDataStructureComponents(visualizationEagerBox.dsdDataSource, uri)
+      val componentsJson = Seq("components" -> components).toMap
+      Ok(Json.toJson(componentsJson))
     }
   }
 

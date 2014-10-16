@@ -12,8 +12,8 @@ class GeoServiceImpl(implicit val inj: Injector) extends GeoService with Injecta
 
   var sparqlEndpointService = inject[SparqlEndpointService]
 
-  def polygonEntities(dataSource: DataSource): Enumerator[Option[WKTEntity]] = {
-    sparqlEndpointService.getResult(dataSource, new PolygonEntitiesQuery, new PolygonEntitiesExtractor)
+  def polygonEntities(dataSource: DataSource, queryData: PolygonQueryData): Enumerator[Option[WKTEntity]] = {
+    sparqlEndpointService.getResult(dataSource, new PolygonEntitiesQuery(queryData), new PolygonEntitiesExtractor)
   }
 
   def polygonEntitiesProperties(dataSource: DataSource): Enumerator[Option[Property]] = {
