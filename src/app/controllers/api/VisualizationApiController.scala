@@ -1,13 +1,13 @@
 package controllers.api
 
-import data.models._
+import model.dao.{Visualization, DataSource}
 import play.api.Play.current
 import play.api.cache.Cache
 import play.api.db.slick._
 import play.api.libs.json._
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
-import services.data.{DataSourceService, VisualizationQueriesService, VisualizationService}
+import model.services.{DataSourceService, VisualizationQueriesService, VisualizationService}
 
 class VisualizationApiController(implicit inj: Injector) extends Controller with Injectable {
 

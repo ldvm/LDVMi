@@ -1,12 +1,17 @@
 package controllers.api
 
-import data.models.VisualizationEagerBox
-import play.api.mvc.{Result, Controller}
-import scaldi.{Injector, Injectable}
-import services.data.VisualizationService
-import services.data.rdf.sparql.datacube.DataCubeService
+import model.dao.VisualizationEagerBox
+import model.services.VisualizationService
+import play.api.Play.current
+import play.api.db.slick._
 import play.api.libs.concurrent.Execution.Implicits._
-import services.data.rdf.sparql.geo.GeoService
+import play.api.libs.iteratee.{Iteratee, Enumeratee, Enumerator}
+import play.api.libs.json.{JsResult, JsError, JsSuccess, JsValue}
+import play.api.mvc.{Results, Action, Controller, Result}
+import scaldi.{Injectable, Injector}
+import model.services.rdf.sparql.datacube.DataCubeService
+import model.services.rdf.sparql.geo.GeoService
+
 import scala.concurrent.Future
 
 abstract class ApiController(implicit inj: Injector) extends Controller with Injectable {
@@ -14,6 +19,40 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
   val dataCubeService = inject[DataCubeService]
   val visualizationService = inject[VisualizationService]
   val geoService = inject[GeoService]
+
+
+  protected def simpleFuture[E]
+    (id: Long)
+      (enumeratorGetter: VisualizationEagerBox => Enumerator[Option[E]])
+      (jsonFormatter: List[E] => JsValue) = Action.async { implicit request =>
+    DB.withSession { s =>
+      withVisualizationAndDataSourcesFuture(id) { visualizationEagerBox =>
+
+        val enumerator = enumeratorGetter(visualizationEagerBox)
+        futureToResult(enumeratorToSeq(enumerator), jsonFormatter)
+
+      }(s)
+    }
+  }
+
+  protected def parsingFuture[E, JsonType](id: Long)
+      (futureGetter: (VisualizationEagerBox, JsonType, JsValue) => Future[Result])
+      (jsonValidate: JsValue => JsResult[JsonType]) = Action.async(parse.json(1024 * 1024 * 100)) { implicit request =>
+    val json: JsValue = request.body
+
+    jsonValidate(json) match {
+
+      case jsonSuccess: JsSuccess[JsonType] =>
+
+        DB.withSession { s =>
+          withVisualizationAndDataSourcesFuture(id) { visualizationEagerBox =>
+            futureGetter(visualizationEagerBox, jsonSuccess.get, json)
+          }(s)
+        }
+
+      case e: JsError => Future(UnprocessableEntity)
+    }
+  }
 
   protected def withVisualizationAndDataSourcesFuture(id: Long)
       (func: VisualizationEagerBox => Future[Result])
@@ -35,6 +74,16 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
     }.getOrElse {
       NotFound
     }
+  }
+
+  protected def enumeratorToSeq[E](enumerator: Enumerator[Option[E]]): Future[List[E]] = {
+    enumerator.through(Enumeratee.filter(_.isDefined)).run(
+      Iteratee.fold(List.empty[E])((list, item) => list :+ item.get)
+    )
+  }
+
+  protected def futureToResult[E](future: Future[List[E]], jsonFormatter: List[E] => JsValue): Future[Result] = {
+    future.transform(r => Results.Ok(jsonFormatter(r)), t => t)
   }
 
 }

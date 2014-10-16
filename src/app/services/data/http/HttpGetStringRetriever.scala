@@ -8,10 +8,7 @@ class HttpGetStringRetriever(val url: String, val params: List[(String, String)]
 
   def retrieve(): Option[String] = {
     val queryObj = Http.get(url).option(HttpOptions.readTimeout(Int.MaxValue)).params(params)
-      //.header("Accept-Encoding", "compress, gzip")
       .header("Accept", accept)
-
-    println(queryObj.getUrl)
 
     Some (queryObj.asString)
   }

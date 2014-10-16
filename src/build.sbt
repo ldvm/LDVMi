@@ -43,8 +43,8 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.4",
   "org.joda" % "joda-convert" % "1.6",
   "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
-  "org.scalaz" %% "scalaz-core" % "7.1.0",
-  "com.chuusai" %% "shapeless" % "2.1.0-SNAPSHOT" changing()
+  "com.vividsolutions" % "jts" % "1.8",
+  "org.webjars" % "openlayers" % "3.0.0"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node

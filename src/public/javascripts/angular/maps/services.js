@@ -6,7 +6,14 @@ define(['angular'], function (ng) {
     ng.module('map.services', ['ngResource'])
         .factory('MapService', ['$resource', function ($resource) {
             return $resource('', null, {
-                polygonEntities: {url: '/api/map/polygon-entities/:visualizationId', isArray: true}
+                polygonEntities: {url: '/api/map/polygon-entities/:visualizationId', method: 'POST', isArray: true},
+                polygonEntitiesProperties: {url: '/api/map/polygon-entities-properties/:visualizationId', isArray: true}
+            });
+        }])
+        .factory('DataCubeService', ['$resource', function ($resource) {
+            return $resource('', null, {
+                getValues: {url: '/api/datacube/values/:visualizationId', method: 'post'}
             });
         }]);
+
 });

@@ -1,9 +1,9 @@
+import model.services.DataModule
 import play.api._
 import play.api.mvc.WithFilters
 import play.filters.gzip.GzipFilter
 import scaldi.play.ScaldiSupport
-import services.data.DataModule
-import services.data.rdf.RdfModule
+import model.services.rdf.RdfModule
 
 object Global extends WithFilters(
   new GzipFilter(

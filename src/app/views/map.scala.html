@@ -2,7 +2,24 @@
 
     @scripts = {
         <script>
-            @Html(org.webjars.RequireJS.getSetupJavaScript(routes.WebJarAssets.at("").url))
+            var require = {
+                callback: function() {
+                    @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
+                        requirejs.config(@Html(webJarJson.toString));
+                    }
+
+                    requirejs.config({
+                        shim: {
+                            openlayers: {
+                                exports: "ol"
+                            }
+                        },
+                        paths: {
+                            openlayers: "@routes.WebJarAssets.at(WebJarAssets.locate("ol.js")).url.replaceAll(".js","")"
+                        }
+                    });
+                }
+            };
         </script>
         <script data-main="@routes.Assets.versioned("javascripts/angular/maps/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     }

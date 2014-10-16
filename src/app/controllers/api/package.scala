@@ -1,11 +1,11 @@
 package controllers
 
-import data.models.{DataSource, Visualization, VisualizationEagerBox}
+import model.dao.{DataSource, Visualization, VisualizationEagerBox}
+import model.services.rdf.sparql.datacube._
+import model.services.rdf.sparql.geo.{Coordinate, Polygon, WKTEntity}
+import model.services.rdf.{LocalizedValue, Property}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import services.data.rdf.LocalizedValue
-import services.data.rdf.sparql.datacube._
-import services.data.rdf.sparql.geo.{Coordinate, Polygon, PolygonEntity}
 
 package object api {
 
@@ -19,7 +19,7 @@ package object api {
   implicit val dataCubeComponentValueWrites = Json.writes[DataCubeComponentValue]
   implicit val dataCubeKeyWrites = Json.writes[DataCubeKey]
   implicit val dataCubeCellWrites = Json.writes[DataCubeCell]
-  implicit val dataCubeWrites = Json.writes[services.data.rdf.sparql.datacube.DataCube]
+  implicit val dataCubeWrites = Json.writes[model.services.rdf.sparql.datacube.DataCube]
   implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
 
   implicit val visualizationWrites = Json.writes[Visualization]
@@ -27,7 +27,8 @@ package object api {
 
   implicit val coordinatesWrites = Json.writes[Coordinate]
   implicit val polygonWrites = Json.writes[Polygon]
-  implicit val polygonEntitiesWrites = Json.writes[PolygonEntity]
+  implicit val polygonEntitiesWrites = Json.writes[WKTEntity]
+  implicit val propertyWrites = Json.writes[Property]
 
   implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
     visualizationEagerBox =>

@@ -2,6 +2,12 @@
 
     <div class="col-lg-3" id="left">
 
+        <div ng-repeat="property in properties">
+            <ul class="list-group">
+                <li class="list-group-item active">http://...{{property.uri | limitTo: -20}}
+                <li class="list-group-item" ng-repeat="value in values[property.uri]" ng-show="value.label"><input type="checkbox" ng-model="value.active" /> {{value.label.variants[""]}}</li>
+            </ul>
+        </div>
 
     </div>
 
@@ -9,11 +15,14 @@
         <div class="alert alert-info">
             <p>
                 <strong>Querying the dataset.</strong>
-                Right now, we are querying the dataset for {{queryingDataset}}. It may take a few minutes based on the size of the result and/or size of the graph the query is running against.
+                Right now, we are querying the dataset for {{queryingDataset}}. It may take a few minutes based on the
+                size of the result and/or size of the graph the query is running against.
             </p>
-            <br /><br />
+            <br/><br/>
+
             <div class="progress">
-                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"
+                     aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                     <span class="sr-only">Almost complete</span>
                 </div>
             </div>
@@ -22,6 +31,12 @@
 
     <div ng-if="!queryingDataset">
 
+        <div class="col-lg-9" id="right">
+            <div class="alert">
+                <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+            </div>
+            <osm polygons="polygons" style="width: 1000px; height: 800px;"></osm>
+        </div>
 
     </div>
 
