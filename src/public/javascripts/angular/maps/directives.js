@@ -1,4 +1,4 @@
-define(['angular', 'openlayers'], function (ng, ol) {
+define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
     'use strict';
 
     Array.prototype.diff = function (a) {
@@ -213,6 +213,10 @@ define(['angular', 'openlayers'], function (ng, ol) {
                             var feature = format.readFeature(e.wkt);
                             feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
                             feature.color = color(e.groupPropertyValue);
+
+                            if (e.title) {
+                                feature.set('name', e.title.variants["sl"]);
+                            }
                             features.push(feature);
                         });
 
@@ -249,6 +253,43 @@ define(['angular', 'openlayers'], function (ng, ol) {
 
                             var extent = source.getExtent();
                             $scope.map.getView().fitExtent(extent, $scope.map.getSize());
+
+                            var selectMouseMove = new ol.interaction.Select({
+                                condition: ol.events.condition.mouseMove
+                            });
+                            $scope.map.addInteraction(selectMouseMove);
+
+                            var info = $('.info', $scope.el);
+                            info.tooltip({
+                                animation: false,
+                                trigger: 'manual'
+                            });
+
+                            var displayFeatureInfo = function (pixel) {
+                                info.css({
+                                    left: pixel[0] + 'px',
+                                    top: (pixel[1] - 15) + 'px'
+                                });
+                                var feature = $scope.map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+                                    return feature;
+                                });
+                                if (feature) {
+                                    info.tooltip('hide')
+                                        .attr('data-original-title', feature.get('name'))
+                                        .tooltip('fixTitle')
+                                        .tooltip('show');
+                                } else {
+                                    info.tooltip('hide');
+                                }
+                            };
+
+                            $($scope.map.getViewport()).on('mousemove', function (evt) {
+                                displayFeatureInfo($scope.map.getEventPixel(evt.originalEvent));
+                            });
+
+                            $scope.map.on('click', function (evt) {
+                                displayFeatureInfo(evt.pixel);
+                            });
                         }
                     };
 
@@ -276,9 +317,11 @@ define(['angular', 'openlayers'], function (ng, ol) {
                             zoom: 1
                         })
                     });
+
+                    $scope.el = $elm;
                 },
                 restrict: 'E',
-                template: '<div class="os-maps"></div>',
+                template: '<div class="os-maps"><div class="info"></div></div>',
                 replace: true
             }
         }]);

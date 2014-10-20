@@ -9,7 +9,7 @@ import model.services.rdf.sparql.geo.query.PolygonEntitiesPropertiesQuery
 
 class PolygonEntitiesPropertiesExtractor extends SimpleQueryExecutionResultExtractor[PolygonEntitiesPropertiesQuery, Property] {
 
-  override def getPropertyName: String = PolygonEntitiesPropertiesQuery.NodeVariables.VALUE_PROPERTY_VARIABLE.toString
+  override def getPropertyVariableName: String = PolygonEntitiesPropertiesQuery.NodeVariables.VALUE_PROPERTY_VARIABLE.toString
 
   override def withResourceSolution(resource: Resource, qs: QuerySolution): Option[Property] = {
     val label = getLabel(qs, PolygonEntitiesPropertiesQuery.LabelVariables)

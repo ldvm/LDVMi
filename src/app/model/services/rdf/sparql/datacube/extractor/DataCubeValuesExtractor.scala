@@ -9,7 +9,7 @@ import model.services.rdf.sparql.extractor.SimpleQueryExecutionResultExtractor
 
 class DataCubeValuesExtractor extends SimpleQueryExecutionResultExtractor[DataCubeValuesQuery, DataCubeComponentValue] {
 
-  override def getPropertyName: String = DataCubeValuesQuery.NodeVariables.VALUE_PROPERTY_VARIABLE.toString
+  override def getPropertyVariableName: String = DataCubeValuesQuery.NodeVariables.VALUE_PROPERTY_VARIABLE.toString
 
   override def withResourceSolution(resource: Resource, qs: QuerySolution): Option[DataCubeComponentValue] = {
     val label = getLabel(qs, DataCubeValuesQuery.LabelVariables)

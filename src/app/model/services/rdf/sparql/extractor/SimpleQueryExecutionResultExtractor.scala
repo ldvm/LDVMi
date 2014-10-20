@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SimpleQueryExecutionResultExtractor[Q <: SparqlQuery, I] extends QueryExecutionResultExtractor[Q, Enumerator[Option[I]]] {
 
-  def getPropertyName: String
+  def getPropertyVariableName: String
 
   def withResourceSolution(resource: Resource, qs: QuerySolution): Option[I]
 
@@ -24,7 +24,7 @@ trait SimpleQueryExecutionResultExtractor[Q <: SparqlQuery, I] extends QueryExec
 
     enumerator through Enumeratee.map { qs =>
 
-      val propertyVarName = getPropertyName
+      val propertyVarName = getPropertyVariableName
 
       if (qs.contains(propertyVarName)) {
         val node = qs.get(propertyVarName)

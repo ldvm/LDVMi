@@ -3,6 +3,7 @@ package model.services.rdf.sparql.geo.query
 import model.services.rdf.sparql.geo.WKTQueryData
 import model.services.rdf.sparql.query.SparqlQuery
 import model.services.rdf.sparql.{ValueFilter, VariableGenerator}
+import model.services.rdf.vocabulary.SKOS
 
 
 class WKTEntitiesQuery(queryData: WKTQueryData) extends SparqlQuery {
@@ -12,8 +13,9 @@ class WKTEntitiesQuery(queryData: WKTQueryData) extends SparqlQuery {
   def get: String = {
     val q = prefixes +
       """
-        | SELECT ?s ?p %v WHERE {
-        |   ?s <http://www.opengis.net/ont/geosparql#hasGeometry> ?g .
+        | SELECT ?s ?l ?p %v WHERE {
+        |   ?s <http://www.opengis.net/ont/geosparql#hasGeometry> ?g ;
+        |      skos:prefLabel ?l .
         |   ?g <http://www.opengis.net/ont/geosparql#asWKT> ?p .
         |
         |   %r
@@ -28,9 +30,12 @@ class WKTEntitiesQuery(queryData: WKTQueryData) extends SparqlQuery {
 
   private def prefixes =
     """
+      | PREFIX skos: <%skos>
       |
 
-    """.stripMargin
+    """
+      .replaceAll("%skos", SKOS.PREFIX_URL)
+      .stripMargin
 
   private def getRestrictions(rule: Map[String, Seq[ValueFilter]]): String = {
     rule.map { case (uri, valueFilters) =>
@@ -74,6 +79,7 @@ object WKTEntitiesQuery {
     type NodeVariables = Value
     val geolocatedEntity = Value("s")
     val wkt = Value("p")
+    val title = Value("l")
   }
 
 }

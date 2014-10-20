@@ -2,6 +2,7 @@ package model.services.rdf.sparql.geo.extractor
 
 import com.hp.hpl.jena.query.QuerySolution
 import com.hp.hpl.jena.rdf.model.{Literal, RDFNode, Resource}
+import model.services.rdf.LocalizedValue
 import model.services.rdf.sparql.extractor.SimpleQueryExecutionResultExtractor
 import model.services.rdf.sparql.geo.query.WKTEntitiesQuery
 import model.services.rdf.sparql.geo.{WKTEntity, WKTQueryData}
@@ -9,8 +10,9 @@ import model.services.rdf.sparql.geo.{WKTEntity, WKTQueryData}
 class WKTEntitiesExtractor(data: WKTQueryData) extends SimpleQueryExecutionResultExtractor[WKTEntitiesQuery, WKTEntity] {
 
   private lazy val groupByProperty = data.filters.headOption.map(_._1)
+  val titleVariableName = WKTEntitiesQuery.NodeVariables.title.toString
 
-  override def getPropertyName: String = WKTEntitiesQuery.NodeVariables.geolocatedEntity.toString
+  override def getPropertyVariableName: String = WKTEntitiesQuery.NodeVariables.geolocatedEntity.toString
 
   override def withResourceSolution(resource: Resource, qs: QuerySolution): Option[WKTEntity] = {
 
@@ -20,10 +22,16 @@ class WKTEntitiesExtractor(data: WKTQueryData) extends SimpleQueryExecutionResul
       val node = qs.getLiteral(literalVariable)
       val wktString = node.getString.replaceFirst("<[^>]+> (.*)", "$1")
 
-      groupByProperty match {
-        case Some(p) => Some(WKTEntity(None, wktString, Some(value(groupByProperty, qs.get("?v1")))))
-        case None => Some(WKTEntity(None, wktString, None))
+      val label = if (qs.contains(titleVariableName)) {
+        val literal = qs.get(titleVariableName).asLiteral()
+        Some(LocalizedValue(Seq(literal.getLanguage -> literal.toString).toMap))
+      } else {
+        None
       }
+
+      val groupPropertyValue = groupByProperty.map(_ => value(qs.get("?v1")))
+
+      Some(WKTEntity(label, wktString, groupPropertyValue))
     } else {
       None
     }
@@ -31,7 +39,7 @@ class WKTEntitiesExtractor(data: WKTQueryData) extends SimpleQueryExecutionResul
 
   override def withLiteralSolution(literal: Literal): Option[WKTEntity] = None
 
-  private def value(groupByProperty: Option[String], node: RDFNode): String = {
+  private def value(node: RDFNode): String = {
     if (node.isLiteral) {
       node.asLiteral().getString
     } else {
