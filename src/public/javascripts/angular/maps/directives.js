@@ -192,16 +192,27 @@ define(['angular', 'openlayers'], function (ng, ol) {
         .directive('osm', [function () {
             return {
                 scope: {
-                    polygons: '='
+                    entities: '=',
+                    colors: '='
                 },
                 controller: function ($scope) {
 
-                    $scope.updateMap = function (polygons) {
+                    $scope.colors = $scope.colors || {};
+
+                    function color(value) {
+                        if (!$scope.colors[value]) {
+                            $scope.colors[value] = "rgba(0, 0, 0, 0.6)";
+                        }
+                        return $scope.colors[value];
+                    }
+
+                    $scope.updateMap = function (entities) {
                         var format = new ol.format.WKT();
                         var features = [];
-                        ng.forEach(polygons, function (p) {
-                            var feature = format.readFeature(p.wkt);
+                        ng.forEach(entities, function (e) {
+                            var feature = format.readFeature(e.wkt);
                             feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+                            feature.color = color(e.groupPropertyValue);
                             features.push(feature);
                         });
 
@@ -214,6 +225,22 @@ define(['angular', 'openlayers'], function (ng, ol) {
                         });
 
                         $scope.vector = new ol.layer.Vector({
+                            style: (function () {
+                                var getStyle = function (color) {
+                                    return [new ol.style.Style({
+                                        fill: new ol.style.Fill({
+                                            color: color
+                                        }),
+                                        stroke: new ol.style.Stroke({
+                                            color: 'black',
+                                            width: 1
+                                        })
+                                    })];
+                                };
+                                return function (feature, resolution) {
+                                    return getStyle(feature.color);
+                                };
+                            }()),
                             source: source
                         });
 
@@ -225,14 +252,14 @@ define(['angular', 'openlayers'], function (ng, ol) {
                         }
                     };
 
-                    $scope.$watch('polygons', function (newVal) {
+                    $scope.$watch('entities', function (newVal) {
                         if (newVal) {
                             $scope.updateMap(newVal);
                         }
                     });
 
-                    if ($scope.polygons) {
-                        $scope.updateMap($scope.polygons);
+                    if ($scope.entities) {
+                        $scope.updateMap($scope.entities);
                     }
                 },
                 link: function ($scope, $elm) {

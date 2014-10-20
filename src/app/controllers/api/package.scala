@@ -63,7 +63,7 @@ package object api {
 
   implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData)
 
-  implicit val polygonQueryReads: Reads[PolygonQueryData] = (JsPath \ "filters").read[Map[String, Seq[ValueFilter]]].map(PolygonQueryData)
+  implicit val polygonQueryReads: Reads[WKTQueryData] = (JsPath \ "filters").read[Map[String, Seq[ValueFilter]]].map(WKTQueryData)
 
   def jsonCacheKey(id: Long, token: String) = "/visualizations/" + id + "/" + token
 }

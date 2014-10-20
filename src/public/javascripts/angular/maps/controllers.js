@@ -15,21 +15,37 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.init = true;
                 $scope.currentLanguage = "";
+                $scope.mainProperty = null;
 
                 $scope.queryingDataset = "properties of geolocated entities";
-                MapService.polygonEntitiesProperties({visualizationId: $id}, function (data) {
-                    $scope.properties = data;
+                MapService.polygonEntitiesProperties({visualizationId: $id}, function (properties) {
+                    $scope.properties = properties;
 
-                    var uris = data.map(function (p) {
+                    $scope.mainProperty = properties[0] || null;
+
+                    var uris = properties.map(function (p) {
                         return p.uri;
                     });
 
                     $scope.queryingDataset = "values of properties";
-                    DataCubeService.getValues({ visualizationId: $id}, {uris: uris }, function (data) {
+                    DataCubeService.getValues({ visualizationId: $id}, {uris: uris }, function (propertiesValuesMap) {
                         $scope.queryingDataset = null;
-                        $scope.values = data;
+                        $scope.values = propertiesValuesMap;
+                        $scope.colors = {};
+
+                        if ($scope.mainProperty) {
+                            angular.forEach($scope.values[$scope.mainProperty.uri], function (v) {
+                                var key = v.uri || v.label.variants[$scope.currentLanguage];
+                                $scope.colors[key] = "rgba(" + random() + ", " + random() + ", " + random() + ", 0.7)";
+                                v.colorStyle = {"background-color": $scope.colors[key]};
+                            });
+                        }
                     });
                 });
+
+                function random() {
+                    return Math.floor(Math.random() * 256);
+                }
 
                 $scope.refresh = function () {
                     $scope.queryingDataset = "geolocated entities";
@@ -53,7 +69,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                     MapService.polygonEntities({visualizationId: $id}, {filters: filters}, function (data) {
                         $scope.queryingDataset = null;
-                        $scope.polygons = data;
+                        $scope.entities = data;
                     });
                 };
 

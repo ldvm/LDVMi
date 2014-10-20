@@ -1,18 +1,18 @@
 package model.services.rdf.sparql.geo.query
 
-import model.services.rdf.sparql.geo.PolygonQueryData
+import model.services.rdf.sparql.geo.WKTQueryData
 import model.services.rdf.sparql.query.SparqlQuery
 import model.services.rdf.sparql.{ValueFilter, VariableGenerator}
 
 
-class PolygonEntitiesQuery(queryData: PolygonQueryData) extends SparqlQuery {
+class WKTEntitiesQuery(queryData: WKTQueryData) extends SparqlQuery {
 
   lazy val variableGenerator = new VariableGenerator
 
   def get: String = {
     val q = prefixes +
       """
-        | SELECT ?s ?p WHERE {
+        | SELECT ?s ?p %v WHERE {
         |   ?s <http://www.opengis.net/ont/geosparql#hasGeometry> ?g .
         |   ?g <http://www.opengis.net/ont/geosparql#asWKT> ?p .
         |
@@ -21,8 +21,8 @@ class PolygonEntitiesQuery(queryData: PolygonQueryData) extends SparqlQuery {
       """
         .replaceAll(
           "%r", getRestrictions(queryData.filters))
-        .
-        stripMargin
+        .replaceAll("%v", if (queryData.filters.nonEmpty) { "?v1" } else {"" })
+        .stripMargin
     q
   }
 
@@ -60,15 +60,15 @@ class PolygonEntitiesQuery(queryData: PolygonQueryData) extends SparqlQuery {
 
   private def labelOrUri(f: ValueFilter) = {
     f match {
-      case u if f.uri.isDefined => u.uri.map("<"+_+">")
-      case l if f.label.isDefined => l.label.map("'"+_+"'")
+      case u if f.uri.isDefined => u.uri.map("<" + _ + ">")
+      case l if f.label.isDefined => l.label.map("'" + _ + "'")
       case _ => None
     }
   }
 
 }
 
-object PolygonEntitiesQuery {
+object WKTEntitiesQuery {
 
   object NodeVariables extends Enumeration {
     type NodeVariables = Value
