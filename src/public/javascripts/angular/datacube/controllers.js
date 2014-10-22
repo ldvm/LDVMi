@@ -174,14 +174,14 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope.activeDSD.components.forEach(function (c) {
                         ["dimension", "attribute", "measure"].forEach(function (type) {
                             if (c[type]) {
-                                $scope.labelsRegistry[c[type].uri] = (c.label || {})[$scope.language];
+                                $scope.labelsRegistry[c[type].uri] = label(c.label);
 
                                 if ($scope.values) {
                                     var values = $scope.values[c[type].uri];
                                     if (values) {
                                         values.forEach(function (v) {
                                             if (v.uri) {
-                                                $scope.labelsRegistry[v.uri] = v.label;
+                                                $scope.labelsRegistry[v.uri] = label(v.label);
                                             }
                                         });
                                     }
