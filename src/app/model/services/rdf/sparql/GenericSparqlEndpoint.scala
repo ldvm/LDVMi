@@ -47,7 +47,7 @@ class GenericSparqlEndpoint(val endpointURL: String, val namedGraphs: Seq[String
 
 object GenericSparqlEndpoint {
   def apply(dataSource: DataSource) = {
-    new GenericSparqlEndpoint(dataSource.endpointUrl, dataSource.namedGraphs.map { s => s.split("\n").toList }.getOrElse(List()))
+    new GenericSparqlEndpoint(dataSource.endpointUrl, dataSource.namedGraphs.map { s => s.split("\\s").toList }.getOrElse(List()))
   }
 }
 
