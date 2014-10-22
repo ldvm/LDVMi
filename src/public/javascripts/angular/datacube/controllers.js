@@ -381,6 +381,22 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     return undefined;
                 };
 
+                $scope.reorderComponents = function ($index, component, plusMinusOne) {
+                    var components = $scope.activeDSD.components;
+                    var currentOrder = component.order;
+                    var newOrder = currentOrder + plusMinusOne;
+
+                    if (newOrder > 0) {
+                        var toUpdate = _.find(components, function (c) {
+                            return c.dimension && c.order == newOrder;
+                        });
+                        if (toUpdate) {
+                            toUpdate.order = currentOrder;
+                            component.order = newOrder;
+                        }
+                    }
+                };
+
                 function computeSlicing() {
                     var dimensions = _.filter($scope.activeDSD.components, function (c) {
                         return c.dimension;
