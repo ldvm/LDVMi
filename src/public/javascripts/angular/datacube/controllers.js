@@ -370,6 +370,17 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     computeSlicing();
                 };
 
+                $scope.label = function (label) {
+                    if (label && label.variants) {
+                        if (label.variants[$scope.language]) {
+                            return label.variants[$scope.language];
+                        } else if (label.variants[""]) {
+                            return label.variants[""];
+                        }
+                    }
+                    return undefined;
+                };
+
                 function computeSlicing() {
                     var dimensions = _.filter($scope.activeDSD.components, function (c) {
                         return c.dimension;

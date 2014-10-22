@@ -111,7 +111,7 @@
                     <div class="panel-body">
                         <ul class="list-unstyled">
                             <li ng-repeat="v in values[component.dimension.uri]"><input type="checkbox" ng-click="toggleDimensionValue(v)" ng-checked="v.isActive" />
-                                {{v.label || v.uri}}
+                                {{label(v.label) || v.uri}}
                             </li>
                         </ul>
                     </div>
