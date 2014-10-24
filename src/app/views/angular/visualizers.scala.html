@@ -2,9 +2,9 @@
 
     @scripts = {
         <script>
-            @Html(org.webjars.RequireJS.getSetupJavaScript(routes.WebJarAssets.at("../../../public").url))
+            @Html(org.webjars.RequireJS.getSetupJavaScript(routes.WebJarAssets.at("").url))
         </script>
-        <script data-main="@routes.Assets.versioned("javascripts/angular/visualizer/list/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+        <script data-main="@routes.Assets.versioned("javascripts/angular/visualizer/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     }
 
     @styles = {
