@@ -26,7 +26,7 @@ class VisualizationServiceImpl extends VisualizationService {
       v <- tableReference
       d <- dataSources if v.dataSourceId === d.id
       d2 <- dataSources if v.dsdDataSourceId === d2.id
-    } yield (v, d, d2)).drop(skip).take(take)
+    } yield (v, d, d2)).sortBy(_._1.modifiedUtc.desc).drop(skip).take(take)
 
     val recentQueries = (for {
       vq <- visualizationQueries

@@ -1,6 +1,7 @@
 package controllers
 
-import model.dao.{DataSource, Visualization, VisualizationEagerBox}
+import model.dao.{Visualizer, DataSource, Visualization, VisualizationEagerBox}
+import model.services.IdentityEagerBox
 import model.services.rdf.sparql.ValueFilter
 import model.services.rdf.sparql.datacube._
 import model.services.rdf.sparql.geo._
@@ -30,6 +31,12 @@ package object api {
   implicit val polygonWrites = Json.writes[Polygon]
   implicit val polygonEntitiesWrites = Json.writes[WKTEntity]
   implicit val propertyWrites = Json.writes[Property]
+
+  implicit val visualizerWrites = Json.writes[Visualizer]
+
+  implicit val identityEagerBoxVisualizerWrites : Writes[IdentityEagerBox[Visualizer]] = Writes { eb =>
+    Json.toJson(eb.mainEntity)
+  }
 
   implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
     visualizationEagerBox =>

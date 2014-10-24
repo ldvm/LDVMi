@@ -4,10 +4,15 @@ import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
 import PortableJodaSupport._
 
-case class Visualizer(id: Long, name: String, inputSignature: String, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdentifiedEntity
+case class Visualizer(
+  id: Long,
+  name: String,
+  inputSignature: String,
+  url: String,
+  description: Option[String],
+  var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdentifiedEntity
 
 class VisualizerTable(tag: Tag) extends Table[Visualizer](tag, "VISUALIZERS") with IdentifiedEntityTable[Visualizer] {
-  val dataSources = TableQuery[DataSourcesTable]
 
   def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
 
@@ -15,13 +20,17 @@ class VisualizerTable(tag: Tag) extends Table[Visualizer](tag, "VISUALIZERS") wi
 
   def inputSignature = column[String]("INPUT_SIGNATURE", O.NotNull)
 
+  def url = column[String]("URL", O.NotNull)
+
+  def description = column[Option[String]]("DESCRIPTION")
+
   def createdUtc = column[Option[DateTime]]("CREATED")
 
   def modifiedUtc = column[Option[DateTime]]("MODIFIED")
 
   def dataSourceId = column[Long]("DATASOURCE_ID")
 
-  def * = (id, name, inputSignature, createdUtc, modifiedUtc) <>(Visualizer.tupled, Visualizer.unapply _)
+  def * = (id, name, inputSignature, url, description, createdUtc, modifiedUtc) <>(Visualizer.tupled, Visualizer.unapply _)
 
 }
 

@@ -1,49 +1,33 @@
 <div class="container">
     <form role="form" class="form-horizontal">
         <div class="form-group">
-            <label for="visualizationName">Visualization name</label>
+            <label for="visualizerName">Visualizer name</label>
 
             <div>
-                <input id="visualizationName" type="text" class="form-control" ng-model="visualizationName" placeholder="Visualization name"/>
+                <input id="visualizerName" type="text" class="form-control" ng-model="visualizerName" placeholder="Visualizer name"/>
             </div>
         </div>
         <div class="form-group">
-            <label for="datasource.endpointUri">Datasource URI</label>
+            <label for="visualizerUrl">Visualizer URL</label>
 
             <div>
-                <input id="datasource.endpointUri" type="text" class="form-control" ng-model="datasource.endpointUri" placeholder="Enter endpoint URI"/>
+                <input id="visualizerUrl" type="text" class="form-control" ng-model="visualizerUrl" placeholder="Visualizer URL"/>
             </div>
         </div>
         <div class="form-group">
-            <label for="datasource.graphUri">Graph URIs</label>
+            <label for="visualizerSignature">Input signature (SPARQL ASK)</label>
 
             <div>
-                <textarea id="datasource.graphUri" class="form-control" ng-model="datasource.graphUri" placeholder="Enter graph URI"></textarea>
+                <textarea id="visualizerSignature" class="form-control" ng-model="visualizerSignature" placeholder="Visualizer signature"></textarea>
             </div>
         </div>
         <div class="form-group">
-            <label for="dsdInSeparateDatasource">DSD is in separate datasource</label>
+            <label for="visualizerDescription">Description</label>
 
             <div>
-                <input type="checkbox" ng-model="dsdInSeparateDatasource" id="dsdInSeparateDatasource" />
+                <textarea id="visualizerDescription" class="form-control" ng-model="visualizerDescription" placeholder="Visualizer description"></textarea>
             </div>
         </div>
-        <div ng-show="dsdInSeparateDatasource">
-            <div class="form-group">
-                <label for="dsdDatasource.endpointUri">DSD Datasource URI</label>
-
-                <div>
-                    <input id="dsdDatasource.endpointUri" type="text" class="form-control" ng-model="dsdDatasource.endpointUri" placeholder="Enter endpoint URI"/>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="dsdDatasource.graphUri">DSD Graph URIs</label>
-
-                <div>
-                    <textarea id="dsdDatasource.graphUri" type="text" class="form-control" ng-model="dsdDatasource.graphUri" placeholder="Enter graph URI"></textarea>
-                </div>
-            </div>
-        </div>
-        <input type="submit" value="Add visualization" class="btn btn-primary pull-right" ng-click="submit()" />
+        <input type="submit" value="Add visualizer" class="btn btn-primary pull-right" ng-click="submit()" />
     </form>
 </div>
