@@ -7,7 +7,7 @@ GET         /                                               @controllers.Applica
 GET         /visualize/datacube                             @controllers.DataCubeController.visualize
 GET         /visualize/map                                  @controllers.MapController.visualize
 GET         /visualizations                                 @controllers.VisualizationController.index
-GET         /visualizers                                    @controllers.VisualizationController.index
+GET         /visualizers                                    @controllers.VisualizerController.index
 
 POST        /api/map/polygon-entities/:id                   @controllers.api.MapApiController.polygonEntities(id: Long)
 GET         /api/map/polygon-entities-properties/:id        @controllers.api.MapApiController.polygonEntitiesProperties(id: Long)

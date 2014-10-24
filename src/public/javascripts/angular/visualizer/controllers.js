@@ -4,7 +4,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
     ng.module('visualizer.controllers', []).
         controller('List',
         ['$scope', 'visualizer', '$routeParams', 'ngTableParams',
-            function ($scope, VisualizationService, $routeParams, ngTableParams) {
+            function ($scope, VisualizerService, $routeParams, ngTableParams) {
 
                 var page = $routeParams.page || 1;
                 var count = $routeParams.count || 10;
@@ -18,7 +18,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 }, {
                     total: 0, // length of data
                     getData: function ($defer, params) {
-                        VisualizationService.query({skip: (params.page() - 1) * params.count(), take: params.count()}, function (data) {
+                        VisualizerService.query({skip: (params.page() - 1) * params.count(), take: params.count()}, function (data) {
                             params.total(data.count);
                             $defer.resolve(data.data);
                         });
@@ -30,32 +30,11 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
             }])
-        .controller('Add', ['$scope', 'VisualizationService', 'DatasourceService', function ($scope, VisualizationService, DatasourceService) {
-            $scope.dsdInSeparateDatasource = false;
-            $scope.datasource = {};
-            $scope.dsdDatasource = {};
-            $scope.visualizationName = null;
+        .controller('Add', ['$scope', 'VisualizerService', function ($scope, VisualizationService) {
+
 
             $scope.submit = function () {
 
-                var addDataSource = function (ds, callback) {
-                    DatasourceService.add(ds, callback);
-                };
-
-                var addVisualization = function (ds, dsdDs) {
-                    VisualizationService.add({name: $scope.visualizationName, dataDataSource: ds.id, dsdDataSource: (dsdDs.id || ds.id)}, function (v) {
-                        location.href = "/visualize/datacube#/id/" + v.id
-                    });
-                };
-
-                var addDsdDataSource = function (ds) {
-                    addDataSource($scope.dsdDatasource, function (dsdDs) {
-                        addVisualization(ds, dsdDs);
-                    });
-                };
-
-                var callback = $scope.dsdInSeparateDatasource ? addDsdDataSource : addVisualization;
-                addDataSource($scope.datasource, callback);
             };
         }]);
 });
