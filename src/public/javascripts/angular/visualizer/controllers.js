@@ -3,7 +3,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
     ng.module('visualizer.controllers', []).
         controller('List',
-        ['$scope', 'visualizer', '$routeParams', 'ngTableParams',
+        ['$scope', 'VisualizerService', '$routeParams', 'ngTableParams',
             function ($scope, VisualizerService, $routeParams, ngTableParams) {
 
                 var page = $routeParams.page || 1;

@@ -10,4 +10,5 @@ class WebModule extends Module {
   binding to new api.DataCubeApiController
   binding to new api.MapApiController
   binding to new api.VisualizationApiController
+  binding to new api.VisualizerApiController()
 }

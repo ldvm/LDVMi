@@ -26,6 +26,9 @@ GET         /api/visualization/add-datasource               @controllers.api.Vis
 GET         /api/visualization/add                          @controllers.api.VisualizationApiController.addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String])
 GET         /api/visualization/payola/:evaluationId         @controllers.api.VisualizationApiController.addPayola(evaluationId: String)
 
+GET         /api/visualizer/list                            @controllers.api.VisualizerApiController.list(skip: Int, take: Int)
+GET         /api/visualizer/add                             @controllers.api.VisualizerApiController.add(name: String, signature: String, description: Option[String])
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /vassets/*file                                  controllers.Assets.versioned(path="/public", file: Asset)
 GET         /assets/*file                                   controllers.Assets.at(path="/public", file)
