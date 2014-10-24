@@ -3,9 +3,9 @@ package controllers
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
 
-class VisualizationController(implicit inj: Injector) extends Controller with Injectable {
+class VisualizerController(implicit inj: Injector) extends Controller with Injectable {
 
-  def index() = Action {
+  def list() = Action {
     Ok(views.html.angular.visualizations())
   }
 

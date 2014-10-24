@@ -5,7 +5,7 @@
             var require = {
                 callback: function() {
                     // default requirejs configs
-                    @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
+                    @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("../../../public").url).values()) {
                         requirejs.config(@Html(webJarJson.toString));
                     }
 
@@ -14,14 +14,14 @@
                 }
             };
         </script>
-        <script data-main="@routes.Assets.versioned("javascripts/angular/datacube/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+        <script data-main="@routes.Assets.versioned("../../../public/javascripts/angular/datacube/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     }
 
     @styles = {
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("loading-bar.css"))'>
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
-        <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/flag-icon.min.css")'>
-        <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
+        <link rel='stylesheet' href='@routes.Assets.versioned("../../../public/stylesheets/flag-icon.min.css")'>
+        <link rel='stylesheet' href='@routes.Assets.versioned("../../../public/stylesheets/main.css")'>
     }
 
 @main("DataCube", scripts, styles) {
