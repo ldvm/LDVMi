@@ -12,9 +12,9 @@ class VisualizerApiController(implicit inj: Injector) extends Controller with In
 
   val visualizerService = inject[VisualizerService]
 
-  def add(name: String, signature: String, uri: String, description: Option[String]) = DBAction { implicit rs =>
+  def add(name: String, signature: String, url: String, description: Option[String], dsdSignature: Option[String]) = DBAction { implicit rs =>
 
-    val vid = visualizerService.insertAndGetId(Visualizer(1, name, signature, uri, description))
+    val vid = visualizerService.insertAndGetId(Visualizer(1, name, signature, url, description, dsdSignature))
 
     Ok(JsObject(Seq(("id", JsNumber(vid)))))
   }

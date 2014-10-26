@@ -2,12 +2,11 @@
     <div class="pull-right"><a ng-href="#/add" class="btn btn-success">Add new</a></div>
 </div>
 <table ng-table="tableParams" class="table table-striped">
-    <tr ng-repeat="visualizationTuple in $data">
-        <td data-title="'ID'">{{visualizationTuple.visualization.id}}</td>
-        <td data-title="'Title'">{{visualizationTuple.visualization.name}}</td>
+    <tr ng-repeat="visualizer in $data">
+        <td data-title="'ID'">{{visualizer.id}}</td>
+        <td data-title="'Title'">{{visualizer.name}}</td>
         <td data-title="'URL'">
-            <strong>{{visualizationTuple.datasource.endpointUrl}}</strong>
-            <p>{{visualizationTuple.datasource.namedGraphs}}</p>
+            {{visualizer.url}}
         </td>
 
         <td data-title="'Actions'" style="min-width: 150px;">

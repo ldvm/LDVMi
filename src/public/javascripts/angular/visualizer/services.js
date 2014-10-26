@@ -7,7 +7,7 @@ define(['angular'], function (ng) {
         .factory('VisualizerService', ['$resource', function ($resource) {
             return $resource('/api/visualizer', null, {
                 query: {url: '/api/visualizer/list', isArray: false},
-                add: {url: '/api/visualizer/add', isArray: false}
+                save: {url: '/api/visualizer/add', method: 'GET', isArray: false}
             });
         }]);
 });

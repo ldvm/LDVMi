@@ -30,11 +30,24 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
             }])
-        .controller('Add', ['$scope', 'VisualizerService', function ($scope, VisualizationService) {
+        .controller('Add', ['$scope', 'VisualizerService', function ($scope, VisualizerService) {
+            $scope.visualizerName = null;
+            $scope.visualizerUrl = null;
+            $scope.visualizerSignature = null;
+            $scope.visualizerDSDSignature = null;
+            $scope.visualizerDescription = null;
 
 
             $scope.submit = function () {
+                VisualizerService.save({
+                    name: $scope.visualizerName,
+                    url: $scope.visualizerUrl,
+                    signature: $scope.visualizerSignature,
+                    dsdSignature: $scope.visualizerDSDSignature,
+                    description: $scope.visualizerDescription
+                }, function(data){
 
+                });
             };
         }]);
 });

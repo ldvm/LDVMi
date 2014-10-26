@@ -10,7 +10,10 @@ case class Visualizer(
   inputSignature: String,
   url: String,
   description: Option[String],
-  var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdentifiedEntity
+  dsdInputSignature: Option[String],
+  var createdUtc: Option[DateTime] = None,
+  var modifiedUtc: Option[DateTime] = None
+) extends IdentifiedEntity
 
 class VisualizerTable(tag: Tag) extends Table[Visualizer](tag, "VISUALIZERS") with IdentifiedEntityTable[Visualizer] {
 
@@ -19,6 +22,8 @@ class VisualizerTable(tag: Tag) extends Table[Visualizer](tag, "VISUALIZERS") wi
   def name = column[String]("NAME", O.NotNull)
 
   def inputSignature = column[String]("INPUT_SIGNATURE", O.NotNull)
+
+  def dsdInputSignature = column[Option[String]]("DSD_INPUT_SIGNATURE")
 
   def url = column[String]("URL", O.NotNull)
 
@@ -30,7 +35,7 @@ class VisualizerTable(tag: Tag) extends Table[Visualizer](tag, "VISUALIZERS") wi
 
   def dataSourceId = column[Long]("DATASOURCE_ID")
 
-  def * = (id, name, inputSignature, url, description, createdUtc, modifiedUtc) <>(Visualizer.tupled, Visualizer.unapply _)
+  def * = (id, name, inputSignature, url, description, dsdInputSignature, createdUtc, modifiedUtc) <>(Visualizer.tupled, Visualizer.unapply _)
 
 }
 
