@@ -57,5 +57,10 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 var callback = $scope.dsdInSeparateDatasource ? addDsdDataSource : addVisualization;
                 addDataSource($scope.datasource, callback);
             };
+
+            $scope.anonymous = function(){
+                $scope.visualizationName = "Visualization of " + $scope.datasource.endpointUri;
+                $scope.submit();
+            };
         }]);
 });

@@ -1,0 +1,60 @@
+<div class="jumbotron">
+    <div class="container">
+        <h1>Payola LDVM visualizations</h1>
+
+        <p>
+            This application is a part of the Payola platform. Its goal is to provide visualizations of Linked Data
+            datasets
+            using principles of <a href="http://events.linkeddata.org/ldow2014/papers/ldow2014_paper_13.pdf">
+            Linked Data Visualization Model (LDVM)</a>.
+            You can use it with your own SPARQL Endpoint.
+        </p>
+
+
+        <form class="form-horizontal">
+            <div class="form-group has-warning has-feedback">
+                <input type="text" placeholder="Enter SPARQL endpoint URL" ng-model="datasource.endpointUri"
+                       class="input-lg form-control" name="endpointUrl"/>
+            </div>
+
+            <div style="text-align: center;">
+                <input type="submit" class="btn-lg btn btn-primary" value="Visualize" ng-click="anonymous()"/>
+                <a href="#/add" class="btn btn-default">More settings</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="container-fluid" style="padding-top : 60px;">
+
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Explore</h2>
+
+            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
+                euismod. Donec sed odio dui. </p>
+
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Visualize</h2>
+
+            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
+                euismod. Donec sed odio dui. </p>
+
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Share</h2>
+
+            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
+                porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
+                fermentum massa justo sit amet risus.</p>
+
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+    </div>
+</div>

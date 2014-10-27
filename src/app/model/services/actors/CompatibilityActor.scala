@@ -1,6 +1,6 @@
 package model.services.actors
 
-import akka.actor.{Actor, ActorLogging}
+import akka.actor.Actor
 import com.hp.hpl.jena.query.QueryExecutionFactory
 import model.dao.DataSource
 import model.services.rdf.sparql.GenericSparqlEndpoint

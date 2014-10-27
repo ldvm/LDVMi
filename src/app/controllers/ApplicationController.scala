@@ -5,8 +5,8 @@ import scaldi.{Injectable, Injector}
 
 class ApplicationController(implicit inj: Injector) extends Controller with Injectable {
 
-  def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+  def index() = Action {
+    Ok(views.html.angular.visualizations())
   }
 
 }

@@ -2,9 +2,13 @@ define(['./app'], function (app) {
     'use strict';
 
     app.config(['$routeProvider', '$locationProvider', function ($routeProvider) {
-        $routeProvider.when('/', {templateUrl: '/assets/javascripts/angular/visualization/partials/list.html', controller: 'List', reloadOnSearch: false});
-        $routeProvider.when('/add', {templateUrl: '/assets/javascripts/angular/visualization/partials/add.html', controller: 'Add', reloadOnSearch: false});
-        $routeProvider.when('/:page', {templateUrl: '/assets/javascripts/angular/visualization/partials/list.html', controller: 'List', reloadOnSearch: false});
+
+        var partialsPath = '/assets/javascripts/angular/visualization/partials/';
+
+        $routeProvider.when('/list', {templateUrl: partialsPath + 'list.html', controller: 'List', reloadOnSearch: false});
+        $routeProvider.when('/', {templateUrl: partialsPath + 'index.html', controller: 'Add', reloadOnSearch: false});
+        $routeProvider.when('/add', {templateUrl: partialsPath + 'add.html', controller: 'Add', reloadOnSearch: false});
+        $routeProvider.when('/:page', {templateUrl: partialsPath + 'list.html', controller: 'List', reloadOnSearch: false});
         $routeProvider.otherwise({redirectTo: '/'});
     }])
         .config(function ($provide) {

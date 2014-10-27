@@ -26,8 +26,8 @@ class VisualizationApiController(implicit inj: Injector) extends Controller with
     Ok(mayBeResult.getOrElse(JsObject(Seq(("error", JsString("notfound"))))))
   }
 
-  def addDataSource(endpointUri: String, graphUri: String, name: String = "anonymous") = DBAction { implicit rs =>
-    val did = dataSourceService.insertAndGetId(DataSource(1, name, endpointUri, Some(graphUri)))
+  def addDataSource(endpointUri: String, graphUri: Option[String] = None, name: String = "anonymous") = DBAction { implicit rs =>
+    val did = dataSourceService.insertAndGetId(DataSource(1, name, endpointUri, graphUri))
 
     Ok(JsObject(Seq(("id", JsNumber(did)))))
   }
