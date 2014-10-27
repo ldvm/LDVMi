@@ -44,7 +44,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 var addVisualization = function (ds, dsdDs) {
                     VisualizationService.add({name: $scope.visualizationName, dataDataSource: ds.id, dsdDataSource: (dsdDs.id || ds.id)}, function (v) {
-                        location.href = "/visualize/datacube#/id/" + v.id
+                        location.href = "#/compatibility/check/" + v.id
                     });
                 };
 
@@ -58,9 +58,21 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 addDataSource($scope.datasource, callback);
             };
 
-            $scope.anonymous = function(){
+            $scope.anonymous = function () {
                 $scope.visualizationName = "Visualization of " + $scope.datasource.endpointUri;
                 $scope.submit();
             };
+        }])
+        .controller('Compatibility', ['$scope', '$routeParams', function ($scope, $routeParams) {
+
+            $scope.check = false;
+
+            if ($routeParams.command) {
+                if($routeParams.command === 'check'){
+                    $scope.check = true;
+                }
+            }
+
+
         }]);
 });

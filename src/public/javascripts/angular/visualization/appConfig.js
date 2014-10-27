@@ -9,6 +9,8 @@ define(['./app'], function (app) {
         $routeProvider.when('/', {templateUrl: partialsPath + 'index.html', controller: 'Add', reloadOnSearch: false});
         $routeProvider.when('/add', {templateUrl: partialsPath + 'add.html', controller: 'Add', reloadOnSearch: false});
         $routeProvider.when('/:page', {templateUrl: partialsPath + 'list.html', controller: 'List', reloadOnSearch: false});
+        $routeProvider.when('/compatibility/:command/:id', {templateUrl: partialsPath + 'compatibility.html', controller: 'Compatibility', reloadOnSearch: false});
+        $routeProvider.when('/compatibility/:id', {templateUrl: partialsPath + 'compatibility.html', controller: 'Compatibility', reloadOnSearch: false});
         $routeProvider.otherwise({redirectTo: '/'});
     }])
         .config(function ($provide) {

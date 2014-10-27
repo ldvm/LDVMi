@@ -14,9 +14,6 @@
             <strong>{{visualizationTuple.dsdDatasource.endpointUrl}}</strong>
             <p>{{visualizationTuple.dsdDatasource.namedGraphs}}</p>
         </td>
-        <td data-title="'Last modified'" style="white-space: nowrap;">
-            <span am-time-ago="time(visualizationTuple.visualization.modifiedUtc, visualizationTuple.visualization.createdUtc)"></span>
-        </td>
         <td data-title="'Actions'" style="min-width: 150px;">
 
             <div class="btn-group">
@@ -29,11 +26,15 @@
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}" ng-if="visualizationTuple.token">DataCube</a></li>
                     <li><a href="/visualize/map#/id/{{visualizationTuple.visualization.id}}">Map</a></li>
-                    <li><a href="#" ng-if="visualizationTuple.token">Versions</a></li>
+                    <!--<li><a href="#" ng-if="visualizationTuple.token">Versions</a></li>-->
                     <li class="divider" ng-if="visualizationTuple.token"></li>
                     <li><a href="#">Edit</a></li>
+                    <li><a href="#/compatibility/{{visualizationTuple.visualization.id}}">Compatibility</a></li>
                 </ul>
             </div>
+        </td>
+        <td data-title="'Last modified'" style="white-space: nowrap;">
+            <span am-time-ago="time(visualizationTuple.visualization.modifiedUtc, visualizationTuple.visualization.createdUtc)"></span>
         </td>
     </tr>
 </table>
