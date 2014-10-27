@@ -18,16 +18,16 @@ GET         /api/datacube/datastructure-components          @controllers.api.Dat
 POST        /api/datacube/values/:id                        @controllers.api.DataCubeApiController.values(id: Long)
 POST        /api/datacube/slices/:id                        @controllers.api.DataCubeApiController.sliceCube(id: Long)
 
+GET         /api/visualization/checkCompatibility/:id       @controllers.api.VisualizationApiController.checkCompatibility(id: Long)
 GET         /api/visualization/list                         @controllers.api.VisualizationApiController.list(skip: Int, take: Int)
 GET         /api/visualization/queries/:id                  @controllers.api.VisualizationApiController.queries(id: Long, permalinkToken: String)
 GET         /api/visualization/cached/:id/:token            @controllers.api.VisualizationApiController.getCachedResult(id: Long, token: String)
-
 GET         /api/visualization/add-datasource               @controllers.api.VisualizationApiController.addDataSource(endpointUri: String, graphUri: String)
 GET         /api/visualization/add                          @controllers.api.VisualizationApiController.addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String])
 GET         /api/visualization/payola/:evaluationId         @controllers.api.VisualizationApiController.addPayola(evaluationId: String)
 
 GET         /api/visualizer/list                            @controllers.api.VisualizerApiController.list(skip: Int, take: Int)
-GET        /api/visualizer/add                             @controllers.api.VisualizerApiController.add(name: String, signature: String, url: String, description: Option[String], dsdSignature: Option[String])
+GET         /api/visualizer/add                             @controllers.api.VisualizerApiController.add(name: String, signature: String, url: String, description: Option[String], dsdSignature: Option[String])
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /vassets/*file                                  controllers.Assets.versioned(path="/public", file: Asset)

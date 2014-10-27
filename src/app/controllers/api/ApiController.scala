@@ -2,15 +2,15 @@ package controllers.api
 
 import model.dao.VisualizationEagerBox
 import model.services.VisualizationService
+import model.services.rdf.sparql.datacube.DataCubeService
+import model.services.rdf.sparql.geo.GeoService
 import play.api.Play.current
 import play.api.db.slick._
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.iteratee.{Iteratee, Enumeratee, Enumerator}
-import play.api.libs.json.{JsResult, JsError, JsSuccess, JsValue}
-import play.api.mvc.{Results, Action, Controller, Result}
+import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
+import play.api.libs.json.{JsError, JsResult, JsSuccess, JsValue}
+import play.api.mvc.{Action, Controller, Result, Results}
 import scaldi.{Injectable, Injector}
-import model.services.rdf.sparql.datacube.DataCubeService
-import model.services.rdf.sparql.geo.GeoService
 
 import scala.concurrent.Future
 

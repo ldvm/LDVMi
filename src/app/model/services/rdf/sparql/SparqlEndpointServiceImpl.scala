@@ -20,14 +20,14 @@ class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointSe
   }
 
   def getResult[Q <: SparqlQuery, R](dataSource: DataSource, query: Q, extractor: QueryExecutionResultExtractor[Q, R]): R = {
-    extractor.extract(executeJena(dataSource, query))
+    extractor.extract(constructExecution(dataSource, query))
   }
 
   private def executeQuery[D <: SparqlResultLang](dataSource: DataSource, query: SparqlQuery, lang: D): Option[SparqlResult[D]] = {
     GenericSparqlEndpoint(dataSource).executeQuery[D](query, lang)
   }
 
-  private def executeJena(dataSource: DataSource, query: SparqlQuery): QueryExecution = {
+  def constructExecution(dataSource: DataSource, query: SparqlQuery): QueryExecution = {
     val sparqlEndpoint = GenericSparqlEndpoint(dataSource)
     QueryExecutionFactory.sparqlService(sparqlEndpoint.endpointURL, query.get, sparqlEndpoint.namedGraphs, List())
   }

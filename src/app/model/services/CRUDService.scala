@@ -18,6 +18,10 @@ trait CRUDService[E <: IdentifiedEntity, ETable <: Table[E] with IdentifiedEntit
 
   def getByIdWithEager(id: Long)(implicit s: Session): Option[EBox]
 
+  def list(implicit s: Session): Seq[ETable#TableElementType] = {
+    (for (e <- tableReference) yield e).list
+  }
+
   def list(skip: Int = 0, take: Int = 0)(implicit s: Session): Seq[ETable#TableElementType] = {
     (for {
       e <- tableReference.sortBy(_.id).drop(skip).take(take)

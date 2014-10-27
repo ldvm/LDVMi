@@ -7,4 +7,5 @@ class DataModule extends Module {
   bind[VisualizerService] to new VisualizerServiceImpl
   bind[DataSourceService] to new DataSourceServiceImpl
   bind[VisualizationQueriesService] to new VisualizationQueriesServiceImpl
+  bind[LDVMService] to new LDVMServiceImpl
 }

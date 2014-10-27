@@ -5,13 +5,8 @@
     <tr ng-repeat="visualizer in $data">
         <td data-title="'ID'">{{visualizer.id}}</td>
         <td data-title="'Title'">{{visualizer.name}}</td>
-        <td data-title="'URL'">
-            {{visualizer.url}}
-        </td>
-
-        <td data-title="'Actions'" style="min-width: 150px;">
-
-
-        </td>
+        <td data-title="'URL'">{{visualizer.url}}</td>
+        <td data-title="'Signature'">{{visualizer.inputSignature}}</td>
+        <td data-title="'DSD Signature'">{{visualizer.dsdInputSignature}}</td>
     </tr>
 </table>
