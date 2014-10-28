@@ -63,16 +63,31 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 $scope.submit();
             };
         }])
-        .controller('Compatibility', ['$scope', '$routeParams', function ($scope, $routeParams) {
+        .controller('Compatibility', [
+            '$scope', '$routeParams', 'Compatibility', 'VisualizationService',
+            function ($scope, $routeParams, Compatibility, VisualizationService) {
 
-            $scope.check = false;
+                $scope.check = false;
 
-            if ($routeParams.command) {
-                if($routeParams.command === 'check'){
-                    $scope.check = true;
+                if ($routeParams.command) {
+                    if ($routeParams.command === 'check') {
+                        $scope.check = true;
+                    }
                 }
-            }
 
+                VisualizationService.get({id: $routeParams.id}, function (data) {
+                    $scope.visualizationBox = data;
+                });
 
-        }]);
+                Compatibility.get({id: $routeParams.id}, function (data) {
+
+                });
+
+                if ($scope.check) {
+                    Compatibility.check({id: $routeParams.id}, function (data) {
+
+                    });
+                }
+
+            }]);
 });

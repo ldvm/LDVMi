@@ -1,7 +1,7 @@
 package controllers.api
 
 import model.dao.Visualizer
-import model.services.{LDVMService, VisualizerService}
+import model.services.VisualizerService
 import play.api.Play.current
 import play.api.db.slick._
 import play.api.libs.json._

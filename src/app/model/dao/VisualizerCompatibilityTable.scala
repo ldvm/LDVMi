@@ -4,7 +4,14 @@ import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
 import PortableJodaSupport._
 
-case class VisualizerCompatibility(id: Long, visualizerId: Long, dataSourceId: Long, visualizationId: Long, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdentifiedEntity
+case class VisualizerCompatibility(
+  id: Long,
+  visualizerId: Long,
+  dataSourceId: Option[Long],
+  visualizationId: Option[Long],
+  var createdUtc: Option[DateTime] = None,
+  var modifiedUtc: Option[DateTime] = None
+) extends IdentifiedEntity
 
 class VisualizerCompatibilityTable(tag: Tag) extends Table[VisualizerCompatibility](tag, "VISUALIZERS_COMPATIBILITY") with IdentifiedEntityTable[VisualizerCompatibility] {
   val dataSources = TableQuery[DataSourcesTable]
@@ -23,9 +30,9 @@ class VisualizerCompatibilityTable(tag: Tag) extends Table[VisualizerCompatibili
 
   def modifiedUtc = column[Option[DateTime]]("MODIFIED")
 
-  def dataSourceId = column[Long]("DATASOURCE_ID")
+  def dataSourceId = column[Option[Long]]("DATASOURCE_ID")
 
-  def visualizationId = column[Long]("VISUALIZATION_ID")
+  def visualizationId = column[Option[Long]]("VISUALIZATION_ID")
 
   def visualizerId = column[Long]("VISUALIZER_ID")
 

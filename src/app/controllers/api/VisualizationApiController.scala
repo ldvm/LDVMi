@@ -1,7 +1,7 @@
 package controllers.api
 
 import model.dao.{DataSource, Visualization}
-import model.services.{DataSourceService, LDVMService, VisualizationQueriesService, VisualizationService}
+import model.services._
 import play.api.Play.current
 import play.api.cache.Cache
 import play.api.db.slick._
@@ -15,6 +15,12 @@ class VisualizationApiController(implicit inj: Injector) extends Controller with
   val dataSourceService = inject[DataSourceService]
   val visualizationQueriesService = inject[VisualizationQueriesService]
   val ldvmService = inject[LDVMService]
+  val compatibilityService = inject[CompatibilityService]
+
+  def get(id: Long) = DBAction { implicit rs =>
+    val entity = visualizationService.getByIdWithEager(id)
+    Ok(Json.toJson(entity))
+  }
 
   def queries(id: Long, permalinkToken: String) = DBAction { implicit rs =>
     val query = visualizationQueriesService.findByIdAndToken(id, permalinkToken)
@@ -62,6 +68,11 @@ class VisualizationApiController(implicit inj: Injector) extends Controller with
   def checkCompatibility(id: Long) = DBAction { implicit s =>
     ldvmService.checkVisualizationCompatibility(id)
     Ok("")
+  }
+
+  def getCompatibilityForVisualization(id: Long) = DBAction { implicit s =>
+    val entities = compatibilityService.getByVisualizationId(id)
+    Ok(Json.toJson(entities))
   }
 
 }

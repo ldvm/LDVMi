@@ -1,8 +1,26 @@
 <div class="container-fluid" style="padding-top: 60px;">
     <div class="alert alert-info">
-        This is a list of visualizers, which are able to visualize the visualization {{}}.
-        Last checked on {{}}.
-        <button class="btn btn-primary"><i class="glyphicon glyphicon-refresh"></i> Check again</button>
+        <div class="row">
+            <div class="col-lg-10">
+                This is a list of visualizers, which are able to visualize the visualization
+                "{{visualizationBox.visualization.name}}".
+            </div>
+            <div class="col-lg-2">
+                <a href="#/compatibility/check/{{visualizationBox.visualization.id}}" class="btn btn-primary pull-right"><i class="glyphicon glyphicon-refresh"></i> Check again</a>
+            </div>
+        </div>
     </div>
-    <table></table>
+    <table>
+        <tr ng-repeat="visualizer in visualizers">
+            <td>
+                {{visualizer.id}}
+            </td>
+            <td>
+                {{visualizer.name}}
+            </td>
+            <td>
+                <a href="#" class="btn btn-primary">Visualize</a>
+            </td>
+        </tr>
+    </table>
 </div>
