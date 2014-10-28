@@ -5,6 +5,8 @@ payola-viz
 
 This project is developed as a replacement for visualization parts in Payola project. Its goal is to provide better reliability, scalability and resolve some issues which cannot be easily resolved Payola due to its architecture.
 
+Based on LDVM principles, it enables a user to visualized data in their dataset while it automatically offers list of suitable visualizers.
+
 Right now, it provides those visualization techniques:
 - DataCube
 - OpenLayers WKT multipolygon (in progress)
