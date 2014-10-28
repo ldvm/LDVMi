@@ -38,9 +38,8 @@ class LDVMServiceImpl(implicit inj: Injector) extends LDVMService with Injectabl
 
         result.onComplete { tryCompatible =>
           tryCompatible.map { compatible =>
-            val result = compatible.x && compatible.z
-            if (result) {
-              compatibilityService.insert(VisualizerCompatibility(1, visualizer.id, None, Some(visualizationEagerBox.visualization.id)))
+            if (compatible.x && compatible.z) {
+              val id = compatibilityService.insertAndGetId(VisualizerCompatibility(1, visualizer.id, None, Some(visualizationEagerBox.visualization.id)))
             }
           }
         }

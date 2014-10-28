@@ -36,7 +36,7 @@ trait CRUDService[E <: IdentifiedEntity, ETable <: Table[E] with IdentifiedEntit
     tableReference.insert(row)
   }
 
-  def insertAndGetId(row: ETable#TableElementType)(implicit s: Session) = {
+  def insertAndGetId(row: ETable#TableElementType)(implicit s: Session) : Long = {
     row.modifiedUtc = None
     row.createdUtc = Some(new DateTime).map(_.toDateTime(DateTimeZone.forOffsetHours(0)))
     (tableReference returning tableReference.map(_.id)) += row
