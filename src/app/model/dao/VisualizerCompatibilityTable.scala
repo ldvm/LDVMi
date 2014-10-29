@@ -1,5 +1,6 @@
 package model.dao
 
+import model.services.EagerBox
 import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
 import PortableJodaSupport._
@@ -12,6 +13,10 @@ case class VisualizerCompatibility(
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
 ) extends IdentifiedEntity
+
+case class VisualizerCompatibilityEagerBox(visualizerCompatibility: VisualizerCompatibility, visualizer: Visualizer) extends EagerBox[VisualizerCompatibility]{
+  override def mainEntity: VisualizerCompatibility = visualizerCompatibility
+}
 
 class VisualizerCompatibilityTable(tag: Tag) extends Table[VisualizerCompatibility](tag, "VISUALIZERS_COMPATIBILITY") with IdentifiedEntityTable[VisualizerCompatibility] {
   val dataSources = TableQuery[DataSourcesTable]

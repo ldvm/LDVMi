@@ -1,10 +1,10 @@
 package model.services
 
-import model.dao.{VisualizerCompatibilityTable, VisualizerCompatibility}
+import model.dao.{VisualizerCompatibilityEagerBox, VisualizerCompatibilityTable, VisualizerCompatibility}
 import play.api.db.slick.Session
 
-trait CompatibilityService extends IdentityEagerCRUDService[VisualizerCompatibility, VisualizerCompatibilityTable] {
+trait CompatibilityService extends CRUDService[VisualizerCompatibility, VisualizerCompatibilityTable, VisualizerCompatibilityEagerBox] {
 
-  def getByVisualizationId(id: Long)(implicit session: Session) : Seq[VisualizerCompatibility]
+  def getByVisualizationId(id: Long)(implicit session: Session): Seq[VisualizerCompatibilityEagerBox]
 
 }

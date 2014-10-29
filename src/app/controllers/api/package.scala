@@ -51,6 +51,16 @@ package object api {
       )
   }
 
+  implicit val visualizerCompatibilityEagerBoxWrites: Writes[VisualizerCompatibilityEagerBox] = Writes {
+    visualizationEagerBox =>
+      JsObject(
+        Seq(
+          ("visualizerCompatibility", Json.toJson(visualizationEagerBox.visualizerCompatibility)),
+          ("visualizer", Json.toJson(visualizationEagerBox.visualizer))
+        )
+      )
+  }
+
 
   val filterPath = (JsPath \ "label").readNullable[String] and
     (JsPath \ "dataType").readNullable[String] and
