@@ -6,12 +6,14 @@ import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
 import model.dao.VisualizerCompatibility
-import model.services.actors.{CompatibilityActor, CheckCompatibility}
+import model.services.actors.{CheckCompatibility, CompatibilityActor}
 import play.api.Play.current
+import play.api.db
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
 import scaldi.{Injectable, Injector}
+
 
 case class Compatible(x: Boolean, z: Boolean)
 
@@ -39,7 +41,10 @@ class LDVMServiceImpl(implicit inj: Injector) extends LDVMService with Injectabl
         result.onComplete { tryCompatible =>
           tryCompatible.map { compatible =>
             if (compatible.x && compatible.z) {
-              val id = compatibilityService.insertAndGetId(VisualizerCompatibility(1, visualizer.id, None, Some(visualizationEagerBox.visualization.id)))
+              implicit var session = db.slick.DB.createSession()
+              val vid = visualizerService.getById(visualizer.id)
+              compatibilityService.insert(VisualizerCompatibility(1000, visualizer.id, None, Some(visualizationEagerBox.visualization.id)))
+              session.close()
             }
           }
         }
