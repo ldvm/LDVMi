@@ -315,8 +315,14 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                         view: new ol.View({
                             center: [0, 0],
                             zoom: 1
-                        })
+                        }),
+                        interactions: ol.interaction.defaults().extend([
+                            new ol.interaction.DragRotateAndZoom()
+                        ])
                     });
+
+                    var zoomslider = new ol.control.ZoomSlider();
+                    $scope.map.addControl(zoomslider);
 
                     $scope.el = $elm;
                 },
