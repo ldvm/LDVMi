@@ -7,7 +7,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
             function ($scope, DataCubeService, $q, $location, $routeParams, $timeout) {
 
                 var $id = $routeParams.id;
-                var $permaToken = $routeParams.p;
+                var $permanentToken = $routeParams.p;
                 var $view = $routeParams.view;
                 var $chartType = $routeParams.chartType;
                 var $isPolar = $routeParams.isPolar === true;
@@ -46,9 +46,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     yAxis: {
                         title: {
                             text: ""
-                        }/*,
-                         currentMin: 0,
-                         currentMax: 100*/
+                        }
                     },
                     loading: false
                 };
@@ -99,9 +97,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope.language = language;
                 };
 
-                /******************/
-
-
                 if ($view == "chart") {
                     $scope.showChart();
                     if ($chartType) {
@@ -112,39 +107,41 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     }
                 }
 
-                /****************/
-
-
                 $scope.availableLanguages = ["cs", "en"];
 
                 /*DataCubeService.getDatasets({ visualizationId: $id }, function () {
 
                  });*/
 
+                $scope.loadByPermanentToken = function(){
+                    $scope.queryingDataset = "chart data";
+                    var promise = DataCubeService.getQuery({ visualizationId: $id, permalinkToken: $permanentToken});
+                    DataCubeService.getCached({visualizationId: $id, token: $permanentToken}, function (response) {
+                        var callback;
+                        if (response.error) {
+                            callback = $scope.refresh;
+                        } else {
+                            callback = function(){
+                                queryResultsLoaded(response, $location.search());
+                            };
+                        }
+
+                        promise.$promise.then(function (data) {
+                            $scope.queryingDataset = null;
+                            applyFilters(data, callback);
+                        });
+                    }, function () {
+                        $scope.queryingDataset = null;
+                    });
+                };
+
                 $scope.queryingDataset = "QB datastructure definitions";
                 DataCubeService.getDataStructures({ visualizationId: $id }, function (data) {
                     $scope.queryingDataset = null;
                     $scope.dataStructures = data;
 
-                    if ($scope.init && $permaToken) {
-                        $scope.queryingDataset = "chart data";
-                        var promise = DataCubeService.getQuery({ visualizationId: $id, permalinkToken: $permaToken});
-                        DataCubeService.getCached({visualizationId: $id, token: $permaToken}, function (response) {
-                            if (response.error) {
-                                promise.$promise.then(function (data) {
-                                    $scope.queryingDataset = null;
-                                    applyFilters(data, $scope.refresh);
-                                });
-                            } else {
-                                promise.$promise.then(function (data) {
-                                    $scope.queryingDataset = null;
-                                    applyFilters(data)
-                                });
-                                queryResultsLoaded(response, $location.search());
-                            }
-                        }, function () {
-                            $scope.queryingDataset = null;
-                        });
+                    if ($scope.init && $permanentToken) {
+                        $scope.loadByPermanentToken();
                     }
 
                     $scope.init = false;
@@ -174,14 +171,14 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope.activeDSD.components.forEach(function (c) {
                         ["dimension", "attribute", "measure"].forEach(function (type) {
                             if (c[type]) {
-                                $scope.labelsRegistry[c[type].uri] = label(c.label);
+                                $scope.labelsRegistry[c[type].uri] = $scope.label(c.label);
 
                                 if ($scope.values) {
                                     var values = $scope.values[c[type].uri];
                                     if (values) {
                                         values.forEach(function (v) {
                                             if (v.uri) {
-                                                $scope.labelsRegistry[v.uri] = label(v.label);
+                                                $scope.labelsRegistry[v.uri] = $scope.label(v.label);
                                             }
                                         });
                                     }
@@ -221,7 +218,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     });
                 };
 
-                function label(uri) {
+                function labelOrUri(uri) {
                     return $scope.labelsRegistry[uri] || uri;
                 }
 
@@ -254,7 +251,8 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         var formattedData = {};
 
                         ng.forEach(series.data, function (value, key) {
-                            var categoryLabel = $scope.labelsRegistry[key] || key;
+                            var categoryLabel = labelOrUri(key);
+                            console.log(key, categoryLabel);
                             formattedData[$scope._categories[categoryLabel]] = value;
                         });
 
@@ -306,7 +304,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                     if (response.cube && response.cube.slices) {
                         for (var k in response.cube.slices) {
-                            addSeries({name: label(k), data: response.cube.slices[k]});
+                            addSeries({name: labelOrUri(k), data: response.cube.slices[k]});
                         }
                     }
 
