@@ -9,15 +9,27 @@ object DataPortId extends IdCompanion[DataPortId]
 
 case class DataPort(
   id: Option[DataPortId],
-
+  inputId: Option[InputId],
+  outputId: Option[OutputId],
+  componentId: ComponentId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity
+  ) extends IdEntity {
+
+  def isInput = inputId.isDefined
+
+  def isOutput = outputId.isDefined
+
+}
 
 
-class DataPortTable(tag: Tag) extends IdEntityTable[DataPortId, DataPort](tag, "dataports") {
+class DataPortTable(tag: Tag) extends DescribedEntityTable[DataPortId, DataPort](tag, "dataports") {
+
+  def inputId = column[Option[InputId]]("input_id")
+
+  def outputId = column[Option[OutputId]]("output_id")
 
   def componentId = column[ComponentId]("component_id", O.NotNull)
 
-  def * = (id, componentId, createdUtc, modifiedUtc) <> (DataPort.tupled, DataPort.unapply _)
+  def * = (id, inputId, outputId, componentId, createdUtc, modifiedUtc) <> (DataPort.tupled, DataPort.unapply _)
 }
