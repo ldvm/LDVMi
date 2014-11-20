@@ -32,10 +32,10 @@ package object api {
   implicit val polygonEntitiesWrites = Json.writes[WKTEntity]
   implicit val propertyWrites = Json.writes[Property]
 
-  implicit val visualizerWrites = Json.writes[Visualizer]
-  implicit val visualizerCompatibilityWrites = Json.writes[VisualizerCompatibility]
+  implicit val visualizerWrites = Json.writes[Component]
+  implicit val visualizerCompatibilityWrites = Json.writes[ComponentCompatibility]
 
-  implicit val identityEagerBoxVisualizerWrites : Writes[IdentityEagerBox[Visualizer]] = Writes { eb =>
+  implicit val identityEagerBoxVisualizerWrites : Writes[IdentityEagerBox[Component]] = Writes { eb =>
     Json.toJson(eb.mainEntity)
   }
 
@@ -44,14 +44,13 @@ package object api {
       JsObject(
         Seq(
           ("visualization", Json.toJson(visualizationEagerBox.visualization)),
-          ("datasource", Json.toJson(visualizationEagerBox.dataSource)),
-          ("dsdDatasource", Json.toJson(visualizationEagerBox.dsdDataSource)),
+          ("datasource", Json.toJson(visualizationEagerBox.datasource)),
           ("token", Json.toJson(visualizationEagerBox.token))
         )
       )
   }
 
-  implicit val visualizerCompatibilityEagerBoxWrites: Writes[VisualizerCompatibilityEagerBox] = Writes {
+  implicit val visualizerCompatibilityEagerBoxWrites: Writes[ComponentCompatibilityEagerBox] = Writes {
     visualizationEagerBox =>
       JsObject(
         Seq(

@@ -1,6 +1,6 @@
 package controllers.api
 
-import model.dao.Visualizer
+import model.dao.Component
 import model.services.VisualizerService
 import play.api.Play.current
 import play.api.db.slick._
@@ -12,9 +12,9 @@ class VisualizerApiController(implicit inj: Injector) extends Controller with In
 
   val visualizerService = inject[VisualizerService]
 
-  def add(name: String, signature: String, url: String, description: Option[String] = None, dsdSignature: Option[String] = None) = DBAction { implicit rs =>
+  def add(name: String, signature: String, url: String, description: Option[String] = None, title: Option[String] = None) = DBAction { implicit rs =>
 
-    val vid = visualizerService.insertAndGetId(Visualizer(1, name, signature, url, description, dsdSignature))
+    val vid = visualizerService.insertAndGetId(Component(1, name, title, description, "input", None, url))
 
     Ok(JsObject(Seq(("id", JsNumber(vid)))))
   }

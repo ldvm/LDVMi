@@ -1,40 +1,83 @@
 <div class="container">
-    <form role="form" class="form-horizontal">
-        <div class="form-group">
-            <label for="visualizerName">Visualizer name</label>
+    <form role="form" class="form-horizontal" novalidate ng-submit="submit()">
 
-            <div>
-                <input id="visualizerName" type="text" class="form-control" ng-model="visualizerName" placeholder="Visualizer name"/>
+        <div class="row">
+            <div class="col-md-7">
+                <h2>Features</h2>
+
+                <div class="form-group">
+                    <label for="visualizerUri">Visualizer URI</label>
+
+                    <div>
+                        <input id="visualizerUri" type="text" class="form-control" ng-model="visualizer.uri" placeholder="Visualizer URI"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="visualizerUrl">Payola URL</label>
+
+                    <div>
+                        <input id="visualizerUrl" type="text" class="form-control" ng-model="visualizer.payolaUrl" placeholder="Visualizer URL"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="visualizerDescription">Description</label>
+
+                    <div>
+                        <textarea id="visualizerDescription" class="form-control" ng-model="visualizer.description" placeholder="Visualizer description"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="visualizerDefaultConfiguration">Default configuration</label>
+
+                    <div>
+                        <textarea id="visualizerDefaultConfiguration" class="form-control" ng-model="visualizer.defaultConfiguration" placeholder="Visualizer default configuration (JSON object)"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="visualizerInputLabel">Input label</label>
+
+                    <div>
+                        <input id="visualizerInputLabel" type="text" class="form-control" ng-model="visualizer.input.label" placeholder="Visualizer input label"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <h2>Features</h2>
+
+                <div class="well clearfix" ng-repeat="feature in visualizer.features">
+                    <div class="form-group">
+                        <label for="visualizerFeatureLabel">Label</label>
+
+                        <div>
+                            <input id="visualizerFeatureLabel" type="text" class="form-control" ng-model="feature.label" placeholder="Feature label"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="visualizerFeatureUri">URI</label>
+
+                        <div>
+                            <input id="visualizerFeatureUri" type="text" class="form-control" ng-model="feature.uri" placeholder="Feature URI"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="visualizerFeatureSignature">Signature</label>
+
+                        <div>
+                            <textarea id="visualizerFeatureSignature" type="text" class="form-control" ng-model="feature.signature" placeholder="Feature signature"></textarea>
+                        </div>
+                    </div>
+
+                    <input type="button" class="btn btn-danger pull-right" value="Remove feature" ng-click="removeFeature($index)" />
+                </div>
+
+                <input type="button" class="btn btn-default" ng-click="addFeature()" value="Add feature" />
             </div>
         </div>
-        <div class="form-group">
-            <label for="visualizerUrl">Visualizer URL</label>
-
-            <div>
-                <input id="visualizerUrl" type="text" class="form-control" ng-model="visualizerUrl" placeholder="Visualizer URL"/>
-            </div>
+        <div style="text-align: center">
+            <input type="submit" value="Add visualizer" class="btn btn-primary btn-lg" />
         </div>
-        <div class="form-group">
-            <label for="visualizerSignature">Input signature (SPARQL ASK)</label>
-
-            <div>
-                <textarea id="visualizerSignature" class="form-control" ng-model="visualizerSignature" placeholder="Visualizer signature"></textarea>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="visualizerDSDSignature">Input signature - DSD (SPARQL ASK)</label>
-
-            <div>
-                <textarea id="visualizerDSDSignature" class="form-control" ng-model="visualizerDSDSignature" placeholder="Visualizer DSD signature"></textarea>
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="visualizerDescription">Description</label>
-
-            <div>
-                <textarea id="visualizerDescription" class="form-control" ng-model="visualizerDescription" placeholder="Visualizer description"></textarea>
-            </div>
-        </div>
-        <input type="submit" value="Add visualizer" class="btn btn-primary pull-right" ng-click="submit()" />
     </form>
 </div>

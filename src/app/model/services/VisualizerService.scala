@@ -1,5 +1,5 @@
 package model.services
 
-import model.dao.{Visualizer, VisualizerTable}
+import model.dao.{Component, ComponentTable}
 
-trait VisualizerService extends IdentityEagerCRUDService[Visualizer, VisualizerTable]
+trait VisualizerService extends IdentityEagerCRUDService[Component, ComponentTable]

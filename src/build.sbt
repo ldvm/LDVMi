@@ -36,6 +36,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "momentjs" % "2.8.3",
   "org.scalaj" %% "scalaj-http" % "0.3.16",
   "org.scaldi" % "scaldi-play_2.11" % "0.4.1",
+  "org.virtuslab" %% "unicorn-play" % "0.6.2",
   "org.apache.jena" % "jena" % "2.12.0",
   "org.apache.jena" % "jena-arq" % "2.12.0",
   "com.typesafe.play" %% "play-slick" % "0.8.0",

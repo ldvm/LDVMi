@@ -4,9 +4,11 @@
 <table ng-table="tableParams" class="table table-striped">
     <tr ng-repeat="visualizer in $data">
         <td data-title="'ID'">{{visualizer.id}}</td>
-        <td data-title="'Title'">{{visualizer.name}}</td>
+        <td data-title="'Name'">{{visualizer.name}}</td>
+        <td data-title="'Title'">{{visualizer.title}}</td>
         <td data-title="'URL'">{{visualizer.url}}</td>
-        <td data-title="'Signature'">{{visualizer.inputSignature}}</td>
-        <td data-title="'DSD Signature'">{{visualizer.dsdInputSignature}}</td>
+    </tr>
+    <tr ng-if="$data.length == 0">
+        <td colspan="4">No available data.</td>
     </tr>
 </table>

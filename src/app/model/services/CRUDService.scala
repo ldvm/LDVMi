@@ -1,11 +1,11 @@
 package model.services
 
-import model.dao.{IdentifiedEntityTable, IdentifiedEntity}
+import model.dao.{IdEntityTable, IdEntity}
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.Session
 
-trait CRUDService[E <: IdentifiedEntity, ETable <: Table[E] with IdentifiedEntityTable[E], EBox <: EagerBox[E]] {
+trait CRUDService[E <: IdEntity, ETable <: Table[E] with IdEntityTable[E], EBox <: EagerBox[E]] {
 
   val tableReference: TableQuery[ETable]
 

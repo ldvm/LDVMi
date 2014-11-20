@@ -7,15 +7,15 @@ import model.services.rdf.sparql.GenericSparqlEndpoint
 
 import scala.collection.JavaConversions._
 
-case class CheckCompatibility(dataSource: DataSource, signature: String)
+case class CheckCompatibility(dataSource: DataSource, signature: String, featureId: Long)
 
 class CompatibilityActor extends Actor {
   def receive: Receive = {
-    case CheckCompatibility(dataSource, signature) => {
+    case CheckCompatibility(dataSource, signature, featureId) => {
       try {
         val sparqlEndpoint = GenericSparqlEndpoint(dataSource)
         val qe = QueryExecutionFactory.sparqlService(sparqlEndpoint.endpointURL, signature, sparqlEndpoint.namedGraphs, List())
-        sender() ! qe.execAsk()
+        sender() ! (qe.execAsk(), featureId)
       } catch {
         case e: Exception =>
           sender() ! akka.actor.Status.Failure(e)

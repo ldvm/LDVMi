@@ -2,42 +2,27 @@ package model.dao
 
 import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
-import PortableJodaSupport._
+import org.virtuslab.unicorn.LongUnicornPlay._
+import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
+
+case class VisualizerId(id: Long) extends AnyVal with BaseId
+object VisualizerId extends IdCompanion[VisualizerId]
 
 case class Visualizer(
-  id: Long,
-  name: String,
-  inputSignature: String,
-  url: String,
-  description: Option[String],
-  dsdInputSignature: Option[String],
+  id: Option[VisualizerId],
+  componentId: ComponentId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdentifiedEntity
+) extends IdEntity
 
-class VisualizerTable(tag: Tag) extends Table[Visualizer](tag, "VISUALIZERS") with IdentifiedEntityTable[Visualizer] {
 
-  def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
+class VisualizerTable(tag: Tag) extends IdEntityTable[VisualizerId, Visualizer](tag, "visualizer") {
 
-  def name = column[String]("NAME", O.NotNull)
+  val components = TableQuery[ComponentTable]
 
-  def inputSignature = column[String]("INPUT_SIGNATURE", O.NotNull)
+  def component = foreignKey("fk_vt_ct_component_id", componentId, components)(_.id)
 
-  def dsdInputSignature = column[Option[String]]("DSD_INPUT_SIGNATURE")
+  def componentId = column[ComponentId]("component_id", O.NotNull)
 
-  def url = column[String]("URL", O.NotNull)
-
-  def description = column[Option[String]]("DESCRIPTION")
-
-  def createdUtc = column[Option[DateTime]]("CREATED")
-
-  def modifiedUtc = column[Option[DateTime]]("MODIFIED")
-
-  def dataSourceId = column[Long]("DATASOURCE_ID")
-
-  def * = (id, name, inputSignature, url, description, dsdInputSignature, createdUtc, modifiedUtc) <>(Visualizer.tupled, Visualizer.unapply _)
-
+  def * = (id, componentId, createdUtc, modifiedUtc) <> (Visualizer.tupled, Visualizer.unapply _)
 }
-
-
-

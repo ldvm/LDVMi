@@ -17,20 +17,20 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
 
   def dataStructures(id: Long) = DBAction { implicit rs =>
     withVisualizationEagerBox(id) { visualizationEagerBox =>
-      Ok(Json.toJson(dataCubeService.getDataStructures(visualizationEagerBox.dsdDataSource)))
+      Ok(Json.toJson(dataCubeService.getDataStructures(visualizationEagerBox.datasource)))
     }
   }
 
   def dataStructureComponents(id: Long, uri: String) = DBAction { implicit rs =>
     withVisualizationEagerBox(id) { visualizationEagerBox =>
-      val components = dataCubeService.getDataStructureComponents(visualizationEagerBox.dsdDataSource, uri)
+      val components = dataCubeService.getDataStructureComponents(visualizationEagerBox.datasource, uri)
       val componentsJson = Seq("components" -> components).toMap
       Ok(Json.toJson(componentsJson))
     }
   }
 
   def values(id: Long) = parsingFuture(id) { (visualizationEagerBox, uris: List[String], _) =>
-    val futures = dataCubeService.getValues(visualizationEagerBox.dataSource, uris).map(m =>
+    val futures = dataCubeService.getValues(visualizationEagerBox.datasource, uris).map(m =>
       enumeratorToSeq(m._2).transform(values => m._1 -> values, t => t)
     )
 
@@ -50,7 +50,7 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
 
   def datasets(id: Long) = DBAction { implicit rs =>
     withVisualizationEagerBox(id) { visualizationEagerBox =>
-      Ok(Json.toJson(dataCubeService.getDatasets(visualizationEagerBox.dataSource)))
+      Ok(Json.toJson(dataCubeService.getDatasets(visualizationEagerBox.datasource)))
     }
   }
 

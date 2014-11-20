@@ -1,9 +1,9 @@
 package model.services
 
-import model.dao.{IdentifiedEntityTable, IdentifiedEntity}
+import model.dao.{IdEntityTable, IdEntity}
 import play.api.db.slick.Config.driver.simple._
 
-trait IdentityEagerCRUDService[E <: IdentifiedEntity, ETable <: Table[E] with IdentifiedEntityTable[E]] extends CRUDService[E, ETable, IdentityEagerBox[E]] {
+trait IdentityEagerCRUDService[E <: IdEntity, ETable <: Table[E] with IdEntityTable[E]] extends CRUDService[E, ETable, IdentityEagerBox[E]] {
 
   def getByIdWithEager(id: Long)(implicit s: Session): Option[IdentityEagerBox[E]] =
     getById(id).map(IdentityEagerBox.apply)

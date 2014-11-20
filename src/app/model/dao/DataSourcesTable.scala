@@ -1,25 +1,27 @@
 package model.dao
 
-import model.dao.PortableJodaSupport._
 import org.joda.time.DateTime
-import play.api.db.slick.Config.driver.simple._
+import org.virtuslab.unicorn.LongUnicornPlay._
+import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
+
+case class DataSourceId(id: Long) extends AnyVal with BaseId
+object DataSourceId extends IdCompanion[DataSourceId]
+
+case class DataSource(
+  id: Option[DataSourceId],
+  componentId: ComponentId,
+  var createdUtc: Option[DateTime] = None,
+  var modifiedUtc: Option[DateTime] = None
+) extends IdEntity
 
 
-case class DataSource(id: Long, name: String, endpointUrl: String, namedGraphs: Option[String] = None, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdentifiedEntity
+class DataSourceTable(tag: Tag) extends IdEntityTable[DataSourceId, DataSource](tag, "datasources") {
 
+  val components = TableQuery[ComponentTable]
 
-class DataSourcesTable(tag: Tag) extends Table[DataSource](tag, "DATASOURCES") with IdentifiedEntityTable[DataSource]  {
-  def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
+  def component = foreignKey("fk_dst_ct_component_id", componentId, components)(_.id)
 
-  def name = column[String]("NAME", O.NotNull)
+  def componentId = column[ComponentId]("component_id", O.NotNull)
 
-  def endpointUrl = column[String]("ENDPOINT_URL", O.NotNull)
-
-  def namedGraphs = column[Option[String]]("NAMED_GRAPHS")
-
-  def createdUtc = column[Option[DateTime]]("created")
-
-  def modifiedUtc = column[Option[DateTime]]("modified")
-
-  def * = (id, name, endpointUrl, namedGraphs, createdUtc, modifiedUtc) <> (DataSource.tupled, DataSource.unapply _)
+  def * = (id, componentId, createdUtc, modifiedUtc) <> (DataSource.tupled, DataSource.unapply _)
 }

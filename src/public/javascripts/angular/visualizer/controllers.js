@@ -4,7 +4,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
     ng.module('visualizer.controllers', []).
         controller('List',
         ['$scope', 'VisualizerService', '$routeParams', 'ngTableParams',
-            function ($scope, VisualizerService, $routeParams, ngTableParams) {
+            function ($scope, $location, VisualizerService, $routeParams, ngTableParams) {
 
                 var page = $routeParams.page || 1;
                 var count = $routeParams.count || 10;
@@ -18,7 +18,10 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 }, {
                     total: 0, // length of data
                     getData: function ($defer, params) {
-                        VisualizerService.query({skip: (params.page() - 1) * params.count(), take: params.count()}, function (data) {
+                        VisualizerService.query({
+                            skip: (params.page() - 1) * params.count(),
+                            take: params.count()
+                        }, function (data) {
                             params.total(data.count);
                             $defer.resolve(data.data);
                         });
@@ -30,24 +33,28 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
             }])
-        .controller('Add', ['$scope', 'VisualizerService', function ($scope, VisualizerService) {
-            $scope.visualizerName = null;
-            $scope.visualizerUrl = null;
-            $scope.visualizerSignature = null;
-            $scope.visualizerDSDSignature = null;
-            $scope.visualizerDescription = null;
+        .controller('Add', [
+            '$scope', '$location', 'VisualizerService',
+            function ($scope, $location, VisualizerService) {
+                $scope.visualizer = {
+                    features: [{}]
+                };
 
+                $scope.addFeature = function () {
+                    $scope.visualizer.features.push({});
+                };
 
-            $scope.submit = function () {
-                VisualizerService.save({
-                    name: $scope.visualizerName,
-                    url: $scope.visualizerUrl,
-                    signature: $scope.visualizerSignature,
-                    dsdSignature: $scope.visualizerDSDSignature,
-                    description: $scope.visualizerDescription
-                }, function(data){
+                $scope.removeFeature = function ($index) {
+                    $scope.visualizer.features.splice($index, 1);
+                    if ($scope.visualizer.features.length < 1) {
+                        $scope.addFeature();
+                    }
+                };
 
-                });
-            };
-        }]);
+                $scope.submit = function () {
+                    VisualizerService.save({}, $scope.visualizer, function (data) {
+                        $location.path("#/list");
+                    });
+                };
+            }]);
 });

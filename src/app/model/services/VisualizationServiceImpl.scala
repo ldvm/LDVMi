@@ -1,6 +1,6 @@
 package model.services
 
-import model.dao.{VisualizationEagerBox, VisualizationTable, VisualizationQueriesTable, DataSourcesTable}
+import model.dao.{VisualizationEagerBox, InputBinding, VisualizationQueriesTable, DataSourcesTable}
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.Session
 
@@ -8,25 +8,24 @@ import scala.slick.lifted.TableQuery
 
 class VisualizationServiceImpl extends VisualizationService {
 
-  override val tableReference = TableQuery[VisualizationTable]
+  override val tableReference = TableQuery[InputBinding]
   val dataSources = TableQuery[DataSourcesTable]
   val visualizationQueries = TableQuery[VisualizationQueriesTable]
 
   def getByIdWithEager(id: Long)(implicit s: Session): Option[VisualizationEagerBox] = {
     (for {
-      (((v, d), d2), vq) <- tableReference
+      ((v, d), vq) <- tableReference
         .filter(_.id === id)
-        .take(1) innerJoin dataSources on (_.dataSourceId === _.id) leftJoin dataSources on (_._1.dsdDataSourceId === _.id) leftJoin visualizationQueries on (_._1._1.id === _.visualizationId)
-    } yield (v, d, d2, vq.token.?)).firstOption.map((VisualizationEagerBox.apply _).tupled)
+        .take(1) innerJoin dataSources on (_.datasourceId === _.id) leftJoin visualizationQueries on (_._1.id === _.visualizationId)
+    } yield (v, d, vq.token.?)).firstOption.map((VisualizationEagerBox.apply _).tupled)
   }
 
   def listWithEager(skip: Int, take: Int)(implicit s: Session): Seq[VisualizationEagerBox] = {
 
     val visualizationsWithSources = (for {
       v <- tableReference
-      d <- dataSources if v.dataSourceId === d.id
-      d2 <- dataSources if v.dsdDataSourceId === d2.id
-    } yield (v, d, d2)).sortBy{ case (v,_,_) =>
+      d <- dataSources if v.datasourceId === d.id
+    } yield (v, d)).sortBy{ case (v,_) =>
       (v.modifiedUtc.desc, v.createdUtc.desc)
     }.drop(skip).take(take)
 
@@ -47,7 +46,7 @@ class VisualizationServiceImpl extends VisualizationService {
 
     val withTokens = for {
       r <- withQueryIds leftJoin visualizationQueries on (_._2 === _.id)
-    } yield (r._1._1._1, r._1._1._2, r._1._1._3, r._2.token.?)
+    } yield (r._1._1._1, r._1._1._2, r._2.token.?)
 
     withTokens.list.map((VisualizationEagerBox.apply _).tupled)
   }

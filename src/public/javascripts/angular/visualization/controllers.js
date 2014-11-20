@@ -18,7 +18,10 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 }, {
                     total: 0, // length of data
                     getData: function ($defer, params) {
-                        VisualizationService.query({skip: (params.page() - 1) * params.count(), take: params.count()}, function (data) {
+                        VisualizationService.query({
+                            skip: (params.page() - 1) * params.count(),
+                            take: params.count()
+                        }, function (data) {
                             params.total(data.count);
                             $defer.resolve(data.data);
                         });
@@ -32,30 +35,26 @@ define(['angular', 'underscorejs'], function (ng, _) {
             }])
         .controller('Add', ['$scope', 'VisualizationService', 'DatasourceService', function ($scope, VisualizationService, DatasourceService) {
             $scope.dsdInSeparateDatasource = false;
-            $scope.datasource = {};
-            $scope.dsdDatasource = {};
+            $scope.datasources = [{}];
             $scope.visualizationName = null;
 
             $scope.submit = function () {
 
-                var addDataSource = function (ds, callback) {
-                    DatasourceService.add(ds, callback);
-                };
+                VisualizationService.add({
+                    name: $scope.visualizationName,
+                    datasource: $scope.datasources
+                }, function (v) {
+                    location.href = "#/compatibility/check/" + v.id
+                });
 
-                var addVisualization = function (ds, dsdDs) {
-                    VisualizationService.add({name: $scope.visualizationName, dataDataSource: ds.id, dsdDataSource: (dsdDs.id || ds.id)}, function (v) {
-                        location.href = "#/compatibility/check/" + v.id
-                    });
-                };
+            };
 
-                var addDsdDataSource = function (ds) {
-                    addDataSource($scope.dsdDatasource, function (dsdDs) {
-                        addVisualization(ds, dsdDs);
-                    });
-                };
+            $scope.addDatasource = function () {
+                $scope.datasources.push({});
+            };
 
-                var callback = $scope.dsdInSeparateDatasource ? addDsdDataSource : addVisualization;
-                addDataSource($scope.datasource, callback);
+            $scope.removeDatasource = function ($index) {
+                $scope.datasources.splice($index, 1);
             };
 
             $scope.anonymous = function () {
@@ -89,7 +88,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 if ($scope.checking) {
                     Compatibility.check({id: $routeParams.id}, function (data) {
-                        window.setTimeout(function(){
+                        window.setTimeout(function () {
                             window.location.href = "#/compatibility/" + $routeParams.id;
                         }, 5000);
                     });

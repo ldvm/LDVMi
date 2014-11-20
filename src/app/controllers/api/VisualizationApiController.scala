@@ -15,7 +15,7 @@ class VisualizationApiController(implicit inj: Injector) extends Controller with
   val dataSourceService = inject[DataSourceService]
   val visualizationQueriesService = inject[VisualizationQueriesService]
   val ldvmService = inject[LDVMService]
-  val compatibilityService = inject[CompatibilityService]
+  val compatibilityService = inject[VisualizerCompatibilityService]
 
   def get(id: Long) = DBAction { implicit rs =>
     val entity = visualizationService.getByIdWithEager(id)
@@ -39,7 +39,7 @@ class VisualizationApiController(implicit inj: Injector) extends Controller with
   }
 
   def addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String]) = DBAction { implicit rs =>
-    val vid = visualizationService.insertAndGetId(Visualization(2, name.getOrElse("anonymous"), dataDataSource, dsdDataSource))
+    val vid = visualizationService.insertAndGetId(Visualization(2, name.getOrElse("anonymous"), dataDataSource))
 
     Ok(JsObject(Seq(("id", JsNumber(vid)))))
   }
@@ -48,7 +48,7 @@ class VisualizationApiController(implicit inj: Injector) extends Controller with
 
     val endpointUri = "http://live.payola.cz:8890/sparql"
     val did = dataSourceService.insertAndGetId(DataSource(1, "Payola " + evaluationId, endpointUri, Some("http://" + evaluationId)))
-    val vid = visualizationService.insertAndGetId(Visualization(2, "Payola " + evaluationId, did, did))
+    val vid = visualizationService.insertAndGetId(Visualization(2, "Payola " + evaluationId, did))
 
     Redirect("/visualize/datacube#/id/" + vid)
   }

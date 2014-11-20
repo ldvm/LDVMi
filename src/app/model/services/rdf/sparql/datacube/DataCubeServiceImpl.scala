@@ -42,7 +42,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     visualizationQueriesService.deleteByToken(token)
     visualizationQueriesService.insert(VisualizationQuery(0, visualizationEagerBox.visualization.id, token, jsonQueryData.toString))
 
-    new DataCubeQueryResult(token, sliceCube(visualizationEagerBox.dataSource, queryData))
+    new DataCubeQueryResult(token, sliceCube(visualizationEagerBox.datasource, queryData))
   }
 
   def combine[A](xs: Traversable[Traversable[A]]): Seq[Seq[A]] = xs.foldLeft(Seq(Seq.empty[A])) { (x, y) =>

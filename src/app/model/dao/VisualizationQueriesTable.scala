@@ -5,10 +5,10 @@ import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
 import PortableJodaSupport._
 
-case class VisualizationQuery(id: Long, visualizationId: Long, token: String, storedData: String, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdentifiedEntity
+case class VisualizationQuery(id: Long, visualizationId: Long, token: String, storedData: String, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdEntity
 
-class VisualizationQueriesTable(tag: Tag) extends Table[VisualizationQuery](tag, "VISUALIZATION_QUERIES") with IdentifiedEntityTable[VisualizationQuery] {
-  val visualizations = TableQuery[VisualizationTable]
+class VisualizationQueriesTable(tag: Tag) extends Table[VisualizationQuery](tag, "VISUALIZATION_QUERIES") with IdEntityTable[VisualizationQuery] {
+  val visualizations = TableQuery[InputBinding]
 
   def visualization = foreignKey("VISUALIZATION_QUERY_VISUALIZATION_FK", visualizationId, visualizations)(_.id)
 

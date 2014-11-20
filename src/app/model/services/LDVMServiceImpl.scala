@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
-import model.dao.VisualizerCompatibility
+import model.dao.{FeatureCompatibility, ComponentCompatibility}
 import model.services.actors.{CheckCompatibility, CompatibilityActor}
 import play.api.Play.current
 import play.api.db
@@ -14,6 +14,8 @@ import play.api.libs.concurrent.Akka
 import play.api.libs.concurrent.Execution.Implicits._
 import scaldi.{Injectable, Injector}
 
+import scala.concurrent.Future
+
 
 case class Compatible(x: Boolean, z: Boolean)
 
@@ -21,34 +23,39 @@ class LDVMServiceImpl(implicit inj: Injector) extends LDVMService with Injectabl
 
   val visualizerService = inject[VisualizerService]
   val visualizationService = inject[VisualizationService]
-  val compatibilityService = inject[CompatibilityService]
+  val visualizerCompatibilityService = inject[VisualizerCompatibilityService]
+  val visualizerFeatureCompatibilityService = inject[VisualizerFeatureCompatibilityService]
 
   implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
   def checkVisualizationCompatibility(visualizationId: Long)
-      (implicit session: Session) = {
+    (implicit session: Session) = {
 
     visualizationService.getByIdWithEager(visualizationId).map { visualizationEagerBox =>
       visualizerService.list.map { visualizer =>
 
         val checker = Akka.system.actorOf(Props[CompatibilityActor])
 
-        val result = for {
-          c <- (checker ask CheckCompatibility(visualizationEagerBox.dataSource, visualizer.inputSignature)).mapTo[Boolean]
-          cd <- (checker ask CheckCompatibility(visualizationEagerBox.dsdDataSource, visualizer.dsdInputSignature.getOrElse("ASK { ?s ?p ?o . }"))).mapTo[Boolean]
-        } yield Compatible(c, cd)
-
-        result.onComplete { tryCompatible =>
-          tryCompatible.map { compatible =>
-            if (compatible.x && compatible.z) {
-              implicit var session = db.slick.DB.createSession()
-              val vid = visualizerService.getById(visualizer.id)
-              compatibilityService.insert(VisualizerCompatibility(1000, visualizer.id, None, Some(visualizationEagerBox.visualization.id)))
-              session.close()
-            }
-          }
+        val compatibility = visualizer.features.map { f =>
+          (checker ask CheckCompatibility(visualizationEagerBox.datasource, f.signature, f.id)).mapTo[(Boolean, Long)]
         }
 
+        Future.sequence(compatibility).onComplete { resultsTry =>
+          resultsTry.foreach { results =>
+
+            implicit var session = db.slick.DB.createSession()
+
+            results.foreach { r =>
+              visualizerFeatureCompatibilityService.insert(FeatureCompatibility(1, r._2, visualizationEagerBox.visualization.id, r._1))
+            }
+
+            val overallCompatibility = results.map(_._1).reduce((a,b) => a && b)
+            
+            visualizerCompatibilityService.insert(ComponentCompatibility(1, visualizer.id, visualizationEagerBox.visualization.id, overallCompatibility))
+
+            session.close()
+          }
+        }
       }
     }
   }

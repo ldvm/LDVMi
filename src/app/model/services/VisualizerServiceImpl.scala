@@ -6,6 +6,6 @@ import scala.slick.lifted.TableQuery
 
 class VisualizerServiceImpl extends VisualizerService {
 
-  override val tableReference = TableQuery[VisualizerTable]
+  override val tableReference = TableQuery[ComponentTable]
 
 }
