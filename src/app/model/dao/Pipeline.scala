@@ -11,19 +11,21 @@ object PipelineId extends IdCompanion[PipelineId]
 case class Pipeline(
   id: Option[PipelineId],
   uri: String,
-  bindingSetId: BindingSetId,
+  bindingSetId: DataPortBindingSetId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity
 
 
-class PipelineTable(tag: Tag) extends DescribedEntityTable[PipelineId, Pipeline](tag, "analyzers") {
+class PipelineTable(tag: Tag) extends DescribedEntityTable[PipelineId, Pipeline](tag, "pipelines") {
 
-  val bindingSets = TableQuery[BindingSetTable]
+  val bindingSets = TableQuery[DataPortBindingSetTable]
 
-  def component = foreignKey("fk_pt_bst_id", bindingSetId, bindingSets)(_.id)
+  def bindingSet = foreignKey("fk_pt_bst_id", bindingSetId, bindingSets)(_.id)
 
-  def bindingSetId = column[BindingSetId]("binding_set_id", O.NotNull)
+  def bindingSetId = column[DataPortBindingSetId]("binding_set_id", O.NotNull)
+
+  def uri = column[String]("uri", O.NotNull)
 
   def * = (id, uri, bindingSetId, createdUtc, modifiedUtc) <>(Pipeline.tupled, Pipeline.unapply _)
 }
