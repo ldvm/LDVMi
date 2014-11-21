@@ -1,6 +1,6 @@
 package model.services.rdf.sparql.datacube
 
-import model.dao.{VisualizationEagerBox, VisualizationQuery, DataSource}
+import model.dao.{VisualizationEagerBox, VisualisationQuery, DataSource}
 import model.services.VisualizationQueriesService
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json._
@@ -40,7 +40,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     val token = MD5.hash(queryData.toString)
 
     visualizationQueriesService.deleteByToken(token)
-    visualizationQueriesService.insert(VisualizationQuery(0, visualizationEagerBox.visualization.id, token, jsonQueryData.toString))
+    visualizationQueriesService.insert(VisualisationQuery(0, visualizationEagerBox.visualization.id, token, jsonQueryData.toString))
 
     new DataCubeQueryResult(token, sliceCube(visualizationEagerBox.datasource, queryData))
   }

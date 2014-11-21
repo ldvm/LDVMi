@@ -1,7 +1,7 @@
 package model.services
 
-import model.dao.{DataSourcesTable, DataSource}
+import model.dao.{/*DataSourcesTable, */DataSource}
 
-trait DataSourceService extends IdentityEagerCRUDService[DataSource, DataSourcesTable] {
+trait DataSourceService /*extends IdentityEagerCRUDService[DataSource, DataSourcesTable]*/ {
 
 }

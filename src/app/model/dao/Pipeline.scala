@@ -10,8 +10,10 @@ object PipelineId extends IdCompanion[PipelineId]
 
 case class Pipeline(
   id: Option[PipelineId],
-  uri: String,
   bindingSetId: DataPortBindingSetId,
+  uri: String,
+  title: String,
+  description: Option[String],
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity
@@ -27,5 +29,5 @@ class PipelineTable(tag: Tag) extends DescribedEntityTable[PipelineId, Pipeline]
 
   def uri = column[String]("uri", O.NotNull)
 
-  def * = (id, uri, bindingSetId, createdUtc, modifiedUtc) <>(Pipeline.tupled, Pipeline.unapply _)
+  def * = (id, bindingSetId, uri, title, description, createdUtc, modifiedUtc) <>(Pipeline.tupled, Pipeline.unapply _)
 }

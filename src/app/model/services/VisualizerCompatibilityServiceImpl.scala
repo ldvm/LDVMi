@@ -5,7 +5,7 @@ import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick.Session
 
 import scala.slick.lifted.TableQuery
-
+/*
 class VisualizerCompatibilityServiceImpl extends VisualizerCompatibilityService {
 
   override val tableReference = TableQuery[VisualizerCompatibilityTable]
@@ -31,4 +31,4 @@ class VisualizerCompatibilityServiceImpl extends VisualizerCompatibilityService 
       v <- visualizers if vc.visualizerId === v.id
     } yield (vc, v)).list.map((ComponentCompatibilityEagerBox.apply _).tupled)
   }
-}
+}*/

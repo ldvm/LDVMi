@@ -14,7 +14,7 @@ case class DataPortBinding(
   endId: InputId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity
+  ) extends IdEntity[DataPortBindingId]
 
 
 class DataPortBindingTable(tag: Tag) extends IdEntityTable[DataPortBindingId, DataPortBinding](tag, "dataport_bindings") {
@@ -22,11 +22,11 @@ class DataPortBindingTable(tag: Tag) extends IdEntityTable[DataPortBindingId, Da
   val dataPorts = TableQuery[DataPortTable]
   val inputs = TableQuery[InputTable]
 
-  def start = foreignKey("fk_dpbt_dpt_id", startPortId, dataPorts)(_.id)
+  def start = foreignKey("fk_dpbt_dpt_start_port_id", startPortId, dataPorts)(_.id)
 
   def startPortId = column[DataPortId]("start_port_id", O.NotNull)
 
-  def end = foreignKey("fk_dpbt_dpt_id", endInputId, inputs)(_.id)
+  def end = foreignKey("fk_dpbt_dpt_end_input_id", endInputId, inputs)(_.id)
 
   def endInputId = column[DataPortId]("end_input_id", O.NotNull)
 

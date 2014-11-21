@@ -13,7 +13,7 @@ case class Analyzer(
   componentId: ComponentId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity
+  ) extends IdEntity[AnalyzerId]
 
 
 class AnalyzerTable(tag: Tag) extends IdEntityTable[AnalyzerId, Analyzer](tag, "analyzers") {

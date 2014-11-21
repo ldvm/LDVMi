@@ -1,6 +1,6 @@
 package controllers.api
 
-import model.dao.VisualizationEagerBox
+//import model.dao.VisualizationEagerBox
 import model.services.rdf.sparql.datacube._
 import play.api.Play.current
 import play.api.cache.Cache
@@ -14,7 +14,7 @@ import scala.concurrent.Future
 
 
 class DataCubeApiController(implicit inj: Injector) extends ApiController {
-
+/*
   def dataStructures(id: Long) = DBAction { implicit rs =>
     withVisualizationEagerBox(id) { visualizationEagerBox =>
       Ok(Json.toJson(dataCubeService.getDataStructures(visualizationEagerBox.datasource)))
@@ -69,5 +69,5 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
     }
 
   }
-
+*/
 }

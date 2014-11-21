@@ -7,7 +7,7 @@ import play.api.db.slick.Session
 import scala.slick.lifted.TableQuery
 
 class VisualizationServiceImpl extends VisualizationService {
-
+/*
   override val tableReference = TableQuery[InputBinding]
   val dataSources = TableQuery[DataSourcesTable]
   val visualizationQueries = TableQuery[VisualizationQueriesTable]
@@ -49,6 +49,6 @@ class VisualizationServiceImpl extends VisualizationService {
     } yield (r._1._1._1, r._1._1._2, r._2.token.?)
 
     withTokens.list.map((VisualizationEagerBox.apply _).tupled)
-  }
+  }*/
 
 }

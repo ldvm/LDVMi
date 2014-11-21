@@ -23,7 +23,7 @@ case class Component(
   defaultConfiguration: Option[String] = None,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdEntity {
+) extends DescribedEntity[ComponentId] {
 
   val componentFeaturesTable = TableQuery[ComponentFeaturesTable]
   val inputsTable = TableQuery[InputTable]
@@ -40,7 +40,7 @@ case class Component(
 
 class ComponentTable(tag: Tag) extends DescribedEntityTable[ComponentId, Component](tag, "components") {
 
-  def uri = column[String]("URI", O.NotNull)
+  def uri = column[String]("uri", O.NotNull)
 
   def defaultConfiguration = column[Option[String]]("default_configuration")
 

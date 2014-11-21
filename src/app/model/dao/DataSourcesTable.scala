@@ -12,7 +12,7 @@ case class DataSource(
   componentId: ComponentId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdEntity
+) extends IdEntity[DataSourceId]
 
 
 class DataSourceTable(tag: Tag) extends IdEntityTable[DataSourceId, DataSource](tag, "datasources") {

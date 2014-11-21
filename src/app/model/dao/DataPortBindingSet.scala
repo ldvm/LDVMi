@@ -12,7 +12,7 @@ case class DataPortBindingSet(
   id: Option[DataPortBindingSetId],
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity
+  ) extends IdEntity[DataPortBindingSetId]
 
 
 class DataPortBindingSetTable(tag: Tag) extends IdEntityTable[DataPortBindingSetId, DataPortBindingSet](tag, "dataport_binding_sets") {

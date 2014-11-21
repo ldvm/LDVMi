@@ -17,16 +17,16 @@ case class DataPortBindingToBindingSet(
   ) extends IdEntity
 
 
-class DataPortBindingToBindingSet(tag: Tag) extends IdEntityTable[DataPortBindingToBindingSetId, DataPortBindingToBindingSet](tag, "dataport_binding_to_binding_set") {
+class DataPortBindingToBindingSetTable(tag: Tag) extends IdEntityTable[DataPortBindingToBindingSetId, DataPortBindingToBindingSet](tag, "dataport_binding_to_binding_set") {
 
   val bindingSets = TableQuery[DataPortBindingSetTable]
   val inputs = TableQuery[InputTable]
 
-  def set = foreignKey("fk_dpbtbs_dpbs_id", setId, bindingSets)(_.id)
+  def set = foreignKey("fk_dpbtbs_dpbs_binding_set_id", setId, bindingSets)(_.id)
 
   def setId = column[DataPortId]("set_id", O.NotNull)
 
-  def binding = foreignKey("fk_dpbtbs_dpb_id", bindingId, inputs)(_.id)
+  def binding = foreignKey("fk_dpbtbs_dpb_binding_id", bindingId, inputs)(_.id)
 
   def bindingId = column[DataPortId]("binding_id", O.NotNull)
 

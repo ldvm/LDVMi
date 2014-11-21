@@ -24,7 +24,7 @@ package object api {
   implicit val dataCubeWrites = Json.writes[model.services.rdf.sparql.datacube.DataCube]
   implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
 
-  implicit val visualizationWrites = Json.writes[Visualization]
+  //implicit val visualizationWrites = Json.writes[Visualization]
   implicit val dataSourceWrites = Json.writes[DataSource]
 
   implicit val coordinatesWrites = Json.writes[Coordinate]
@@ -33,13 +33,13 @@ package object api {
   implicit val propertyWrites = Json.writes[Property]
 
   implicit val visualizerWrites = Json.writes[Component]
-  implicit val visualizerCompatibilityWrites = Json.writes[ComponentCompatibility]
+  //implicit val visualizerCompatibilityWrites = Json.writes[ComponentCompatibility]
 
   implicit val identityEagerBoxVisualizerWrites : Writes[IdentityEagerBox[Component]] = Writes { eb =>
     Json.toJson(eb.mainEntity)
   }
 
-  implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
+  /*implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
     visualizationEagerBox =>
       JsObject(
         Seq(
@@ -58,7 +58,7 @@ package object api {
           ("visualizer", Json.toJson(visualizationEagerBox.visualizer))
         )
       )
-  }
+  }*/
 
 
   val filterPath = (JsPath \ "label").readNullable[String] and

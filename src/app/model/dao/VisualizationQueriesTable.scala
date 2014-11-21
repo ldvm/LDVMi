@@ -1,32 +1,26 @@
 package model.dao
-
+/*
 import model.services.EagerBox
 import org.joda.time.DateTime
 import play.api.db.slick.Config.driver.simple._
 import PortableJodaSupport._
 
-case class VisualizationQuery(id: Long, visualizationId: Long, token: String, storedData: String, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdEntity
+case class VisualisationQuery(id: Long, visualizationId: Long, token: String, storedData: String, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdEntity
 
-class VisualizationQueriesTable(tag: Tag) extends Table[VisualizationQuery](tag, "VISUALIZATION_QUERIES") with IdEntityTable[VisualizationQuery] {
+class VisualizationQueriesTable(tag: Tag) extends Table[VisualisationQuery](tag, "visualisation_queries") with IdEntityTable[VisualisationQuery] {
   val visualizations = TableQuery[InputBinding]
 
-  def visualization = foreignKey("VISUALIZATION_QUERY_VISUALIZATION_FK", visualizationId, visualizations)(_.id)
+  def visualization = foreignKey("fk_vqt_vt_visualisation_id", visualizationId, visualizations)(_.id)
 
   def visualizationId = column[Long]("VISUALIZATION_ID")
-
-  def id = column[Long]("ID", O.PrimaryKey, O.AutoInc)
 
   def data = column[String]("DATA", O.NotNull)
 
   def token = column[String]("TOKEN", O.NotNull)
 
-  def createdUtc = column[Option[DateTime]]("created")
-
-  def modifiedUtc = column[Option[DateTime]]("modified")
-
-  def * = (id, visualizationId, token, data, createdUtc, modifiedUtc) <>(VisualizationQuery.tupled, VisualizationQuery.unapply _)
+  def * = (id, visualizationId, token, data, createdUtc, modifiedUtc) <>(VisualisationQuery.tupled, VisualisationQuery.unapply _)
 }
 
-case class VisualizationQueryEagerBox(visualizationQuery: VisualizationQuery, visualization: Visualization) extends EagerBox[VisualizationQuery] {
-  override def mainEntity: VisualizationQuery = visualizationQuery
-}
+case class VisualizationQueryEagerBox(visualizationQuery: VisualisationQuery, visualization: Visualization) extends EagerBox[VisualisationQuery] {
+  override def mainEntity: VisualisationQuery = visualizationQuery
+}*/

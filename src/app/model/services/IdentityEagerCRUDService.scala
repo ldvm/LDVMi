@@ -3,7 +3,9 @@ package model.services
 import model.dao.{IdEntityTable, IdEntity}
 import play.api.db.slick.Config.driver.simple._
 
-trait IdentityEagerCRUDService[E <: IdEntity, ETable <: Table[E] with IdEntityTable[E]] extends CRUDService[E, ETable, IdentityEagerBox[E]] {
+import org.virtuslab.unicorn.LongUnicornPlay._
+
+trait IdentityEagerCRUDService[EId <: BaseId, E <: IdEntity[EId], ETable <: Table[E] with IdEntityTable[E, EId]] extends CRUDService[E, ETable, IdentityEagerBox[E]] {
 
   def getByIdWithEager(id: Long)(implicit s: Session): Option[IdentityEagerBox[E]] =
     getById(id).map(IdentityEagerBox.apply)

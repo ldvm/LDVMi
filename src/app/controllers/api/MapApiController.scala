@@ -6,7 +6,7 @@ import scaldi.Injector
 
 
 class MapApiController(implicit inj: Injector) extends ApiController {
-
+/*
   def polygonEntities(id: Long) = simpleParsingFuture(id) { (visualizationEagerBox, queryData: WKTQueryData, json) =>
     geoService.polygonEntities(visualizationEagerBox.datasource, queryData)
   } { json => json.validate[WKTQueryData] } { entities => Json.toJson(entities) }
@@ -14,4 +14,5 @@ class MapApiController(implicit inj: Injector) extends ApiController {
   def polygonEntitiesProperties(id: Long) = simpleFuture(id) { visualizationEagerBox =>
     geoService.polygonEntitiesProperties(visualizationEagerBox.datasource)
   } { entities => Json.toJson(entities) }
+  */
 }

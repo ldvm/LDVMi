@@ -1,6 +1,6 @@
 package controllers.api
 
-import model.dao.VisualizationEagerBox
+//import model.dao.VisualizationEagerBox
 import model.services.VisualizationService
 import model.services.rdf.sparql.datacube.DataCubeService
 import model.services.rdf.sparql.geo.GeoService
@@ -20,7 +20,7 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
   val visualizationService = inject[VisualizationService]
   val geoService = inject[GeoService]
 
-
+/*
   protected def simpleFuture[E]
     (id: Long)
       (enumeratorGetter: VisualizationEagerBox => Enumerator[Option[E]])
@@ -85,7 +85,7 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
     }.getOrElse {
       NotFound
     }
-  }
+  }*/
 
   protected def enumeratorToSeq[E](enumerator: Enumerator[Option[E]]): Future[List[E]] = {
     enumerator.through(Enumeratee.filter(_.isDefined)).run(
