@@ -1,11 +1,10 @@
 package controllers
 
-import model.dao._
-import model.services.IdentityEagerBox
-import model.services.rdf.sparql.ValueFilter
-import model.services.rdf.sparql.datacube._
-import model.services.rdf.sparql.geo._
-import model.services.rdf.{LocalizedValue, Property}
+import model.entity._
+import model.rdf.sparql.ValueFilter
+import model.rdf.sparql.datacube._
+import model.rdf.sparql.geo._
+import model.rdf.{LocalizedValue, Property}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -21,7 +20,7 @@ package object api {
   implicit val dataCubeComponentValueWrites = Json.writes[DataCubeComponentValue]
   implicit val dataCubeKeyWrites = Json.writes[DataCubeKey]
   implicit val dataCubeCellWrites = Json.writes[DataCubeCell]
-  implicit val dataCubeWrites = Json.writes[model.services.rdf.sparql.datacube.DataCube]
+  implicit val dataCubeWrites = Json.writes[model.rdf.sparql.datacube.DataCube]
   implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
 
   //implicit val visualizationWrites = Json.writes[Visualization]
@@ -34,10 +33,6 @@ package object api {
 
   implicit val visualizerWrites = Json.writes[Component]
   //implicit val visualizerCompatibilityWrites = Json.writes[ComponentCompatibility]
-
-  implicit val identityEagerBoxVisualizerWrites : Writes[IdentityEagerBox[Component]] = Writes { eb =>
-    Json.toJson(eb.mainEntity)
-  }
 
   /*implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
     visualizationEagerBox =>

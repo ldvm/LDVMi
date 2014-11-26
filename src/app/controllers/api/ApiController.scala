@@ -1,9 +1,9 @@
 package controllers.api
 
 //import model.dao.VisualizationEagerBox
-import model.services.VisualizationService
-import model.services.rdf.sparql.datacube.DataCubeService
-import model.services.rdf.sparql.geo.GeoService
+import model.repositories.VisualizationService
+import model.rdf.sparql.datacube.DataCubeService
+import model.rdf.sparql.geo.GeoService
 import play.api.Play.current
 import play.api.db.slick._
 import play.api.libs.concurrent.Execution.Implicits._

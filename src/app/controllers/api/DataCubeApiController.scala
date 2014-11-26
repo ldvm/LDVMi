@@ -1,7 +1,7 @@
 package controllers.api
 
 //import model.dao.VisualizationEagerBox
-import model.services.rdf.sparql.datacube._
+import model.rdf.sparql.datacube._
 import play.api.Play.current
 import play.api.cache.Cache
 import play.api.db.slick._

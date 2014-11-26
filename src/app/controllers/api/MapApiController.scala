@@ -1,6 +1,6 @@
 package controllers.api
 
-import model.services.rdf.sparql.geo.WKTQueryData
+import model.rdf.sparql.geo.WKTQueryData
 import play.api.libs.json.Json
 import scaldi.Injector
 
