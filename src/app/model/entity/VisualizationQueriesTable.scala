@@ -8,9 +8,9 @@ import PortableJodaSupport._
 case class VisualisationQuery(id: Long, visualizationId: Long, token: String, storedData: String, var createdUtc: Option[DateTime] = None, var modifiedUtc: Option[DateTime] = None) extends IdEntity
 
 class VisualizationQueriesTable(tag: Tag) extends Table[VisualisationQuery](tag, "visualisation_queries") with IdEntityTable[VisualisationQuery] {
-  val visualizations = TableQuery[InputBinding]
+  val pipelines = TableQuery[InputBinding]
 
-  def visualization = foreignKey("fk_vqt_vt_visualisation_id", visualizationId, visualizations)(_.id)
+  def visualization = foreignKey("fk_vqt_vt_visualisation_id", visualizationId, pipelines)(_.id)
 
   def visualizationId = column[Long]("VISUALIZATION_ID")
 

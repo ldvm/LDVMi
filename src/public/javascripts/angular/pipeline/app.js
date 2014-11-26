@@ -16,11 +16,11 @@ define([
     function (ng) {
         'use strict';
 
-        return ng.module('visualizationList', [
-            'visualizationList.services',
-            'visualizationList.controllers',
-            'visualizationList.filters',
-            'visualizationList.directives',
+        return ng.module('pipeline', [
+            'pipeline.services',
+            'pipeline.controllers',
+            'pipeline.filters',
+            'pipeline.directives',
             'ngRoute',
             'ngResource',
             'ui.bootstrap',

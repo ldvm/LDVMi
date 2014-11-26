@@ -2,11 +2,11 @@
     <div class="pull-right"><a ng-href="#/add" class="btn btn-success">Add new</a></div>
 </div>
 <table ng-table="tableParams" class="table table-striped">
-    <tr ng-repeat="visualizer in $data">
-        <td data-title="'ID'">{{visualizer.id}}</td>
-        <td data-title="'Name'">{{visualizer.name}}</td>
-        <td data-title="'Title'">{{visualizer.title}}</td>
-        <td data-title="'URL'">{{visualizer.url}}</td>
+    <tr ng-repeat="component in $data">
+        <td data-title="'ID'">{{component.id}}</td>
+        <td data-title="'URI'">{{component.name}}</td>
+        <td data-title="'Title'">{{component.title}}</td>
+        <td data-title="'Type'">{{component.url}}</td>
     </tr>
     <tr ng-if="$data.length == 0">
         <td colspan="4">No available data.</td>

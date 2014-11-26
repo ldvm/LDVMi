@@ -3,8 +3,8 @@ define(['angular'], function (ng) {
 
     // Demonstrate how to register services
     // In this case it is a simple value service.
-    ng.module('visualizationList.services', ['ngResource'])
-        .factory('VisualizationService', ['$resource', function ($resource) {
+    ng.module('pipeline.services', ['ngResource'])
+        .factory('PipelineService', ['$resource', function ($resource) {
             return $resource('/api/visualization', null, {
                 query: {url: '/api/visualization/list', isArray: false},
                 get: {url: '/api/visualization/:id', isArray: false},

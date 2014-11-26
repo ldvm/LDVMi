@@ -3,7 +3,7 @@ define(['./app'], function (app) {
 
     app.config(['$routeProvider', '$locationProvider', function ($routeProvider) {
 
-        var partialsPath = '/assets/javascripts/angular/visualization/partials/';
+        var partialsPath = '/assets/javascripts/angular/pipeline/partials/';
 
         $routeProvider.when('/list', {templateUrl: partialsPath + 'list.html', controller: 'List', reloadOnSearch: false});
         $routeProvider.when('/', {templateUrl: partialsPath + 'index.html', controller: 'Add', reloadOnSearch: false});

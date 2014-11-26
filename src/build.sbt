@@ -34,6 +34,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "2.1.1",
   "org.webjars" % "angular-moment" % "0.8.2",
   "org.webjars" % "momentjs" % "2.8.3",
+  "org.webjars" % "nervgh-angular-file-upload" % "1.1.5",
   "org.scalaj" %% "scalaj-http" % "0.3.16",
   "org.scaldi" % "scaldi-play_2.11" % "0.4.1",
   "org.virtuslab" %% "unicorn-play" % "0.6.2",

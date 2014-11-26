@@ -1,5 +1,5 @@
 define(['angular'], function (ng) {
     'use strict';
 
-    ng.module('visualizationList.filters', []);
+    ng.module('component.filters', []);
 });

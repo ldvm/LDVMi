@@ -10,6 +10,6 @@ define([
     'use strict';
 
     require(['requirejs-domready!'], function (document) {
-        ng.bootstrap(document, ['visualizer']);
+        ng.bootstrap(document, ['component']);
     });
 });

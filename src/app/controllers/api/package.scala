@@ -77,5 +77,5 @@ package object api {
 
   implicit val polygonQueryReads: Reads[WKTQueryData] = (JsPath \ "filters").read[Map[String, Seq[ValueFilter]]].map(WKTQueryData)
 
-  def jsonCacheKey(id: Long, token: String) = "/visualizations/" + id + "/" + token
+  def jsonCacheKey(id: Long, token: String) = "/pipelines/" + id + "/" + token
 }

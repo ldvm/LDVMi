@@ -1,10 +1,10 @@
 define(['angular', 'underscorejs'], function (ng, _) {
     'use strict';
 
-    ng.module('visualizationList.controllers', []).
+    ng.module('pipeline.controllers', []).
         controller('List',
-        ['$scope', 'VisualizationService', '$routeParams', 'ngTableParams',
-            function ($scope, VisualizationService, $routeParams, ngTableParams) {
+        ['$scope', 'PipelineService', '$routeParams', 'ngTableParams',
+            function ($scope, PipelineService, $routeParams, ngTableParams) {
 
                 var page = $routeParams.page || 1;
                 var count = $routeParams.count || 10;
@@ -18,7 +18,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 }, {
                     total: 0, // length of data
                     getData: function ($defer, params) {
-                        VisualizationService.query({
+                        PipelineService.query({
                             skip: (params.page() - 1) * params.count(),
                             take: params.count()
                         }, function (data) {
@@ -33,7 +33,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
             }])
-        .controller('Add', ['$scope', 'VisualizationService', 'DatasourceService', function ($scope, VisualizationService, DatasourceService) {
+        .controller('Add', ['$scope', 'PipelineService', 'DatasourceService', function ($scope, PipelineService, DatasourceService) {
             $scope.dsdInSeparateDatasource = false;
             $scope.datasources = [{}];
             $scope.visualizationName = null;

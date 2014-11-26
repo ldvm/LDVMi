@@ -4,7 +4,7 @@
         <script>
             @Html(org.webjars.RequireJS.getSetupJavaScript(routes.WebJarAssets.at("").url))
         </script>
-        <script data-main="@routes.Assets.versioned("javascripts/angular/visualization/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+        <script data-main="@routes.Assets.versioned("javascripts/angular/pipeline/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     }
 
     @styles = {
@@ -14,7 +14,7 @@
         <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
     }
 
-@main("List of available visualizations", scripts, styles) {
+@main("List of available pipelines", scripts, styles) {
 
     <div ng-view></div>
 

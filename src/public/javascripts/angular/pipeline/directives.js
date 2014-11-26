@@ -1,5 +1,5 @@
 define(['angular'], function (ng) {
     'use strict';
 
-    ng.module('visualizer.directives', []);
+    ng.module('pipeline.directives', []);
 });
