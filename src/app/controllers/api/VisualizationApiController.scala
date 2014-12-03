@@ -1,7 +1,7 @@
 package controllers.api
 
 import model.entity.{DataSource}//, Visualization}
-import model.repositories._
+import model.repository._
 import play.api.Play.current
 import play.api.cache.Cache
 import play.api.db.slick._

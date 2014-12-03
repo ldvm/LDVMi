@@ -15,9 +15,6 @@ case class Component(
   uri: String,
   title: String,
   description: Option[String],
-  outputId: OutputId,
-  hasOutput: Boolean,
-  hasInput: Boolean,
   defaultConfiguration: Option[String] = None,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
@@ -39,15 +36,9 @@ class ComponentTable(tag: Tag) extends DescribedEntityTable[ComponentId, Compone
 
   def uri = column[String]("uri", O.NotNull)
 
-  def outputId = column[OutputId]("output_id", O.NotNull)
-
-  def hasOutput = column[Boolean]("has_output", O.NotNull)
-
-  def hasInput = column[Boolean]("has_input", O.NotNull)
-
   def defaultConfiguration = column[Option[String]]("default_configuration")
 
-  def * = (id.?, uri, title, description, outputId, hasOutput, hasInput, defaultConfiguration, createdUtc, modifiedUtc) <>(Component.tupled, Component.unapply _)
+  def * = (id.?, uri, title, description, defaultConfiguration, createdUtc, modifiedUtc) <>(Component.tupled, Component.unapply _)
 
 }
 

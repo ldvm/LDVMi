@@ -1,4 +1,3 @@
-import model.repositories.DataModule
 import play.api._
 import play.api.mvc.WithFilters
 import play.filters.gzip.GzipFilter
@@ -12,5 +11,5 @@ object Global extends WithFilters(
     )
   )
 ) with ScaldiSupport with GlobalSettings {
-  def applicationModule = new DataModule :: new RdfModule :: new WebModule
+  def applicationModule = new RepositoryModule :: new ComponentModule :: new RdfModule :: new WebModule
 }

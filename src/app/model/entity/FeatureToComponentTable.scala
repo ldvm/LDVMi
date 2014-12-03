@@ -12,7 +12,7 @@ case class FeatureToComponent(
   id: Option[FeatureToComponentId],
   componentId: ComponentId,
   featureId: FeatureId,
-  ordering: Int,
+  ordering: Option[Int],
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[FeatureToComponentId]
@@ -31,7 +31,7 @@ class FeatureToComponentTable(tag: Tag) extends IdEntityTable[FeatureToComponent
 
   def featureId = column[FeatureId]("feature_id", O.NotNull)
 
-  def ordering = column[Int]("ordering", O.NotNull)
+  def ordering = column[Option[Int]]("ordering", O.NotNull)
 
   def * = (id.?, componentId, featureId, ordering, createdUtc, modifiedUtc) <>(FeatureToComponent.tupled, FeatureToComponent.unapply _)
 }

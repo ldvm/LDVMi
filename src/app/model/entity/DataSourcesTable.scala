@@ -1,6 +1,6 @@
 package model.entity
 
-import model.repositories.EagerBox
+import model.repository.EagerBox
 import org.joda.time.DateTime
 import org.virtuslab.unicorn.LongUnicornPlay._
 import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
