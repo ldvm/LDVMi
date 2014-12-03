@@ -31,7 +31,7 @@ class FeatureToComponentTable(tag: Tag) extends IdEntityTable[FeatureToComponent
 
   def featureId = column[FeatureId]("feature_id", O.NotNull)
 
-  def ordering = column[Option[Int]]("ordering", O.NotNull)
+  def ordering = column[Option[Int]]("ordering")
 
   def * = (id.?, componentId, featureId, ordering, createdUtc, modifiedUtc) <>(FeatureToComponent.tupled, FeatureToComponent.unapply _)
 }

@@ -11,6 +11,7 @@ class FeatureComponentImpl(implicit inj: Injector)
 
   val repository = inject[FeatureRepository]
   val signatureComponent = inject[SignatureComponent]
+  val featureToComponentComponent = inject[FeatureToComponentComponent]
 
   def save(feature: dto.Feature, inputIdsByUri: Map[String, InputId], componentId: ComponentId)(implicit session: Session): FeatureId = {
 
@@ -28,7 +29,7 @@ class FeatureComponentImpl(implicit inj: Injector)
       signatureComponent.save(s, featureId, inputIdsByUri)
     }
 
-    FeatureToComponent(None, componentId, featureId, None)
+    featureToComponentComponent.save(featureId, componentId, None)
 
     featureId
   }

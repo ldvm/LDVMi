@@ -5,12 +5,13 @@ import java.io.FileInputStream
 import com.hp.hpl.jena.rdf.model.{Model, ModelFactory, Property, Resource}
 import com.hp.hpl.jena.vocabulary.{DCTerms, RDF, RDFS}
 import controllers.api.dto._
-import model.component.ComponentComponent
+import model.component._
+import model.entity.{Analyzer, DataSource, Transformer, Visualizer}
 import model.rdf.vocabulary.LDVM
 import play.api.Play
 import play.api.Play.current
 import play.api.db.slick.DBAction
-import play.api.libs.json.JsObject
+import play.api.libs.json.{JsArray, JsNumber}
 import play.api.mvc.Controller
 import scaldi.{Injectable, Injector}
 
@@ -19,6 +20,10 @@ import scala.collection.JavaConversions._
 class ComponentApiController(implicit inj: Injector) extends Controller with Injectable {
 
   val componentsComponent = inject[ComponentComponent]
+  val analyzerComponent = inject[AnalyzerComponent]
+  val visualizerComponent = inject[VisualizerComponent]
+  val transformerComponent = inject[TransformerComponent]
+  val dataSourceComponent = inject[DataSourceComponent]
 
   def ttl = DBAction(parse.multipartFormData) { rws =>
     rws.request.body.file("file").map { ttlFile =>
@@ -29,22 +34,33 @@ class ComponentApiController(implicit inj: Injector) extends Controller with Inj
       model.read(new FileInputStream(ttlFile.ref.file), null, "N3")
 
       val componentTemplateTypes = model.listSubjectsWithProperty(RDFS.subClassOf, LDVM.componentTemplate).toList
-      val components = componentTemplateTypes.map { ctt =>
-        model.listSubjectsWithProperty(RDF.`type`, ctt)
+      val componentsByTypes = componentTemplateTypes.map { ctt =>
+        (ctt.getLocalName, model.listSubjectsWithProperty(RDF.`type`, ctt).toList)
+      }
+
+      val componentIds = componentsByTypes.map { case (componentType, components) =>
+        val ids = components.map { component =>
+          val label = getLiteralPropertyString(component, RDFS.label)
+          val comment = getLiteralPropertyString(component, RDFS.comment)
+          val defaultConfiguration = extractConfiguration(model, component)
+          val inputs = extractInputs(model, component)
+          val output = extractOutputs(model, component).headOption
+          val features = extractFeatures(model, component, inputs)
+
+          Component(component.getURI, label, comment, defaultConfiguration, inputs.values.toSeq, output, features)
+        }.map(c => componentsComponent.save(c)(rws.dbSession))
+
+        componentType match {
+          case "VisualizerTemplate" => ids.foreach(i => visualizerComponent.save(Visualizer(None, i))(rws.dbSession))
+          case "AnalyzerTemplate" => ids.foreach(i => analyzerComponent.save(Analyzer(None, i))(rws.dbSession))
+          case "DataSourceTemplate" => ids.foreach(i => dataSourceComponent.save(DataSource(None, i))(rws.dbSession))
+          case "TransformerTemplate" => ids.foreach(i => transformerComponent.save(Transformer(None, i))(rws.dbSession))
+        }
+
+        ids
       }.flatten
 
-      components.map { component =>
-        val label = getLiteralPropertyString(component, RDFS.label)
-        val comment = getLiteralPropertyString(component, RDFS.comment)
-        val defaultConfiguration = extractConfiguration(model, component)
-        val inputs = extractInputs(model, component)
-        val output = extractOutputs(model, component).headOption
-        val features = extractFeatures(model, component, inputs)
-
-        Component(component.getURI, label, comment, defaultConfiguration, inputs.values.toSeq, output, features)
-      }.foreach(componentsComponent.save(_)(rws.dbSession))
-
-      Ok(JsObject(List()))
+      Ok(JsArray(componentIds.map(i => JsNumber(i.id))))
 
     }.getOrElse {
       NotAcceptable
@@ -73,14 +89,14 @@ class ComponentApiController(implicit inj: Injector) extends Controller with Inj
   private def extractFeatures(model: Model, component: Resource, inputs: Map[String, Input]): Seq[Feature] = {
     val features = model.listObjectsOfProperty(component, LDVM.feature).toList
     features.map { feature =>
-        val featureResource = feature.asResource()
-        val title = getLiteralPropertyString(featureResource, DCTerms.title)
-        val description = getLiteralPropertyString(featureResource, DCTerms.title)
-        val isMandatory = featureResource.getProperty(RDF.`type`).getResource.getURI == LDVM.mandatoryFeature.getURI
+      val featureResource = feature.asResource()
+      val title = getLiteralPropertyString(featureResource, DCTerms.title)
+      val description = getLiteralPropertyString(featureResource, DCTerms.title)
+      val isMandatory = featureResource.getProperty(RDF.`type`).getResource.getURI == LDVM.mandatoryFeature.getURI
 
-        val signatures = extractSignatures(model, featureResource, inputs)
+      val signatures = extractSignatures(model, featureResource, inputs)
 
-        Feature(featureResource.getURI, title, description, isMandatory, signatures)
+      Feature(featureResource.getURI, title, description, isMandatory, signatures)
     }
   }
 
