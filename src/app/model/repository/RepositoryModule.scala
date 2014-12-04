@@ -15,4 +15,5 @@ class RepositoryModule extends Module {
   binding to new DataSourceRepository
   binding to new TransformerRepository
   binding to new VisualizerRepository
+  binding to new PipelineRepository
 }

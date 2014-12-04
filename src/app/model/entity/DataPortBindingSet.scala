@@ -1,8 +1,9 @@
 package model.entity
 
+import java.util.UUID
 import org.joda.time.DateTime
-import org.virtuslab.unicorn.LongUnicornPlay._
-import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
+import CustomUnicornPlay._
+import CustomUnicornPlay.driver.simple._
 
 case class DataPortBindingSetId(id: Long) extends AnyVal with BaseId
 

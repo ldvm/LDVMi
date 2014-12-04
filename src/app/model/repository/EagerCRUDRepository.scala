@@ -1,8 +1,8 @@
 package model.repository
 
 import model.entity._
-import org.virtuslab.unicorn.LongUnicornPlay._
-import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
+import CustomUnicornPlay._
+import CustomUnicornPlay.driver.simple._
 import play.api.db.slick.Session
 
 trait EagerCrudRepository[

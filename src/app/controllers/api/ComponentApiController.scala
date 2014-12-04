@@ -19,11 +19,11 @@ import scala.collection.JavaConversions._
 
 class ComponentApiController(implicit inj: Injector) extends Controller with Injectable {
 
-  val componentsComponent = inject[ComponentComponent]
-  val analyzerComponent = inject[AnalyzerComponent]
-  val visualizerComponent = inject[VisualizerComponent]
-  val transformerComponent = inject[TransformerComponent]
-  val dataSourceComponent = inject[DataSourceComponent]
+  val componentsComponent = inject[ComponentService]
+  val analyzerComponent = inject[AnalyzerService]
+  val visualizerComponent = inject[VisualizerService]
+  val transformerComponent = inject[TransformerService]
+  val dataSourceComponent = inject[DataSourceService]
 
   def ttl = DBAction(parse.multipartFormData) { rws =>
     rws.request.body.file("file").map { ttlFile =>
@@ -59,6 +59,15 @@ class ComponentApiController(implicit inj: Injector) extends Controller with Inj
 
         ids
       }.flatten
+
+      val pipelineStatements = model.listStatements(null, RDF.`type`, LDVM.pipeline).toList
+      pipelineStatements.map { ps =>
+        val pipelineResource = ps.getSubject.asResource()
+        val title = getLiteralPropertyString(pipelineResource, DCTerms.title)
+
+        Pipeline(pipelineResource.getURI, title)
+      }
+
 
       Ok(JsArray(componentIds.map(i => JsNumber(i.id))))
 

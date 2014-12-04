@@ -1,9 +1,9 @@
 package model.repository
 
-import model.entity.{IdEntityTable, IdEntity}
+import model.entity.{CustomUnicornPlay, IdEntityTable, IdEntity}
 import org.joda.time.{DateTimeZone, DateTime}
-import org.virtuslab.unicorn.LongUnicornPlay._
-import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
+import CustomUnicornPlay._
+import CustomUnicornPlay.driver.simple._
 import play.api.db.slick.Session
 
 class CrudRepository[

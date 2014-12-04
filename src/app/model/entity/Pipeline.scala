@@ -1,8 +1,9 @@
 package model.entity
 
+import java.util.UUID
 import org.joda.time.DateTime
-import org.virtuslab.unicorn.LongUnicornPlay._
-import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
+import CustomUnicornPlay._
+import CustomUnicornPlay.driver.simple._
 
 case class PipelineId(id: Long) extends AnyVal with BaseId
 
@@ -21,9 +22,7 @@ case class Pipeline(
 
 class PipelineTable(tag: Tag) extends DescribedEntityTable[PipelineId, Pipeline](tag, "pipelines") {
 
-  val bindingSets = TableQuery[DataPortBindingSetTable]
-
-  def bindingSet = foreignKey("fk_pt_bst_id", bindingSetId, bindingSets)(_.id)
+  def bindingSet = foreignKey("fk_pt_bst_id", bindingSetId, bindingSetsQuery)(_.id)
 
   def bindingSetId = column[DataPortBindingSetId]("binding_set_id", O.NotNull)
 

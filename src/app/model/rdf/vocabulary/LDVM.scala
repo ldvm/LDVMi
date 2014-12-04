@@ -6,6 +6,7 @@ object LDVM extends Vocabulary {
   override val PREFIX_URL = "http://linked.opendata.cz/ontology/ldvm/"
 
   lazy val componentTemplate = m.createResource(PREFIX_URL + "ComponentTemplate")
+  lazy val pipeline = m.createResource(PREFIX_URL + "Pipeline")
   lazy val mandatoryFeature = m.createResource(PREFIX_URL + "MandatoryFeature")
   lazy val componentConfigurationTemplate = m.createProperty(PREFIX_URL, "componentConfigurationTemplate")
   lazy val inputTemplate = m.createProperty(PREFIX_URL, "inputTemplate")
