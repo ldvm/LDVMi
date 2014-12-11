@@ -13,7 +13,7 @@ case class Transformer(
   componentId: ComponentId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdEntity[TransformerId]
+) extends IdEntity[TransformerId] with ConcreteComponent
 
 
 class TransformerTable(tag: Tag) extends IdEntityTable[TransformerId, Transformer](tag, "transformer") {

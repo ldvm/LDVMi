@@ -4,4 +4,4 @@ import model.entity._
 import scala.slick.lifted.TableQuery
 import CustomUnicornPlay.driver.simple._
 
-class SignatureRepository extends CrudRepository[SignatureId, Signature, SignatureTable](TableQuery[SignatureTable])
+class DescriptorRepository extends CrudRepository[DescriptiorId, Descriptor, DescriptorTable](TableQuery[DescriptorTable])

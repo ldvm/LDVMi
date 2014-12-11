@@ -1,9 +1,9 @@
-package controllers.api.dto
+package model.dto
 
 case class Feature(
   uri: String,
   title: Option[String],
   description: Option[String],
   isMandatory: Boolean,
-  signatures: Seq[Signature]
+  descriptors: Seq[Descriptor]
 )

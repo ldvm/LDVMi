@@ -24,6 +24,7 @@ package object entity {
   val visualizerInstancesQuery = TableQuery[VisualizerInstanceTable]
   val dataSourceInstancesQuery = TableQuery[DataSourceInstanceTable]
 
+  val dataPortBindingSetsQuery = TableQuery[DataPortBindingSetTable]
   val dataPortInstancesQuery = TableQuery[DataPortInstanceTable]
   val inputInstancesQuery = TableQuery[InputInstanceTable]
 

@@ -2,16 +2,16 @@ package controllers.api
 
 import java.io.FileInputStream
 
-import com.hp.hpl.jena.rdf.model.{Model, ModelFactory, Property, Resource}
+import com.hp.hpl.jena.graph.TripleBoundary
+import com.hp.hpl.jena.rdf.model.{Model, ModelFactory, Resource, Property, ModelExtract, StatementTripleBoundary}
 import com.hp.hpl.jena.vocabulary.{DCTerms, RDF, RDFS}
-import controllers.api.dto._
 import model.component._
 import model.entity.{Analyzer, DataSource, Transformer, Visualizer}
-import model.rdf.vocabulary.LDVM
+import model.rdf.vocabulary.{SKOS, LDVM}
 import play.api.Play
 import play.api.Play.current
 import play.api.db.slick.DBAction
-import play.api.libs.json.{JsArray, JsNumber}
+import play.api.libs.json.{JsArray, JsNumber, JsObject}
 import play.api.mvc.Controller
 import scaldi.{Injectable, Injector}
 
@@ -19,109 +19,173 @@ import scala.collection.JavaConversions._
 
 class ComponentApiController(implicit inj: Injector) extends Controller with Injectable {
 
-  val componentsComponent = inject[ComponentService]
-  val analyzerComponent = inject[AnalyzerService]
-  val visualizerComponent = inject[VisualizerService]
-  val transformerComponent = inject[TransformerService]
-  val dataSourceComponent = inject[DataSourceService]
+  val componentsService = inject[ComponentService]
+  val pipelineService = inject[PipelineService]
 
   def ttl = DBAction(parse.multipartFormData) { rws =>
     rws.request.body.file("file").map { ttlFile =>
 
-      val model = ModelFactory.createDefaultModel()
+      val graphModel = ModelFactory.createDefaultModel()
 
-      model.read(new FileInputStream(Play.getFile("public/ttl/ldvm/vocabulary.ttl")), null, "N3")
-      model.read(new FileInputStream(ttlFile.ref.file), null, "N3")
+      graphModel.read(new FileInputStream(Play.getFile("public/ttl/ldvm/vocabulary.ttl")), null, "N3")
+      graphModel.read(new FileInputStream(ttlFile.ref.file), null, "N3")
 
-      val componentTemplateTypes = model.listSubjectsWithProperty(RDFS.subClassOf, LDVM.componentTemplate).toList
+      val componentTemplateTypes = graphModel.listSubjectsWithProperty(RDFS.subClassOf, LDVM.componentTemplate).toList
       val componentsByTypes = componentTemplateTypes.map { ctt =>
-        (ctt.getLocalName, model.listSubjectsWithProperty(RDF.`type`, ctt).toList)
+        (ctt.getLocalName, graphModel.listSubjectsWithProperty(RDF.`type`, ctt).toList)
       }
 
       val componentIds = componentsByTypes.map { case (componentType, components) =>
         val ids = components.map { component =>
-          val label = getLiteralPropertyString(component, RDFS.label)
+          val label = getLabel(component)
           val comment = getLiteralPropertyString(component, RDFS.comment)
-          val defaultConfiguration = extractConfiguration(model, component)
-          val inputs = extractInputs(model, component)
-          val output = extractOutputs(model, component).headOption
-          val features = extractFeatures(model, component, inputs)
+          val inputs = extractInputs(graphModel, component)
+          val output = extractOutputs(graphModel, component).headOption
+          val features = extractFeatures(graphModel, component, inputs)
 
-          Component(component.getURI, label, comment, defaultConfiguration, inputs.values.toSeq, output, features)
-        }.map(c => componentsComponent.save(c)(rws.dbSession))
+          val modelExtractor = new ModelExtract(new StatementTripleBoundary(TripleBoundary.stopNowhere))
+          val configResource = component.getProperty(LDVM.componentConfigurationTemplate)
+
+          val defaultConfigurationModel = configResource match {
+            case null => None
+            case _ => Some(modelExtractor.extract(configResource.getObject.asResource, graphModel))
+          }
+
+          model.dto.Component(component.getURI, label, comment, defaultConfigurationModel, inputs.values.toSeq, output, features)
+        }.map(c => componentsService.save(c)(rws.dbSession))
 
         componentType match {
-          case "VisualizerTemplate" => ids.foreach(i => visualizerComponent.save(Visualizer(None, i))(rws.dbSession))
-          case "AnalyzerTemplate" => ids.foreach(i => analyzerComponent.save(Analyzer(None, i))(rws.dbSession))
-          case "DataSourceTemplate" => ids.foreach(i => dataSourceComponent.save(DataSource(None, i))(rws.dbSession))
-          case "TransformerTemplate" => ids.foreach(i => transformerComponent.save(Transformer(None, i))(rws.dbSession))
+          case "VisualizerTemplate" => ids.foreach(i => componentsService.saveVisualizer(Visualizer(None, i))(rws.dbSession))
+          case "AnalyzerTemplate" => ids.foreach(i => componentsService.saveAnalyzer(Analyzer(None, i))(rws.dbSession))
+          case "DataSourceTemplate" => ids.foreach(i => componentsService.saveDataSource(DataSource(None, i))(rws.dbSession))
+          case "TransformerTemplate" => ids.foreach(i => componentsService.saveTransformer(Transformer(None, i))(rws.dbSession))
         }
 
         ids
       }.flatten
 
-      val pipelineStatements = model.listStatements(null, RDF.`type`, LDVM.pipeline).toList
-      pipelineStatements.map { ps =>
+      val pipelineStatements = graphModel.listStatements(null, RDF.`type`, LDVM.pipeline).toList
+      val pipelines = pipelineStatements.map { ps =>
         val pipelineResource = ps.getSubject.asResource()
-        val title = getLiteralPropertyString(pipelineResource, DCTerms.title)
+        val title = getLabel(pipelineResource)
 
-        Pipeline(pipelineResource.getURI, title)
+        val membersStatements = graphModel.listStatements(pipelineResource, LDVM.member, null).toList
+        val componentInstances = membersStatements.map { memberStatement =>
+          val member = memberStatement.getObject.asResource
+          val templateUri = member.getProperty(LDVM.instanceOf).getResource.getURI
+          val memberType = member.getProperty(RDF.`type`).getResource.getLocalName
+          val title = getLabel(member)
+
+          val modelExtractor = new ModelExtract(new StatementTripleBoundary(TripleBoundary.stopNowhere))
+          val configurationResource = member.getProperty(LDVM.componentConfigurationInstance)
+
+          val configurationModel = configurationResource match {
+            case null => None
+            case _ => Some(modelExtractor.extract(configurationResource.getObject.asResource, graphModel))
+          }
+
+          val inputInstances = extractInputInstances(graphModel, member)
+          val outputInstance = extractOutputInstance(graphModel, member)
+          val componentInstance = model.dto.ComponentInstance(member.getURI, templateUri, title, inputInstances, outputInstance, configurationModel)
+
+          memberType match {
+            case "VisualizerInstance" => model.dto.VisualizerInstance(componentInstance)
+            case "AnalyzerInstance" => model.dto.AnalyzerInstance(componentInstance)
+            case "DataSourceInstance" => model.dto.DataSourceInstance(componentInstance)
+            case "TransformerInstance" => model.dto.TransformerInstance(componentInstance)
+          }
+        }
+
+        model.dto.Pipeline(pipelineResource.getURI, title, componentInstances)
       }
 
+      val pipelineIds = pipelines.map(p => pipelineService.save(p)(rws.dbSession))
 
-      Ok(JsArray(componentIds.map(i => JsNumber(i.id))))
+      Ok(
+        JsObject(
+          Seq(
+            ("components", JsArray(componentIds.map(i => JsNumber(i.id)))),
+            ("pipelines", JsArray(pipelineIds.map(i => JsNumber(i.id))))
+          )
+        )
+      )
 
     }.getOrElse {
       NotAcceptable
     }
   }
 
-  private def extractInputs(model: Model, component: Resource): Map[String, Input] = {
-    val dataPorts = extractDataPort(model, component, LDVM.inputTemplate)
-    dataPorts.map(Input).map {
+  private def extractInputInstances(graphModel: Model, componentInstance: Resource): Seq[model.dto.InputInstance] = {
+    val inputStatements = graphModel.listStatements(componentInstance, LDVM.inputInstance, null).toList
+    inputStatements.map { inputStatement =>
+      val inputInstanceResource = inputStatement.getObject.asResource()
+      val uri = inputInstanceResource.getURI
+      val label = getLabel(inputInstanceResource)
+      val templateUri = inputInstanceResource.getProperty(LDVM.instanceOf).getObject.asResource().getURI
+      val boundTo = inputInstanceResource.getProperty(LDVM.boundTo).getResource.getURI
+
+      model.dto.InputInstance(uri, label, templateUri, boundTo)
+    }
+  }
+
+  private def extractOutputInstance(graphModel: Model, componentInstance: Resource): Option[model.dto.OutputInstance] = {
+    val outputStatements = graphModel.listStatements(componentInstance, LDVM.outputInstance, null).toList
+    outputStatements.map { outputStatement =>
+      val outputInstanceResource = outputStatement.getObject.asResource()
+      val uri = outputInstanceResource.getURI
+      val label = getLabel(outputInstanceResource)
+      val templateUri = outputInstanceResource.getProperty(LDVM.instanceOf).getResource.getURI
+
+      model.dto.OutputInstance(uri, label, templateUri)
+    }.headOption
+  }
+
+  private def extractInputs(graphModel: Model, component: Resource): Map[String, model.dto.Input] = {
+    val dataPorts = extractDataPort(graphModel, component, LDVM.inputTemplate)
+    dataPorts.map(model.dto.Input).map {
       i => (i.dataPort.uri, i)
     }.toMap
   }
 
-  private def extractDataPort(model: Model, component: Resource, portType: Property): Seq[DataPort] = {
-    val templates = model.listObjectsOfProperty(component, portType).toList
+  private def extractDataPort(graphModel: Model, component: Resource, portType: Property): Seq[model.dto.DataPort] = {
+    val templates = graphModel.listObjectsOfProperty(component, portType).toList
     templates.map {
       template =>
         val templateResource = template.asResource()
-        val title = getLiteralPropertyString(templateResource, DCTerms.title)
+        val title = getLabel(templateResource)
         val description = getLiteralPropertyString(templateResource, DCTerms.description)
 
-        DataPort(templateResource.getURI, title, description)
+        model.dto.DataPort(templateResource.getURI, title, description)
     }.toSeq
   }
 
-  private def extractFeatures(model: Model, component: Resource, inputs: Map[String, Input]): Seq[Feature] = {
-    val features = model.listObjectsOfProperty(component, LDVM.feature).toList
+  private def extractFeatures(graphModel: Model, component: Resource, inputs: Map[String, model.dto.Input]): Seq[model.dto.Feature] = {
+    val features = graphModel.listObjectsOfProperty(component, LDVM.feature).toList
     features.map { feature =>
       val featureResource = feature.asResource()
-      val title = getLiteralPropertyString(featureResource, DCTerms.title)
+      val title = getLabel(featureResource)
       val description = getLiteralPropertyString(featureResource, DCTerms.title)
       val isMandatory = featureResource.getProperty(RDF.`type`).getResource.getURI == LDVM.mandatoryFeature.getURI
 
-      val signatures = extractSignatures(model, featureResource, inputs)
+      val descriptors = extractDescriptors(graphModel, featureResource, inputs)
 
-      Feature(featureResource.getURI, title, description, isMandatory, signatures)
+      model.dto.Feature(featureResource.getURI, title, description, isMandatory, descriptors)
     }
   }
 
-  private def extractSignatures(model: Model, feature: Resource, inputs: Map[String, Input]): Seq[Signature] = {
-    val signatures = model.listObjectsOfProperty(feature, LDVM.signature).toList
+  private def extractDescriptors(graphModel: Model, feature: Resource, inputs: Map[String, model.dto.Input]): Seq[model.dto.Descriptor] = {
+    val signatures = graphModel.listObjectsOfProperty(feature, LDVM.descriptor).toList
     signatures.map {
       signature =>
         val signatureResource = signature.asResource()
-        val title = getLiteralPropertyString(signatureResource, DCTerms.title)
+        val title = getLabel(signatureResource)
         val description = getLiteralPropertyString(signatureResource, DCTerms.description)
         val query = getLiteralPropertyString(signatureResource, LDVM.query)
         val inputUri = signatureResource.getPropertyResourceValue(LDVM.appliesTo).getURI
 
         query.map {
           ask =>
-            Signature(signatureResource.getURI, title, description, ask, inputs(inputUri))
+            model.dto.Descriptor(signatureResource.getURI, title, description, ask, inputs(inputUri))
         }
     }.filter(_.isDefined).map(_.get).toSeq
   }
@@ -133,20 +197,21 @@ class ComponentApiController(implicit inj: Injector) extends Controller with Inj
     }
   }
 
-  private def extractConfiguration(model: Model, component: Resource): Option[String] = {
-    None
+  private def getLabel(r: Resource): Option[String] = {
+    val possibleLabels = Seq(DCTerms.title, RDFS.label, SKOS.prefLabel)
+    possibleLabels.find(r.hasProperty).map(r.getProperty).map(_.getString)
   }
 
-  private def extractOutputs(model: Model, component: Resource): Seq[Output] = {
+  private def extractOutputs(graphModel: Model, component: Resource): Seq[model.dto.Output] = {
 
-    val dataPorts = extractDataPort(model, component, LDVM.outputTemplate)
+    val dataPorts = extractDataPort(graphModel, component, LDVM.outputTemplate)
     dataPorts.map {
       dp =>
-        val sample = model.getProperty(model.getResource(dp.uri), LDVM.outputDataSample)
+        val sample = graphModel.getProperty(graphModel.getResource(dp.uri), LDVM.outputDataSample)
 
         sample match {
-          case null => Output(dp, None)
-          case x => Output(dp, Some(x.getString))
+          case null => model.dto.Output(dp, None)
+          case x => model.dto.Output(dp, Some(x.getString))
         }
     }
   }

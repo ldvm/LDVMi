@@ -4,7 +4,7 @@ import akka.actor.Actor
 import model.entity.DataSourceEagerBox
 import model.rdf.sparql.GenericSparqlEndpoint
 
-case class CheckCompatibility(dataSourceBox: DataSourceEagerBox, signature: String, featureId: Long)
+case class CheckCompatibility(dataSourceBox: DataSourceEagerBox, descriptor: String, featureId: Long)
 
 class CompatibilityActor extends Actor {
   def receive: Receive = {

@@ -16,7 +16,7 @@ case class DataSource(
   componentId: ComponentId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdEntity[DataSourceId]
+) extends IdEntity[DataSourceId] with ConcreteComponent
 
 
 class DataSourceTable(tag: Tag) extends IdEntityTable[DataSourceId, DataSource](tag, "datasources") {

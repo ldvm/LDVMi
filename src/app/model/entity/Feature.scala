@@ -19,6 +19,17 @@ case class Feature(
   var modifiedUtc: Option[DateTime] = None
   ) extends DescribedEntity[FeatureId]
 
+object FeatureEntity {
+  def apply(feature: model.dto.Feature) = {
+    Feature(
+      None,
+      feature.uri,
+      feature.isMandatory,
+      feature.title.getOrElse("Unlabeled feature"),
+      feature.description
+    )
+  }
+}
 
 class FeatureTable(tag: Tag) extends DescribedEntityTable[FeatureId, Feature](tag, "features") {
 

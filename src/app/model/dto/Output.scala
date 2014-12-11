@@ -1,4 +1,4 @@
-package controllers.api.dto
+package model.dto
 
 case class Output(
   dataPort: DataPort,

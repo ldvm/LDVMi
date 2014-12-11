@@ -177,3 +177,9 @@ ldvm:boundTo a rdf:Property;
 	rdfs:domain ldvm:DataPortInstance ;
 	rdfs:range ldvm:DataPortInstance ;
 	.
+
+ldvm:member a rdf:Property;
+	rdfs:label "Pipeline member"@en ;
+	rdfs:domain ldvm:Pipeline ;
+	rdfs:range ldvm:ComponentInstance ;
+	.

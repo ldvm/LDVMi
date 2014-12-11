@@ -1,6 +1,6 @@
-package controllers.api.dto
+package model.dto
 
-case class Signature(
+case class Descriptor(
   uri: String,
   title: Option[String],
   description: Option[String],

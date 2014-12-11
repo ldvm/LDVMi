@@ -13,7 +13,7 @@ case class Visualizer(
   componentId: ComponentId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdEntity[VisualizerId]
+) extends IdEntity[VisualizerId] with ConcreteComponent
 
 
 class VisualizerTable(tag: Tag) extends IdEntityTable[VisualizerId, Visualizer](tag, "visualizer") {

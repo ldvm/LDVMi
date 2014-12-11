@@ -13,17 +13,19 @@ object ComponentInstanceId extends IdCompanion[ComponentInstanceId]
 case class ComponentInstance(
   id: Option[ComponentInstanceId],
   uri: String,
-  configuration: Option[String] = None,
+  title: String,
+  description: Option[String],
   componentId: ComponentId,
+  configuration: Option[String] = None,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity[ComponentInstanceId]
+  ) extends DescribedEntity[ComponentInstanceId]
 
-class ComponentInstanceTable(tag: Tag) extends IdEntityTable[ComponentInstanceId, ComponentInstance](tag, "component_instances") {
+class ComponentInstanceTable(tag: Tag) extends DescribedEntityTable[ComponentInstanceId, ComponentInstance](tag, "component_instances") {
 
   def uri = column[String]("uri", O.NotNull)
 
-  def * = (id.?, uri, configuration, componentId, createdUtc, modifiedUtc) <>(ComponentInstance.tupled, ComponentInstance.unapply _)
+  def * = (id.?, uri, title, description, componentId, configuration, createdUtc, modifiedUtc) <>(ComponentInstance.tupled, ComponentInstance.unapply _)
 
   def configuration = column[Option[String]]("configuration")
 

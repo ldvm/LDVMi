@@ -10,6 +10,7 @@ object DataPortBindingId extends IdCompanion[DataPortBindingId]
 
 case class DataPortBinding(
   id: Option[DataPortBindingId],
+  bindingSetId: DataPortBindingSetId,
   startId: DataPortInstanceId,
   endId: InputInstanceId,
   var createdUtc: Option[DateTime] = None,
@@ -23,9 +24,13 @@ class DataPortBindingTable(tag: Tag) extends IdEntityTable[DataPortBindingId, Da
 
   def startPortId = column[DataPortInstanceId]("start_port_id", O.NotNull)
 
+  def bindingSet = foreignKey("fk_dpbt_dpbst_binding_set_id", bindingSetId, dataPortBindingSetsQuery)(_.id)
+
+  def bindingSetId = column[DataPortBindingSetId]("binding_set_id", O.NotNull)
+
   def end = foreignKey("fk_dpbt_dpt_end_input_id", endInputId, inputInstancesQuery)(_.id)
 
   def endInputId = column[InputInstanceId]("end_input_id", O.NotNull)
 
-  def * = (id.?, startPortId, endInputId, createdUtc, modifiedUtc) <>(DataPortBinding.tupled, DataPortBinding.unapply _)
+  def * = (id.?, bindingSetId, startPortId, endInputId, createdUtc, modifiedUtc) <>(DataPortBinding.tupled, DataPortBinding.unapply _)
 }

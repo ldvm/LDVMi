@@ -1,5 +1,7 @@
 package model.entity
 
+import java.io.StringWriter
+
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
@@ -31,6 +33,25 @@ case class Component(
   } yield i).list
 
   def configuration = ComponentConfiguration(defaultConfiguration)
+}
+
+object ComponentEntity {
+  def apply(component: model.dto.Component): Component = {
+
+    val configString = component.configuration.map{ config =>
+      val configWriter = new StringWriter
+      config.write(configWriter, "N3")
+      configWriter.toString
+    }
+
+    Component(
+      None,
+      component.uri,
+      component.label.getOrElse("Unlabeled component"),
+      component.comment,
+      configString
+    )
+  }
 }
 
 class ComponentTable(tag: Tag) extends DescribedEntityTable[ComponentId, Component](tag, "components") {
