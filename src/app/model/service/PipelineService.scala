@@ -1,4 +1,4 @@
-package model.component
+package model.service
 
 import model.entity._
 import model.repository.PipelineRepository

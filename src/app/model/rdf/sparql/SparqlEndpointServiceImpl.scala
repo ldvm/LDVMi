@@ -13,6 +13,6 @@ class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointSe
   }
 
   def execution(dataSource: DataSourceEagerBox, query: SparqlQuery): QueryExecution = {
-    GenericSparqlEndpoint(dataSource).queryExecutionFactory()(query.get)
+    GenericSparqlEndpoint(None, None).get.queryExecutionFactory()(query.get)
   }
 }

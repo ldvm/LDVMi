@@ -17,7 +17,15 @@ case class Feature(
   description: Option[String],
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends DescribedEntity[FeatureId]
+  ) extends DescribedEntity[FeatureId] {
+
+  def descriptors(implicit session: Session): List[Descriptor] = {
+    (for {
+      d <- descriptorsQuery if d.featureId === id
+    } yield d).list
+  }
+
+}
 
 object FeatureEntity {
   def apply(feature: model.dto.Feature) = {

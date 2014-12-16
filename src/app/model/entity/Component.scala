@@ -21,7 +21,7 @@ case class Component(
   defaultConfiguration: Option[String] = None,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends DescribedEntity[ComponentId] {
+  ) extends UriIdentifiedEntity[ComponentId] {
 
   def features(implicit s: Session): Seq[Feature] = (for {
     cf <- componentFeaturesQuery if cf.componentId === id
@@ -31,6 +31,10 @@ case class Component(
   def inputs(implicit s: Session): Seq[Input] = (for {
     i <- inputsQuery if i.componentId === id
   } yield i).list
+
+  def output(implicit s: Session): Option[Output] = (for {
+    o <- outputsQuery if o.componentId === id
+  } yield o).firstOption
 
   def configuration = ComponentConfiguration(defaultConfiguration)
 }
@@ -54,9 +58,7 @@ object ComponentEntity {
   }
 }
 
-class ComponentTable(tag: Tag) extends DescribedEntityTable[ComponentId, Component](tag, "components") {
-
-  def uri = column[String]("uri", O.NotNull)
+class ComponentTable(tag: Tag) extends UriIdentifiedEntityTable[ComponentId, Component](tag, "components") {
 
   def defaultConfiguration = column[Option[String]]("default_configuration")
 

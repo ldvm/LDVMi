@@ -11,26 +11,40 @@ object DataPortBindingId extends IdCompanion[DataPortBindingId]
 case class DataPortBinding(
   id: Option[DataPortBindingId],
   bindingSetId: DataPortBindingSetId,
-  startId: DataPortInstanceId,
-  endId: InputInstanceId,
+  sourceId: DataPortInstanceId,
+  targetId: InputInstanceId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity[DataPortBindingId]
+  ) extends IdEntity[DataPortBindingId] {
+
+  def source(implicit session: Session) : DataPortInstance = {
+    (for {
+      d <- dataPortInstancesQuery if d.id === sourceId
+    } yield d).first
+  }
+
+  def target(implicit session: Session) : InputInstance = {
+    (for {
+      i <- inputInstancesQuery if i.id === targetId
+    } yield i).first
+  }
+
+}
 
 
 class DataPortBindingTable(tag: Tag) extends IdEntityTable[DataPortBindingId, DataPortBinding](tag, "dataport_bindings") {
 
-  def start = foreignKey("fk_dpbt_dpt_start_port_id", startPortId, dataPortInstancesQuery)(_.id)
+  def source = foreignKey("fk_dpbt_dpt_start_port_id", sourcePortId, dataPortInstancesQuery)(_.id)
 
-  def startPortId = column[DataPortInstanceId]("start_port_id", O.NotNull)
+  def sourcePortId = column[DataPortInstanceId]("start_port_id", O.NotNull)
 
   def bindingSet = foreignKey("fk_dpbt_dpbst_binding_set_id", bindingSetId, dataPortBindingSetsQuery)(_.id)
 
   def bindingSetId = column[DataPortBindingSetId]("binding_set_id", O.NotNull)
 
-  def end = foreignKey("fk_dpbt_dpt_end_input_id", endInputId, inputInstancesQuery)(_.id)
+  def target = foreignKey("fk_dpbt_dpt_end_input_id", targetInputId, inputInstancesQuery)(_.id)
 
-  def endInputId = column[InputInstanceId]("end_input_id", O.NotNull)
+  def targetInputId = column[InputInstanceId]("end_input_id", O.NotNull)
 
-  def * = (id.?, bindingSetId, startPortId, endInputId, createdUtc, modifiedUtc) <>(DataPortBinding.tupled, DataPortBinding.unapply _)
+  def * = (id.?, bindingSetId, sourcePortId, targetInputId, createdUtc, modifiedUtc) <>(DataPortBinding.tupled, DataPortBinding.unapply _)
 }

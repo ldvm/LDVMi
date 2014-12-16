@@ -1,10 +1,10 @@
-package model.component
+package model.service
 
+import model.entity.CustomUnicornPlay.driver.simple._
 import model.entity._
 import model.repository._
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
-import model.entity.CustomUnicornPlay.driver.simple._
 
 class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with Injectable {
 
@@ -40,6 +40,57 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
     componentId
   }
 
+  private def saveInput(componentId: ComponentId, input: model.dto.Input)(implicit session: Session): InputId = {
+    inputRepository.save(Input(
+      None,
+      saveDataPort(componentId, input.dataPort),
+      componentId
+    ))
+  }
+
+  private def saveDataPort(componentId: ComponentId, dataPort: model.dto.DataPort)(implicit session: Session): DataPortId = {
+    dataPortRepository.save(DataPort(
+      None,
+      dataPort.uri,
+      dataPort.title.getOrElse("Unlabeled data port"),
+      dataPort.description,
+      componentId
+    ))
+  }
+
+  private def saveOutput(componentId: ComponentId, output: model.dto.Output)(implicit session: Session): OutputId = {
+    outputRepository.save(Output(
+      None,
+      output.dataSample,
+      saveDataPort(componentId, output.dataPort),
+      componentId
+    ))
+  }
+
+  private def saveFeature(feature: model.dto.Feature, inputIdsByUri: Map[String, InputId], componentId: ComponentId)(implicit session: Session): FeatureId = {
+    val featureId = featureRepository.save(FeatureEntity(feature))
+
+    feature.descriptors.foreach { descriptor =>
+      saveDescriptor(descriptor, featureId, inputIdsByUri)
+    }
+
+    bindFeatureWithComponent(featureId, componentId)
+
+    featureId
+  }
+
+  private def saveDescriptor(descriptor: model.dto.Descriptor, featureId: FeatureId, inputIdsByUri: Map[String, InputId])(implicit session: Session): DescriptorId = {
+    descriptorRepository.save(DescriptorEntity(
+      featureId,
+      inputIdsByUri(descriptor.appliesTo.dataPort.uri),
+      descriptor
+    ))
+  }
+
+  private def bindFeatureWithComponent(featureId: FeatureId, componentId: ComponentId, ordering: Option[Int] = None)(implicit session: Session): FeatureToComponentId = {
+    featureToComponentRepository.save(FeatureToComponent(None, componentId, featureId, ordering))
+  }
+
   def saveAnalyzer(analyzer: Analyzer)(implicit session: Session): AnalyzerId = {
     analyzerRepository.save(analyzer)
   }
@@ -71,82 +122,32 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
     }
   }
 
-  def getByInstance(analyzerInstance: model.dto.AnalyzerInstance)(implicit session: Session) : Option[ConcreteComponent] = {
+  def getByInstance(analyzerInstance: model.dto.AnalyzerInstance)(implicit session: Session): Option[ConcreteComponent] = {
     (for {
       c <- componentsQuery.filter(_.uri === analyzerInstance.componentInstance.templateUri)
       a <- analyzersQuery.filter(_.componentId === c.id)
     } yield a).firstOption
   }
 
-  def getByInstance(visualizerInstance: model.dto.VisualizerInstance)(implicit session: Session) : Option[ConcreteComponent] = {
+  def getByInstance(visualizerInstance: model.dto.VisualizerInstance)(implicit session: Session): Option[ConcreteComponent] = {
     (for {
       c <- componentsQuery.filter(_.uri === visualizerInstance.componentInstance.templateUri)
       v <- visualizersQuery.filter(_.componentId === c.id)
     } yield v).firstOption
   }
 
-  def getByInstance(transformerInstance: model.dto.TransformerInstance)(implicit session: Session) : Option[ConcreteComponent] = {
+  def getByInstance(transformerInstance: model.dto.TransformerInstance)(implicit session: Session): Option[ConcreteComponent] = {
     (for {
       c <- componentsQuery.filter(_.uri === transformerInstance.componentInstance.templateUri)
       t <- transformersQuery.filter(_.componentId === c.id)
     } yield t).firstOption
   }
 
-  def getByInstance(dataSourceInstance: model.dto.DataSourceInstance)(implicit session: Session) : Option[ConcreteComponent] = {
+  def getByInstance(dataSourceInstance: model.dto.DataSourceInstance)(implicit session: Session): Option[ConcreteComponent] = {
     (for {
       c <- componentsQuery.filter(_.uri === dataSourceInstance.componentInstance.templateUri)
       ds <- dataSourcesQuery.filter(_.componentId === c.id)
     } yield ds).firstOption
-  }
-
-  private def saveInput(componentId: ComponentId, input: model.dto.Input)(implicit session: Session): InputId = {
-    inputRepository.save(Input(
-      None,
-      saveDataPort(componentId, input.dataPort),
-      componentId
-    ))
-  }
-
-  private def saveDataPort(componentId: ComponentId, dataPort: model.dto.DataPort)(implicit session: Session): DataPortId = {
-    dataPortRepository.save(DataPort(
-      None,
-      componentId,
-      dataPort.title.getOrElse("Unlabeled data port"),
-      dataPort.description
-    ))
-  }
-
-  private def saveOutput(componentId: ComponentId, output: model.dto.Output)(implicit session: Session): OutputId = {
-    outputRepository.save(Output(
-      None,
-      output.dataSample,
-      saveDataPort(componentId, output.dataPort),
-      componentId
-    ))
-  }
-
-  private def saveFeature(feature: model.dto.Feature, inputIdsByUri: Map[String, InputId], componentId: ComponentId)(implicit session: Session): FeatureId = {
-    val featureId = featureRepository.save(FeatureEntity(feature))
-
-    feature.descriptors.foreach { descriptor =>
-      saveDescriptor(descriptor, featureId, inputIdsByUri)
-    }
-
-    bindFeatureWithComponent(featureId, componentId)
-
-    featureId
-  }
-
-  private def saveDescriptor(descriptor: model.dto.Descriptor, featureId: FeatureId, inputIdsByUri: Map[String, InputId])(implicit session: Session): DescriptiorId = {
-    descriptorRepository.save(DescriptorEntity(
-      featureId,
-      inputIdsByUri(descriptor.appliesTo.dataPort.uri),
-      descriptor
-    ))
-  }
-
-  private def bindFeatureWithComponent(featureId: FeatureId, componentId: ComponentId, ordering: Option[Int] = None)(implicit session: Session): FeatureToComponentId = {
-    featureToComponentRepository.save(FeatureToComponent(None, componentId, featureId, ordering))
   }
 
 }

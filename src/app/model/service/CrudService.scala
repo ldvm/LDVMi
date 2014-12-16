@@ -1,4 +1,4 @@
-package model.component
+package model.service
 
 import model.entity.{CustomUnicornPlay, IdEntity, IdEntityTable}
 import model.repository.CrudRepository
@@ -16,5 +16,7 @@ trait CrudService[
   protected def repository: R
 
   def save(entity: E)(implicit session: Session) = repository.save(entity)
+
+  def findById(id: Id)(implicit session: Session) = repository.findById(id)
 
 }

@@ -1,4 +1,4 @@
-package model.component
+package model.service
 
 import java.io.StringWriter
 
@@ -18,7 +18,12 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   val transformerInstancesRepository = inject[TransformerInstanceRepository]
   val visualizerInstancesRepository = inject[VisualizerInstanceRepository]
   val dataSourcesInstancesRepository = inject[DataSourceInstanceRepository]
+  val componentInstanceMembershipRepository = inject[ComponentInstanceMembershipRepository]
 
+  val inputRepository = inject[InputRepository]
+  val outputRepository = inject[OutputRepository]
+
+  val dataPortRepository = inject[DataPortRepository]
   val dataPortBindingsRepository = inject[DataPortBindingRepository]
   val dataPortBindingSetsRepository = inject[DataPortBindingSetRepository]
 
@@ -27,26 +32,32 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
 
   val componentService = inject[ComponentService]
 
-  override def save(pipeline: model.dto.Pipeline)(implicit session: Session): PipelineId = {
+  def save(pipeline: model.dto.Pipeline)(implicit session: Session): PipelineId = {
 
-    val concreteInstanceIdsByUri = saveComponentInstances(pipeline.componentInstances)
+    val instanceIdsByUri = saveComponentInstances(pipeline.componentInstances)
 
-    val inputInstancesWithComponentIds = pipeline.componentInstances.map { ci =>
-      concreteInstanceIdsByUri.get(ci.componentInstance.uri).map { cid =>
-        (cid, ci.componentInstance.inputInstances)
+    val inputInstancesWithComponentIds = pipeline.componentInstances.map { componentInstance =>
+      instanceIdsByUri.get(componentInstance.componentInstance.uri).map { componentInstanceId =>
+        (componentInstanceId, componentInstance.componentInstance.inputInstances)
       }
     }.filter(_.isDefined).map(_.get)
 
-    val outputInstancesWithComponentIds = pipeline.componentInstances.map { ci =>
-      concreteInstanceIdsByUri.get(ci.componentInstance.uri).map { cid =>
-        (cid, ci.componentInstance.outputInstance)
+    val outputInstancesWithComponentIds = pipeline.componentInstances.map { componentInstance =>
+      instanceIdsByUri.get(componentInstance.componentInstance.uri).map { componentInstanceId =>
+        (componentInstanceId, componentInstance.componentInstance.outputInstance)
       }
-    }.filter(_.isDefined).map(_.get).filter(_._2.isDefined).map { p => (p._1, p._2.get)}
+    }.map {
+      case None => None
+      case Some((_, None)) => None
+      case Some((cid, Some(oi))) => Some((cid, oi))
+    }.filter(_.isDefined).map(_.get)
 
     val inputInstancesByUri = saveInputInstances(inputInstancesWithComponentIds)
     val outputInstancesByUri = saveOutputInstances(outputInstancesWithComponentIds)
 
     val bindingSetId = saveBindings(pipeline, inputInstancesByUri, outputInstancesByUri)
+
+    saveMemberships(bindingSetId, instanceIdsByUri.values.toList)
 
     save(Pipeline(
       None,
@@ -55,6 +66,12 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       pipeline.title.getOrElse("Unlabeled pipeline"),
       None
     ))
+  }
+
+  private def saveMemberships(bindingSetId: DataPortBindingSetId, componentInstanceIds: Seq[ComponentInstanceId])(implicit session: Session) = {
+    componentInstanceIds.map { componentInstanceId =>
+      componentInstanceMembershipRepository.save(ComponentInstanceMembership(None, bindingSetId, componentInstanceId))
+    }
   }
 
   private def saveComponentInstances(instances: Seq[model.dto.ConcreteComponentInstance])(implicit session: Session): Map[String, ComponentInstanceId] = {
@@ -90,18 +107,27 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     }.filter(_.isDefined).map(_.get).toMap
   }
 
-  def saveInputInstances(inputInstancesByComponentId: Seq[(ComponentInstanceId, Seq[model.dto.InputInstance])])(implicit session: Session): DataPortUriMap[InputInstanceId] = {
+  private def saveInputInstances(inputInstancesByComponentId: Seq[(ComponentInstanceId, Seq[model.dto.InputInstance])])(implicit session: Session): DataPortUriMap[InputInstanceId] = {
 
     inputInstancesByComponentId.map { case (componentInstanceId, inputInstances) =>
       inputInstances.map { inputInstance =>
+
+        val dataPort = dataPortRepository.findByUri(inputInstance.templateUri).get
+        val input = inputRepository.findByDataPort(dataPort).get
+
         val dataPortInstanceId = dataPortInstancesRepository.save(DataPortInstance(
           None,
-          componentInstanceId
+          inputInstance.uri,
+          "Unlabeled input instance",
+          None,
+          componentInstanceId,
+          dataPort.id.get
         ))
 
         val id = inputInstancesRepository.save(InputInstance(
           None,
           dataPortInstanceId,
+          input.id.get,
           componentInstanceId
         ))
 
@@ -110,17 +136,26 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     }.flatten.toMap
   }
 
-  def saveOutputInstances(outputInstancesByComponentId: Seq[(ComponentInstanceId, model.dto.OutputInstance)])(implicit session: Session): DataPortUriMap[OutputInstanceId] = {
+  private def saveOutputInstances(outputInstancesByComponentId: Seq[(ComponentInstanceId, model.dto.OutputInstance)])(implicit session: Session): DataPortUriMap[OutputInstanceId] = {
 
     outputInstancesByComponentId.map { case (componentInstanceId, outputInstance) =>
+
+      val dataPort = dataPortRepository.findByUri(outputInstance.templateUri).get
+      val output = outputRepository.findByDataPort(dataPort).get
+
       val dataPortInstanceId = dataPortInstancesRepository.save(DataPortInstance(
         None,
-        componentInstanceId
+        outputInstance.uri,
+        "Unlabeled input instance",
+        None,
+        componentInstanceId,
+        dataPort.id.get
       ))
 
       val id = outputInstancesRepository.save(OutputInstance(
         None,
         dataPortInstanceId,
+        output.id.get,
         componentInstanceId
       ))
 
@@ -128,17 +163,17 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     }.toMap
   }
 
-  private def saveBindings(pipeline: model.dto.Pipeline, inputInstancesByUri: DataPortUriMap[InputInstanceId], outputInstancesByUri: DataPortUriMap[OutputInstanceId])(implicit session: Session) : DataPortBindingSetId = {
+  private def saveBindings(pipeline: model.dto.Pipeline, inputInstancesByUri: DataPortUriMap[InputInstanceId], outputInstancesByUri: DataPortUriMap[OutputInstanceId])(implicit session: Session): DataPortBindingSetId = {
 
-    val inputSources = inputInstancesByUri.map { p => (p._1, p._2._2) }
-    val outputSources = outputInstancesByUri.map { p => (p._1, p._2._2) }
+    val inputSources = inputInstancesByUri.map { p => (p._1, p._2._2)}
+    val outputSources = outputInstancesByUri.map { p => (p._1, p._2._2)}
 
     val sources = (inputSources ++ outputSources).toMap
 
     val bindingSetId = dataPortBindingSetsRepository.save(DataPortBindingSet(None))
 
     val inputInstances = pipeline.componentInstances.map(_.componentInstance.inputInstances).flatten
-    inputInstances.map{ inputInstance =>
+    inputInstances.map { inputInstance =>
       val uri = inputInstance.uri
       val sourceUri = inputInstance.boundTo
 

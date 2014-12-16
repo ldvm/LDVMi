@@ -30,5 +30,7 @@ class RepositoryModule extends Module {
   binding to new DataPortBindingRepository
   binding to new DataPortBindingSetRepository
 
+  binding to new ComponentInstanceMembershipRepository
+
   binding to new PipelineRepository
 }

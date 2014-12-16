@@ -19,11 +19,24 @@ case class ComponentInstance(
   configuration: Option[String] = None,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends DescribedEntity[ComponentInstanceId]
+  ) extends UriIdentifiedEntity[ComponentInstanceId] {
 
-class ComponentInstanceTable(tag: Tag) extends DescribedEntityTable[ComponentInstanceId, ComponentInstance](tag, "component_instances") {
+  def descriptorsAppliedTo(inputInstance: InputInstance)(implicit session: Session) : Seq[Descriptor] = {
+    (for {
+      ctf <- componentFeaturesQuery if ctf.componentId === componentId
+      d <- descriptorsQuery if d.featureId === ctf.featureId && d.inputId === inputInstance.inputId
+    } yield d).list
+  }
 
-  def uri = column[String]("uri", O.NotNull)
+  def component(implicit session: Session) : Component = {
+    (for {
+      c <- componentsQuery if c.id === componentId
+    } yield c).first
+  }
+
+}
+
+class ComponentInstanceTable(tag: Tag) extends UriIdentifiedEntityTable[ComponentInstanceId, ComponentInstance](tag, "component_instances") {
 
   def * = (id.?, uri, title, description, componentId, configuration, createdUtc, modifiedUtc) <>(ComponentInstance.tupled, ComponentInstance.unapply _)
 

@@ -17,7 +17,14 @@ case class Pipeline(
   description: Option[String],
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends DescribedEntity[PipelineId]
+  ) extends DescribedEntity[PipelineId] {
+
+  def bindingSet(implicit session: Session) : DataPortBindingSet = {
+    (for {
+      bs <- dataPortBindingSetsQuery if bs.id === bindingSetId
+    } yield bs).first
+  }
+}
 
 
 class PipelineTable(tag: Tag) extends DescribedEntityTable[PipelineId, Pipeline](tag, "pipelines") {

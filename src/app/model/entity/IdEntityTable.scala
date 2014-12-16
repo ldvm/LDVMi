@@ -15,6 +15,10 @@ trait DescribedEntity[Id <: BaseId] extends IdEntity[Id] {
   def description: Option[String]
 }
 
+trait UriIdentifiedEntity[Id <: BaseId] extends DescribedEntity[Id] {
+  def uri: String
+}
+
 abstract class IdEntityTable[Id <: BaseId, Entity <: IdEntity[Id]](tag: Tag, schemaName: Option[String], tableName: String)(override implicit val mapping: BaseColumnType[Id])
   extends IdTable[Id, Entity](tag, schemaName, tableName)(mapping) {
 
@@ -39,4 +43,14 @@ abstract class DescribedEntityTable[Id <: BaseId, Entity <: DescribedEntity[Id]]
   final def title = column[String](titleColumnName)
 
   final def description = column[Option[String]](descriptionColumnName)
+}
+
+abstract class UriIdentifiedEntityTable[Id <: BaseId, Entity <: UriIdentifiedEntity[Id]](tag: Tag, schemaName: Option[String], tableName: String)(override implicit val mapping: BaseColumnType[Id])
+  extends DescribedEntityTable[Id, Entity](tag, schemaName, tableName)(mapping) {
+
+  protected val uriColumnName: String = "uri"
+
+  def this(tag: Tag, tableName: String)(implicit mapping: BaseColumnType[Id]) = this(tag, None, tableName)
+
+  final def uri = column[String](uriColumnName)
 }

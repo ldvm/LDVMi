@@ -1,9 +1,9 @@
 package model.entity
 
-import java.util.UUID
 import org.joda.time.DateTime
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
+import play.api.db.slick.Session
 
 case class InputInstanceId(id: Long) extends AnyVal with BaseId
 object InputInstanceId extends IdCompanion[InputInstanceId]
@@ -11,10 +11,24 @@ object InputInstanceId extends IdCompanion[InputInstanceId]
 case class InputInstance(
   id: Option[InputInstanceId],
   dataPortInstanceId: DataPortInstanceId,
+  inputId: InputId,
   componentInstanceId: ComponentInstanceId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity[InputInstanceId]
+  ) extends IdEntity[InputInstanceId] {
+
+  def dataPortInstance(implicit session: Session) : DataPortInstance = {
+    (for {
+      d <- dataPortInstancesQuery if d.id == dataPortInstanceId
+    } yield d).first
+  }
+
+  def componentInstance(implicit session: Session) : ComponentInstance = {
+    (for {
+      ci <- componentInstancesQuery if ci.id == componentInstanceId
+    } yield ci).first
+  }
+}
 
 
 class InputInstanceTable(tag: Tag) extends IdEntityTable[InputInstanceId, InputInstance](tag, "input_instances") {
@@ -23,5 +37,7 @@ class InputInstanceTable(tag: Tag) extends IdEntityTable[InputInstanceId, InputI
 
   def componentInstanceId = column[ComponentInstanceId]("component_instance_id", O.NotNull)
 
-  def * = (id.?, dataPortInstanceId, componentInstanceId, createdUtc, modifiedUtc) <> (InputInstance.tupled, InputInstance.unapply _)
+  def inputId = column[InputId]("input_id", O.NotNull)
+
+  def * = (id.?, dataPortInstanceId, inputId, componentInstanceId, createdUtc, modifiedUtc) <> (InputInstance.tupled, InputInstance.unapply _)
 }

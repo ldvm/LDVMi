@@ -5,8 +5,8 @@ import java.io.FileInputStream
 import com.hp.hpl.jena.graph.TripleBoundary
 import com.hp.hpl.jena.rdf.model.{Model, ModelFactory, Resource, Property, ModelExtract, StatementTripleBoundary}
 import com.hp.hpl.jena.vocabulary.{DCTerms, RDF, RDFS}
-import model.component._
-import model.entity.{Analyzer, DataSource, Transformer, Visualizer}
+import model.service._
+import model.entity._
 import model.rdf.vocabulary.{SKOS, LDVM}
 import play.api.Play
 import play.api.Play.current
@@ -21,6 +21,16 @@ class ComponentApiController(implicit inj: Injector) extends Controller with Inj
 
   val componentsService = inject[ComponentService]
   val pipelineService = inject[PipelineService]
+  val compatibilityService = inject[CompatibilityService]
+
+  def check(pipelineId: Long) = DBAction { rws =>
+    pipelineService.findById(PipelineId(pipelineId))(rws.dbSession).map { pipeline =>
+      compatibilityService.check(pipeline.bindingSet(rws.dbSession))(rws.dbSession)
+
+    }
+
+    Ok("done")
+  }
 
   def ttl = DBAction(parse.multipartFormData) { rws =>
     rws.request.body.file("file").map { ttlFile =>

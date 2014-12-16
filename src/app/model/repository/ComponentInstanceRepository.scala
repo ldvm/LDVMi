@@ -5,4 +5,4 @@ import model.entity.{ComponentInstance, ComponentInstanceId, ComponentInstanceTa
 
 import scala.slick.lifted.TableQuery
 
-class ComponentInstanceRepository extends CrudRepository[ComponentInstanceId, ComponentInstance, ComponentInstanceTable](TableQuery[ComponentInstanceTable])
+class ComponentInstanceRepository extends UriIdentifiedRepository[ComponentInstanceId, ComponentInstance, ComponentInstanceTable](TableQuery[ComponentInstanceTable])

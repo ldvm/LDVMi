@@ -1,14 +1,16 @@
 package model.mess
-
+/*
 import java.util.concurrent.TimeUnit
 
+import akka.actor.Props
 import akka.util.Timeout
 import model.mess.VisualizationService
 import play.api.db.slick.Session
+import play.api.libs.concurrent.Akka
 import scaldi.{Injectable, Injector}
 
 
-case class Compatible(x: Boolean, z: Boolean)
+
 
 class LDVMServiceImpl(implicit inj: Injector) extends LDVMService with Injectable {
 
@@ -21,7 +23,7 @@ class LDVMServiceImpl(implicit inj: Injector) extends LDVMService with Injectabl
 
   def checkVisualizationCompatibility(visualizationId: Long)
     (implicit session: Session) = {
-    /*
+
         visualizationService.getByIdWithEager(visualizationId).map { visualizationEagerBox =>
           visualizerService.findAll.map { visualizer =>
 
@@ -48,6 +50,6 @@ class LDVMServiceImpl(implicit inj: Injector) extends LDVMService with Injectabl
               }
             }
           }
-        }*/
+        }
   }
-}
+}*/

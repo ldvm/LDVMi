@@ -11,5 +11,5 @@ object Global extends WithFilters(
     )
   )
 ) with ScaldiSupport with GlobalSettings {
-  def applicationModule = new RepositoryModule :: new ComponentModule :: new RdfModule :: new WebModule
+  def applicationModule = new RepositoryModule :: new ServiceModule :: new RdfModule :: new WebModule
 }

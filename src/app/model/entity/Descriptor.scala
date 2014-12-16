@@ -5,12 +5,12 @@ import org.joda.time.DateTime
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
 
-case class DescriptiorId(id: Long) extends AnyVal with BaseId
+case class DescriptorId(id: Long) extends AnyVal with BaseId
 
-object DescriptiorId extends IdCompanion[DescriptiorId]
+object DescriptorId extends IdCompanion[DescriptorId]
 
 case class Descriptor(
-  id: Option[DescriptiorId],
+  id: Option[DescriptorId],
   featureId: FeatureId,
   inputId: InputId,
   query: String,
@@ -18,7 +18,15 @@ case class Descriptor(
   description: Option[String],
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends DescribedEntity[DescriptiorId]
+  ) extends DescribedEntity[DescriptorId] {
+
+  def input(implicit session: Session) : Input = {
+    (for {
+      i <- inputsQuery if i.id === inputId
+    } yield i).first
+  }
+
+}
 
 object DescriptorEntity {
   def apply(featureId: FeatureId, inputId: InputId, descriptor: model.dto.Descriptor) = {
@@ -33,7 +41,7 @@ object DescriptorEntity {
   }
 }
 
-class DescriptorTable(tag: Tag) extends DescribedEntityTable[DescriptiorId, Descriptor](tag, "descriptors") {
+class DescriptorTable(tag: Tag) extends DescribedEntityTable[DescriptorId, Descriptor](tag, "descriptors") {
 
   def feature = foreignKey("fk_dt_ft_feature_id", featureId, featuresQuery)(_.id)
 
