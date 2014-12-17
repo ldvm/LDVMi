@@ -3,6 +3,8 @@ package model.actor
 import model.rdf.Graph
 import model.rdf.sparql.GenericSparqlEndpoint
 
+class SparqlEndpointNotConfiguredException extends Throwable
+
 class SparqlEndpointCompatibilityChecker(componentInstanceConfiguration: Option[Graph], componentConfiguration: Option[Graph]) extends CompatibilityChecker {
   def receive: Receive = {
     case CheckCompatibilityRequest(descriptor) => {
@@ -11,10 +13,9 @@ class SparqlEndpointCompatibilityChecker(componentInstanceConfiguration: Option[
         endpointOption.map { endpoint =>
           val queryExecutionFactory = endpoint.queryExecutionFactory()
           val qe = queryExecutionFactory(descriptor.query)
-          println("asking" + descriptor.query)
-          sender() ! CheckCompatibilityResponse(qe.execAsk(), descriptor)
+          sender() ! CheckCompatibilityResponse(Some(qe.execAsk()), descriptor)
         }.getOrElse {
-          throw new UnsupportedOperationException
+          sender() ! CheckCompatibilityResponse(None, descriptor)
         }
       } catch {
         case e: Throwable =>

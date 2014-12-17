@@ -175,7 +175,9 @@ class ComponentApiController(implicit inj: Injector) extends Controller with Inj
       val featureResource = feature.asResource()
       val title = getLabel(featureResource)
       val description = getLiteralPropertyString(featureResource, DCTerms.title)
-      val isMandatory = featureResource.getProperty(RDF.`type`).getResource.getURI == LDVM.mandatoryFeature.getURI
+      val typeProperty = featureResource.getProperty(RDF.`type`)
+      val typeResource = typeProperty.getObject.asResource()
+      val isMandatory = typeResource.getURI == LDVM.mandatoryFeature.getURI
 
       val descriptors = extractDescriptors(graphModel, featureResource, inputs)
 
@@ -221,7 +223,7 @@ class ComponentApiController(implicit inj: Injector) extends Controller with Inj
 
         sample match {
           case null => model.dto.Output(dp, None)
-          case x => model.dto.Output(dp, Some(x.getString))
+          case x => model.dto.Output(dp, Some(x.getObject.asResource().getURI))
         }
     }
   }
