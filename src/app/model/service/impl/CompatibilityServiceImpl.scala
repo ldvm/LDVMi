@@ -1,6 +1,7 @@
-package model.service
+package model.service.impl
 
 import model.entity._
+import model.service.CompatibilityService
 import model.service.component.InternalComponentInstance
 import play.api.db.slick._
 import scaldi.{Injectable, Injector}

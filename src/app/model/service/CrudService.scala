@@ -17,6 +17,8 @@ trait CrudService[
 
   def save(entity: E)(implicit session: Session) = repository.save(entity)
 
+  def saveAll(entities: Seq[E])(implicit session: Session) = repository.saveAll(entities)
+
   def findById(id: Id)(implicit session: Session) = repository.findById(id)
 
 }

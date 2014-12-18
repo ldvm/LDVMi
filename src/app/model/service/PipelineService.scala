@@ -9,4 +9,8 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
 
   def save(pipeline: model.dto.Pipeline)(implicit session: Session) : PipelineId
 
+  def save(pipelines: Seq[model.dto.Pipeline])(implicit session: Session): Seq[PipelineId] = {
+    pipelines.map(save)
+  }
+
 }

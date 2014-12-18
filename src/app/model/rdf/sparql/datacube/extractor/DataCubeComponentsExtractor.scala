@@ -4,7 +4,7 @@ import com.hp.hpl.jena.rdf.model.{Property, Resource, Statement}
 import com.hp.hpl.jena.shared.PropertyNotFoundException
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.datacube.query.DataCubeComponentsQuery
-import model.rdf.sparql.extractor.{ConstructResultExtractor, Descriptions, ExtractorHelpers}
+import model.rdf.extractor.{ConstructResultExtractor, Descriptions, ExtractorHelpers}
 import model.rdf.sparql.jena.QueryExecutionTypeConstruct
 import model.rdf.vocabulary.QB
 

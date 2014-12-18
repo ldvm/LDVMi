@@ -4,7 +4,7 @@ import com.hp.hpl.jena.query.QuerySolution
 import com.hp.hpl.jena.rdf.model.{Literal, Resource}
 import model.rdf.sparql.datacube.DataCubeComponentValue
 import model.rdf.sparql.datacube.query.DataCubeValuesQuery
-import model.rdf.sparql.extractor.SimpleQueryExecutionResultExtractor
+import model.rdf.extractor.SimpleQueryExecutionResultExtractor
 
 
 class DataCubeValuesExtractor extends SimpleQueryExecutionResultExtractor[DataCubeValuesQuery, DataCubeComponentValue] {

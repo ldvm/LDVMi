@@ -2,7 +2,7 @@ package model.rdf.sparql
 
 import _root_.model.entity.{DataSourceEagerBox, DataSource}
 import com.hp.hpl.jena.query.QueryExecution
-import extractor.{QueryExecutionResultExtractor, SparqlResultExtractor}
+import _root_.model.rdf.extractor.{QueryExecutionResultExtractor, SparqlResultExtractor}
 import jena.QueryExecutionType
 import query.SparqlQuery
 

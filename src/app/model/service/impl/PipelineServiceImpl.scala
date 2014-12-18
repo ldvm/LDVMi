@@ -1,9 +1,10 @@
-package model.service
+package model.service.impl
 
 import java.io.StringWriter
 
 import model.entity._
 import model.repository._
+import model.service.{ComponentService, PipelineService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 

@@ -4,7 +4,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory
 import com.hp.hpl.jena.vocabulary.RDF
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.datacube.query.DataCubeDataStructuresQuery
-import model.rdf.sparql.extractor.{ConstructResultExtractor, ExtractorHelpers, SparqlResultExtractor}
+import model.rdf.extractor.{ConstructResultExtractor, ExtractorHelpers, SparqlResultExtractor}
 import model.rdf.sparql.jena.QueryExecutionTypeConstruct
 import model.rdf.vocabulary.QB
 

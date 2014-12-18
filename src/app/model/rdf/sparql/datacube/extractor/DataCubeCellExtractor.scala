@@ -2,7 +2,7 @@ package model.rdf.sparql.datacube.extractor
 
 import model.rdf.sparql.datacube.query.DataCubeCellQuery
 import model.rdf.sparql.datacube.{DataCubeCell, DataCubeKey}
-import model.rdf.sparql.extractor.SparqlResultExtractor
+import model.rdf.extractor.SparqlResultExtractor
 import model.rdf.sparql.jena.QueryExecutionTypeConstruct
 
 class DataCubeCellExtractor(k: DataCubeKey) extends SparqlResultExtractor[DataCubeCellQuery, QueryExecutionTypeConstruct, DataCubeCell] {

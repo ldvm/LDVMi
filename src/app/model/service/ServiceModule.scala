@@ -1,4 +1,5 @@
 import model.service._
+import model.service.impl.{PipelineServiceImpl, CompatibilityServiceImpl, ComponentServiceImpl}
 import scaldi.Module
 
 class ServiceModule extends Module {

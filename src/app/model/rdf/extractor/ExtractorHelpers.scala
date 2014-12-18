@@ -1,4 +1,4 @@
-package model.rdf.sparql.extractor
+package model.rdf.extractor
 
 import com.hp.hpl.jena.vocabulary.{RDFS, DCTerms}
 import model.rdf.vocabulary.SKOS

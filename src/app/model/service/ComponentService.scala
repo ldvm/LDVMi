@@ -8,6 +8,10 @@ trait ComponentService extends CrudService[ComponentId, Component, ComponentTabl
 
   def save(component: model.dto.Component)(implicit session: Session): ComponentId
 
+  def save(components: Seq[model.dto.Component])(implicit session: Session): Seq[ComponentId] = {
+    components.map(save)
+  }
+
   def saveAnalyzer(analyzer: Analyzer)(implicit session: Session): AnalyzerId
 
   def saveVisualizer(visualizer: Visualizer)(implicit session: Session): VisualizerId

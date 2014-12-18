@@ -1,7 +1,7 @@
 package model.rdf.sparql
 
 import _root_.model.entity.DataSourceEagerBox
-import _root_.model.rdf.sparql.extractor.QueryExecutionResultExtractor
+import _root_.model.rdf.extractor.QueryExecutionResultExtractor
 import _root_.model.rdf.sparql.query.SparqlQuery
 import com.hp.hpl.jena.query.QueryExecution
 import scaldi.Injector

@@ -1,4 +1,4 @@
-package model.rdf.sparql.extractor
+package model.rdf.extractor
 
 import com.hp.hpl.jena.query.{QueryExecution, QuerySolution}
 import com.hp.hpl.jena.rdf.model.{Literal, Resource}

@@ -38,4 +38,8 @@ ETable <: Table[E] with IdEntityTable[Id, E]
 
     super.save(row)
   }
+
+  override def saveAll(rows: Seq[E])(implicit s: Session): Seq[Id] = {
+    rows.toIndexedSeq map save
+  }
 }

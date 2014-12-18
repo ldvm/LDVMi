@@ -2,7 +2,7 @@ package model.rdf.sparql.datacube.extractor
 
 import model.rdf.sparql.datacube.DataCubeDataset
 import model.rdf.sparql.datacube.query.DataCubeDatasetsQuery
-import model.rdf.sparql.extractor.ConstructResultExtractor
+import model.rdf.extractor.ConstructResultExtractor
 import model.rdf.sparql.jena.QueryExecutionTypeConstruct
 
 class DataCubeDatasetsExtractor extends ConstructResultExtractor[DataCubeDatasetsQuery, Seq[DataCubeDataset]] {
