@@ -27,13 +27,23 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     }
   }
 
+  def list(skip: Int = 0, take: Int = 50) = DBAction { implicit rws =>
+
+    val result = JsObject(Seq(
+      "data" -> Json.toJson(pipelineService.findPaginated(skip, take)()),
+      "count" -> JsNumber(pipelineService.countAll)
+    ))
+
+    Ok(result)
+  }
+
   def pipelineToJson(pipeline: Pipeline)(implicit session: Session) = {
     val set = pipeline.bindingSet
     val components = set.componentInstances.zipWithIndex
     val nodes = components.sortBy(_._2).map { c =>
       JsObject(Seq(
         "name" -> JsString(c._1.title),
-        "group" -> JsNumber(1)
+        "group" -> JsNumber(c._2)
       ))
     }
 
@@ -53,15 +63,5 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
       "nodes" -> JsArray(nodes),
       "links" -> JsArray(links)
     ))
-  }
-
-  def list(skip: Int = 0, take: Int = 50) = DBAction { implicit rws =>
-
-    val result = JsObject(Seq(
-      "data" -> Json.toJson(pipelineService.findPaginated(skip, take)()),
-      "count" -> JsNumber(pipelineService.countAll)
-    ))
-
-    Ok(result)
   }
 }
