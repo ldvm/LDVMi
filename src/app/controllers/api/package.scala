@@ -31,7 +31,8 @@ package object api {
     implicit val dataCubeWrites = Json.writes[model.rdf.sparql.datacube.DataCube]
     implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
 
-    //implicit val visualizationWrites = Json.writes[Visualization]
+    implicit val pipelinesWrites = Json.writes[Pipeline]
+
     implicit val dataSourceWrites = Json.writes[DataSource]
 
     implicit val coordinatesWrites = Json.writes[Coordinate]

@@ -12,6 +12,20 @@
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("ng-table.css"))'>
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
         <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
+
+        <style>
+
+        .link {
+        stroke: #ccc;
+        }
+
+        .node text {
+        pointer-events: none;
+        font: 15px sans-serif;
+        }
+
+
+        </style>
     }
 
 @main("List of available pipelines", scripts, styles) {

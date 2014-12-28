@@ -3,11 +3,18 @@
 # ~~~~
 
 # Home page
-GET         /                              @controllers.ApplicationController.index
-GET         /visualize/datacube            @controllers.DataCubeController.visualize
-GET         /visualize/map                 @controllers.MapController.visualize
-GET         /pipelines                     @controllers.PipelineController.index
-GET         /components                    @controllers.ComponentController.index
+GET         /                                              @controllers.ApplicationController.index
+GET         /visualize/datacube                            @controllers.DataCubeController.visualize
+GET         /visualize/map                                 @controllers.MapController.visualize
+GET         /pipelines                                     @controllers.PipelineController.index
+GET         /components                                    @controllers.ComponentController.index
+
+POST        /api/v1/components/add/ttl                     @controllers.api.LdvmApiController.ttl
+GET         /api/v1/compatibility/check/:pipelineId        @controllers.api.CompatibilityApiController.check(pipelineId: Long)
+GET         /api/v1/pipelines                              @controllers.api.PipelineApiController.list()
+GET         /api/v1/pipelines/:id                          @controllers.api.PipelineApiController.findById(id: Long)
+GET         /api/v1/pipelines/visualization/:id            @controllers.api.PipelineApiController.visualizationById(id: Long)
+
 
 #POST        /api/map/polygon-entities/:id                   @controllers.api.MapApiController.polygonEntities(id: Long)
 #GET         /api/map/polygon-entities-properties/:id        @controllers.api.MapApiController.polygonEntitiesProperties(id: Long)
@@ -28,13 +35,11 @@ GET         /components                    @controllers.ComponentController.inde
 #GET         /api/visualization/payola/:evaluationId         @controllers.api.VisualizationApiController.addPayola(evaluationId: String)
 #GET         /api/visualization/:id                          @controllers.api.VisualizationApiController.get(id: Long)
 
-POST        /api/components/add/ttl                          @controllers.api.LdvmApiController.ttl
-GET         /api/compatibility/check/:pipelineId             @controllers.api.CompatibilityApiController.check(pipelineId: Long)
 
 #GET         /api/visualizer/list                            @controllers.api.VisualizerApiController.list(skip: Int, take: Int)
 #GET         /api/visualizer/add                             @controllers.api.VisualizerApiController.add(name: String, signature: String, url: String, description: Option[String], title: Option[String])
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /vassets/*file                 controllers.Assets.versioned(path="/public", file: Asset)
-GET         /assets/*file                  controllers.Assets.at(path="/public", file)
-GET         /webjars/*file                 controllers.WebJarAssets.at(file)
+GET         /vassets/*file                                 controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                  controllers.Assets.at(path="/public", file)
+GET         /webjars/*file                                 controllers.WebJarAssets.at(file)

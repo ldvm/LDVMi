@@ -1,40 +1,34 @@
 <div class="container-fluid" style="padding-top : 60px;">
     <div>
-        <div class="pull-right"><a ng-href="#/add" class="btn btn-success">Add new</a></div>
+        <div class="pull-right"><a ng-href="/components#/add" class="btn btn-success">Add new</a></div>
     </div>
+
     <table ng-table="tableParams" class="table table-striped">
-        <tr ng-repeat="visualizationTuple in $data">
-            <td data-title="'ID'">{{visualizationTuple.visualization.id}}</td>
-            <td data-title="'Title'"><a ng-href="/detail/{{visualizationTuple.visualization.id}}">{{visualizationTuple.visualization.name}}</a>
-            </td>
-            <td data-title="'Cache'">
-                <a ng-href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}?p={{visualizationTuple.token}}"
-                   class="btn btn-default" ng-if="visualizationTuple.token">Last cached</a>
+        <tr ng-repeat="pipeline in $data">
+            <td data-title="'ID'">{{pipeline.id}}</td>
+            <td data-title="'Title'"><a ng-href="#/detail/{{pipeline.id}}">{{pipeline.title}}</a>
             </td>
             <td data-title="'Options'">
 
                 <div class="btn-group">
-                    <a ng-href="/compatibility/{{visualizationTuple.visualization.id}}" class="btn btn-primary">Compatibility</a>
+                    <a ng-href="#/compatibility/{{pipeline.id}}" class="btn btn-primary">Compatibility</a>
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a ng-href="/visualize/datacube#/id/{{visualizationTuple.visualization.id}}"
-                               ng-if="visualizationTuple.token">DataCube</a></li>
-                        <li><a ng-href="/visualize/map#/id/{{visualizationTuple.visualization.id}}">Map</a></li>
-                        <!--<li><a href="#" ng-if="visualizationTuple.token">Versions</a></li>-->
-                        <li class="divider" ng-if="visualizationTuple.token"></li>
-                        <li><a ng-href="#">Edit</a></li>
+                        <li class="divider"></li>
+                        <li><a ng-href="#">Re-check</a></li>
                     </ul>
                 </div>
             </td>
             <td data-title="'Last modified'" style="white-space: nowrap;">
-                <span am-time-ago="time(visualizationTuple.visualization.modifiedUtc, visualizationTuple.visualization.createdUtc)"></span>
+                <span am-time-ago="time(pipeline.modifiedUtc, pipeline.createdUtc)"></span>
             </td>
         </tr>
         <tr ng-if="$data.length == 0">
             <td colspan="4">No available data.</td>
         </tr>
     </table>
+
 </div>

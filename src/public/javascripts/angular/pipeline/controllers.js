@@ -1,10 +1,10 @@
-define(['angular', 'underscorejs'], function (ng, _) {
+define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
     'use strict';
 
-    ng.module('pipeline.controllers', []).
+    ng.module('pipeline.controllers', ['pipeline.model']).
         controller('List',
-        ['$scope', 'PipelineService', '$routeParams', 'ngTableParams',
-            function ($scope, PipelineService, $routeParams, ngTableParams) {
+        ['$scope', 'Pipelines', '$routeParams', 'ngTableParams',
+            function ($scope, pipelines, $routeParams, ngTableParams) {
 
                 var page = $routeParams.page || 1;
                 var count = $routeParams.count || 10;
@@ -13,18 +13,18 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     page: page,            // show first page
                     count: count,           // count per page
                     sorting: {
-                        name: 'asc'
+                        //name: 'asc'
                     }
                 }, {
                     total: 0, // length of data
                     getData: function ($defer, params) {
-                        PipelineService.query({
-                            skip: (params.page() - 1) * params.count(),
-                            take: params.count()
-                        }, function (data) {
+
+                        var promise = pipelines.findPaginated(params.page(), params.count());
+                        promise.then(function (data) {
                             params.total(data.count);
                             $defer.resolve(data.data);
                         });
+
                     }
                 });
 
@@ -33,35 +33,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
             }])
-        .controller('Add', ['$scope', 'PipelineService', 'DatasourceService', function ($scope, PipelineService, DatasourceService) {
-            $scope.dsdInSeparateDatasource = false;
-            $scope.datasources = [{}];
-            $scope.visualizationName = null;
-
-            $scope.submit = function () {
-
-                VisualizationService.add({
-                    name: $scope.visualizationName,
-                    datasource: $scope.datasources
-                }, function (v) {
-                    location.href = "#/compatibility/check/" + v.id
-                });
-
-            };
-
-            $scope.addDatasource = function () {
-                $scope.datasources.push({});
-            };
-
-            $scope.removeDatasource = function ($index) {
-                $scope.datasources.splice($index, 1);
-            };
-
-            $scope.anonymous = function () {
-                $scope.visualizationName = "Visualization of " + $scope.datasource.endpointUri;
-                $scope.submit();
-            };
-        }])
         .controller('Compatibility', [
             '$scope', '$routeParams', 'Compatibility', 'VisualizationService',
             function ($scope, $routeParams, Compatibility, VisualizationService) {
@@ -93,6 +64,20 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         }, 5000);
                     });
                 }
+
+            }])
+        .controller('Detail', [
+            '$scope', '$routeParams', 'Pipelines',
+            function ($scope, $routeParams, pipelines) {
+
+                $scope.data = {
+                    "nodes": [],
+                    "links": []
+                };
+
+                pipelines.visualization($routeParams.id).then(function(data){
+                    $scope.data = data;
+                });
 
             }]);
 });

@@ -6,6 +6,8 @@ import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
 import play.api.db.slick.Session
 
+import scala.slick.lifted.Ordered
+
 class CrudRepository[
 Id <: BaseId,
 E <: IdEntity[Id],
@@ -17,8 +19,12 @@ ETable <: Table[E] with IdEntityTable[Id, E]
   def count(implicit s: Session): Long = query.length.run
 
   def findPaginated(skip: Int = 0, pageSize: Int = 0)(implicit s: Session): Seq[ETable#TableElementType] = {
+    findPaginatedOrdered(skip, pageSize)(_.id.desc)
+  }
+
+  def findPaginatedOrdered[T <% Ordered](skip: Int = 0, pageSize: Int = 0)(f: ETable => T)(implicit s: Session): Seq[ETable#TableElementType] = {
     (for {
-      e <- query.sortBy(_.id).drop(skip).take(pageSize)
+      e <- query.sortBy(f).drop(skip).take(pageSize)
     } yield e).list
   }
 

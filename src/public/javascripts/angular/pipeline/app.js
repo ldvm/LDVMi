@@ -17,7 +17,6 @@ define([
         'use strict';
 
         return ng.module('pipeline', [
-            'pipeline.services',
             'pipeline.controllers',
             'pipeline.filters',
             'pipeline.directives',

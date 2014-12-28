@@ -19,13 +19,13 @@ case class InputInstance(
 
   def dataPortInstance(implicit session: Session) : DataPortInstance = {
     (for {
-      d <- dataPortInstancesQuery if d.id == dataPortInstanceId
+      d <- dataPortInstancesQuery if d.id === dataPortInstanceId
     } yield d).first
   }
 
   def componentInstance(implicit session: Session) : ComponentInstance = {
     (for {
-      ci <- componentInstancesQuery if ci.id == componentInstanceId
+      ci <- componentInstancesQuery if ci.id === componentInstanceId
     } yield ci).first
   }
 }
