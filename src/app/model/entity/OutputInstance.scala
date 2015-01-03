@@ -20,7 +20,7 @@ case class OutputInstance(
 
   def output(implicit session: Session) : Output = {
     (for {
-      o <- outputsQuery if o.id === outputId
+      o <- outputTemplatesQuery if o.id === outputId
     } yield o).first
   }
 

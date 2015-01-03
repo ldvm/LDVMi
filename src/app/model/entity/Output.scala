@@ -11,8 +11,8 @@ object OutputId extends IdCompanion[OutputId]
 case class Output(
   id: Option[OutputId],
   dataSample: Option[String],
-  dataPortId: DataPortId,
-  componentId: ComponentId,
+  dataPortId: DataPortTemplateId,
+  componentId: ComponentTemplateId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[OutputId]
@@ -20,11 +20,11 @@ case class Output(
 
 class OutputTable(tag: Tag) extends IdEntityTable[OutputId, Output](tag, "outputs") {
 
-  def dataPortId = column[DataPortId]("dataport_id", O.NotNull)
+  def dataPortId = column[DataPortTemplateId]("dataport_id", O.NotNull)
 
-  def componentId = column[ComponentId]("component_id", O.NotNull)
+  def componentTemplateId = column[ComponentTemplateId]("component_id", O.NotNull)
 
   def dataSample = column[Option[String]]("output_data_sample")
 
-  def * = (id.?, dataSample, dataPortId, componentId, createdUtc, modifiedUtc) <> (Output.tupled, Output.unapply _)
+  def * = (id.?, dataSample, dataPortId, componentTemplateId, createdUtc, modifiedUtc) <> (Output.tupled, Output.unapply _)
 }

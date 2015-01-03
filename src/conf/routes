@@ -7,13 +7,14 @@ GET         /                                              @controllers.Applicat
 GET         /visualize/datacube                            @controllers.DataCubeController.visualize
 GET         /visualize/map                                 @controllers.MapController.visualize
 GET         /pipelines                                     @controllers.PipelineController.index
-GET         /components                                    @controllers.ComponentController.index
+GET         /components                                    @controllers.ComponentTemplateController.index
 
 POST        /api/v1/components/add/ttl                     @controllers.api.LdvmApiController.ttl
 GET         /api/v1/compatibility/check/:pipelineId        @controllers.api.CompatibilityApiController.check(pipelineId: Long)
 GET         /api/v1/pipelines                              @controllers.api.PipelineApiController.list()
-GET         /api/v1/pipelines/:id                          @controllers.api.PipelineApiController.findById(id: Long)
+GET         /api/v1/pipelines/construct                    @controllers.api.PipelineApiController.construct()
 GET         /api/v1/pipelines/visualization/:id            @controllers.api.PipelineApiController.visualizationById(id: Long)
+GET         /api/v1/pipelines/:id                          @controllers.api.PipelineApiController.findById(id: Long)
 
 
 #POST        /api/map/polygon-entities/:id                   @controllers.api.MapApiController.polygonEntities(id: Long)

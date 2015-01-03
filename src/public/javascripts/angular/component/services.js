@@ -5,9 +5,9 @@ define(['angular'], function (ng) {
     // In this case it is a simple value service.
     ng.module('component.services', ['ngResource'])
         .factory('ComponentsService', ['$resource', function ($resource) {
-            return $resource('/api/visualizer', null, {
-                query: {url: '/api/visualizer/list', isArray: false},
-                save: {url: '/api/visualizer/add', method: 'GET', isArray: false}
+            return $resource('/api/v1/visualizer', null, {
+                query: {url: '/api/v1/visualizer/list', isArray: false},
+                save: {url: '/api/v1/visualizer/add', method: 'GET', isArray: false}
             });
         }]);
 });

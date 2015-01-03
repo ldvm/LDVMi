@@ -15,14 +15,14 @@ case class DataPortInstance(
   title: String,
   description: Option[String],
   componentInstanceId: ComponentInstanceId,
-  dataPortId: DataPortId,
+  dataPortId: DataPortTemplateId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends UriIdentifiedEntity[DataPortInstanceId] {
 
-  def dataPort(implicit session: Session) : DataPort = {
+  def dataPort(implicit session: Session) : DataPortTemplate = {
     (for{
-      d <- dataPortsQuery if d.id === dataPortId
+      d <- dataPortTemplatesQuery if d.id === dataPortId
     } yield d).first
   }
 
@@ -41,5 +41,5 @@ class DataPortInstanceTable(tag: Tag) extends UriIdentifiedEntityTable[DataPortI
 
   def componentInstanceId = column[ComponentInstanceId]("component_instance_id", O.NotNull)
 
-  def dataPortId = column[DataPortId]("data_port_id", O.NotNull)
+  def dataPortId = column[DataPortTemplateId]("data_port_id", O.NotNull)
 }

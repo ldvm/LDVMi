@@ -37,6 +37,13 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     Ok(result)
   }
 
+  def construct = DBAction { implicit rws =>
+
+    pipelineService.construct
+
+    Ok(JsObject(Seq()))
+  }
+
   def pipelineToJson(pipeline: Pipeline)(implicit session: Session) = {
     val set = pipeline.bindingSet
     val components = set.componentInstances.zipWithIndex
@@ -51,7 +58,7 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
 
     val links = set.bindings.map { b =>
       val source = b.source.componentInstance
-      val target = b.target.componentInstance
+      val target = b.targetInputInstance.componentInstance
 
       JsObject(Seq(
         "target" -> JsNumber(components.find(_._1 == target).map(_._2).get),

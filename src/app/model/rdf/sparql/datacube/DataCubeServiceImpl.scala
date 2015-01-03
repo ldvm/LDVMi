@@ -1,6 +1,6 @@
 package model.rdf.sparql.datacube
 
-import model.entity.{DataSourceEagerBox, DataSource}
+import model.entity.{DataSourceTemplateEagerBox, DataSourceTemplate}
 //import model.repositories.VisualizationQueriesService
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json._
@@ -15,24 +15,24 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
   var sparqlEndpointService = inject[SparqlEndpointService]
   //var visualizationQueriesService = inject[VisualizationQueriesService]
 
-  def getDatasets(dataSource: DataSource): Seq[DataCubeDataset] = {
+  def getDatasets(dataSource: DataSourceTemplate): Seq[DataCubeDataset] = {
     //sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDatasetsQuery, new DataCubeDatasetsExtractor)
     List()
   }
 
-  def getDataStructures(dataSource: DataSource): Seq[DataCubeDataStructure] = {
+  def getDataStructures(dataSource: DataSourceTemplate): Seq[DataCubeDataStructure] = {
     //sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDataStructuresQuery, new DataCubeDataStructuresExtractor)
     List()
   }
 
-  def getDataStructureComponents(dataSource: DataSource, uri: String): Seq[DataCubeComponent] = {
+  def getDataStructureComponents(dataSource: DataSourceTemplate, uri: String): Seq[DataCubeComponent] = {
     List("dimension", "measure", "attribute").par.map { componentType =>
       //sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeComponentsQuery(uri, componentType), new DataCubeComponentsExtractor)
       List()
     }.toList.flatten
   }
 
-  def getValues(dataSourceEagerBox: DataSourceEagerBox, uris: List[String]): Map[String, Option[Enumerator[Option[DataCubeComponentValue]]]] = {
+  def getValues(dataSourceEagerBox: DataSourceTemplateEagerBox, uris: List[String]): Map[String, Option[Enumerator[Option[DataCubeComponentValue]]]] = {
     uris.reverse.map { uri =>
       uri -> sparqlEndpointService.getResult(dataSourceEagerBox, new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
     }.toMap
@@ -52,7 +52,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     for (a <- x.view; b <- y) yield a :+ b
   }
 
-  private def sliceCube(dataSource: DataSource, queryData: DataCubeQueryData): Option[DataCube] = {
+  private def sliceCube(dataSource: DataSourceTemplate, queryData: DataCubeQueryData): Option[DataCube] = {
 
     val allDimensionsHaveActiveValue = queryData.filters.componentFilters.filter(_.componentType == "dimension").forall(componentHasActiveValue)
 

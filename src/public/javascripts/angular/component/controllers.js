@@ -37,7 +37,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
             '$scope', '$location', 'FileUploader',
             function ($scope, $location, FileUploader) {
                 var uploader = $scope.uploader = new FileUploader({
-                    url: '/api/components/add/ttl'
+                    url: '/api/v1/components/add/ttl'
                 });
 
                 // CALLBACKS

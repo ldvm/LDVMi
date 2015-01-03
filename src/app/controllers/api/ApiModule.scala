@@ -9,4 +9,5 @@ class ApiModule extends Module {
   binding to new PipelineApiController
   binding to new CompatibilityApiController
   binding to new PipelineApiController
+  binding to new LdvmApiController
 }

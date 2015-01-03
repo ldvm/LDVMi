@@ -13,4 +13,9 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
     pipelines.map(save)
   }
 
+  def construct(implicit session: Session): Seq[PartialPipeline]
+
+  case class PortMapping(start: OutputId, end: DataPortTemplateId)
+  case class PartialPipeline(specificComponentTemplates: Seq[SpecificComponentTemplate], portMappings: Seq[PortMapping])
+
 }

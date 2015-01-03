@@ -2,7 +2,7 @@ package model.service.impl
 
 import model.entity._
 import model.service.CompatibilityService
-import model.service.component.InternalComponentInstance
+import model.service.component.{BindingContext, InternalComponent, InternalComponent$}
 import play.api.db.slick._
 import scaldi.{Injectable, Injector}
 
@@ -12,7 +12,7 @@ class CompatibilityServiceImpl(implicit inj: Injector) extends CompatibilityServ
     val componentInstances = bindingSet.componentInstances
 
     componentInstances.map { componentInstance =>
-      InternalComponentInstance(componentInstance).check(bindingSet)
+      InternalComponent(componentInstance).check(BindingContext(bindingSet))
     }
 
   }

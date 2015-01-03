@@ -33,14 +33,14 @@ package object api {
 
     implicit val pipelinesWrites = Json.writes[Pipeline]
 
-    implicit val dataSourceWrites = Json.writes[DataSource]
+    implicit val dataSourceWrites = Json.writes[DataSourceTemplate]
 
     implicit val coordinatesWrites = Json.writes[Coordinate]
     implicit val polygonWrites = Json.writes[Polygon]
     implicit val polygonEntitiesWrites = Json.writes[WKTEntity]
     implicit val propertyWrites = Json.writes[Property]
 
-    implicit val visualizerWrites = Json.writes[Component]
+    implicit val visualizerWrites = Json.writes[ComponentTemplate]
     //implicit val visualizerCompatibilityWrites = Json.writes[ComponentCompatibility]
 
     /*implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {

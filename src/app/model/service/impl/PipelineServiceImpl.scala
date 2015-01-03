@@ -4,7 +4,8 @@ import java.io.StringWriter
 
 import model.entity._
 import model.repository._
-import model.service.{ComponentService, PipelineService}
+import model.service.component.{InternalComponent, InternalComponent$}
+import model.service.{ComponentTemplateService, PipelineService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 
@@ -20,18 +21,19 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   val visualizerInstancesRepository = inject[VisualizerInstanceRepository]
   val dataSourcesInstancesRepository = inject[DataSourceInstanceRepository]
   val componentInstanceMembershipRepository = inject[ComponentInstanceMembershipRepository]
+  val componentRepository = inject[ComponentTemplateRepository]
 
-  val inputRepository = inject[InputRepository]
-  val outputRepository = inject[OutputRepository]
+  val inputRepository = inject[InputTemplateRepository]
+  val outputRepository = inject[OutputTemplateRepository]
 
-  val dataPortRepository = inject[DataPortRepository]
+  val dataPortRepository = inject[DataPortTemplateRepository]
   val dataPortBindingsRepository = inject[DataPortBindingRepository]
   val dataPortBindingSetsRepository = inject[DataPortBindingSetRepository]
 
   val inputInstancesRepository = inject[InputInstanceRepository]
   val outputInstancesRepository = inject[OutputInstanceRepository]
 
-  val componentService = inject[ComponentService]
+  val componentService = inject[ComponentTemplateService]
 
   def save(pipeline: model.dto.Pipeline)(implicit session: Session): PipelineId = {
 
@@ -91,15 +93,15 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
           instance.componentInstance.uri,
           instance.componentInstance.label.getOrElse("Unlabeled instance"),
           None,
-          concreteComponent.componentId,
+          concreteComponent.componentTemplateId,
           configString
         ))
 
         concreteComponent match {
-          case a: Analyzer => analyzerInstancesRepository.save(AnalyzerInstance(None, componentInstanceId, a.id.get))
-          case t: Transformer => transformerInstancesRepository.save(TransformerInstance(None, componentInstanceId, t.id.get))
-          case v: Visualizer => visualizerInstancesRepository.save(VisualizerInstance(None, componentInstanceId, v.id.get))
-          case d: DataSource => dataSourcesInstancesRepository.save(DataSourceInstance(None, componentInstanceId, d.id.get))
+          case a: AnalyzerTemplate => analyzerInstancesRepository.save(AnalyzerInstance(None, componentInstanceId, a.id.get))
+          case t: TransformerTemplate => transformerInstancesRepository.save(TransformerInstance(None, componentInstanceId, t.id.get))
+          case v: VisualizerTemplate => visualizerInstancesRepository.save(VisualizerInstance(None, componentInstanceId, v.id.get))
+          case d: DataSourceTemplate => dataSourcesInstancesRepository.save(DataSourceInstance(None, componentInstanceId, d.id.get))
           case _ => throw new UnsupportedOperationException
         }
 
@@ -184,5 +186,45 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     }
 
     bindingSetId
+  }
+
+  def construct(implicit session: Session): Seq[PartialPipeline] = {
+
+    val allComponents = componentService.getAllByType
+
+    def nextRound(partialPipelines: Seq[PartialPipeline]): Seq[PartialPipeline] = {
+      Seq(ComponentType.Analyzer, ComponentType.Transformer, ComponentType.Visualizer).flatMap { componentType =>
+        allComponents(componentType).flatMap { component =>
+          tryAdd(component, partialPipelines)
+        }
+      }
+    }
+
+    var partialPipelines = allComponents(ComponentType.DataSource).map(dsToPipeline)
+
+    var i = 0
+    var stop = false
+    while (i < 1000 && !stop) {
+      val next = nextRound(partialPipelines)
+      stop = next.isEmpty
+      partialPipelines = partialPipelines.++(next)
+      println(i)
+      println(partialPipelines)
+      i += 1
+    }
+
+    partialPipelines
+  }
+
+  private def tryAdd(componentToAddSpecificTemplate: SpecificComponentTemplate, partialPipelines: Seq[PartialPipeline])(implicit session: Session): Seq[PartialPipeline] = {
+    partialPipelines.flatMap { partialPipeline =>
+      println("trying to add "+componentToAddSpecificTemplate.componentTemplate.uri+" to "+partialPipeline)
+      InternalComponent(componentToAddSpecificTemplate).checkCouldBeBoundWith(InternalComponent(partialPipeline.specificComponentTemplates.last))
+      None
+    }
+  }
+
+  private def dsToPipeline(dataSource: SpecificComponentTemplate): PartialPipeline = {
+    PartialPipeline(Seq(dataSource), Seq())
   }
 }

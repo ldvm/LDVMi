@@ -12,7 +12,7 @@ object DescriptorId extends IdCompanion[DescriptorId]
 case class Descriptor(
   id: Option[DescriptorId],
   featureId: FeatureId,
-  inputId: InputId,
+  inputTemplateId: InputTemplateId,
   query: String,
   title: String,
   description: Option[String],
@@ -20,20 +20,20 @@ case class Descriptor(
   var modifiedUtc: Option[DateTime] = None
   ) extends DescribedEntity[DescriptorId] {
 
-  def input(implicit session: Session) : Input = {
+  def inputTemplate(implicit session: Session) : InputTemplate = {
     (for {
-      i <- inputsQuery if i.id === inputId
+      i <- inputTemplatesQuery if i.id === inputTemplateId
     } yield i).first
   }
 
 }
 
 object DescriptorEntity {
-  def apply(featureId: FeatureId, inputId: InputId, descriptor: model.dto.Descriptor) = {
+  def apply(featureId: FeatureId, inputTemplateId: InputTemplateId, descriptor: model.dto.Descriptor) = {
     Descriptor(
       None,
       featureId,
-      inputId,
+      inputTemplateId,
       descriptor.query,
       descriptor.title.getOrElse("Unlabeled descriptor"),
       descriptor.description
@@ -47,11 +47,11 @@ class DescriptorTable(tag: Tag) extends DescribedEntityTable[DescriptorId, Descr
 
   def featureId = column[FeatureId]("feature_id", O.NotNull)
 
-  def input = foreignKey("fk_dt_it_input_id", inputId, inputsQuery)(_.id)
+  def inputTemplate = foreignKey("fk_dt_itt_input_template_id", inputTemplateId, inputTemplatesQuery)(_.id)
 
-  def inputId = column[InputId]("input_id", O.NotNull)
+  def inputTemplateId = column[InputTemplateId]("input_template_id", O.NotNull)
 
   def query = column[String]("query", O.NotNull)
 
-  def * = (id.?, featureId, inputId, query, title, description, createdUtc, modifiedUtc) <>(Descriptor.tupled, Descriptor.unapply _)
+  def * = (id.?, featureId, inputTemplateId, query, title, description, createdUtc, modifiedUtc) <>(Descriptor.tupled, Descriptor.unapply _)
 }

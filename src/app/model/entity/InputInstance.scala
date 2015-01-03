@@ -11,7 +11,7 @@ object InputInstanceId extends IdCompanion[InputInstanceId]
 case class InputInstance(
   id: Option[InputInstanceId],
   dataPortInstanceId: DataPortInstanceId,
-  inputId: InputId,
+  inputId: InputTemplateId,
   componentInstanceId: ComponentInstanceId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
@@ -37,7 +37,7 @@ class InputInstanceTable(tag: Tag) extends IdEntityTable[InputInstanceId, InputI
 
   def componentInstanceId = column[ComponentInstanceId]("component_instance_id", O.NotNull)
 
-  def inputId = column[InputId]("input_id", O.NotNull)
+  def inputId = column[InputTemplateId]("input_id", O.NotNull)
 
   def * = (id.?, dataPortInstanceId, inputId, componentInstanceId, createdUtc, modifiedUtc) <> (InputInstance.tupled, InputInstance.unapply _)
 }

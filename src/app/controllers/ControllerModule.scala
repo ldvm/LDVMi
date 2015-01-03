@@ -7,5 +7,5 @@ class ControllerModule extends Module {
   binding to new DataCubeController
   binding to new MapController
   binding to new PipelineController
-  binding to new ComponentController
+  binding to new ComponentTemplateController
 }

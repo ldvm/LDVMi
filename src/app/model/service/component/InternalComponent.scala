@@ -6,37 +6,35 @@ import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
 import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCompatibilityChecker, SparqlEndpointCompatibilityChecker}
-import model.entity.{ComponentInstance, DataPortBindingSet, Descriptor}
+import model.entity._
 import model.rdf.Graph
 import play.api.Play.current
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class InternalComponentInstance(componentInstance: ComponentInstance) {
+class InternalComponent(componentInstance: ComponentInstance) extends Component{
 
   implicit val timeout = Timeout(1, TimeUnit.MINUTES)
 
-  def check(bindingSet: DataPortBindingSet)(implicit session: Session): Unit = {
+  def check(context: BindingContext)(implicit session: Session): Unit = {
     val features = componentInstance.component.features
     val featuresWithDescriptors = features.map { f => (f, f.descriptors)}
 
     featuresWithDescriptors.map {
       case (feature, descriptors) => {
         descriptors.map { descriptor =>
-          val descriptorInput = descriptor.input
-          val descriptorSourcePort = bindingSet.bindings.find(_.target.inputId == descriptorInput.id.get)
-          descriptorSourcePort.map { dataPort =>
-            val boundComponentInstance = dataPort.source.componentInstance
-
-            InternalComponentInstance(boundComponentInstance).isCompatibleWith(descriptor)
-          }
+          val descriptorInputTemplate = descriptor.inputTemplate
+          val componentForDescriptor = context(descriptorInputTemplate.dataPortTemplate.uri)
+          // TODO: actors
+          componentForDescriptor.checkIsCompatibleWith(descriptor)
         }
       }
     }
   }
 
-  def isCompatibleWith(descriptor: Descriptor)(implicit session: Session) = {
+  def checkIsCompatibleWith(descriptor: Descriptor)(implicit session: Session) = {
     val component = componentInstance.component
     val output = component.output
     val checker = output.map { o =>
@@ -56,10 +54,18 @@ class InternalComponentInstance(componentInstance: ComponentInstance) {
     }
   }
 
+  def checkCouldBeBoundWith(component: Component)(implicit session: Session) = {
+
+  }
+
 }
 
-object InternalComponentInstance {
-  def apply(componentInstance: ComponentInstance): InternalComponentInstance = {
-    new InternalComponentInstance(componentInstance)
+object InternalComponent {
+  def apply(componentInstance: ComponentInstance): InternalComponent = {
+    new InternalComponent(componentInstance)
+  }
+
+  def apply(specificComponentTemplate: SpecificComponentTemplate): InternalComponent = {
+    new InternalComponent(ComponentInstance(None, "", "", None, specificComponentTemplate.componentTemplateId, None))
   }
 }

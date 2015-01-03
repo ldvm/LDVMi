@@ -1,6 +1,6 @@
 package model.dto
 
-case class DataPort(
+case class DataPortTemplate(
   uri: String,
   title: Option[String],
   description: Option[String]

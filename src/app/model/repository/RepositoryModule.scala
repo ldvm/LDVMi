@@ -3,15 +3,15 @@ import scaldi.Module
 
 class RepositoryModule extends Module {
 
-  binding to new ComponentRepository
-  binding to new AnalyzerRepository
-  binding to new DataSourceRepository
-  binding to new TransformerRepository
-  binding to new VisualizerRepository
+  binding to new ComponentTemplateRepository
+  binding to new AnalyzerTemplateRepository
+  binding to new DataSourceTemplateRepository
+  binding to new TransformerTemplateRepository
+  binding to new VisualizerTemplateRepository
 
-  binding to new DataPortRepository
-  binding to new InputRepository
-  binding to new OutputRepository
+  binding to new DataPortTemplateRepository
+  binding to new InputTemplateRepository
+  binding to new OutputTemplateRepository
 
   binding to new FeatureRepository
   binding to new FeatureToComponentRepository

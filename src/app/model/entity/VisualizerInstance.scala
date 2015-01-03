@@ -8,12 +8,12 @@ import CustomUnicornPlay.driver.simple._
 case class VisualizerInstanceId(id: Long) extends AnyVal with BaseId
 object VisualizerInstanceId extends IdCompanion[VisualizerInstanceId]
 
-case class VisualizerInstanceEagerBox(visualizer: VisualizerInstance, component: Component) extends EagerBox[VisualizerInstance](visualizer)
+case class VisualizerInstanceEagerBox(visualizer: VisualizerInstance, component: ComponentTemplate) extends EagerBox[VisualizerInstance](visualizer)
 
 case class VisualizerInstance(
   id: Option[VisualizerInstanceId],
   componentInstanceId: ComponentInstanceId,
-  visualizerId: VisualizerId,
+  visualizerId: VisualizerTemplateId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
 ) extends IdEntity[VisualizerInstanceId]
@@ -21,11 +21,11 @@ case class VisualizerInstance(
 
 class VisualizerInstanceTable(tag: Tag) extends IdEntityTable[VisualizerInstanceId, VisualizerInstance](tag, "visualizer_instances") {
 
-  def visualizer = foreignKey("fk_vit_dst_component_id", visualizerId, visualizersQuery)(_.id)
+  def visualizer = foreignKey("fk_vit_dst_visualizer_id", visualizerTemplateId, visualizerTemplatesQuery)(_.id)
 
-  def visualizerId = column[VisualizerId]("visualizer_id", O.NotNull)
+  def visualizerTemplateId = column[VisualizerTemplateId]("visualizer_id", O.NotNull)
 
-  def * = (id.?, componentInstanceId, visualizerId, createdUtc, modifiedUtc) <> (VisualizerInstance.tupled, VisualizerInstance.unapply _)
+  def * = (id.?, componentInstanceId, visualizerTemplateId, createdUtc, modifiedUtc) <> (VisualizerInstance.tupled, VisualizerInstance.unapply _)
 
   def componentInstance = foreignKey("fk_vit_cit_component_instance_id", componentInstanceId, componentInstancesQuery)(_.id)
 

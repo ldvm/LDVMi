@@ -23,7 +23,7 @@ case class DataPortBinding(
     } yield d).first
   }
 
-  def target(implicit session: Session) : InputInstance = {
+  def targetInputInstance(implicit session: Session) : InputInstance = {
     (for {
       i <- inputInstancesQuery if i.id === targetId
     } yield i).first

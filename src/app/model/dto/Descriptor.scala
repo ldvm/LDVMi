@@ -5,5 +5,5 @@ case class Descriptor(
   title: Option[String],
   description: Option[String],
   query: String,
-  appliesTo: Input
+  appliesTo: InputTemplate
 )

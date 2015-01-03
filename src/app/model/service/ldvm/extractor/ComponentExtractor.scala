@@ -9,8 +9,8 @@ import model.rdf.vocabulary.LDVM
 
 import scala.collection.JavaConversions._
 
-class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.Component]]] {
-  override def extract(input: Graph): Option[Map[String, Seq[model.dto.Component]]] = {
+class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.ComponentTemplate]]] {
+  override def extract(input: Graph): Option[Map[String, Seq[model.dto.ComponentTemplate]]] = {
 
     val graphModel = input.jenaModel
 
@@ -38,7 +38,7 @@ class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.Compon
             case _ => Some(modelExtractor.extract(configResource.getObject.asResource, graphModel))
           }
 
-          model.dto.Component(component.getURI, label, comment, defaultConfigurationModel, inputs.values.toSeq, output, features)
+          model.dto.ComponentTemplate(component.getURI, label, comment, defaultConfigurationModel, inputs.values.toSeq, output, features)
         }
 
         (componentType, components)
@@ -47,14 +47,14 @@ class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.Compon
 
 
 
-  private def extractInputs(graphModel: Model, component: Resource): Map[String, model.dto.Input] = {
+  private def extractInputs(graphModel: Model, component: Resource): Map[String, model.dto.InputTemplate] = {
     val dataPorts = extractDataPort(graphModel, component, LDVM.inputTemplate)
-    dataPorts.map(model.dto.Input).map {
-      i => (i.dataPort.uri, i)
+    dataPorts.map(model.dto.InputTemplate).map {
+      i => (i.dataPortTemplate.uri, i)
     }.toMap
   }
 
-  private def extractDataPort(graphModel: Model, component: Resource, portType: Property): Seq[model.dto.DataPort] = {
+  private def extractDataPort(graphModel: Model, component: Resource, portType: Property): Seq[model.dto.DataPortTemplate] = {
     val templates = graphModel.listObjectsOfProperty(component, portType).toList
     templates.map {
       template =>
@@ -62,11 +62,11 @@ class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.Compon
         val title = getLabel(templateResource)
         val description = getLiteralPropertyString(templateResource, DCTerms.description)
 
-        model.dto.DataPort(templateResource.getURI, title, description)
+        model.dto.DataPortTemplate(templateResource.getURI, title, description)
     }.toSeq
   }
 
-  private def extractFeatures(graphModel: Model, component: Resource, inputs: Map[String, model.dto.Input]): Seq[model.dto.Feature] = {
+  private def extractFeatures(graphModel: Model, component: Resource, inputs: Map[String, model.dto.InputTemplate]): Seq[model.dto.Feature] = {
     val features = graphModel.listObjectsOfProperty(component, LDVM.feature).toList
     features.map { feature =>
       val featureResource = feature.asResource()
@@ -82,7 +82,7 @@ class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.Compon
     }
   }
 
-  private def extractDescriptors(graphModel: Model, feature: Resource, inputs: Map[String, model.dto.Input]): Seq[model.dto.Descriptor] = {
+  private def extractDescriptors(graphModel: Model, feature: Resource, inputs: Map[String, model.dto.InputTemplate]): Seq[model.dto.Descriptor] = {
     val signatures = graphModel.listObjectsOfProperty(feature, LDVM.descriptor).toList
     signatures.map {
       signature =>
@@ -99,7 +99,7 @@ class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.Compon
     }.filter(_.isDefined).map(_.get).toSeq
   }
 
-  private def extractOutputs(graphModel: Model, component: Resource): Seq[model.dto.Output] = {
+  private def extractOutputs(graphModel: Model, component: Resource): Seq[model.dto.OutputTemplate] = {
 
     val dataPorts = extractDataPort(graphModel, component, LDVM.outputTemplate)
     dataPorts.map {
@@ -107,8 +107,8 @@ class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.Compon
         val sample = graphModel.getProperty(graphModel.getResource(dp.uri), LDVM.outputDataSample)
 
         sample match {
-          case null => model.dto.Output(dp, None)
-          case x => model.dto.Output(dp, Some(x.getObject.asResource().getURI))
+          case null => model.dto.OutputTemplate(dp, None)
+          case x => model.dto.OutputTemplate(dp, Some(x.getObject.asResource().getURI))
         }
     }
   }

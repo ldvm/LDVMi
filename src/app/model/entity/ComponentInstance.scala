@@ -15,7 +15,7 @@ case class ComponentInstance(
   uri: String,
   title: String,
   description: Option[String],
-  componentId: ComponentId,
+  componentId: ComponentTemplateId,
   configuration: Option[String] = None,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
@@ -23,14 +23,14 @@ case class ComponentInstance(
 
   def descriptorsAppliedTo(inputInstance: InputInstance)(implicit session: Session) : Seq[Descriptor] = {
     (for {
-      ctf <- componentFeaturesQuery if ctf.componentId === componentId
-      d <- descriptorsQuery if d.featureId === ctf.featureId && d.inputId === inputInstance.inputId
+      ctf <- componentFeaturesQuery if ctf.componentTemplateId === componentId
+      d <- descriptorsQuery if d.featureId === ctf.featureId && d.inputTemplateId === inputInstance.inputId
     } yield d).list
   }
 
-  def component(implicit session: Session) : Component = {
+  def component(implicit session: Session) : ComponentTemplate = {
     (for {
-      c <- componentsQuery if c.id === componentId
+      c <- componentTemplatesQuery if c.id === componentId
     } yield c).first
   }
 
@@ -42,9 +42,9 @@ class ComponentInstanceTable(tag: Tag) extends UriIdentifiedEntityTable[Componen
 
   def configuration = column[Option[String]]("configuration")
 
-  def component = foreignKey("fk_cit_ct_component_id", componentId, componentsQuery)(_.id)
+  def component = foreignKey("fk_cit_ct_component_id", componentId, componentTemplatesQuery)(_.id)
 
-  def componentId = column[ComponentId]("component_id", O.NotNull)
+  def componentId = column[ComponentTemplateId]("component_id", O.NotNull)
 
 }
 

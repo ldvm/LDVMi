@@ -11,7 +11,7 @@ object AnalyzerInstanceId extends IdCompanion[AnalyzerInstanceId]
 case class AnalyzerInstance(
   id: Option[AnalyzerInstanceId],
   componentInstanceId: ComponentInstanceId,
-  analyzerId: AnalyzerId,
+  analyzerId: AnalyzerTemplateId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[AnalyzerInstanceId] with ConcreteComponentInstance
@@ -19,11 +19,11 @@ case class AnalyzerInstance(
 
 class AnalyzerInstanceTable(tag: Tag) extends IdEntityTable[AnalyzerInstanceId, AnalyzerInstance](tag, "analyzer_instances") {
 
-  def analyzer = foreignKey("fk_ait_at_analyzer_id", analyzerId, analyzersQuery)(_.id)
+  def analyzer = foreignKey("fk_ait_at_analyzer_id", analyzerId, analyzerTemplatesQuery)(_.id)
 
   def * = (id.?, componentInstanceId, analyzerId, createdUtc, modifiedUtc) <>(AnalyzerInstance.tupled, AnalyzerInstance.unapply _)
 
-  def analyzerId = column[AnalyzerId]("analyzer_id", O.NotNull)
+  def analyzerId = column[AnalyzerTemplateId]("analyzer_id", O.NotNull)
 
   def componentInstance = foreignKey("fk_ait_cit_component_instance_id", componentInstanceId, componentInstancesQuery)(_.id)
 

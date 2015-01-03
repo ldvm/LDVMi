@@ -11,7 +11,7 @@ object FeatureToComponentId extends IdCompanion[FeatureToComponentId]
 
 case class FeatureToComponent(
   id: Option[FeatureToComponentId],
-  componentId: ComponentId,
+  componentId: ComponentTemplateId,
   featureId: FeatureId,
   ordering: Option[Int],
   var createdUtc: Option[DateTime] = None,
@@ -21,9 +21,9 @@ case class FeatureToComponent(
 
 class FeatureToComponentTable(tag: Tag) extends IdEntityTable[FeatureToComponentId, FeatureToComponent](tag, "feature_to_component") {
 
-  def component = foreignKey("fk_ftc_ct_component_id", componentId, componentsQuery)(_.id)
+  def component = foreignKey("fk_ftc_ct_component_id", componentTemplateId, componentTemplatesQuery)(_.id)
 
-  def componentId = column[ComponentId]("component_id", O.NotNull)
+  def componentTemplateId = column[ComponentTemplateId]("component_id", O.NotNull)
 
   def feature = foreignKey("fk_ftc_ft_feature_id", featureId, featuresQuery)(_.id)
 
@@ -31,5 +31,5 @@ class FeatureToComponentTable(tag: Tag) extends IdEntityTable[FeatureToComponent
 
   def ordering = column[Option[Int]]("ordering")
 
-  def * = (id.?, componentId, featureId, ordering, createdUtc, modifiedUtc) <>(FeatureToComponent.tupled, FeatureToComponent.unapply _)
+  def * = (id.?, componentTemplateId, featureId, ordering, createdUtc, modifiedUtc) <>(FeatureToComponent.tupled, FeatureToComponent.unapply _)
 }

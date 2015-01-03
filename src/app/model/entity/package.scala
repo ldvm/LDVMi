@@ -4,20 +4,20 @@ import scala.slick.lifted.TableQuery
 
 package object entity {
 
-  val componentsQuery = TableQuery[ComponentTable]
-  val analyzersQuery = TableQuery[AnalyzerTable]
-  val transformersQuery = TableQuery[TransformerTable]
-  val visualizersQuery = TableQuery[VisualizerTable]
-  val dataSourcesQuery = TableQuery[DataSourceTable]
+  val componentTemplatesQuery = TableQuery[ComponentTemplateTable]
+  val analyzerTemplatesQuery = TableQuery[AnalyzerTemplateTable]
+  val transformerTemplatesQuery = TableQuery[TransformerTemplateTable]
+  val visualizerTemplatesQuery = TableQuery[VisualizerTemplateTable]
+  val dataSourceTemplatesQuery = TableQuery[DataSourceTemplateTable]
 
   val componentFeaturesQuery = TableQuery[FeatureToComponentTable]
   val featuresQuery = TableQuery[FeatureTable]
   val bindingSetsQuery = TableQuery[DataPortBindingSetTable]
   val bindingsQuery = TableQuery[DataPortBindingTable]
 
-  val dataPortsQuery = TableQuery[DataPortTable]
-  val outputsQuery = TableQuery[OutputTable]
-  val inputsQuery = TableQuery[InputTable]
+  val dataPortTemplatesQuery = TableQuery[DataPortTemplateTable]
+  val outputTemplatesQuery = TableQuery[OutputTable]
+  val inputTemplatesQuery = TableQuery[InputTemplateTable]
 
   val componentInstancesQuery = TableQuery[ComponentInstanceTable]
   val analyzerInstancesQuery = TableQuery[AnalyzerInstanceTable]
