@@ -4,8 +4,8 @@ import model.entity._
 import scala.slick.lifted.TableQuery
 import CustomUnicornPlay.driver.simple._
 
-class OutputTemplateRepository extends CrudRepository[OutputId, Output, OutputTable](TableQuery[OutputTable]){
-  def findByDataPort(dataPort: DataPortTemplate)(implicit session: Session) : Option[Output] = {
-    query.filter(_.dataPortId === dataPort.id).firstOption
+class OutputTemplateRepository extends CrudRepository[OutputId, OutputTemplate, OutputTemplateTable](TableQuery[OutputTemplateTable]){
+  def findByDataPort(dataPort: DataPortTemplate)(implicit session: Session) : Option[OutputTemplate] = {
+    query.filter(_.dataPortTemplateId === dataPort.id).firstOption
   }
 }

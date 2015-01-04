@@ -18,7 +18,7 @@ case class OutputInstance(
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[OutputInstanceId] {
 
-  def output(implicit session: Session) : Output = {
+  def output(implicit session: Session) : OutputTemplate = {
     (for {
       o <- outputTemplatesQuery if o.id === outputId
     } yield o).first

@@ -28,11 +28,11 @@ case class ComponentTemplate(
     f <- featuresQuery if cf.featureId === f.id
   } yield f).list
 
-  def inputs(implicit s: Session): Seq[InputTemplate] = (for {
+  def inputTemplates(implicit s: Session): Seq[InputTemplate] = (for {
     i <- inputTemplatesQuery if i.componentTemplateId === id
   } yield i).list
 
-  def output(implicit s: Session): Option[Output] = (for {
+  def outputTemplate(implicit s: Session): Option[OutputTemplate] = (for {
     o <- outputTemplatesQuery if o.componentTemplateId === id
   } yield o).firstOption
 }

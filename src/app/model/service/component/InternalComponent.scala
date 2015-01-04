@@ -9,17 +9,19 @@ import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCo
 import model.entity._
 import model.rdf.Graph
 import play.api.Play.current
+import play.api.db
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{Future, Promise}
 
-class InternalComponent(componentInstance: ComponentInstance) extends Component{
+class InternalComponent(val componentInstance: ComponentInstance) extends Component {
 
   implicit val timeout = Timeout(1, TimeUnit.MINUTES)
 
   def check(context: BindingContext)(implicit session: Session): Unit = {
-    val features = componentInstance.component.features
+    val features = componentInstance.componentTemplate.features
     val featuresWithDescriptors = features.map { f => (f, f.descriptors)}
 
     featuresWithDescriptors.map {
@@ -27,35 +29,47 @@ class InternalComponent(componentInstance: ComponentInstance) extends Component{
         descriptors.map { descriptor =>
           val descriptorInputTemplate = descriptor.inputTemplate
           val componentForDescriptor = context(descriptorInputTemplate.dataPortTemplate.uri)
-          // TODO: actors
           componentForDescriptor.checkIsCompatibleWith(descriptor)
         }
       }
     }
   }
 
-  def checkIsCompatibleWith(descriptor: Descriptor)(implicit session: Session) = {
-    val component = componentInstance.component
-    val output = component.output
+  def checkIsCompatibleWith(descriptor: Descriptor)(implicit session: Session): Future[CheckCompatibilityResponse] = {
+    val component = componentInstance.componentTemplate
+    val output = component.outputTemplate
     val checker = output.map { o =>
       o.dataSample match {
         case Some(uri) => Akka.system.actorOf(Props(classOf[RdfCompatibilityChecker], uri))
         case None => Akka.system.actorOf(Props(classOf[SparqlEndpointCompatibilityChecker], Graph(componentInstance.configuration), Graph(component.defaultConfiguration)))
       }
-    }.getOrElse {throw new UnsupportedOperationException}
-
-    val promise = (checker ask CheckCompatibilityRequest(descriptor)).mapTo[CheckCompatibilityResponse]
-    promise.onSuccess {
-      case x => println((x, output.get.dataSample))
+    }.getOrElse {
+      println("dead")
+      throw new UnsupportedOperationException
     }
 
-    promise.onFailure {
-      case t => println(("Failed.", output.get.dataSample))
-    }
+    (checker ask CheckCompatibilityRequest(descriptor)).mapTo[CheckCompatibilityResponse]
   }
 
-  def checkCouldBeBoundWith(component: Component)(implicit session: Session) = {
+  def checkCouldBeBoundWithComponentViaPort(componentToAsk: Component, portUri: String)(implicit session: Session): Future[Boolean] = {
+    val p = Promise[Boolean]()
 
+    val maybeInputTemplate = componentInstance.componentTemplate.inputTemplates.find(_.dataPortTemplate.uri == portUri)
+    maybeInputTemplate.map { inputTemplate =>
+
+      val eventualResponses = inputTemplate.descriptors(onlyMandatory = true).map { descriptor =>
+        componentToAsk.checkIsCompatibleWith(descriptor)
+      }
+
+      eventualResponses.foreach(_.onFailure { case e => p.tryFailure(e)})
+      Future.sequence(eventualResponses)
+        .map(_.forall(_.isCompatible.getOrElse(false)))
+        .foreach(p.trySuccess)
+    }.getOrElse {
+      p.tryFailure(new UnsupportedOperationException)
+    }
+
+    p.future
   }
 
 }
@@ -66,6 +80,9 @@ object InternalComponent {
   }
 
   def apply(specificComponentTemplate: SpecificComponentTemplate): InternalComponent = {
-    new InternalComponent(ComponentInstance(None, "", "", None, specificComponentTemplate.componentTemplateId, None))
+    implicit val session = db.slick.DB.createSession()
+    val componentTemplate = specificComponentTemplate.componentTemplate
+    session.close()
+    new InternalComponent(ComponentInstance(None, componentTemplate.uri+"#instance", componentTemplate.title+" instance", None, specificComponentTemplate.componentTemplateId, None))
   }
 }

@@ -28,11 +28,13 @@ case class ComponentInstance(
     } yield d).list
   }
 
-  def component(implicit session: Session) : ComponentTemplate = {
+  def componentTemplate(implicit session: Session) : ComponentTemplate = {
     (for {
       c <- componentTemplatesQuery if c.id === componentId
     } yield c).first
   }
+
+  override def toString = uri
 
 }
 

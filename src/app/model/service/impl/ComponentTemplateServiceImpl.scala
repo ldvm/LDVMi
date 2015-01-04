@@ -70,7 +70,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
   }
 
   private def saveOutput(componentTemplateId: ComponentTemplateId, outputTemplate: model.dto.OutputTemplate)(implicit session: Session): OutputId = {
-    outputTemplateRepository.save(Output(
+    outputTemplateRepository.save(OutputTemplate(
       None,
       outputTemplate.dataSample,
       saveDataPortTemplate(componentTemplateId, outputTemplate.dataPort),
