@@ -219,9 +219,10 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
         if(computed.size == fromLastRun.size || i > 4){
           println("=========== DONE ========== ["+i+"]")
           implicit val session = db.slick.DB.createSession()
-          println(fromLastRun)
+          val complete = fromLastRun.filter(_.componentInstances.last.componentTemplate.outputTemplate.isEmpty)
+          println(complete)
           session.close()
-          Future(fromLastRun)
+          Future(complete)
         }else{
           println("nextRound")
           onDone(computed, i+1)
