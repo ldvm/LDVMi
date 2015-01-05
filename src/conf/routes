@@ -12,7 +12,8 @@ GET         /components                                    @controllers.Componen
 POST        /api/v1/components/add/ttl                     @controllers.api.LdvmApiController.ttl
 GET         /api/v1/compatibility/check/:pipelineId        @controllers.api.CompatibilityApiController.check(pipelineId: Long)
 GET         /api/v1/pipelines                              @controllers.api.PipelineApiController.list()
-GET         /api/v1/pipelines/construct                    @controllers.api.PipelineApiController.construct()
+GET         /api/v1/pipelines/discover                     @controllers.api.PipelineApiController.discover()
+#GET         /api/v1/pipelines/discovery/:id                @controllers.api.PipelineApiController.discoveryState(id: Long)
 GET         /api/v1/pipelines/visualization/:id            @controllers.api.PipelineApiController.visualizationById(id: Long)
 GET         /api/v1/pipelines/:id                          @controllers.api.PipelineApiController.findById(id: Long)
 

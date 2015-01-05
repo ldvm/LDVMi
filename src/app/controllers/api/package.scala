@@ -18,6 +18,8 @@ package object api {
       typedId => JsNumber(typedId.id)
     }
 
+    implicit val pipelineDiscoveryWrites = Json.writes[PipelineDiscovery]
+
     implicit val localizedLiteralWrites = Json.writes[LocalizedValue]
     implicit val dataCubeDatasetWrites = Json.writes[DataCubeDataset]
     implicit val dataCubeDimensionPropertyWrites = Json.writes[DataCubeDimensionProperty]

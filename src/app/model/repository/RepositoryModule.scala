@@ -33,4 +33,5 @@ class RepositoryModule extends Module {
   binding to new ComponentInstanceMembershipRepository
 
   binding to new PipelineRepository
+  binding to new PipelineDiscoveryRepository
 }

@@ -1,6 +1,5 @@
 package model.entity
 
-import java.util.UUID
 import org.joda.time.DateTime
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._

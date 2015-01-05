@@ -2,18 +2,19 @@ package model.service.impl
 
 import java.io.StringWriter
 
-import akka.actor.FSM.Failure
-import akka.actor.Status.Success
+import akka.actor.{PoisonPill, ActorRef, Props}
 import model.entity._
 import model.repository._
 import model.service.component.InternalComponent
 import model.service.{ComponentTemplateService, PipelineService}
 import play.api.db
 import play.api.db.slick.Session
+import play.api.libs.json.Json
 import scaldi.{Injectable, Injector}
 import play.api.Play.current
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
+import controllers.api.JsonImplicits._
 
 class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with Injectable {
 
@@ -31,6 +32,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
 
   val inputRepository = inject[InputTemplateRepository]
   val outputRepository = inject[OutputTemplateRepository]
+  val pipelineDiscoveryRepository = inject[PipelineDiscoveryRepository]
 
   val dataPortRepository = inject[DataPortTemplateRepository]
   val dataPortBindingsRepository = inject[DataPortBindingRepository]
@@ -194,16 +196,19 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     bindingSetId
   }
 
-  def construct(implicit session: Session): Future[Seq[PartialPipeline]] = {
+  def discoveryState(pipelineDiscoveryId: PipelineDiscoveryId)(implicit session: Session) : Option[PipelineDiscovery] = {
+    pipelineDiscoveryRepository.findById(pipelineDiscoveryId)
+  }
 
+  def discover(listener: ActorRef)(implicit session: Session): PipelineDiscoveryId = {
+
+    val discovery = PipelineDiscovery(None, false, None, None, None)
     val allComponents = componentService.getAllByType
 
     def nextRound(partialPipelines: Seq[PartialPipeline]): Seq[Future[Seq[PartialPipeline]]] = {
       implicit val session = db.slick.DB.createSession()
-      println("preparing next round based on "+partialPipelines.size+" partial pipelines")
       val result = Seq(ComponentType.Analyzer, ComponentType.Transformer, ComponentType.Visualizer).flatMap { componentType =>
         allComponents(componentType).map { component =>
-          println("Try adding "+component.componentTemplate.uri)
           tryAdd(component, partialPipelines)
         }
       }
@@ -211,27 +216,38 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       result
     }
 
-    def onDone(fromLastRun: Seq[PartialPipeline], i: Int) : Future[Seq[PartialPipeline]] = {
-      println(i)
+    def onDone(fromLastRun: Seq[PartialPipeline], i: Int, discoveryId: PipelineDiscoveryId) : Future[Seq[PartialPipeline]] = {
       val allAddedFuture = Future.sequence(nextRound(fromLastRun))
       allAddedFuture.map(_.flatten).flatMap{ newlyCreated =>
+
+        implicit val session = db.slick.DB.createSession()
         val computed = (fromLastRun++newlyCreated).distinct
-        if(computed.size == fromLastRun.size || i > 4){
-          println("=========== DONE ========== ["+i+"]")
-          implicit val session = db.slick.DB.createSession()
-          val complete = fromLastRun.filter(_.componentInstances.last.componentTemplate.outputTemplate.isEmpty)
-          println(complete)
-          session.close()
+        val complete = fromLastRun.filter(_.componentInstances.last.componentTemplate.outputTemplate.isEmpty)
+
+        val futureResult = if(computed.size == fromLastRun.size || i > 10){
+          val discovery = PipelineDiscovery(Some(discoveryId), isFinished = true, isSuccess = Some(true), lastPerformedIteration = Some(i-1), pipelinesDiscoveredCount = Some(complete.size))
+          listener ! Json.toJson(discovery)
+          //listener ! PoisonPill
+          pipelineDiscoveryRepository.save(discovery)
           Future(complete)
         }else{
-          println("nextRound")
-          onDone(computed, i+1)
+          val discovery = PipelineDiscovery(Some(discoveryId), isFinished = false, isSuccess = None, lastPerformedIteration = Some(i), pipelinesDiscoveredCount = Some(complete.size))
+          listener ! Json.toJson(discovery)
+          pipelineDiscoveryRepository.save(discovery)
+          onDone(computed, i+1, discoveryId)
         }
+        session.close()
+        futureResult
       }
     }
 
+    val discoveryId = pipelineDiscoveryRepository.save(discovery)
+
+    listener ! Json.toJson(PipelineDiscovery(Some(discoveryId), discovery.isFinished, discovery.isSuccess, discovery.lastPerformedIteration, discovery.pipelinesDiscoveredCount, discovery.modifiedUtc))
+
     val partialPipelines = allComponents(ComponentType.DataSource).map(dsToPipeline)
-    onDone(partialPipelines, 0)
+    onDone(partialPipelines, 0, discoveryId)
+    discoveryId
   }
 
   private def tryAdd(componentToAddSpecificTemplate: SpecificComponentTemplate, partialPipelines: Seq[PartialPipeline]): Future[Seq[PartialPipeline]] = {
@@ -252,7 +268,6 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
         val future = component.checkCouldBeBoundWithComponentViaPort(lastPipelineComponent, portUri)
 
         future.onFailure({ case e => promise.tryFailure(e)})
-        future.onSuccess { case b => println("trying to add " + componentTemplateUri + " to " + partialPipeline + ":::::" + b)}
 
         future.collect({
           case true => Some(PortMapping(partialPipeline.componentInstances.last, componentToAddInstance, portUri), partialPipeline)
@@ -263,8 +278,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       Future.sequence(futures)
     }
 
-    val inputf = Future.sequence(inputFutures)
-    inputf.onSuccess({
+    val inputsFuture = Future.sequence(inputFutures)
+    inputsFuture.onSuccess({
       case x if x.exists(_.forall(_.isEmpty)) => Seq()
       case v => {
         val product = combine(v.map(_.collect{ case Some(y) => y }))
@@ -280,12 +295,11 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       }
     })
 
-    inputf.onFailure({
+    inputsFuture.onFailure({
       case e => promise.tryFailure(e)
     })
 
     session.close()
-
     promise.future
   }
 

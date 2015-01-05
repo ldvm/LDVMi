@@ -1,12 +1,15 @@
 package controllers.api
 
+import akka.actor._
 import controllers.api.JsonImplicits._
-import model.entity.{Pipeline, PipelineId}
+import model.entity.{PipelineDiscoveryId, Pipeline, PipelineId}
 import model.service.PipelineService
+import play.api.db
 import play.api.db.slick._
 import play.api.libs.json._
-import play.api.mvc.Controller
+import play.api.mvc.{WebSocket, Controller}
 import scaldi.{Injectable, Injector}
+import play.api.Play.current
 
 class PipelineApiController(implicit inj: Injector) extends Controller with Injectable {
   val pipelineService = inject[PipelineService]
@@ -37,11 +40,23 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     Ok(result)
   }
 
-  def construct = DBAction { implicit rws =>
+  def discover = WebSocket.acceptWithActor[JsValue, JsValue] { request => out =>
+    implicit val session = db.slick.DB.createSession()
+    val actorProps = MyWebSocketActor.props(out)
+    pipelineService.discover(out)
+    session.close()
+    actorProps
+  }
 
-    pipelineService.construct
+  object MyWebSocketActor {
+    def props(out: ActorRef) = Props(new MyWebSocketActor(out))
+  }
 
-    Ok(JsObject(Seq()))
+  class MyWebSocketActor(out: ActorRef) extends Actor {
+    def receive = {
+      case msg: String =>
+        out ! ("I received your message: " + msg)
+    }
   }
 
   def pipelineToJson(pipeline: Pipeline)(implicit session: Session) = {

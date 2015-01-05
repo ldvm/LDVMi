@@ -1,7 +1,7 @@
 define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
     'use strict';
 
-    ng.module('pipeline.controllers', ['pipeline.model']).
+    ng.module('pipeline.controllers', ['pipeline.model', 'websocket']).
         controller('List',
         ['$scope', 'Pipelines', '$routeParams', 'ngTableParams',
             function ($scope, pipelines, $routeParams, ngTableParams) {
@@ -75,9 +75,25 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     "links": []
                 };
 
-                pipelines.visualization($routeParams.id).then(function(data){
+                pipelines.visualization($routeParams.id).then(function (data) {
                     $scope.data = data;
                 });
 
-            }]);
+            }])
+        .controller('Discover', [
+            '$scope', '$routeParams', 'Pipelines', '$connection',
+            function ($scope, $routeParams, pipelines, $connection) {
+
+                $scope.info = [];
+
+                var connection = $connection("ws://localhost:9000/api/v1/pipelines/discover");
+                connection.listen(function () {
+                    return true
+                }, function (data) {
+                    $scope.$apply(function () {
+                        $scope.info.push(data);
+                    });
+                });
+            }
+        ]);
 });

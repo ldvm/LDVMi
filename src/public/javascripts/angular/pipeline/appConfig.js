@@ -6,6 +6,7 @@ define(['./app'], function (app) {
         var partialsPath = '/assets/javascripts/angular/pipeline/partials/';
 
         $routeProvider.when('/list', {templateUrl: partialsPath + 'list.html', controller: 'List', reloadOnSearch: false});
+        $routeProvider.when('/discover', {templateUrl: partialsPath + 'discover.html', controller: 'Discover', reloadOnSearch: false});
         $routeProvider.when('/', {templateUrl: partialsPath + 'index.html', reloadOnSearch: false});
         $routeProvider.when('/:page', {templateUrl: partialsPath + 'list.html', controller: 'List', reloadOnSearch: false});
         $routeProvider.when('/compatibility/:command/:id', {templateUrl: partialsPath + 'compatibility.html', controller: 'Compatibility', reloadOnSearch: false});
