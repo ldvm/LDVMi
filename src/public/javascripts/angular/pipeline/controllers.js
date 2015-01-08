@@ -85,13 +85,52 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
             function ($scope, $routeParams, pipelines, $connection) {
 
                 $scope.info = [];
+                $scope.isFinished = false;
+                $scope.lastPerformedIteration = 0;
+                $scope.pipelinesDiscoveredCount = 0;
+                $scope.duration = 0;
+
+                $scope.chartData = {
+                    options: {
+                        chart: {
+                            type: 'line',
+                            height: 200,
+                            width: 300
+                        }
+                    },
+                    series: [{name: "Pipelines count", data: []}],
+                    title: {
+                        text: 'Progress'
+                    },
+                    yAxis: {
+                        title: {
+                            text: ""
+                        }
+                    },
+                    loading: false
+                };
 
                 var connection = $connection("ws://localhost:9000/api/v1/pipelines/discover");
                 connection.listen(function () {
                     return true
                 }, function (data) {
                     $scope.$apply(function () {
-                        $scope.info.push(data);
+                        $scope.info.unshift(data);
+
+                        if ("isFinished" in data) {
+                            $scope.isFinished = data.isFinished;
+                            $scope.lastPerformedIteration = data.lastPerformedIteration;
+                            $scope.isSuccess = data.isSuccess;
+                            $scope.pipelinesDiscoveredCount = data.pipelinesDiscoveredCount;
+
+                            if ("createdUtc" in data && "modifiedUtc" in data) {
+                                $scope.duration = data.modifiedUtc - data.createdUtc;
+                            }
+
+                            if("pipelinesDiscoveredCount" in data){
+                                $scope.chartData.series[0].data.push(data.pipelinesDiscoveredCount);
+                            }
+                        }
                     });
                 });
             }

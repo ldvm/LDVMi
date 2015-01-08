@@ -11,7 +11,9 @@ define([
         'angular-loading-bar',
         'ng-table',
         "bootstrap",
-        "angular-moment"
+        "angular-moment",
+        'highcharts-all',
+        'highcharts-ng'
     ],
     function (ng) {
         'use strict';
@@ -25,6 +27,7 @@ define([
             'ui.bootstrap',
             'ngTable',
             'angular-loading-bar',
-            'angularMoment'
+            'angularMoment',
+            'highcharts-ng'
         ]);
     });

@@ -4,6 +4,7 @@ import model.entity.{CustomUnicornPlay, IdEntity, IdEntityTable}
 import model.repository.CrudRepository
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
+import play.api.db
 import play.api.db.slick.Session
 import scala.slick.lifted.Ordered
 

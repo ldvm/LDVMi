@@ -2,21 +2,23 @@ package model.service.component
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.Props
+import akka.actor.{ActorRef, Props}
 import akka.pattern.ask
 import akka.util.Timeout
 import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCompatibilityChecker, SparqlEndpointCompatibilityChecker}
 import model.entity._
 import model.rdf.Graph
+import model.service.Connected
 import play.api.Play.current
 import play.api.db
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
+import play.api.libs.json.{JsObject, JsString}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 
-class InternalComponent(val componentInstance: ComponentInstance) extends Component {
+class InternalComponent(val componentInstance: ComponentInstance) extends Component with Connected {
 
   implicit val timeout = Timeout(1, TimeUnit.MINUTES)
 
@@ -51,8 +53,12 @@ class InternalComponent(val componentInstance: ComponentInstance) extends Compon
     (checker ask CheckCompatibilityRequest(descriptor)).mapTo[CheckCompatibilityResponse]
   }
 
-  def checkCouldBeBoundWithComponentViaPort(componentToAsk: Component, portUri: String)(implicit session: Session): Future[Boolean] = {
+  def checkCouldBeBoundWithComponentViaPort(componentToAsk: Component, portUri: String, logger: ActorRef)(implicit session: Session): Future[Boolean] = {
     val p = Promise[Boolean]()
+
+    def log(message: String) = logger ! JsObject(Seq(("message", JsString(message))))
+
+    log("Trying port <" + portUri + ">")
 
     val maybeInputTemplate = componentInstance.componentTemplate.inputTemplates.find(_.dataPortTemplate.uri == portUri)
     maybeInputTemplate.map { inputTemplate =>
@@ -63,8 +69,11 @@ class InternalComponent(val componentInstance: ComponentInstance) extends Compon
 
       eventualResponses.foreach(_.onFailure { case e => p.tryFailure(e)})
       Future.sequence(eventualResponses)
-        .map(_.forall(_.isCompatible.getOrElse(false)))
-        .foreach(p.trySuccess)
+        .map { x => x.forall(_.isCompatible.getOrElse(false)) }
+        .foreach { x =>
+          log("Port <"+portUri+"> compatibility with <"+componentToAsk.componentInstance.uri+"> result: "+x)
+          p.trySuccess(x)
+        }
     }.getOrElse {
       p.tryFailure(new UnsupportedOperationException)
     }
@@ -83,6 +92,6 @@ object InternalComponent {
     implicit val session = db.slick.DB.createSession()
     val componentTemplate = specificComponentTemplate.componentTemplate
     session.close()
-    new InternalComponent(ComponentInstance(None, componentTemplate.uri+"#instance", componentTemplate.title+" instance", None, specificComponentTemplate.componentTemplateId, None))
+    new InternalComponent(ComponentInstance(None, componentTemplate.uri + "#instance", componentTemplate.title + " instance", None, specificComponentTemplate.componentTemplateId, None))
   }
 }

@@ -123,9 +123,10 @@ define(['angular'], function (ng) {
                     $rootScope.$$phase || $rootScope.$apply();
                     $rootScope.queuedMessages = $rootScope.queuedMessages || [];
 
+                    /*
                     setTimeout(function () {
                         ws = connect();
-                    }, 5000);
+                    }, 5000);*/
                 };
 
                 var onMessage = function (msg) {

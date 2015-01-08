@@ -1,11 +1,9 @@
 package model.service
 
-import akka.actor.{ActorRef, Props}
+import akka.actor.ActorRef
 import model.entity._
 import model.repository.PipelineRepository
-import play.api.db.slick.Session
-
-import scala.concurrent.Future
+import play.api.db.slick._
 
 trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, PipelineRepository] {
 
@@ -19,16 +17,6 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
 
   def discoveryState(pipelineDiscoveryId: PipelineDiscoveryId)(implicit session: Session) : Option[PipelineDiscovery]
 
-  case class PortMapping(sourceComponentInstance: ComponentInstance, targetComponentInstance: ComponentInstance, viaPortUri: String) {
-    override def toString = sourceComponentInstance.toString + "<-" + targetComponentInstance.toString
-  }
-
-  case class PartialPipeline(componentInstances: Seq[ComponentInstance], portMappings: Seq[PortMapping]) {
-    override def toString =
-      """
-        components: """ + componentInstances.toString() +
-        """
-        portMappings: """ + portMappings.toString()
-  }
+  def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline])
 
 }

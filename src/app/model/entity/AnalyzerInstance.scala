@@ -14,7 +14,7 @@ case class AnalyzerInstance(
   analyzerId: AnalyzerTemplateId,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity[AnalyzerInstanceId] with ConcreteComponentInstance
+  ) extends IdEntity[AnalyzerInstanceId] with SpecificComponentInstance
 
 
 class AnalyzerInstanceTable(tag: Tag) extends IdEntityTable[AnalyzerInstanceId, AnalyzerInstance](tag, "analyzer_instances") {

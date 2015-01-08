@@ -5,7 +5,7 @@ import java.io.File
 import model.entity._
 import model.rdf.Graph
 import model.service.ldvm.extractor.{ComponentExtractor, PipelineExtractor}
-import model.service.{ComponentTemplateService, LdvmService, PipelineService}
+import model.service.{PipelineService, ComponentTemplateService, LdvmService}
 import play.api.Play
 import play.api.Play.current
 import play.api.db.slick.{Session => SlickSession}

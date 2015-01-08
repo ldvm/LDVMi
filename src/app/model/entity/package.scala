@@ -15,6 +15,8 @@ package object entity {
   val bindingSetsQuery = TableQuery[DataPortBindingSetTable]
   val bindingsQuery = TableQuery[DataPortBindingTable]
 
+  val pipelineDiscoveriesQuery = TableQuery[PipelineDiscoveryTable]
+
   val dataPortTemplatesQuery = TableQuery[DataPortTemplateTable]
   val outputTemplatesQuery = TableQuery[OutputTemplateTable]
   val inputTemplatesQuery = TableQuery[InputTemplateTable]

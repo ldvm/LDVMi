@@ -21,6 +21,8 @@ case class ComponentInstance(
   var modifiedUtc: Option[DateTime] = None
   ) extends UriIdentifiedEntity[ComponentInstanceId] {
 
+  def hasOutput(implicit session: Session): Boolean = componentTemplate.outputTemplate.isEmpty
+
   def descriptorsAppliedTo(inputInstance: InputInstance)(implicit session: Session) : Seq[Descriptor] = {
     (for {
       ctf <- componentFeaturesQuery if ctf.componentTemplateId === componentId
@@ -50,7 +52,7 @@ class ComponentInstanceTable(tag: Tag) extends UriIdentifiedEntityTable[Componen
 
 }
 
-trait ConcreteComponentInstance {
+trait SpecificComponentInstance {
   def componentInstanceId: ComponentInstanceId
 
   def componentInstance(implicit session: Session): ComponentInstance = componentInstancesQuery.filter(_.id === componentInstanceId).first

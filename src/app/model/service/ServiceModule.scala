@@ -1,5 +1,6 @@
 import model.service._
-import model.service.impl.{PipelineServiceImpl, CompatibilityServiceImpl, ComponentTemplateServiceImpl}
+import model.service.impl.pipeline.PipelineServiceImpl
+import model.service.impl.{CompatibilityServiceImpl, ComponentTemplateServiceImpl}
 import model.service.ldvm.LdvmServiceImpl
 import scaldi.Module
 

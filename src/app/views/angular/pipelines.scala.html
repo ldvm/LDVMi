@@ -2,7 +2,17 @@
 
     @scripts = {
         <script>
-            @Html(org.webjars.RequireJS.getSetupJavaScript(routes.WebJarAssets.at("").url))
+        var require = {
+            callback: function() {
+                // default requirejs configs
+                @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
+                    requirejs.config(@Html(webJarJson.toString));
+                }
+
+                requirejs.config({ paths: { "highcharts-all": "/webjars/highcharts/4.0.3/highcharts-all" } });
+                requirejs.config({ paths:{"highcharts-ng":["/webjars/highcharts-ng/0.0.6/highcharts-ng","highcharts-ng"]},"shim":{"highcharts-ng":["angular","highcharts-all"]}});
+            }
+        };
         </script>
         <script data-main="@routes.Assets.versioned("javascripts/angular/pipeline/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     }
