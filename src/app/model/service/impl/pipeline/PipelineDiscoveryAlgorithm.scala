@@ -26,9 +26,7 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
   def runWith(dataSources: Seq[DataSourceTemplate])(implicit session: Session): PipelineDiscoveryId = {
     reportProgress(discovery.lastPerformedIteration, discovery.isFinished, discovery.pipelinesDiscoveredCount, discovery.isSuccess)
-    iterate(0, wrapDataSourcesIntoPipelines(dataSources), Seq()).map { discoveredPipelines =>
-      pipelineService.saveDiscoveryResults(discoveryId, discoveredPipelines)
-    }
+    iterate(0, wrapDataSourcesIntoPipelines(dataSources), Seq())
     discoveryId
   }
 
@@ -50,6 +48,11 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
         val allCompleted = givenCompletedPipelines ++ createdCompletedPipelines
 
         reportMessage("All completed pipelines: " + allCompleted.size)
+
+        pipelineService.saveDiscoveryResults(discoveryId, createdCompletedPipelines)
+
+        reportMessage("Completed pipelines saved.")
+        logger ! Json.toJson(JsObject(Seq(("significantAction", JsString("pipelinesSaved")))))
 
         val usedPartialPipelines = givenPartialPipelines.map {
           case PartialPipeline(m, p, _) => PartialPipeline(m, p, notUsed = false)

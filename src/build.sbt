@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "bootstrap" % "3.2.0",
   "org.webjars" % "requirejs-domready" % "2.0.1-2",
   "org.webjars" % "angular-ui" % "0.4.0-3",
-  "org.webjars" % "angular-ui-bootstrap" % "0.11.0-2",
+  "org.webjars" % "angular-ui-bootstrap" % "0.12.0",
   "org.webjars" % "angular-loading-bar" % "0.5.1",
   "org.webjars" % "underscorejs" % "1.6.0-3",
   "org.webjars" % "highcharts" % "4.0.3",

@@ -5,10 +5,9 @@ import java.io.StringWriter
 import akka.actor.ActorRef
 import model.entity._
 import model.repository._
-import model.service.{PartialPipeline, ComponentTemplateService, PipelineService}
+import model.service._
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
-import model.service.Connected
 
 class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with Injectable with Connected {
 
@@ -37,6 +36,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   val outputInstancesRepository = inject[OutputInstanceRepository]
 
   val componentService = inject[ComponentTemplateService]
+  val compatibilityService = inject[CompatibilityService]
 
   def save(pipeline: model.dto.Pipeline)(implicit session: Session): PipelineId = {
 
@@ -216,7 +216,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
           (componentInstance, result)
         }.toMap
 
-        pipelinesRepository.save(Pipeline(None, bindingSetId, "", "Generated pipeline", None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
+        val pipelineId = pipelinesRepository.save(Pipeline(None, bindingSetId, "", "Generated pipeline", None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
 
         pipeline.portMappings.map { mapping =>
           val sourceId = instanceData(mapping.sourceComponentInstance)._3.get
@@ -224,6 +224,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
           val binding = DataPortBinding(None, bindingSetId, sourceId, targetId)
           dataPortBindingsRepository.save(binding)
         }
+
+        compatibilityService.check(bindingSet)
       }
     }
   }

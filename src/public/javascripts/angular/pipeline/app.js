@@ -8,6 +8,7 @@ define([
         'angular-route',
         'angular-ui',
         'ui-bootstrap',
+        'ui-bootstrap-tpls',
         'angular-loading-bar',
         'ng-table',
         "bootstrap",
