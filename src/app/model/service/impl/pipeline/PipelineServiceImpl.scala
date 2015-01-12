@@ -9,6 +9,8 @@ import model.service._
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 
+import scala.slick.lifted.Ordered
+
 class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with Injectable with Connected {
 
   type DataPortUriMap[T] = Map[String, (T, DataPortInstanceId)]
@@ -228,6 +230,13 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
         compatibilityService.check(bindingSet)
       }
     }
+  }
+
+  def findPaginatedFiltered[T <% Ordered](skip: Int = 0, take: Int = 50, pipelineDiscoveryId: Option[PipelineDiscoveryId] = None)
+    (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
+    (implicit session: Session): Seq[Pipeline] = {
+
+    repository.findPaginatedFilteredOrdered(skip, take)(pipelineDiscoveryId)(ordering)
   }
 
   def discover(listener: ActorRef)(implicit session: Session): PipelineDiscoveryId = {

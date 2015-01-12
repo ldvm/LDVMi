@@ -11,15 +11,17 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
 
                 $scope.tableParams = new ngTableParams({
                     page: page,            // show first page
-                    count: count,           // count per page
+                    count: count,           // count per page,
+                    filter: {
+                        discoveryId: $routeParams.discoveryId
+                    },
                     sorting: {
                         //name: 'asc'
                     }
                 }, {
                     total: 0, // length of data
                     getData: function ($defer, params) {
-
-                        var promise = pipelines.findPaginated(params.page(), params.count());
+                        var promise = pipelines.findPaginated(params.page(), params.count(), params.filter());
                         promise.then(function (data) {
                             params.total(data.count);
                             $defer.resolve(data.data);
@@ -127,7 +129,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                                 $scope.duration = data.modifiedUtc - data.createdUtc;
                             }
 
-                            if("pipelinesDiscoveredCount" in data){
+                            if ("pipelinesDiscoveredCount" in data) {
                                 $scope.chartData.series[0].data.push(data.pipelinesDiscoveredCount);
                             }
                         }

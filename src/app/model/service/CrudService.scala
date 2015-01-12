@@ -1,6 +1,6 @@
 package model.service
 
-import model.entity.{CustomUnicornPlay, IdEntity, IdEntityTable}
+import model.entity.{PipelineDiscoveryId, CustomUnicornPlay, IdEntity, IdEntityTable}
 import model.repository.CrudRepository
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
@@ -28,7 +28,7 @@ trait CrudService[
   def findPaginated[T <% Ordered](skip: Int = 0, take: Int = 50)
     (ordering: ETable => T = { e: ETable => (e.modifiedUtc.desc, e.createdUtc.desc) })
     (implicit session: Session): Seq[E] = {
-    repository.findPaginatedOrdered(skip, take)(ordering)
+      repository.findPaginatedOrdered(skip, take)(ordering)
   }
 
 }

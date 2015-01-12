@@ -44,8 +44,9 @@ define(['angular'], function (ng) {
             function (pipelineApi,
                       paginationUtils) {
                 return {
-                    findPaginated: function (page, pageSize) {
+                    findPaginated: function (page, pageSize, filters) {
                         var query = paginationUtils.buildQuery(page, pageSize);
+                        ng.extend(query,filters);
                         return pipelineApi.query(query).$promise;
                     },
                     visualization: function (id) {

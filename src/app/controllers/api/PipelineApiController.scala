@@ -30,10 +30,12 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     }
   }
 
-  def list(skip: Int = 0, take: Int = 50) = DBAction { implicit rws =>
+  def list(skip: Int = 0, take: Int = 50, discoveryId: Option[Long] = None) = DBAction { implicit rws =>
+
+    val pipelineDiscoveryId = discoveryId.map(PipelineDiscoveryId.apply)
 
     val result = JsObject(Seq(
-      "data" -> Json.toJson(pipelineService.findPaginated(skip, take)()),
+      "data" -> Json.toJson(pipelineService.findPaginatedFiltered(skip, take, pipelineDiscoveryId)()),
       "count" -> JsNumber(pipelineService.countAll)
     ))
 

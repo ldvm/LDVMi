@@ -3,6 +3,7 @@
         <div class="panel panel-default">
             <div class="panel-body text-right">
                 <a ng-href="#/discover" class="btn btn-default">Run discovery</a>
+                <a ng-href="#/list" ng-click="tableParams.filter({})" class="btn btn-default">Clear filters</a>
                 <a ng-href="/components#/add" class="btn btn-success">Add new</a>
             </div>
         </div>
@@ -11,7 +12,8 @@
     <table ng-table="tableParams" class="table table-striped">
         <tr ng-repeat="pipeline in $data">
             <td data-title="'ID'">{{pipeline.id}}</td>
-            <td data-title="'Title'"><a ng-href="#/detail/{{pipeline.id}}">{{pipeline.title}}</a>
+            <td data-title="'Title'">
+                <a ng-href="#/detail/{{pipeline.id}}">{{pipeline.title}}</a>
             </td>
             <td data-title="'Options'">
 
@@ -32,14 +34,14 @@
                 <span class="glyphicon glyphicon-remove" ng-show="!pipeline.isTemporary"></span>
             </td>
             <td data-title="'Discovery'" class="text-center">
-                <a ng-href="#/discovery/{{pipeline.pipelineDiscovery}}" ng-show="pipeline.pipelineDiscovery">Detail</a>
+                <a ng-href="#/list/?discoveryId={{pipeline.pipelineDiscovery}}" ng-show="pipeline.pipelineDiscovery">Detail</a>
             </td>
             <td data-title="'Last modified'" style="white-space: nowrap;">
                 <span am-time-ago="time(pipeline.modifiedUtc, pipeline.createdUtc)" tooltip="{{time(pipeline.modifiedUtc, pipeline.createdUtc) | date : 'medium'}}"></span>
             </td>
         </tr>
         <tr ng-if="$data.length == 0">
-            <td colspan="4">No available data.</td>
+            <td colspan="6">No available data.</td>
         </tr>
     </table>
 
