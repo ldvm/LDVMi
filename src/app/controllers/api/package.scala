@@ -1,5 +1,6 @@
 package controllers
 
+import model.actor.CheckCompatibilityResponse
 import model.entity._
 import model.rdf.sparql.ValueFilter
 import model.rdf.sparql.datacube._
@@ -19,6 +20,12 @@ package object api {
     }
 
     implicit val pipelineDiscoveryWrites = Json.writes[PipelineDiscovery]
+    implicit val pipelineCompatibilityCheckWrites = Json.writes[DataPortBindingSetCompatibilityCheck]
+    implicit val featureCompatibilityCheckWrites = Json.writes[FeatureCompatibilityCheck]
+    implicit val componentInstanceCompatibilityCheckWrites = Json.writes[ComponentInstanceCompatibilityCheck]
+    implicit val descriptorCompatibilityCheckWrites = Json.writes[DescriptorCompatibilityCheck]
+    implicit val descriptorWrites = Json.writes[Descriptor]
+    implicit val compatibilityResponseWrites = Json.writes[CheckCompatibilityResponse]
 
     implicit val localizedLiteralWrites = Json.writes[LocalizedValue]
     implicit val dataCubeDatasetWrites = Json.writes[DataCubeDataset]

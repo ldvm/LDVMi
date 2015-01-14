@@ -1,6 +1,6 @@
 package model.service
 
-import akka.actor.ActorRef
+import akka.actor.{Props, ActorRef}
 import model.entity._
 import model.repository.PipelineRepository
 import play.api.db.slick._
@@ -19,10 +19,10 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
     (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
     (implicit session: Session): Seq[Pipeline]
 
-  def discover(listener: ActorRef)(implicit session: Session): PipelineDiscoveryId
+  def discover(reporterProps: Props)(implicit session: Session): PipelineDiscoveryId
 
   def discoveryState(pipelineDiscoveryId: PipelineDiscoveryId)(implicit session: Session) : Option[PipelineDiscovery]
 
-  def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline])
+  def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef)
 
 }

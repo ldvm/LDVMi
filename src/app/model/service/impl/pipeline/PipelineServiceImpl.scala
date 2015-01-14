@@ -2,10 +2,11 @@ package model.service.impl.pipeline
 
 import java.io.StringWriter
 
-import akka.actor.ActorRef
+import akka.actor.{Props, ActorRef}
 import model.entity._
 import model.repository._
 import model.service._
+import model.service.impl.CompatibilityReporterActor
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 
@@ -205,12 +206,11 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     (componentInstanceId, inputIdsByUri, maybeOutputId)
   }
 
-  def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline]) = {
+  def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef) = {
     withSession { implicit session =>
       pipelines.map { pipeline =>
 
-        val bindingSet = DataPortBindingSet(None)
-        val bindingSetId = dataPortBindingSetsRepository.save(bindingSet)
+        val bindingSetId = dataPortBindingSetsRepository.save(DataPortBindingSet(None))
 
         val instanceData = pipeline.componentInstances.map { componentInstance =>
           val result = createInstance(componentInstance)
@@ -218,7 +218,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
           (componentInstance, result)
         }.toMap
 
-        val pipelineId = pipelinesRepository.save(Pipeline(None, bindingSetId, "", "Generated pipeline", None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
+        pipelinesRepository.save(Pipeline(None, bindingSetId, "", "Generated pipeline", None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
 
         pipeline.portMappings.map { mapping =>
           val sourceId = instanceData(mapping.sourceComponentInstance)._3.get
@@ -227,7 +227,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
           dataPortBindingsRepository.save(binding)
         }
 
-        compatibilityService.check(bindingSet)
+        compatibilityService.check(DataPortBindingSet(Some(bindingSetId)), CompatibilityReporterActor.props(jsLogger))
       }
     }
   }
@@ -239,9 +239,9 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     repository.findPaginatedFilteredOrdered(skip, take)(pipelineDiscoveryId)(ordering)
   }
 
-  def discover(listener: ActorRef)(implicit session: Session): PipelineDiscoveryId = {
+  def discover(reporterProps: Props)(implicit session: Session): PipelineDiscoveryId = {
     val allComponentsByType = componentService.getAllByType
-    new PipelineDiscoveryAlgorithm(allComponentsByType, listener)
+    new PipelineDiscoveryAlgorithm(allComponentsByType, reporterProps)
       .runWith(
         allComponentsByType(ComponentType.DataSource).collect { case d: DataSourceTemplate => d }
       )

@@ -35,6 +35,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                 };
 
             }])
+        .controller('CompatibilityCheck', function(){})
         .controller('Compatibility', [
             '$scope', '$routeParams', 'Compatibility', 'VisualizationService',
             function ($scope, $routeParams, Compatibility, VisualizationService) {

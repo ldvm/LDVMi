@@ -1,8 +1,9 @@
 package model.service
 
-import model.entity.DataPortBindingSet
+import akka.actor.Props
+import model.entity.{DataPortBindingSet, DataPortBindingSetCompatibilityCheckId}
 import play.api.db.slick._
 
 trait CompatibilityService {
-  def check(bindingSet: DataPortBindingSet)(implicit session: Session)
+  def check(bindingSet: DataPortBindingSet, reporterProps: Props)(implicit session: Session): DataPortBindingSetCompatibilityCheckId
 }

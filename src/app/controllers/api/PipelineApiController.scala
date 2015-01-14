@@ -42,22 +42,24 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     Ok(result)
   }
 
-  def discover = WebSocket.acceptWithActor[JsValue, JsValue] { request => out =>
+  def discover = WebSocket.acceptWithActor[JsValue, JsValue] { request => jsLogger =>
     implicit val session = db.slick.DB.createSession()
-    val actorProps = MyWebSocketActor.props(out)
-    pipelineService.discover(out)
+    val pipelineDiscoveryReporter = PipelineDiscoveryReporter.props(jsLogger)
+
+    pipelineService.discover(pipelineDiscoveryReporter)
+
     session.close()
-    actorProps
+    pipelineDiscoveryReporter
   }
 
-  object MyWebSocketActor {
-    def props(out: ActorRef) = Props(new MyWebSocketActor(out))
+  object PipelineDiscoveryReporter {
+    def props(jsLogger: ActorRef) = Props(new PipelineDiscoveryReporter(jsLogger))
   }
 
-  class MyWebSocketActor(out: ActorRef) extends Actor {
+  class PipelineDiscoveryReporter(out: ActorRef) extends Actor {
     def receive = {
-      case msg: String =>
-        out ! ("I received your message: " + msg)
+      case js: JsValue => out ! js
+      case msg: String => out ! JsObject(Seq(("message", JsString(msg))))
     }
   }
 

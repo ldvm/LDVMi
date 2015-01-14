@@ -1,6 +1,6 @@
 package model.service.impl.pipeline
 
-import akka.actor.{PoisonPill, ActorRef}
+import akka.actor.{Props, PoisonPill, ActorRef}
 import controllers.api.JsonImplicits._
 import model.entity.ComponentType.ComponentType
 import model.entity._
@@ -8,14 +8,16 @@ import model.repository.PipelineDiscoveryRepository
 import model.service.component.{Component, InternalComponent}
 import model.service.{PipelineService, Connected, PartialPipeline, PortMapping}
 import play.api.db.slick.Session
+import play.api.libs.concurrent.Akka
 import play.api.libs.json.{JsObject, JsString, Json}
 import scaldi.{Injectable, Injector}
 import utils.CombinatoricsUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
+import play.api.Play.current
 
-class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[SpecificComponentTemplate]], logger: ActorRef, maxIterations: Int = 10)
+class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[SpecificComponentTemplate]], reporterProps: Props, maxIterations: Int = 10)
   (implicit val inj: Injector, implicit val session: Session) extends Connected with Injectable {
 
   val pipelineDiscoveryRepository = inject[PipelineDiscoveryRepository]
@@ -23,6 +25,8 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
   val typesToBeAdded = Seq(ComponentType.Analyzer, ComponentType.Transformer, ComponentType.Visualizer)
   val discovery = PipelineDiscovery(None, isFinished = false, isSuccess = None, lastPerformedIteration = None, pipelinesDiscoveredCount = None)
   val discoveryId = pipelineDiscoveryRepository.save(discovery)(session)
+  val reporter = Akka.system.actorOf(reporterProps)
+
 
   def runWith(dataSources: Seq[DataSourceTemplate])(implicit session: Session): PipelineDiscoveryId = {
     reportProgress(discovery.lastPerformedIteration, discovery.isFinished, discovery.pipelinesDiscoveredCount, discovery.isSuccess)
@@ -49,10 +53,10 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
         reportMessage("All completed pipelines: " + allCompleted.size)
 
-        pipelineService.saveDiscoveryResults(discoveryId, createdCompletedPipelines)
+        pipelineService.saveDiscoveryResults(discoveryId, createdCompletedPipelines, reporter)
 
         reportMessage("Completed pipelines saved.")
-        logger ! Json.toJson(JsObject(Seq(("significantAction", JsString("pipelinesSaved")))))
+        reporter ! Json.toJson(JsObject(Seq(("significantAction", JsString("pipelinesSaved")))))
 
         val usedPartialPipelines = givenPartialPipelines.map {
           case PartialPipeline(m, p, _) => PartialPipeline(m, p, notUsed = false)
@@ -70,7 +74,7 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
         val futureResult = if (stop) {
           reportProgress(Some(iterationNumber), isFinished = true, Some(allCompleted.size), isSuccess = Some(true))
-          logger ! PoisonPill
+          reporter ! PoisonPill
           Future(allCompleted)
         } else {
           reportProgress(Some(iterationNumber), isFinished = false, Some(allCompleted.size), None)
@@ -92,11 +96,11 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
     withSession { implicit session =>
       pipelineDiscoveryRepository.save(discovery)
     }
-    logger ! Json.toJson(discovery)
+    reporter ! Json.toJson(discovery)
   }
 
   private def reportMessage(message: String): Unit = {
-    logger ! JsObject(Seq(("message", JsString(message))))
+    reporter ! message
   }
 
   private def tryAddAllComponents(partialPipelines: Seq[PartialPipeline]): Seq[Future[Seq[PartialPipeline]]] = {
@@ -144,7 +148,7 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
         reportMessage("Executing checks of <" + componentToAdd.componentInstance.componentTemplate.uri + ">")
 
-        val future = componentToAdd.checkCouldBeBoundWithComponentViaPort(lastComponent, portUri, logger)
+        val future = componentToAdd.checkCouldBeBoundWithComponentViaPort(lastComponent, portUri, reporterProps)
         future.onFailure({ case e => {
           reportMessage("ERROR: " + e.getMessage)
           promise.tryFailure(e)
