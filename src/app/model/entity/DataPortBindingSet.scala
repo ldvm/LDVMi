@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
@@ -10,6 +12,7 @@ object DataPortBindingSetId extends IdCompanion[DataPortBindingSetId]
 
 case class DataPortBindingSet(
   id: Option[DataPortBindingSetId],
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[DataPortBindingSetId] {
@@ -31,5 +34,5 @@ case class DataPortBindingSet(
 
 
 class DataPortBindingSetTable(tag: Tag) extends IdEntityTable[DataPortBindingSetId, DataPortBindingSet](tag, "dataport_binding_sets") {
-  def * = (id.?, createdUtc, modifiedUtc) <>(DataPortBindingSet.tupled, DataPortBindingSet.unapply _)
+  def * = (id.?, uuid, createdUtc, modifiedUtc) <>(DataPortBindingSet.tupled, DataPortBindingSet.unapply _)
 }

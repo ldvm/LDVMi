@@ -6,10 +6,14 @@ import com.hp.hpl.jena.vocabulary.{DCTerms, RDF, RDFS}
 import model.rdf.Graph
 import model.rdf.extractor.GraphExtractor
 import model.rdf.vocabulary.LDVM
+import scaldi.{Injector, Injectable}
 
 import scala.collection.JavaConversions._
 
-class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.ComponentTemplate]]] {
+class ComponentExtractor(implicit inj: Injector) extends GraphExtractor[Map[String, Seq[model.dto.ComponentTemplate]]] with Injectable {
+
+  val pipelineExtractor = inject[PipelineExtractor]
+
   override def extract(input: Graph): Option[Map[String, Seq[model.dto.ComponentTemplate]]] = {
 
     val graphModel = input.jenaModel
@@ -29,6 +33,7 @@ class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.Compon
           val inputs = extractInputs(graphModel, component)
           val output = extractOutputs(graphModel, component).headOption
           val features = extractFeatures(graphModel, component, inputs)
+          val nestedMembers = extractNestedMembers(graphModel, component)
 
           val modelExtractor = new ModelExtract(new StatementTripleBoundary(TripleBoundary.stopNowhere))
           val configResource = component.getProperty(LDVM.componentConfigurationTemplate)
@@ -38,14 +43,21 @@ class ComponentExtractor extends GraphExtractor[Map[String, Seq[model.dto.Compon
             case _ => Some(modelExtractor.extract(configResource.getObject.asResource, graphModel))
           }
 
-          model.dto.ComponentTemplate(component.getURI, label, comment, defaultConfigurationModel, inputs.values.toSeq, output, features)
+          model.dto.ComponentTemplate(component.getURI, label, comment, defaultConfigurationModel, inputs.values.toSeq, output, nestedMembers.toSeq, features)
         }
 
         (componentType, components)
     })
   }
 
-
+  private def extractNestedMembers(graphModel: Model, component: Resource) = {
+    val nestedMembers = graphModel.listObjectsOfProperty(LDVM.nestedMember).toList
+    val componentInstances = nestedMembers.map { member =>
+      val memberResource = member.asResource()
+      pipelineExtractor.extractComponentInstance(memberResource, graphModel)
+    }
+    componentInstances
+  }
 
   private def extractInputs(graphModel: Model, component: Resource): Map[String, model.dto.InputTemplate] = {
     val dataPorts = extractDataPort(graphModel, component, LDVM.inputTemplate)

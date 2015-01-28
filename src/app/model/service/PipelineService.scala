@@ -9,9 +9,9 @@ import scala.slick.lifted.Ordered
 
 trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, PipelineRepository] {
 
-  def save(pipeline: model.dto.Pipeline)(implicit session: Session): PipelineId
+  def save(pipeline: model.dto.BoundComponentInstances)(implicit session: Session): PipelineId
 
-  def save(pipelines: Seq[model.dto.Pipeline])(implicit session: Session): Seq[PipelineId] = {
+  def save(pipelines: Seq[model.dto.BoundComponentInstances])(implicit session: Session): Seq[PipelineId] = {
     pipelines.map(save)
   }
 

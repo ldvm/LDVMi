@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import org.joda.time.DateTime
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
@@ -15,6 +17,7 @@ case class FeatureCompatibilityCheck(
   dataPortBindingSetId: DataPortBindingSetId,
   isFinished: Boolean,
   isSuccess: Option[Boolean],
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[FeatureCompatibilityCheckId]
@@ -32,5 +35,5 @@ class FeatureCompatibilityCheckTable(tag: Tag) extends IdEntityTable[FeatureComp
 
   def isSuccess = column[Option[Boolean]]("is_success")
 
-  def * = (id.?, featureId, componentInstanceId, dataPortBindingSetId, isFinished, isSuccess, createdUtc, modifiedUtc) <> (FeatureCompatibilityCheck.tupled, FeatureCompatibilityCheck.unapply _)
+  def * = (id.?, featureId, componentInstanceId, dataPortBindingSetId, isFinished, isSuccess, uuid, createdUtc, modifiedUtc) <> (FeatureCompatibilityCheck.tupled, FeatureCompatibilityCheck.unapply _)
 }

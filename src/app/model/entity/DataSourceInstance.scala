@@ -15,6 +15,7 @@ case class DataSourceInstance(
   id: Option[DataSourceInstanceId],
   componentInstanceId: ComponentInstanceId,
   dataSourceId: DataSourceTemplateId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
 ) extends IdEntity[DataSourceInstanceId]
@@ -26,7 +27,7 @@ class DataSourceInstanceTable(tag: Tag) extends IdEntityTable[DataSourceInstance
 
   def dataSourceId = column[DataSourceTemplateId]("datasource_id", O.NotNull)
 
-  def * = (id.?, componentInstanceId, dataSourceId, createdUtc, modifiedUtc) <> (DataSourceInstance.tupled, DataSourceInstance.unapply _)
+  def * = (id.?, componentInstanceId, dataSourceId, uuid, createdUtc, modifiedUtc) <> (DataSourceInstance.tupled, DataSourceInstance.unapply _)
 
   def componentInstance = foreignKey("fk_dsit_cit_component_instance_id", componentInstanceId, componentInstancesQuery)(_.id)
 

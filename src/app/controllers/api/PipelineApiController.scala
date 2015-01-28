@@ -77,10 +77,10 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
 
     val links = set.bindings.map { b =>
       val source = b.source.componentInstance
-      val target = b.targetInputInstance.componentInstance
+      val target = b.targetInputInstance.map(_.componentInstance)
 
       JsObject(Seq(
-        "target" -> JsNumber(components.find(_._1 == target).map(_._2).get),
+        "target" -> JsNumber(components.find(c => target.contains(c._1)).map(_._2).get),
         "source" -> JsNumber(components.find(_._1 == source).map(_._2).get)
       ))
     }

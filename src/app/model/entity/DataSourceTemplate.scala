@@ -14,6 +14,7 @@ case class DataSourceTemplateEagerBox(dataSource: DataSourceTemplate, component:
 case class DataSourceTemplate(
   id: Option[DataSourceTemplateId],
   componentTemplateId: ComponentTemplateId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
 ) extends IdEntity[DataSourceTemplateId] with SpecificComponentTemplate
@@ -25,5 +26,5 @@ class DataSourceTemplateTable(tag: Tag) extends IdEntityTable[DataSourceTemplate
 
   def componentTemplateId = column[ComponentTemplateId]("component_template_id", O.NotNull)
 
-  def * = (id.?, componentTemplateId, createdUtc, modifiedUtc) <> (DataSourceTemplate.tupled, DataSourceTemplate.unapply _)
+  def * = (id.?, componentTemplateId, uuid, createdUtc, modifiedUtc) <> (DataSourceTemplate.tupled, DataSourceTemplate.unapply _)
 }

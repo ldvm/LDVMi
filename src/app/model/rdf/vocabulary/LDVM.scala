@@ -16,10 +16,12 @@ object LDVM extends Vocabulary {
   lazy val outputTemplate = m.createProperty(PREFIX_URL, "outputTemplate")
   lazy val outputDataSample = m.createProperty(PREFIX_URL, "outputDataSample")
   lazy val member = m.createProperty(PREFIX_URL, "member")
+  lazy val nestedMember = m.createProperty(PREFIX_URL, "nestedMember")
   lazy val instanceOf = m.createProperty(PREFIX_URL, "instanceOf")
   lazy val inputInstance = m.createProperty(PREFIX_URL, "inputInstance")
   lazy val outputInstance = m.createProperty(PREFIX_URL, "outputInstance")
   lazy val boundTo = m.createProperty(PREFIX_URL, "boundTo")
+  lazy val nestedBoundTo = m.createProperty(PREFIX_URL, "nestedBoundTo")
 
   lazy val componentConfigurationInstance = m.createProperty(PREFIX_URL, "ldvm:componentConfigurationInstance")
   lazy val componentConfigurationTemplate = m.createProperty(PREFIX_URL, "componentConfigurationTemplate")

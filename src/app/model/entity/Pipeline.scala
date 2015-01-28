@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import org.joda.time.DateTime
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
@@ -16,6 +18,7 @@ case class Pipeline(
   description: Option[String],
   isTemporary: Boolean,
   pipelineDiscovery: Option[PipelineDiscoveryId],
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends DescribedEntity[PipelineId] {
@@ -42,5 +45,5 @@ class PipelineTable(tag: Tag) extends DescribedEntityTable[PipelineId, Pipeline]
 
   def pipelineDiscovery = foreignKey("pipeline_discovery", pipelineDiscoveryId, pipelineDiscoveriesQuery)(_.id)
 
-  def * = (id.?, bindingSetId, uri, title, description, isTemporary, pipelineDiscoveryId, createdUtc, modifiedUtc) <>(Pipeline.tupled, Pipeline.unapply _)
+  def * = (id.?, bindingSetId, uri, title, description, isTemporary, pipelineDiscoveryId, uuid, createdUtc, modifiedUtc) <>(Pipeline.tupled, Pipeline.unapply _)
 }

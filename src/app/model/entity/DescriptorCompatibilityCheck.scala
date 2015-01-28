@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import org.joda.time.DateTime
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
@@ -16,6 +18,7 @@ case class DescriptorCompatibilityCheck(
   dataPortBindingSetId: DataPortBindingSetId,
   isFinished: Boolean,
   isSuccess: Option[Boolean],
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[DescriptorCompatibilityCheckId]
@@ -35,5 +38,5 @@ class DescriptorCompatibilityCheckTable(tag: Tag) extends IdEntityTable[Descript
 
   def isSuccess = column[Option[Boolean]]("is_success")
 
-  def * = (id.?, descriptorId, featureId, componentInstanceId, dataPortBindingSetId, isFinished, isSuccess, createdUtc, modifiedUtc) <> (DescriptorCompatibilityCheck.tupled, DescriptorCompatibilityCheck.unapply _)
+  def * = (id.?, descriptorId, featureId, componentInstanceId, dataPortBindingSetId, isFinished, isSuccess, uuid, createdUtc, modifiedUtc) <> (DescriptorCompatibilityCheck.tupled, DescriptorCompatibilityCheck.unapply _)
 }

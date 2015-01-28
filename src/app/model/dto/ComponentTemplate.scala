@@ -9,5 +9,6 @@ case class ComponentTemplate(
   configuration: Option[Model],
   inputTemplates: Seq[InputTemplate],
   outputTemplate: Option[OutputTemplate],
+  nestedMembers: Seq[ConcreteComponentInstance],
   features: Seq[Feature]
 )

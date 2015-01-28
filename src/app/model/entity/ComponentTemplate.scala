@@ -1,6 +1,7 @@
 package model.entity
 
 import java.io.StringWriter
+import java.util.UUID
 
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
@@ -18,7 +19,9 @@ case class ComponentTemplate(
   uri: String,
   title: String,
   description: Option[String],
+  nestedBindingSet: Option[DataPortBindingSetId],
   defaultConfiguration: Option[String] = None,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends UriIdentifiedEntity[ComponentTemplateId] {
@@ -38,7 +41,7 @@ case class ComponentTemplate(
 }
 
 object ComponentEntity {
-  def apply(template: model.dto.ComponentTemplate): ComponentTemplate = {
+  def apply(template: model.dto.ComponentTemplate, nestedBindingSetId: Option[DataPortBindingSetId]): ComponentTemplate = {
 
     val configString = template.configuration.map { config =>
       val configWriter = new StringWriter
@@ -51,6 +54,7 @@ object ComponentEntity {
       template.uri,
       template.label.getOrElse("Unlabeled component"),
       template.comment,
+      nestedBindingSetId,
       configString
     )
   }
@@ -60,7 +64,9 @@ class ComponentTemplateTable(tag: Tag) extends UriIdentifiedEntityTable[Componen
 
   def defaultConfiguration = column[Option[String]]("default_configuration")
 
-  def * = (id.?, uri, title, description, defaultConfiguration, createdUtc, modifiedUtc) <>(ComponentTemplate.tupled, ComponentTemplate.unapply _)
+  def nestedBindingSetId = column[Option[DataPortBindingSetId]]("")
+
+  def * = (id.?, uri, title, description, nestedBindingSetId, defaultConfiguration, uuid, createdUtc, modifiedUtc) <> (ComponentTemplate.tupled, ComponentTemplate.unapply _)
 
 }
 

@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
@@ -12,21 +14,26 @@ case class DataPortBinding(
   id: Option[DataPortBindingId],
   bindingSetId: DataPortBindingSetId,
   sourceId: DataPortInstanceId,
-  targetId: InputInstanceId,
+  targetId: DataPortInstanceId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[DataPortBindingId] {
 
-  def source(implicit session: Session) : DataPortInstance = {
+  def source(implicit session: Session) : DataPortInstance = endpoint(sourceId)
+
+  def target(implicit session: Session) : DataPortInstance = endpoint(targetId)
+
+  def targetInputInstance(implicit session: Session) : Option[InputInstance] = {
+    (for {
+      inputInstance <- inputInstancesQuery if inputInstance.dataPortInstanceId === targetId
+    } yield inputInstance).firstOption
+  }
+
+  private def endpoint(endpointId: DataPortInstanceId)(implicit session: Session) : DataPortInstance = {
     (for {
       d <- dataPortInstancesQuery if d.id === sourceId
     } yield d).first
-  }
-
-  def targetInputInstance(implicit session: Session) : InputInstance = {
-    (for {
-      i <- inputInstancesQuery if i.id === targetId
-    } yield i).first
   }
 
 }
@@ -34,17 +41,17 @@ case class DataPortBinding(
 
 class DataPortBindingTable(tag: Tag) extends IdEntityTable[DataPortBindingId, DataPortBinding](tag, "dataport_bindings") {
 
-  def source = foreignKey("fk_dpbt_dpt_start_port_id", sourcePortId, dataPortInstancesQuery)(_.id)
+  def source = foreignKey("fk_dpbt_dpt_source_port_id", sourcePortId, dataPortInstancesQuery)(_.id)
 
-  def sourcePortId = column[DataPortInstanceId]("start_port_id", O.NotNull)
+  def sourcePortId = column[DataPortInstanceId]("source_port_id", O.NotNull)
 
   def bindingSet = foreignKey("fk_dpbt_dpbst_binding_set_id", bindingSetId, dataPortBindingSetsQuery)(_.id)
 
   def bindingSetId = column[DataPortBindingSetId]("binding_set_id", O.NotNull)
 
-  def target = foreignKey("fk_dpbt_dpt_end_input_id", targetInputId, inputInstancesQuery)(_.id)
+  def target = foreignKey("fk_dpbt_dpt_target_data_port_id", targetPortId, dataPortInstancesQuery)(_.id)
 
-  def targetInputId = column[InputInstanceId]("end_input_id", O.NotNull)
+  def targetPortId = column[DataPortInstanceId]("target_data_port_id", O.NotNull)
 
-  def * = (id.?, bindingSetId, sourcePortId, targetInputId, createdUtc, modifiedUtc) <>(DataPortBinding.tupled, DataPortBinding.unapply _)
+  def * = (id.?, bindingSetId, sourcePortId, targetPortId, uuid, createdUtc, modifiedUtc) <>(DataPortBinding.tupled, DataPortBinding.unapply _)
 }

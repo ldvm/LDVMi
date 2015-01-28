@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
@@ -17,6 +19,7 @@ case class ComponentInstance(
   description: Option[String],
   componentId: ComponentTemplateId,
   configuration: Option[String] = None,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends UriIdentifiedEntity[ComponentInstanceId] {
@@ -26,7 +29,7 @@ case class ComponentInstance(
   def descriptorsAppliedTo(inputInstance: InputInstance)(implicit session: Session) : Seq[Descriptor] = {
     (for {
       ctf <- componentFeaturesQuery if ctf.componentTemplateId === componentId
-      d <- descriptorsQuery if d.featureId === ctf.featureId && d.inputTemplateId === inputInstance.inputId
+      d <- descriptorsQuery if d.featureId === ctf.featureId && d.inputTemplateId === inputInstance.inputTemplateId
     } yield d).list
   }
 
@@ -42,7 +45,7 @@ case class ComponentInstance(
 
 class ComponentInstanceTable(tag: Tag) extends UriIdentifiedEntityTable[ComponentInstanceId, ComponentInstance](tag, "component_instances") {
 
-  def * = (id.?, uri, title, description, componentId, configuration, createdUtc, modifiedUtc) <>(ComponentInstance.tupled, ComponentInstance.unapply _)
+  def * = (id.?, uri, title, description, componentId, configuration, uuid, createdUtc, modifiedUtc) <>(ComponentInstance.tupled, ComponentInstance.unapply _)
 
   def configuration = column[Option[String]]("configuration")
 

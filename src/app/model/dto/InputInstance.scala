@@ -4,5 +4,6 @@ case class InputInstance(
   uri: String,
   title: Option[String],
   templateUri: String,
-  boundTo: String
+  boundTo: List[String],
+  nestedBoundTo: List[String]
 )

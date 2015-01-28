@@ -8,6 +8,7 @@ trait IdEntity[Id <: BaseId] extends WithId[Id] {
 
   var modifiedUtc: Option[DateTime]
   var createdUtc: Option[DateTime]
+  var uuid: String
 }
 
 trait DescribedEntity[Id <: BaseId] extends IdEntity[Id] {
@@ -24,8 +25,11 @@ abstract class IdEntityTable[Id <: BaseId, Entity <: IdEntity[Id]](tag: Tag, sch
 
   protected val createdColumnName: String = "created"
   protected val modifiedColumnName: String = "modified"
+  protected val uuidColumnName: String = "uuid"
 
   def this(tag: Tag, tableName: String)(implicit mapping: BaseColumnType[Id]) = this(tag, None, tableName)
+
+  final def uuid = column[String](uuidColumnName, O.NotNull)
 
   final def createdUtc = column[Option[DateTime]](createdColumnName)
 

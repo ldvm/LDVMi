@@ -11,6 +11,7 @@ object TransformerTemplateId extends IdCompanion[TransformerTemplateId]
 case class TransformerTemplate(
   id: Option[TransformerTemplateId],
   componentTemplateId: ComponentTemplateId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
 ) extends IdEntity[TransformerTemplateId] with SpecificComponentTemplate
@@ -22,5 +23,5 @@ class TransformerTemplateTable(tag: Tag) extends IdEntityTable[TransformerTempla
 
   def componentTemplateId = column[ComponentTemplateId]("component_template_id", O.NotNull)
 
-  def * = (id.?, componentTemplateId, createdUtc, modifiedUtc) <> (TransformerTemplate.tupled, TransformerTemplate.unapply _)
+  def * = (id.?, componentTemplateId, uuid, createdUtc, modifiedUtc) <> (TransformerTemplate.tupled, TransformerTemplate.unapply _)
 }

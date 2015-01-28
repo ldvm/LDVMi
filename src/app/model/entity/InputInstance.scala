@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import org.joda.time.DateTime
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
@@ -11,8 +13,9 @@ object InputInstanceId extends IdCompanion[InputInstanceId]
 case class InputInstance(
   id: Option[InputInstanceId],
   dataPortInstanceId: DataPortInstanceId,
-  inputId: InputTemplateId,
+  inputTemplateId: InputTemplateId,
   componentInstanceId: ComponentInstanceId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[InputInstanceId] {
@@ -39,5 +42,5 @@ class InputInstanceTable(tag: Tag) extends IdEntityTable[InputInstanceId, InputI
 
   def inputId = column[InputTemplateId]("input_id", O.NotNull)
 
-  def * = (id.?, dataPortInstanceId, inputId, componentInstanceId, createdUtc, modifiedUtc) <> (InputInstance.tupled, InputInstance.unapply _)
+  def * = (id.?, dataPortInstanceId, inputId, componentInstanceId, uuid, createdUtc, modifiedUtc) <> (InputInstance.tupled, InputInstance.unapply _)
 }

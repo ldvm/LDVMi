@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
@@ -14,6 +16,7 @@ case class ComponentInstanceMembership(
   id: Option[ComponentInstanceMembershipId],
   bindingSetId: DataPortBindingSetId,
   componentInstanceId: ComponentInstanceId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[ComponentInstanceMembershipId] {
@@ -22,7 +25,7 @@ case class ComponentInstanceMembership(
 
 class ComponentInstanceMembershipTable(tag: Tag) extends IdEntityTable[ComponentInstanceMembershipId, ComponentInstanceMembership](tag, "component_instances_membership") {
 
-  def * = (id.?, bindingSetId, componentInstanceId, createdUtc, modifiedUtc) <>(ComponentInstanceMembership.tupled, ComponentInstanceMembership.unapply _)
+  def * = (id.?, bindingSetId, componentInstanceId, uuid, createdUtc, modifiedUtc) <>(ComponentInstanceMembership.tupled, ComponentInstanceMembership.unapply _)
 
   def componentInstance = foreignKey("fk_cimt_cit_component_id", componentInstanceId, componentInstancesQuery)(_.id)
 

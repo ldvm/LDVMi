@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import model.repository.EagerBox
 import org.joda.time.DateTime
 import CustomUnicornPlay._
@@ -14,6 +16,7 @@ case class TransformerInstance(
   id: Option[TransformerInstanceId],
   componentInstanceId: ComponentInstanceId,
   transformerId: TransformerTemplateId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
 ) extends IdEntity[TransformerInstanceId]
@@ -25,7 +28,7 @@ class TransformerInstanceTable(tag: Tag) extends IdEntityTable[TransformerInstan
 
   def transformerId = column[TransformerTemplateId]("transformer_id", O.NotNull)
 
-  def * = (id.?, componentInstanceId, transformerId, createdUtc, modifiedUtc) <> (TransformerInstance.tupled, TransformerInstance.unapply _)
+  def * = (id.?, componentInstanceId, transformerId, uuid, createdUtc, modifiedUtc) <> (TransformerInstance.tupled, TransformerInstance.unapply _)
 
   def componentInstance = foreignKey("fk_tit_cit_component_instance_id", componentInstanceId, componentInstancesQuery)(_.id)
 

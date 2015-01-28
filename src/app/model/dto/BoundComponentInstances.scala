@@ -2,7 +2,7 @@ package model.dto
 
 import model.entity.ComponentInstanceId
 
-case class Pipeline(uri: String, title: Option[String], componentInstances: Seq[ConcreteComponentInstance]) {
+case class BoundComponentInstances(componentInstances: Seq[ConcreteComponentInstance], uri: Option[String] = None, title: Option[String] = None) {
 
   type UriToInstanceId = Map[String, ComponentInstanceId]
   type InstanceIdToPortInstances[T] = Seq[(ComponentInstanceId, T)]

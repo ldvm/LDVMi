@@ -15,6 +15,7 @@ case class Feature(
   isMandatory: Boolean,
   title: String,
   description: Option[String],
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends DescribedEntity[FeatureId] {
@@ -45,5 +46,5 @@ class FeatureTable(tag: Tag) extends DescribedEntityTable[FeatureId, Feature](ta
 
   def isMandatory = column[Boolean]("is_mandatory", O.NotNull)
 
-  def * = (id.?, uri, isMandatory, title, description, createdUtc, modifiedUtc) <>(Feature.tupled, Feature.unapply _)
+  def * = (id.?, uri, isMandatory, title, description, uuid, createdUtc, modifiedUtc) <>(Feature.tupled, Feature.unapply _)
 }

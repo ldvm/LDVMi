@@ -18,10 +18,10 @@ class LdvmApiController(implicit inj: Injector) extends Controller with Injectab
     uploadedFile.map { ttlFile =>
 
       ldvmService.fromRdf(ttlFile.ref.file) match {
-        case (componentIdsOption, pipelineIdsOption) => {
+        case (maybeComponentIds, maybePipelineIds) => {
           Ok(JsObject(Seq(
-            ("components", toJsVal(componentIdsOption)),
-            ("pipelines", toJsVal(pipelineIdsOption))
+            ("components", toJsVal(maybeComponentIds)),
+            ("pipelines", toJsVal(maybePipelineIds))
           )))
         }
         case _ => NotAcceptable

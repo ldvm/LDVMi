@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import org.joda.time.DateTime
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
@@ -14,6 +16,7 @@ case class OutputInstance(
   dataPortInstanceId: DataPortInstanceId,
   outputId: OutputId,
   componentInstanceId: ComponentInstanceId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[OutputInstanceId] {
@@ -35,7 +38,7 @@ case class OutputInstance(
 
 class OutputInstanceTable(tag: Tag) extends IdEntityTable[OutputInstanceId, OutputInstance](tag, "output_instances") {
 
-  def * = (id.?, dataPortInstanceId, outputId, componentInstanceId, createdUtc, modifiedUtc) <>(OutputInstance.tupled, OutputInstance.unapply _)
+  def * = (id.?, dataPortInstanceId, outputId, componentInstanceId, uuid, createdUtc, modifiedUtc) <>(OutputInstance.tupled, OutputInstance.unapply _)
 
   def dataPortInstanceId = column[DataPortInstanceId]("dataport_instance_id", O.NotNull)
 

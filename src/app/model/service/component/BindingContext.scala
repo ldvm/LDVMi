@@ -10,7 +10,7 @@ case class BindingContext(context: Map[String, Component]) {
 object BindingContext {
   def apply(bindingSet: DataPortBindingSet)(implicit session: Session): BindingContext = {
     val context = bindingSet.bindings.map { b =>
-      (b.targetInputInstance.dataPortInstance.dataPort.uri, InternalComponent(b.source.componentInstance))
+      (b.target.uri, InternalComponent(b.source.componentInstance))
     }.toMap
 
     new BindingContext(context)

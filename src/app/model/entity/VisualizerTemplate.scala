@@ -11,6 +11,7 @@ object VisualizerTemplateId extends IdCompanion[VisualizerTemplateId]
 case class VisualizerTemplate(
   id: Option[VisualizerTemplateId],
   componentTemplateId: ComponentTemplateId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
 ) extends IdEntity[VisualizerTemplateId] with SpecificComponentTemplate
@@ -22,5 +23,5 @@ class VisualizerTemplateTable(tag: Tag) extends IdEntityTable[VisualizerTemplate
 
   def componentId = column[ComponentTemplateId]("component_id", O.NotNull)
 
-  def * = (id.?, componentId, createdUtc, modifiedUtc) <> (VisualizerTemplate.tupled, VisualizerTemplate.unapply _)
+  def * = (id.?, componentId, uuid, createdUtc, modifiedUtc) <> (VisualizerTemplate.tupled, VisualizerTemplate.unapply _)
 }

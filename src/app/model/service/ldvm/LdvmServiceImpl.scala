@@ -20,7 +20,7 @@ class LdvmServiceImpl(implicit inj: Injector) extends LdvmService with Injectabl
 
   def fromRdf(ttlFile: File)(implicit session: SlickSession): (Option[Seq[ComponentTemplateId]], Option[Seq[PipelineId]]) = {
 
-    val exploredGraph = buildExploredGraph(ttlFile)
+    val exploredGraph = createGraphWithLDVMVocabulary(ttlFile)
 
     val componentsByTypeOption = componentExtractor.extract(exploredGraph)
     val pipelinesOption = pipelineExtractor.extract(exploredGraph)
@@ -47,7 +47,7 @@ class LdvmServiceImpl(implicit inj: Injector) extends LdvmService with Injectabl
     }.flatten.toSeq
   }
 
-  private def buildExploredGraph(ttlFile: File): Graph = {
+  private def createGraphWithLDVMVocabulary(ttlFile: File): Graph = {
     Graph(Play.getFile("public/ttl/ldvm/vocabulary.ttl")).get.union(Graph(ttlFile))
   }
 

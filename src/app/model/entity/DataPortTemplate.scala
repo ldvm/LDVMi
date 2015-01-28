@@ -15,6 +15,7 @@ case class DataPortTemplate(
   title: String,
   description: Option[String],
   componentTemplateId: ComponentTemplateId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends UriIdentifiedEntity[DataPortTemplateId] {
@@ -29,7 +30,7 @@ case class DataPortTemplate(
 
 class DataPortTemplateTable(tag: Tag) extends UriIdentifiedEntityTable[DataPortTemplateId, DataPortTemplate](tag, "dataport_templates") {
 
-  def * = (id.?, uri, title, description, componentTemplateId, createdUtc, modifiedUtc) <>(DataPortTemplate.tupled, DataPortTemplate.unapply _)
+  def * = (id.?, uri, title, description, componentTemplateId, uuid, createdUtc, modifiedUtc) <>(DataPortTemplate.tupled, DataPortTemplate.unapply _)
 
   def componentTemplateId = column[ComponentTemplateId]("component_template_id", O.NotNull)
 }

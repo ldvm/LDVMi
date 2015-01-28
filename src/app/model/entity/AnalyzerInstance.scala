@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
@@ -12,6 +14,7 @@ case class AnalyzerInstance(
   id: Option[AnalyzerInstanceId],
   componentInstanceId: ComponentInstanceId,
   analyzerId: AnalyzerTemplateId,
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[AnalyzerInstanceId] with SpecificComponentInstance
@@ -21,7 +24,7 @@ class AnalyzerInstanceTable(tag: Tag) extends IdEntityTable[AnalyzerInstanceId, 
 
   def analyzer = foreignKey("fk_ait_at_analyzer_id", analyzerId, analyzerTemplatesQuery)(_.id)
 
-  def * = (id.?, componentInstanceId, analyzerId, createdUtc, modifiedUtc) <>(AnalyzerInstance.tupled, AnalyzerInstance.unapply _)
+  def * = (id.?, componentInstanceId, analyzerId, uuid, createdUtc, modifiedUtc) <>(AnalyzerInstance.tupled, AnalyzerInstance.unapply _)
 
   def analyzerId = column[AnalyzerTemplateId]("analyzer_id", O.NotNull)
 

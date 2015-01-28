@@ -1,5 +1,7 @@
 package model.entity
 
+import java.util.UUID
+
 import org.joda.time.DateTime
 import CustomUnicornPlay._
 import CustomUnicornPlay.driver.simple._
@@ -13,6 +15,7 @@ case class DataPortBindingSetCompatibilityCheck(
   dataPortBindingSetId: DataPortBindingSetId,
   isFinished: Boolean,
   isSuccess: Option[Boolean],
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[DataPortBindingSetCompatibilityCheckId]
@@ -26,5 +29,5 @@ class DataPortBindingSetCompatibilityCheckTable(tag: Tag) extends IdEntityTable[
 
   def isSuccess = column[Option[Boolean]]("is_success")
 
-  def * = (id.?, dataPortBindingSetId, isFinished, isSuccess, createdUtc, modifiedUtc) <> (DataPortBindingSetCompatibilityCheck.tupled, DataPortBindingSetCompatibilityCheck.unapply _)
+  def * = (id.?, dataPortBindingSetId, isFinished, isSuccess, uuid, createdUtc, modifiedUtc) <> (DataPortBindingSetCompatibilityCheck.tupled, DataPortBindingSetCompatibilityCheck.unapply _)
 }

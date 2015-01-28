@@ -1,11 +1,12 @@
 package model.service.impl
 
+import model.dto.{BoundComponentInstances, ConcreteComponentInstance}
 import model.entity.ComponentType.ComponentType
+import model.entity.CustomUnicornPlay.driver.simple._
 import model.entity._
 import model.repository._
-import model.service.ComponentTemplateService
+import model.service.{ComponentInstanceService, ComponentTemplateService}
 import play.api.db.slick.Session
-import CustomUnicornPlay.driver.simple._
 import scaldi.{Injectable, Injector}
 
 class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemplateService with Injectable {
@@ -17,6 +18,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
   private val featureRepository = inject[FeatureRepository]
   private val featureToComponentRepository = inject[FeatureToComponentRepository]
   private val descriptorRepository = inject[DescriptorRepository]
+  private val componentInstanceService = inject[ComponentInstanceService]
 
   private val analyzerTemplateRepository = inject[AnalyzerTemplateRepository]
   private val visualizerTemplateRepository = inject[VisualizerTemplateRepository]
@@ -34,7 +36,9 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
 
   def save(componentTemplate: model.dto.ComponentTemplate)(implicit session: Session): ComponentTemplateId = {
 
-    val componentTemplateId = save(ComponentEntity(componentTemplate))
+    val maybeNestedBindingSetId = saveNestedMembers(componentTemplate.nestedMembers)
+
+    val componentTemplateId = save(ComponentEntity(componentTemplate, maybeNestedBindingSetId))
 
     componentTemplate.outputTemplate.map { o =>
       saveOutput(componentTemplateId, o)
@@ -51,10 +55,19 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     componentTemplateId
   }
 
+  private def saveNestedMembers(members: Seq[ConcreteComponentInstance])(implicit session: Session): Option[DataPortBindingSetId] = {
+    if (members.isEmpty) {
+      None
+    } else {
+      Some(componentInstanceService.saveMembers(BoundComponentInstances(members)))
+    }
+  }
+
   private def saveInputTemplate(componentTemplateId: ComponentTemplateId, input: model.dto.InputTemplate)(implicit session: Session): InputTemplateId = {
     inputTemplateRepository.save(InputTemplate(
       None,
       saveDataPortTemplate(componentTemplateId, input.dataPortTemplate),
+
       componentTemplateId
     ))
   }

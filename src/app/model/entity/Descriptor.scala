@@ -16,6 +16,7 @@ case class Descriptor(
   query: String,
   title: String,
   description: Option[String],
+  var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends DescribedEntity[DescriptorId] {
@@ -53,5 +54,5 @@ class DescriptorTable(tag: Tag) extends DescribedEntityTable[DescriptorId, Descr
 
   def query = column[String]("query", O.NotNull)
 
-  def * = (id.?, featureId, inputTemplateId, query, title, description, createdUtc, modifiedUtc) <>(Descriptor.tupled, Descriptor.unapply _)
+  def * = (id.?, featureId, inputTemplateId, query, title, description, uuid, createdUtc, modifiedUtc) <>(Descriptor.tupled, Descriptor.unapply _)
 }
