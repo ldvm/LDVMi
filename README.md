@@ -1,5 +1,7 @@
 ![Payola logo (credits Martin Mraz)](https://raw.github.com/siroky/Payola/develop/docs/img/logo_medium.png)
 
+![](https://travis-ci.org/payola/payola-viz.svg?branch=ldvm)
+
 payola-viz
 ==========
 
