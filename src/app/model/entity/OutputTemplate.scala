@@ -6,19 +6,19 @@ import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
 
-case class OutputId(id: Long) extends AnyVal with BaseId
+case class OutputTemplateId(id: Long) extends AnyVal with BaseId
 
-object OutputId extends IdCompanion[OutputId]
+object OutputTemplateId extends IdCompanion[OutputTemplateId]
 
 case class OutputTemplate(
-  id: Option[OutputId],
+  id: Option[OutputTemplateId],
   dataSample: Option[String],
   dataPortTemplateId: DataPortTemplateId,
   componentTemplateId: ComponentTemplateId,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity[OutputId] {
+  ) extends IdEntity[OutputTemplateId] {
 
   def dataPortTemplate(implicit session: Session): DataPortTemplate = {
     (for {
@@ -28,7 +28,7 @@ case class OutputTemplate(
 
 }
 
-class OutputTemplateTable(tag: Tag) extends IdEntityTable[OutputId, OutputTemplate](tag, "output_templates") {
+class OutputTemplateTable(tag: Tag) extends IdEntityTable[OutputTemplateId, OutputTemplate](tag, "output_templates") {
 
   def * = (id.?, dataSample, dataPortTemplateId, componentTemplateId, uuid, createdUtc, modifiedUtc) <>(OutputTemplate.tupled, OutputTemplate.unapply _)
 

@@ -5,7 +5,7 @@ import java.io.File
 import model.entity._
 import model.rdf.Graph
 import model.service.ldvm.extractor.{ComponentExtractor, PipelineExtractor}
-import model.service.{PipelineService, ComponentTemplateService, LdvmService}
+import model.service.{PipelineService, ComponentService, LdvmService}
 import play.api.Play
 import play.api.Play.current
 import play.api.db.slick.{Session => SlickSession}
@@ -16,7 +16,7 @@ class LdvmServiceImpl(implicit inj: Injector) extends LdvmService with Injectabl
   val componentExtractor = inject[ComponentExtractor]
   val pipelineExtractor = inject[PipelineExtractor]
   val pipelinesService = inject[PipelineService]
-  val componentsService = inject[ComponentTemplateService]
+  val componentsService = inject[ComponentService]
 
   def fromRdf(ttlFile: File)(implicit session: SlickSession): (Option[Seq[ComponentTemplateId]], Option[Seq[PipelineId]]) = {
 

@@ -31,8 +31,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   private val inputInstancesRepository = inject[InputInstanceRepository]
   private val outputInstancesRepository = inject[OutputInstanceRepository]
 
-  private val componentService = inject[ComponentTemplateService]
-  private val componentInstanceService = inject[ComponentInstanceService]
+  private val componentService = inject[ComponentService]
+  private val componentInstanceService = inject[ComponentService]
   private val compatibilityService = inject[CompatibilityService]
 
   def save(pipeline: model.dto.BoundComponentInstances)(implicit session: Session): PipelineId = {

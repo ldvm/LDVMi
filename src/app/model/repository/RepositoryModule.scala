@@ -28,6 +28,7 @@ class RepositoryModule extends Module {
   binding to new OutputInstanceRepository
 
   binding to new DataPortBindingRepository
+  binding to new NestedDataPortBindingRepository
   binding to new DataPortBindingSetRepository
 
   binding to new ComponentInstanceMembershipRepository

@@ -68,6 +68,6 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
       case e: JsError => UnprocessableEntity
     }
 
-  }
-*/
+  }*/
+
 }

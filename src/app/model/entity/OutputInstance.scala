@@ -14,7 +14,7 @@ object OutputInstanceId extends IdCompanion[OutputInstanceId]
 case class OutputInstance(
   id: Option[OutputInstanceId],
   dataPortInstanceId: DataPortInstanceId,
-  outputId: OutputId,
+  outputId: OutputTemplateId,
   componentInstanceId: ComponentInstanceId,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
@@ -44,5 +44,5 @@ class OutputInstanceTable(tag: Tag) extends IdEntityTable[OutputInstanceId, Outp
 
   def componentInstanceId = column[ComponentInstanceId]("component_instance_id", O.NotNull)
 
-  def outputId = column[OutputId]("output_id", O.NotNull)
+  def outputId = column[OutputTemplateId]("output_id", O.NotNull)
 }

@@ -43,7 +43,7 @@ class DataPortBindingTable(tag: Tag) extends IdEntityTable[DataPortBindingId, Da
 
   def source = foreignKey("fk_dpbt_dpt_source_port_id", sourcePortId, dataPortInstancesQuery)(_.id)
 
-  def sourcePortId = column[DataPortInstanceId]("source_port_id", O.NotNull)
+  def sourcePortId = column[DataPortInstanceId]("source_data_port_id", O.NotNull)
 
   def bindingSet = foreignKey("fk_dpbt_dpbst_binding_set_id", bindingSetId, dataPortBindingSetsQuery)(_.id)
 

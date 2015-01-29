@@ -64,7 +64,7 @@ class ComponentTemplateTable(tag: Tag) extends UriIdentifiedEntityTable[Componen
 
   def defaultConfiguration = column[Option[String]]("default_configuration")
 
-  def nestedBindingSetId = column[Option[DataPortBindingSetId]]("")
+  def nestedBindingSetId = column[Option[DataPortBindingSetId]]("data_port_binding_set_id")
 
   def * = (id.?, uri, title, description, nestedBindingSetId, defaultConfiguration, uuid, createdUtc, modifiedUtc) <> (ComponentTemplate.tupled, ComponentTemplate.unapply _)
 

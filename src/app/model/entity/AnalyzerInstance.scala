@@ -22,13 +22,13 @@ case class AnalyzerInstance(
 
 class AnalyzerInstanceTable(tag: Tag) extends IdEntityTable[AnalyzerInstanceId, AnalyzerInstance](tag, "analyzer_instances") {
 
-  def analyzer = foreignKey("fk_ait_at_analyzer_id", analyzerId, analyzerTemplatesQuery)(_.id)
+  def analyzer = foreignKey(fkName("at_analyzer_id"), analyzerId, analyzerTemplatesQuery)(_.id)
 
   def * = (id.?, componentInstanceId, analyzerId, uuid, createdUtc, modifiedUtc) <>(AnalyzerInstance.tupled, AnalyzerInstance.unapply _)
 
   def analyzerId = column[AnalyzerTemplateId]("analyzer_id", O.NotNull)
 
-  def componentInstance = foreignKey("fk_ait_cit_component_instance_id", componentInstanceId, componentInstancesQuery)(_.id)
+  def componentInstance = foreignKey(fkName("cit_component_instance_id"), componentInstanceId, componentInstancesQuery)(_.id)
 
   def componentInstanceId = column[ComponentInstanceId]("component_instance_id", O.NotNull)
 }

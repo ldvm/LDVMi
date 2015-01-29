@@ -5,7 +5,7 @@ import model.entity._
 import model.repository.ComponentTemplateRepository
 import play.api.db.slick._
 
-trait ComponentTemplateService extends CrudService[ComponentTemplateId, ComponentTemplate, ComponentTemplateTable, ComponentTemplateRepository] {
+trait ComponentService extends CrudService[ComponentTemplateId, ComponentTemplate, ComponentTemplateTable, ComponentTemplateRepository] {
 
   def getAllByType(implicit session: Session): Map[ComponentType, Seq[SpecificComponentTemplate]]
 
@@ -26,5 +26,7 @@ trait ComponentTemplateService extends CrudService[ComponentTemplateId, Componen
   def getByUri(uri: String)(implicit session: Session): Option[ComponentTemplate]
 
   def getConcreteComponentByInstance(concreteInstance: model.dto.ConcreteComponentInstance)(implicit session: Session): Option[SpecificComponentTemplate]
+
+  def saveMembers(boundInstances: model.dto.BoundComponentInstances)(implicit session: Session) : DataPortBindingSetId
 
 }
