@@ -38,32 +38,3 @@ class CompatibilityServiceImpl(implicit inj: Injector) extends CompatibilityServ
     DataPortBindingSetCompatibilityCheckId(1)
   }
 }
-
-
-
-object CompatibilityReporterActor {
-  def props(out: ActorRef) = Props(new CompatibilityReporterActor(out))
-}
-
-class CompatibilityReporterActor(jsLogger: ActorRef) extends Actor {
-  def receive = {
-    case descriptorCheck: DescriptorCompatibilityCheck => {
-
-      jsLogger ! Json.toJson(descriptorCheck)
-    }
-    case featureCheck: FeatureCompatibilityCheck => {
-
-      jsLogger ! Json.toJson(featureCheck)
-    }
-    case componentInstanceCheck: ComponentInstanceCompatibilityCheck => {
-
-      jsLogger ! Json.toJson(componentInstanceCheck)
-    }
-    case pipelineCheck: DataPortBindingSetCompatibilityCheck => {
-
-      jsLogger ! Json.toJson(pipelineCheck)
-    }
-    case r : CheckCompatibilityResponse => jsLogger ! Json.toJson(r)
-    case msg: String => jsLogger ! JsObject(Seq(("message", JsString(msg))))
-  }
-}

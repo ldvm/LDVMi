@@ -1,17 +1,32 @@
 package controllers
 
+import akka.actor.Props
 import model.actor.CheckCompatibilityResponse
 import model.entity._
 import model.rdf.sparql.ValueFilter
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.geo._
 import model.rdf.{LocalizedValue, Property}
+import play.api.db
+import play.api.db.slick._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import play.api.mvc.WebSocket
+import play.api.Play.current
 
 package object api {
 
   def jsonCacheKey(id: Long, token: String) = "/pipelines/" + id + "/" + token
+
+  def withWebSocket(action: Props => Session => Unit) = WebSocket.acceptWithActor[JsValue, JsValue] { request => jsLogger =>
+    val session = db.slick.DB.createSession()
+    val logger = ProgressReporter.props(jsLogger)
+
+    action(logger)(session)
+
+    session.close()
+    logger
+  }
 
   object JsonImplicits {
 

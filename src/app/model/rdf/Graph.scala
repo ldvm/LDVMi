@@ -1,6 +1,6 @@
 package model.rdf
 
-import java.io.{File, FileInputStream, StringReader}
+import java.io.{StringWriter, File, FileInputStream, StringReader}
 import java.net.URL
 
 import com.hp.hpl.jena.rdf.model.ModelFactory
@@ -20,6 +20,12 @@ case class Graph(jenaModel: com.hp.hpl.jena.rdf.model.Model) {
     otherGraphOption.map { otherGraph =>
       jenaModel.add(otherGraph.jenaModel)
     }
+  }
+
+  def toRdfXml: String = {
+    val sw = new StringWriter()
+    jenaModel.write(sw, "RDF/XML", null)
+    sw.toString
   }
 
 }

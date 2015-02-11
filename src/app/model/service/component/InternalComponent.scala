@@ -2,24 +2,86 @@ package model.service.component
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.Props
+import akka.actor.{ActorRef, Props}
 import akka.pattern.ask
 import akka.util.Timeout
+import com.hp.hpl.jena.vocabulary.RDF
 import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCompatibilityChecker, SparqlEndpointCompatibilityChecker}
 import model.entity._
 import model.rdf.Graph
+import model.rdf.vocabulary.{DSPARQL, SD}
 import model.service.Connected
 import play.api.Play.current
 import play.api.db
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
 
+import scala.collection.JavaConversions._
+import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
+
+
+object EndpointConfig {
+  def apply(ttl: Option[String]): Option[(String, Option[String])] = {
+    Graph(ttl).flatMap { g =>
+      val jenaModel = g.jenaModel
+      val configs = jenaModel.listSubjectsWithProperty(RDF.`type`, DSPARQL.SparqlEndpointDataSourceConfiguration).toList
+      configs.flatMap { c =>
+        val services = c.asResource().listProperties(DSPARQL.service).toList
+        services.map { s =>
+          val endpoints = s.getObject.asResource().listProperties(SD.endpoint).toList
+          val endpointUris = endpoints.map { e =>
+            e.getObject.asResource.getURI
+          }
+          (endpointUris.head, None)
+        }.headOption
+      }.headOption
+    }
+  }
+}
 
 class InternalComponent(val componentInstance: ComponentInstance) extends Component with Connected {
 
   implicit val timeout = Timeout(1, TimeUnit.MINUTES)
+
+  val props = ComponentActor.props(this)
+  val actor = Akka.system.actorOf(props)
+
+  def evaluate(dataReferences: Seq[DataReference]): Future[(String, Option[String])] = plugin.run(dataReferences)
+
+  def plugin: AnalyzerPlugin = {
+    withSession { implicit session =>
+      if (componentInstance.componentTemplate.nestedBindingSet.isDefined) {
+        new ComposedPlugin(this)
+      } else {
+        componentInstance.componentTemplate.uri match {
+          case "http://linked.opendata.cz/resource/ldvm/analyzer/sparql/SparqlAnalyzerTemplate" => new SparqlPlugin(this)
+          case "http://linked.opendata.cz/resource/ldvm/analyzer/sparql/UnionAnalyzerTemplate" => new UnionPlugin(this)
+          case _ => throw new NotImplementedError()
+        }
+      }
+    }
+  }
+
+  def isDataSource: Boolean = withSession { implicit session =>
+    componentInstance.componentTemplate.inputTemplates.size == 0
+  }
+
+
+  def dataSourceConfiguration: Option[(String, Option[String])] = {
+    withSession { implicit session =>
+      lazy val instanceConfig = componentInstance.configuration
+      lazy val templateConfig = componentInstance.componentTemplate.defaultConfiguration
+
+      val instanceTuple = EndpointConfig(instanceConfig)
+
+      instanceTuple match {
+        case Some(x) => instanceTuple
+        case None => EndpointConfig(templateConfig)
+      }
+    }
+  }
 
   def check(context: BindingContext, reporterProps: Props)(implicit session: Session) = {
     val features = componentInstance.componentTemplate.features
@@ -50,6 +112,12 @@ class InternalComponent(val componentInstance: ComponentInstance) extends Compon
     }
 
     Future.sequence(eventualComponentInstanceCompatibility)
+  }
+
+  def requestDataFrom(component: InternalComponent, myInputPortId: DataPortInstanceId)(implicit session: Session) = {
+    val inputInstances = componentInstance.inputInstances
+    val portInstanceUri = inputInstances.filter(_.dataPortInstanceId == myInputPortId).head.dataPortInstance.uri
+    component.actor ! BindMessage(portInstanceUri)
   }
 
   def checkIsCompatibleWith(descriptor: Descriptor, reporterProps: Props)(implicit session: Session): Future[CheckCompatibilityResponse] = {

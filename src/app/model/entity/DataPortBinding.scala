@@ -32,7 +32,7 @@ case class DataPortBinding(
 
   private def endpoint(endpointId: DataPortInstanceId)(implicit session: Session) : DataPortInstance = {
     (for {
-      d <- dataPortInstancesQuery if d.id === sourceId
+      d <- dataPortInstancesQuery if d.id === endpointId
     } yield d).first
   }
 

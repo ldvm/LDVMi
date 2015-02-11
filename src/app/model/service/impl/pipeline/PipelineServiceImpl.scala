@@ -1,13 +1,10 @@
 package model.service.impl.pipeline
 
-import java.io.StringWriter
-
-import akka.actor.{Props, ActorRef}
-import model.dto.ConcreteComponentInstance
+import akka.actor.{ActorRef, Props}
+import controllers.api.ProgressReporter
 import model.entity._
 import model.repository._
 import model.service._
-import model.service.impl.CompatibilityReporterActor
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 
@@ -23,6 +20,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   private val componentInstanceMembershipRepository = inject[ComponentInstanceMembershipRepository]
 
   private val pipelineDiscoveryRepository = inject[PipelineDiscoveryRepository]
+  private val pipelineEvaluationRepository = inject[PipelineEvaluationRepository]
   private val pipelinesRepository = inject[PipelineRepository]
 
   private val dataPortBindingsRepository = inject[DataPortBindingRepository]
@@ -54,29 +52,6 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     pipelineDiscoveryRepository.findById(pipelineDiscoveryId)
   }
 
-  private def createInstance(componentInstance: ComponentInstance)(implicit session: Session) : (ComponentInstanceId, Map[String, DataPortInstanceId], Option[DataPortInstanceId]) = {
-    val componentInstanceId = componentInstancesRepository.save(componentInstance)
-    val inputPortIdsByUri = componentInstance.componentTemplate.inputTemplates.map { it =>
-      val portTemplate = it.dataPortTemplate
-      val portInstance = DataPortInstance(None, portTemplate.uri+"/instance", portTemplate.title, None, componentInstanceId, portTemplate.id.get)
-      val portInstanceId = dataPortInstancesRepository.save(portInstance)
-      val inputInstance = InputInstance(None, portInstanceId, it.id.get, componentInstanceId)
-      inputInstancesRepository.save(inputInstance)
-      (portTemplate.uri, portInstanceId)
-    }.toMap
-
-    val maybeOutputId = componentInstance.componentTemplate.outputTemplate.map { ot =>
-      val portTemplate = ot.dataPortTemplate
-      val portInstance = DataPortInstance(None, portTemplate.uri+"/instance", portTemplate.title, None, componentInstanceId, portTemplate.id.get)
-      val portInstanceId = dataPortInstancesRepository.save(portInstance)
-      val outputInstance = OutputInstance(None, portInstanceId, ot.id.get, componentInstanceId)
-      outputInstancesRepository.save(outputInstance)
-      portInstanceId
-    }
-
-    (componentInstanceId, inputPortIdsByUri, maybeOutputId)
-  }
-
   def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef) = {
     withSession { implicit session =>
       pipelines.map { pipeline =>
@@ -98,13 +73,36 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
           dataPortBindingsRepository.save(binding)
         }
 
-        compatibilityService.check(DataPortBindingSet(Some(bindingSetId)), CompatibilityReporterActor.props(jsLogger))
+        compatibilityService.check(DataPortBindingSet(Some(bindingSetId)), ProgressReporter.props(jsLogger))
       }
     }
   }
 
+  private def createInstance(componentInstance: ComponentInstance)(implicit session: Session): (ComponentInstanceId, Map[String, DataPortInstanceId], Option[DataPortInstanceId]) = {
+    val componentInstanceId = componentInstancesRepository.save(componentInstance)
+    val inputPortIdsByUri = componentInstance.componentTemplate.inputTemplates.map { it =>
+      val portTemplate = it.dataPortTemplate
+      val portInstance = DataPortInstance(None, portTemplate.uri + "/instance", portTemplate.title, None, componentInstanceId, portTemplate.id.get)
+      val portInstanceId = dataPortInstancesRepository.save(portInstance)
+      val inputInstance = InputInstance(None, portInstanceId, it.id.get, componentInstanceId)
+      inputInstancesRepository.save(inputInstance)
+      (portTemplate.uri, portInstanceId)
+    }.toMap
+
+    val maybeOutputId = componentInstance.componentTemplate.outputTemplate.map { ot =>
+      val portTemplate = ot.dataPortTemplate
+      val portInstance = DataPortInstance(None, portTemplate.uri + "/instance", portTemplate.title, None, componentInstanceId, portTemplate.id.get)
+      val portInstanceId = dataPortInstancesRepository.save(portInstance)
+      val outputInstance = OutputInstance(None, portInstanceId, ot.id.get, componentInstanceId)
+      outputInstancesRepository.save(outputInstance)
+      portInstanceId
+    }
+
+    (componentInstanceId, inputPortIdsByUri, maybeOutputId)
+  }
+
   def findPaginatedFiltered[T <% Ordered](skip: Int = 0, take: Int = 50, pipelineDiscoveryId: Option[PipelineDiscoveryId] = None)
-    (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
+    (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc)})
     (implicit session: Session): Seq[Pipeline] = {
 
     repository.findPaginatedFilteredOrdered(skip, take)(pipelineDiscoveryId)(ordering)
@@ -114,8 +112,16 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     val allComponentsByType = componentService.getAllByType
     new PipelineDiscoveryAlgorithm(allComponentsByType, reporterProps)
       .runWith(
-        allComponentsByType(ComponentType.DataSource).collect { case d: DataSourceTemplate => d }
+        allComponentsByType(ComponentType.DataSource).collect { case d: DataSourceTemplate => d}
       )
+  }
+
+  def evaluate(pipelineId: PipelineId)(logger: Props)(implicit session: Session): Option[PipelineEvaluationId] = {
+    findById(pipelineId).map { pipeline =>
+      val evaluation = PipelineEvaluation(None, false, None)
+      new PipelineEvaluationAlgorithm(pipeline, evaluation)(logger).run()
+      pipelineEvaluationRepository.save(evaluation)
+    }
   }
 
 }

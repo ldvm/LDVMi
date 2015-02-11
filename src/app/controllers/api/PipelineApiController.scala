@@ -2,6 +2,7 @@ package controllers.api
 
 import akka.actor._
 import controllers.api.JsonImplicits._
+import controllers.api.ProgressReporter._
 import model.entity.{PipelineDiscoveryId, Pipeline, PipelineId}
 import model.service.PipelineService
 import play.api.db
@@ -12,6 +13,7 @@ import scaldi.{Injectable, Injector}
 import play.api.Play.current
 
 class PipelineApiController(implicit inj: Injector) extends Controller with Injectable {
+
   val pipelineService = inject[PipelineService]
 
   def findById(id: Long) = DBAction { implicit rws =>
@@ -42,25 +44,12 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     Ok(result)
   }
 
-  def discover = WebSocket.acceptWithActor[JsValue, JsValue] { request => jsLogger =>
-    implicit val session = db.slick.DB.createSession()
-    val pipelineDiscoveryReporter = PipelineDiscoveryReporter.props(jsLogger)
-
-    pipelineService.discover(pipelineDiscoveryReporter)
-
-    session.close()
-    pipelineDiscoveryReporter
+  def discover =  withWebSocket { logger => implicit session =>
+    pipelineService.discover(logger)
   }
 
-  object PipelineDiscoveryReporter {
-    def props(jsLogger: ActorRef) = Props(new PipelineDiscoveryReporter(jsLogger))
-  }
-
-  class PipelineDiscoveryReporter(out: ActorRef) extends Actor {
-    def receive = {
-      case js: JsValue => out ! js
-      case msg: String => out ! JsObject(Seq(("message", JsString(msg))))
-    }
+  def evaluate(id: Long) = withWebSocket { logger => implicit session =>
+    pipelineService.evaluate(PipelineId(id))(logger)
   }
 
   def pipelineToJson(pipeline: Pipeline)(implicit session: Session) = {
@@ -72,8 +61,6 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
         "group" -> JsNumber(c._2)
       ))
     }
-
-    println(set.bindings)
 
     val links = set.bindings.map { b =>
       val source = b.source.componentInstance

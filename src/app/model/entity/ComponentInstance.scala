@@ -25,6 +25,13 @@ case class ComponentInstance(
   ) extends UriIdentifiedEntity[ComponentInstanceId] {
 
   def hasOutput(implicit session: Session): Boolean = componentTemplate.outputTemplate.isEmpty
+  def hasInput(implicit session: Session): Boolean = componentTemplate.inputTemplates.isEmpty
+
+  def inputInstances(implicit session: Session) : Seq[InputInstance] = {
+    (for{
+      ii <- inputInstancesQuery if ii.componentInstanceId === id
+    } yield ii).list
+  }
 
   def descriptorsAppliedTo(inputInstance: InputInstance)(implicit session: Session) : Seq[Descriptor] = {
     (for {

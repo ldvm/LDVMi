@@ -21,6 +21,8 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
 
   def discover(reporterProps: Props)(implicit session: Session): PipelineDiscoveryId
 
+  def evaluate(pipelineId: PipelineId)(reporterProps: Props)(implicit session: Session): Option[PipelineEvaluationId]
+
   def discoveryState(pipelineDiscoveryId: PipelineDiscoveryId)(implicit session: Session) : Option[PipelineDiscovery]
 
   def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef)

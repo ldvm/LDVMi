@@ -28,6 +28,13 @@ case class Pipeline(
       bs <- dataPortBindingSetsQuery if bs.id === bindingSetId
     } yield bs).first
   }
+
+  def componentInstances(implicit session: Session) : Seq[ComponentInstance] = {
+    (for {
+      m <- componentInstanceMembershipQuery if m.bindingSetId === bindingSetId
+      ci <- componentInstancesQuery if ci.id === m.componentInstanceId
+    } yield ci).list
+  }
 }
 
 
