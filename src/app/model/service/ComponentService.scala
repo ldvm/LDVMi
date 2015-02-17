@@ -27,6 +27,6 @@ trait ComponentService extends CrudService[ComponentTemplateId, ComponentTemplat
 
   def getConcreteComponentByInstance(concreteInstance: model.dto.ConcreteComponentInstance)(implicit session: Session): Option[SpecificComponentTemplate]
 
-  def saveMembers(boundInstances: model.dto.BoundComponentInstances)(implicit session: Session) : DataPortBindingSetId
+  def saveMembers(boundInstances: model.dto.BoundComponentInstances)(implicit session: Session) :  (DataPortBindingSetId, Map[String, ComponentInstanceId])
 
 }

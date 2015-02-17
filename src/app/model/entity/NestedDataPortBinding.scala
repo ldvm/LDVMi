@@ -22,6 +22,25 @@ case class NestedDataPortBinding(
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[NestedDataPortBindingId] {
 
+  def sourceInstance(implicit session: Session) : Option[DataPortInstance] = sourcePortInstanceId.map(instanceEndpoint)
+
+  def targetInstance(implicit session: Session) : Option[DataPortInstance] = targetPortInstanceId.map(instanceEndpoint)
+
+  def sourceTemplate(implicit session: Session) : Option[DataPortTemplate] = sourcePortTemplateId.map(instanceTemplate)
+
+  def targetTemplate(implicit session: Session) : Option[DataPortTemplate] = targetPortTemplateId.map(instanceTemplate)
+
+  private def instanceEndpoint(endpointId: DataPortInstanceId)(implicit session: Session) : DataPortInstance = {
+    (for {
+      d <- dataPortInstancesQuery if d.id === endpointId
+    } yield d).first
+  }
+
+  private def instanceTemplate(endpointId: DataPortTemplateId)(implicit session: Session) : DataPortTemplate = {
+    (for {
+      d <- dataPortTemplatesQuery if d.id === endpointId
+    } yield d).first
+  }
 }
 
 

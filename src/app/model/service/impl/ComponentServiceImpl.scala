@@ -58,7 +58,8 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
 
   def save(componentTemplate: model.dto.ComponentTemplate)(implicit session: Session): ComponentTemplateId = {
 
-    val maybeNestedBindingSetId = saveNestedMembers(componentTemplate.nestedMembers)
+    val maybeNestedResult = saveNestedMembers(componentTemplate.nestedMembers)
+    val maybeNestedBindingSetId = maybeNestedResult.map(_._1)
     val componentTemplateId = save(ComponentEntity(componentTemplate, maybeNestedBindingSetId))
 
     val maybeOutputTemplateId = componentTemplate.outputTemplate.map { o =>
@@ -73,10 +74,11 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
 
     val dataPortTemplateIdsByUri = inputIdsByUri ++ outputIdsByUri
 
-    maybeNestedBindingSetId.map { nestedBindingSetId =>
+    maybeNestedResult.map { case (nestedBindingSetId, nestedComponentIds) =>
       saveNestedBindings(
         nestedBindingSetId,
         BoundComponentInstances(componentTemplate.nestedMembers),
+        nestedComponentIds,
         dataPortTemplateIdsByUri
       )
     }
@@ -88,7 +90,7 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
     componentTemplateId
   }
 
-  private def saveNestedMembers(members: Seq[ConcreteComponentInstance])(implicit session: Session): Option[DataPortBindingSetId] = {
+  private def saveNestedMembers(members: Seq[ConcreteComponentInstance])(implicit session: Session): Option[(DataPortBindingSetId, Map[String, ComponentInstanceId])] = {
     if (members.isEmpty) {
       None
     } else {
@@ -214,14 +216,14 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
     } yield ds).firstOption
   }
 
-  def saveMembers(boundInstances: model.dto.BoundComponentInstances)(implicit session: Session): DataPortBindingSetId = {
+  def saveMembers(boundInstances: model.dto.BoundComponentInstances)(implicit session: Session): (DataPortBindingSetId, Map[String, ComponentInstanceId]) = {
     val instanceIdsByUri = saveComponentInstances(boundInstances.componentInstances)
     val inputInstancesByUri = saveInputInstances(boundInstances.inputInstancesWithComponentIds(instanceIdsByUri))
     val outputInstancesByUri = saveOutputInstances(boundInstances.outputInstancesWithComponentIds(instanceIdsByUri))
     val bindingSetId = saveBindings(boundInstances, inputInstancesByUri, outputInstancesByUri)
 
     saveMemberships(bindingSetId, instanceIdsByUri.values.toList)
-    bindingSetId
+    (bindingSetId, instanceIdsByUri)
   }
 
   private def saveMemberships(bindingSetId: DataPortBindingSetId, componentInstanceIds: Seq[ComponentInstanceId])(implicit session: Session) = {
@@ -277,7 +279,7 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
           title = "Unlabeled input instance",
           description = None,
           componentInstanceId = componentInstanceId,
-          dataPortId = dataPort.id.get
+          dataPortTemplateId = dataPort.id.get
         ))
 
         val inputInstanceId = inputInstancesRepository.save(InputInstance(
@@ -305,7 +307,7 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
         title = "Unlabeled input instance",
         description = None,
         componentInstanceId = componentInstanceId,
-        dataPortId = dataPort.id.get
+        dataPortTemplateId = dataPort.id.get
       ))
 
       val outputInstanceId = outputInstancesRepository.save(OutputInstance(
@@ -322,10 +324,10 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
   private def saveNestedBindings(
     bindingSetId: DataPortBindingSetId,
     boundInstances: BoundComponentInstances,
+    instanceIdsByUri: Map[String, ComponentInstanceId],
     nestedCounterpartsByUri: Map[String, (DataPortTemplateId, _)] = Map()
   )(implicit session: Session) = {
 
-    val instanceIdsByUri = saveComponentInstances(boundInstances.componentInstances)
     val inputInstancesByUri = saveInputInstances(boundInstances.inputInstancesWithComponentIds(instanceIdsByUri))
     val outputInstancesByUri = saveOutputInstances(boundInstances.outputInstancesWithComponentIds(instanceIdsByUri))
 

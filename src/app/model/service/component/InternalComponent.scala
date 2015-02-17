@@ -34,8 +34,8 @@ object EndpointConfig {
           val endpointUris = endpoints.map { e =>
             e.getObject.asResource.getURI
           }
-          (endpointUris.head, None)
-        }.headOption
+          endpointUris.map{ e => (e, None) }
+        }.head
       }.headOption
     }
   }
@@ -52,8 +52,11 @@ class InternalComponent(val componentInstance: ComponentInstance) extends Compon
 
   def plugin: AnalyzerPlugin = {
     withSession { implicit session =>
-      if (componentInstance.componentTemplate.nestedBindingSet.isDefined) {
-        new ComposedPlugin(this)
+      println(componentInstance, componentInstance.componentTemplate)
+      if (componentInstance.componentTemplate.nestedBindingSetId.isDefined) {
+
+        new NestedPipelinePlugin(this)
+
       } else {
         componentInstance.componentTemplate.uri match {
           case "http://linked.opendata.cz/resource/ldvm/analyzer/sparql/SparqlAnalyzerTemplate" => new SparqlPlugin(this)
@@ -65,7 +68,11 @@ class InternalComponent(val componentInstance: ComponentInstance) extends Compon
   }
 
   def isDataSource: Boolean = withSession { implicit session =>
-    componentInstance.componentTemplate.inputTemplates.size == 0
+    componentInstance.componentTemplate.inputTemplates.isEmpty
+  }
+
+  def isVisualizer: Boolean = withSession { implicit session =>
+    componentInstance.componentTemplate.outputTemplate.isEmpty
   }
 
 
@@ -114,10 +121,10 @@ class InternalComponent(val componentInstance: ComponentInstance) extends Compon
     Future.sequence(eventualComponentInstanceCompatibility)
   }
 
-  def requestDataFrom(component: InternalComponent, myInputPortId: DataPortInstanceId)(implicit session: Session) = {
+  def requestDataFrom(remoteComponent: InternalComponent, myInputPortId: DataPortInstanceId)(implicit session: Session) = {
     val inputInstances = componentInstance.inputInstances
     val portInstanceUri = inputInstances.filter(_.dataPortInstanceId == myInputPortId).head.dataPortInstance.uri
-    component.actor ! BindMessage(portInstanceUri)
+    actor ! RequestBinding(remoteComponent.actor, BindMessage(portInstanceUri))
   }
 
   def checkIsCompatibleWith(descriptor: Descriptor, reporterProps: Props)(implicit session: Session): Future[CheckCompatibilityResponse] = {

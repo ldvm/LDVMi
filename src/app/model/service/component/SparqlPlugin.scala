@@ -11,6 +11,7 @@ import scala.concurrent.Future
 
 class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
   override def run(dataReferences: Seq[DataReference]): Future[(String, Option[String])] = {
+
     val endpointUrl = "http://live.payola.cz:8890/sparql"
     val resultGraph = "http://" + UUID.randomUUID().toString
 
@@ -29,11 +30,9 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
 
   private def sparqlQuery(ttl: Option[String]): Option[String] = {
     Graph(ttl).flatMap { g =>
-      g.jenaModel
-        .listObjectsOfProperty(g.jenaModel.createProperty("http://linked.opendata.cz/resource/ldvm/analyzer/sparql/query"))
-        .toList
-        .headOption
-        .map(_.asLiteral().getString)
+      val jenaModel = g.jenaModel
+      val queryObjects = jenaModel.listObjectsOfProperty(g.jenaModel.createProperty("http://linked.opendata.cz/ontology/ldvm/analyzer/sparql/query")).toList
+      queryObjects.headOption.map(_.asLiteral().getString)
     }
   }
 }

@@ -19,7 +19,7 @@ case class ComponentTemplate(
   uri: String,
   title: String,
   description: Option[String],
-  nestedBindingSet: Option[DataPortBindingSetId],
+  nestedBindingSetId: Option[DataPortBindingSetId],
   defaultConfiguration: Option[String] = None,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
@@ -38,6 +38,10 @@ case class ComponentTemplate(
   def outputTemplate(implicit s: Session): Option[OutputTemplate] = (for {
     o <- outputTemplatesQuery if o.componentTemplateId === id
   } yield o).firstOption
+  
+  def nestedBindingSet(implicit s: Session): Option[DataPortBindingSet] = (for {
+    bs <- bindingSetsQuery if bs.id === nestedBindingSetId
+  } yield bs).firstOption
 }
 
 object ComponentEntity {

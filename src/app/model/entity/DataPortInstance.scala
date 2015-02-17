@@ -15,15 +15,15 @@ case class DataPortInstance(
   title: String,
   description: Option[String],
   componentInstanceId: ComponentInstanceId,
-  dataPortId: DataPortTemplateId,
+  dataPortTemplateId: DataPortTemplateId,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
   ) extends UriIdentifiedEntity[DataPortInstanceId] {
 
-  def dataPort(implicit session: Session) : DataPortTemplate = {
+  def dataPortTemplate(implicit session: Session) : DataPortTemplate = {
     (for{
-      d <- dataPortTemplatesQuery if d.id === dataPortId
+      d <- dataPortTemplatesQuery if d.id === dataPortTemplateId
     } yield d).first
   }
 

@@ -23,7 +23,7 @@ object LDVM extends Vocabulary {
   lazy val boundTo = m.createProperty(PREFIX_URL, "boundTo")
   lazy val nestedBoundTo = m.createProperty(PREFIX_URL, "nestedBoundTo")
 
-  lazy val componentConfigurationInstance = m.createProperty(PREFIX_URL, "ldvm:componentConfigurationInstance")
+  lazy val componentConfigurationInstance = m.createProperty(PREFIX_URL, "componentConfigurationInstance")
   lazy val componentConfigurationTemplate = m.createProperty(PREFIX_URL, "componentConfigurationTemplate")
 
 }

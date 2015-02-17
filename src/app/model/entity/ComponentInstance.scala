@@ -24,8 +24,10 @@ case class ComponentInstance(
   var modifiedUtc: Option[DateTime] = None
   ) extends UriIdentifiedEntity[ComponentInstanceId] {
 
-  def hasOutput(implicit session: Session): Boolean = componentTemplate.outputTemplate.isEmpty
-  def hasInput(implicit session: Session): Boolean = componentTemplate.inputTemplates.isEmpty
+  def stringDescription: String = id.map(_.toString) + "<" + uri + ">"
+
+  def hasOutput(implicit session: Session): Boolean = componentTemplate.outputTemplate.nonEmpty
+  def hasInput(implicit session: Session): Boolean = componentTemplate.inputTemplates.nonEmpty
 
   def inputInstances(implicit session: Session) : Seq[InputInstance] = {
     (for{

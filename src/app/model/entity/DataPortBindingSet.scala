@@ -23,6 +23,12 @@ case class DataPortBindingSet(
     } yield b).list
   }
 
+  def nestedBindings(implicit session: Session): Seq[NestedDataPortBinding] = {
+    (for {
+      b <- nestedBindingsQuery if b.bindingSetId === id
+    } yield b).list
+  }
+
   def componentInstances(implicit session: Session): Seq[ComponentInstance] = {
     (for {
       m <- componentInstanceMembershipQuery if m.bindingSetId === id

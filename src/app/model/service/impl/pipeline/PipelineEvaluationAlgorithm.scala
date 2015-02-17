@@ -1,19 +1,28 @@
 package model.service.impl.pipeline
 
 import akka.actor.Props
-import model.entity.{Pipeline, PipelineEvaluation}
+import model.entity.{DataPortBindingSet, DataPortTemplateId, PipelineEvaluation}
 import model.service.Connected
-import model.service.component.{Run, InternalComponent}
+import model.service.component.{DataReference, InternalComponent, Run}
 import play.api.db.slick._
-import scaldi.{Injectable, Injector}
+import play.api.libs.concurrent.Akka
+import scaldi.Injectable
 
-class PipelineEvaluationAlgorithm(pipeline: Pipeline, evaluation: PipelineEvaluation)(reporterProps: Props)
-  (implicit val inj: Injector, implicit val session: Session) extends Connected with Injectable {
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import play.api.Play.current
 
-  def run() {
-    val componentInstances = pipeline.componentInstances
-    val bindingSet = pipeline.bindingSet
+class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation)(reporterProps: Option[Props] = None)
+  (implicit val session: Session) extends Connected with Injectable {
+
+  val maybeLogger = reporterProps.map(Akka.system.actorOf)
+  maybeLogger.map { logger => logger ! evaluation.uuid.toString }
+
+  def run(bindingSet: DataPortBindingSet, maybeExternalDependencies: Option[Map[DataPortTemplateId, DataReference]] = None): Future[(String, Option[String])] = {
+    val componentInstances = bindingSet.componentInstances
+    println("II", componentInstances.map(_.id))
     val bindings = bindingSet.bindings
+    val nestedBindings = bindingSet.nestedBindings
 
     val instancesById = componentInstances.map { componentInstance =>
       (componentInstance.id.get, (InternalComponent(componentInstance), componentInstance.hasOutput, componentInstance.hasInput))
@@ -30,12 +39,34 @@ class PipelineEvaluationAlgorithm(pipeline: Pipeline, evaluation: PipelineEvalua
       }
     }
 
-    instancesById.map { case (_, (c, _, hasInput)) =>
-      if (hasInput) {
-        c.actor ! Run()
+    if (nestedBindings.nonEmpty) {
+      maybeExternalDependencies.map { externalDependencies =>
+        nestedBindings.map { nestedBinding =>
+          nestedBinding.sourcePortTemplateId.map { sourcePortTemplateId =>
+            externalDependencies.get(sourcePortTemplateId).map { ref =>
+              println("XX:", nestedBinding, instancesById.get(nestedBinding.targetInstance.get.componentInstanceId), nestedBinding.targetInstance.get.componentInstanceId)
+              instancesById.get(nestedBinding.targetInstance.get.componentInstanceId).map { case (targetInstance, _, _) =>
+                targetInstance.actor ! DataReference(nestedBinding.targetInstance.get.uri, ref.endpointUri, ref.graphUri)
+              }
+            }
+          }
+        }
+      }
+    } else {
+      instancesById.map { case (_, (c, _, hasInput)) =>
+        if (!hasInput) {
+          c.actor ! Run()
+        }
+      }
+
+      instancesById.map { case (_, (c, hasOutput, _)) =>
+        if (!hasOutput) {
+          //c.actor ?
+        }
       }
     }
-    // send data reference to data sources?
+
+    Future(("x", Some("y")))
 
   }
 
