@@ -12,6 +12,8 @@ class UnionPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
     val endpointUrl = "http://live.payola.cz:8890/sparql"
     val resultGraph = "http://"+UUID.randomUUID().toString
 
+    println("running union")
+
     Future {
       val query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
 

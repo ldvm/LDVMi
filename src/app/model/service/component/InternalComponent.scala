@@ -60,8 +60,11 @@ class InternalComponent(val componentInstance: ComponentInstance) extends Compon
       } else {
         componentInstance.componentTemplate.uri match {
           case "http://linked.opendata.cz/resource/ldvm/analyzer/sparql/SparqlAnalyzerTemplate" => new SparqlPlugin(this)
-          case "http://linked.opendata.cz/resource/ldvm/analyzer/sparql/UnionAnalyzerTemplate" => new UnionPlugin(this)
-          case _ => throw new NotImplementedError()
+          case "http://linked.opendata.cz/resource/ldvm/analyzer/union/UnionAnalyzerTemplate" => new UnionPlugin(this)
+          case x => {
+            println(x+" is not implemented")
+            throw new NotImplementedError()
+          }
         }
       }
     }

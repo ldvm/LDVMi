@@ -16,13 +16,19 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
     val resultGraph = "http://" + UUID.randomUUID().toString
 
     Future {
-      val query = sparqlQuery(internalComponent.componentInstance.configuration).get
+      try {
+        val query = sparqlQuery(internalComponent.componentInstance.configuration).get
 
-      val dataRef = dataReferences.head
-      val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, dataRef.graphUri.toSeq)
-      val model = endpoint.queryExecutionFactory()(query).execConstruct()
+        val dataRef = dataReferences.head
+        val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, dataRef.graphUri.toSeq)
 
-      pushToTripleStore(model, endpointUrl, resultGraph)
+        println("Querying "+dataRef.endpointUri+"@"+dataRef.graphUri.toString)
+        val model = endpoint.queryExecutionFactory()(query).execConstruct()
+
+        pushToTripleStore(model, endpointUrl, resultGraph)
+      } catch {
+        case e: Throwable => println(e)
+      }
 
       (endpointUrl, Some(resultGraph))
     }

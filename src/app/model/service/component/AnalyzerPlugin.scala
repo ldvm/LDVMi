@@ -17,8 +17,9 @@ trait AnalyzerPlugin {
 
   protected def pushToTripleStore(model: Model, endpoint: String, graphUri: String) = {
 
-    val httpSuffix = "" //if(endpointUsesSSL){"s"}else{""}
-    val requestUri = String.format("http%s://%s/sparql-graph-crud-auth?graph-uri=%s", httpSuffix, endpoint, graphUri)
+    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpoint.replace("/sparql",""), graphUri)
+
+    println("pushing to "+requestUri)
 
     val stringData = Graph(model).toRdfXml
 
@@ -30,11 +31,16 @@ trait AnalyzerPlugin {
     try {
 
       httpClient.getCredentialsProvider.setCredentials(AuthScope.ANY, credentials)
-      val stringEntity = new StringEntity( stringData, "UTF-8")
+      val stringEntity = new StringEntity(stringData, "UTF-8")
       stringEntity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/xml"))
       post.setEntity(stringEntity)
       httpClient.execute(post)
-    } finally {
+    }
+    catch {
+      case e: Throwable => throw e
+    }
+    finally {
+      println("no longer pushing to "+requestUri)
       httpClient.getConnectionManager.shutdown()
     }
   }

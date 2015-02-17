@@ -43,8 +43,9 @@ class ComponentActor(component: InternalComponent) extends Actor with Connected 
       println(component.componentInstance.stringDescription + " got dataRef " + dataReference)
       setResponse(sender(), dataReference)
 
-      val coveredInputUris = dataReferencesBySender.map { case (_, DataReference(portUri, _, _)) => portUri }
-      if (coveredInputUris == allInputUris) {
+      val coveredInputUris = dataReferencesBySender.map { case (_, DataReference(portUri, _, _)) => portUri }.distinct
+      val canExecute = (coveredInputUris == allInputUris) && (expectedDataRefSenders.isEmpty || (dataReferencesBySender.map(_._1).toSeq == expectedDataRefSenders.toSeq))
+      if (canExecute) {
         if(component.isVisualizer){
 
         }else{
