@@ -8,6 +8,13 @@ import play.api.libs.json.{Json, JsString, JsObject}
 
 object ProgressReporter {
   def props(out: ActorRef) = Props(new ProgressReporter(out))
+  def props = Props(new DummyReporter)
+}
+
+class DummyReporter extends Actor {
+  def receive = {
+    case _ =>
+  }
 }
 
 class ProgressReporter(jsLogger: ActorRef) extends Actor {

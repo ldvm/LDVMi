@@ -2,18 +2,23 @@ package model.service.component
 
 import java.util.UUID
 
+import akka.actor.Props
 import model.rdf.Graph
 import model.rdf.sparql.GenericSparqlEndpoint
+import play.api.libs.concurrent.Akka
 
 import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import play.api.Play.current
 
 class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
-  override def run(dataReferences: Seq[DataReference]): Future[(String, Option[String])] = {
+  override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
 
     val endpointUrl = "http://live.payola.cz:8890/sparql"
     val resultGraph = "http://" + UUID.randomUUID().toString
+
+    val reporter = Akka.system.actorOf(reporterProps)
 
     Future {
       try {
@@ -22,10 +27,10 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
         val dataRef = dataReferences.head
         val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, dataRef.graphUri.toSeq)
 
-        println("Querying "+dataRef.endpointUri+"@"+dataRef.graphUri.toString)
+        reporter ! "Querying "+dataRef.endpointUri+"@"+dataRef.graphUri.toString
         val model = endpoint.queryExecutionFactory()(query).execConstruct()
 
-        pushToTripleStore(model, endpointUrl, resultGraph)
+        pushToTripleStore(model, endpointUrl, resultGraph)(reporterProps)
       } catch {
         case e: Throwable => println(e)
       }

@@ -15,6 +15,9 @@
             <td data-title="'Title'">
                 <a ng-href="#/detail/{{pipeline.id}}">{{pipeline.title}}</a>
             </td>
+            <td data-title="'Evaluate'">
+                <a ng-href="#/evaluate/{{pipeline.id}}" class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Run</a>
+            </td>
             <td data-title="'Compatibility'" class="text-center">
                 <div class="btn-group">
                     <a ng-href="#/compatibility/{{pipeline.id}}" class="btn" ng-class="{'btn-success': 'pipeline.isCompatible', 'btn-danger': '!pipeline.isCompatible'}">

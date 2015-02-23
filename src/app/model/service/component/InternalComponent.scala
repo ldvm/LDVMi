@@ -2,7 +2,7 @@ package model.service.component
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor.{ActorRef, Props}
+import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
 import com.hp.hpl.jena.vocabulary.RDF
@@ -17,7 +17,6 @@ import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
 
 import scala.collection.JavaConversions._
-import scala.collection.mutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 
@@ -34,37 +33,29 @@ object EndpointConfig {
           val endpointUris = endpoints.map { e =>
             e.getObject.asResource.getURI
           }
-          endpointUris.map{ e => (e, None) }
+          endpointUris.map { e => (e, None)}
         }.head
       }.headOption
     }
   }
 }
 
-class InternalComponent(val componentInstance: ComponentInstance) extends Component with Connected {
+class InternalComponent(val componentInstance: ComponentInstance, reporterProps: Props) extends Component with Connected {
 
   implicit val timeout = Timeout(1, TimeUnit.MINUTES)
 
-  val props = ComponentActor.props(this)
+  val props = ComponentActor.props(this, reporterProps)
   val actor = Akka.system.actorOf(props)
 
-  def evaluate(dataReferences: Seq[DataReference]): Future[(String, Option[String])] = plugin.run(dataReferences)
+  def evaluate(dataReferences: Seq[DataReference]): Future[(String, Option[String])] = plugin.run(dataReferences, reporterProps)
 
   def plugin: AnalyzerPlugin = {
     withSession { implicit session =>
-      println(componentInstance, componentInstance.componentTemplate)
-      if (componentInstance.componentTemplate.nestedBindingSetId.isDefined) {
-
-        new NestedPipelinePlugin(this)
-
-      } else {
-        componentInstance.componentTemplate.uri match {
-          case "http://linked.opendata.cz/resource/ldvm/analyzer/sparql/SparqlAnalyzerTemplate" => new SparqlPlugin(this)
-          case "http://linked.opendata.cz/resource/ldvm/analyzer/union/UnionAnalyzerTemplate" => new UnionPlugin(this)
-          case x => {
-            println(x+" is not implemented")
-            throw new NotImplementedError()
-          }
+      componentInstance.componentTemplate.uri match {
+        case "http://linked.opendata.cz/resource/ldvm/analyzer/sparql/SparqlAnalyzerTemplate" => new SparqlPlugin(this)
+        case "http://linked.opendata.cz/resource/ldvm/analyzer/union/UnionAnalyzerTemplate" => new UnionPlugin(this)
+        case _ => {
+          throw new NotImplementedError()
         }
       }
     }
@@ -176,14 +167,14 @@ class InternalComponent(val componentInstance: ComponentInstance) extends Compon
 }
 
 object InternalComponent {
-  def apply(componentInstance: ComponentInstance): InternalComponent = {
-    new InternalComponent(componentInstance)
+  def apply(componentInstance: ComponentInstance, reporterProps: Props): InternalComponent = {
+    new InternalComponent(componentInstance, reporterProps)
   }
 
-  def apply(specificComponentTemplate: SpecificComponentTemplate): InternalComponent = {
+  def apply(specificComponentTemplate: SpecificComponentTemplate, reporterProps: Props): InternalComponent = {
     implicit val session = db.slick.DB.createSession()
     val componentTemplate = specificComponentTemplate.componentTemplate
     session.close()
-    new InternalComponent(ComponentInstance(None, componentTemplate.uri + "#instance", componentTemplate.title + " instance", None, specificComponentTemplate.componentTemplateId, None))
+    new InternalComponent(ComponentInstance(None, componentTemplate.uri + "#instance", componentTemplate.title + " instance", None, specificComponentTemplate.componentTemplateId, None), reporterProps)
   }
 }

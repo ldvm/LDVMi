@@ -2,6 +2,7 @@ package model.service.impl.pipeline
 
 import akka.actor.{Props, PoisonPill, ActorRef}
 import controllers.api.JsonImplicits._
+import controllers.api.ProgressReporter
 import model.entity.ComponentType.ComponentType
 import model.entity._
 import model.repository.PipelineDiscoveryRepository
@@ -121,7 +122,7 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
     withSession { implicit session =>
 
-      val componentToAdd = InternalComponent(componentToAddSpecificTemplate)
+      val componentToAdd = InternalComponent(componentToAddSpecificTemplate, ProgressReporter.props)
       val inputTemplates = componentToAddSpecificTemplate.componentTemplate.inputTemplates
 
       val eventualInputsCompatibility = tryBindAllInputs(inputTemplates, componentToAdd, partialPipelines, promise)
@@ -144,7 +145,7 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
     val eventualPortResponses = inputTemplates.map { inputTemplate =>
       val futures = partialPipelines.filter(_.notUsed).map { partialPipeline =>
         val portUri = inputTemplate.dataPortTemplate.uri
-        val lastComponent = InternalComponent(partialPipeline.componentInstances.last)
+        val lastComponent = InternalComponent(partialPipeline.componentInstances.last, ProgressReporter.props)
 
         reportMessage("Executing checks of <" + componentToAdd.componentInstance.componentTemplate.uri + ">")
 
@@ -207,7 +208,7 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
   private def wrapDataSourcesIntoPipelines(maybeDataSources: Seq[SpecificComponentTemplate]): Seq[PartialPipeline] = {
     maybeDataSources.collect {
-      case d: DataSourceTemplate => PartialPipeline(Seq(InternalComponent(d).componentInstance), Seq())
+      case d: DataSourceTemplate => PartialPipeline(Seq(InternalComponent(d, ProgressReporter.props).componentInstance), Seq())
     }
   }
 

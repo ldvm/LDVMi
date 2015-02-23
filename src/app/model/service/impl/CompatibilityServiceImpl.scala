@@ -1,6 +1,7 @@
 package model.service.impl
 
 import akka.actor.{Actor, Props, ActorRef}
+import controllers.api.ProgressReporter
 import model.actor.CheckCompatibilityResponse
 import model.entity._
 import model.service.CompatibilityService
@@ -27,7 +28,7 @@ class CompatibilityServiceImpl(implicit inj: Injector) extends CompatibilityServ
     val componentInstances = bindingSet.componentInstances
 
     componentInstances.map { componentInstance =>
-      InternalComponent(componentInstance).check(BindingContext(bindingSet), reporterProps)
+      InternalComponent(componentInstance, ProgressReporter.props).check(BindingContext(bindingSet), reporterProps)
     }
 
     pipelineCompatibilityCheckId

@@ -136,6 +136,35 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                         }
                     });
                 });
-            }
+            },
+
+        ])
+        .controller('Evaluate', [
+            '$scope', '$routeParams', 'Pipelines', '$connection',
+            function ($scope, $routeParams, pipelines, $connection) {
+
+                $scope.info = [];
+                $scope.isFinished = false;
+                $scope.duration = 0;
+
+                var connection = $connection("ws://localhost:9000/api/v1/pipelines/evaluate/"+$routeParams.id);
+                connection.listen(function () {
+                    return true
+                }, function (data) {
+                    $scope.$apply(function () {
+                        $scope.info.unshift(data);
+
+                        if ("isFinished" in data) {
+                            $scope.isFinished = data.isFinished;
+                            $scope.isSuccess = data.isSuccess;
+
+                            if ("createdUtc" in data && "modifiedUtc" in data) {
+                                $scope.duration = data.modifiedUtc - data.createdUtc;
+                            }
+                        }
+                    });
+                });
+            },
+
         ]);
 });

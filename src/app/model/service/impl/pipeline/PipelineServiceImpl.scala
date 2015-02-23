@@ -119,7 +119,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   def evaluate(pipelineId: PipelineId)(logger: Props)(implicit session: Session): Option[PipelineEvaluationId] = {
     findById(pipelineId).map { pipeline =>
       val evaluation = PipelineEvaluation(None, false, None)
-      new PipelineEvaluationAlgorithm(evaluation)(Some(logger)).run(pipeline.bindingSet)
+      new PipelineEvaluationAlgorithm(evaluation, logger).run(pipeline.bindingSet)
       pipelineEvaluationRepository.save(evaluation)
     }
   }

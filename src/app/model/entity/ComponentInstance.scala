@@ -35,6 +35,12 @@ case class ComponentInstance(
     } yield ii).list
   }
 
+  def outputInstance(implicit session: Session) : Option[OutputInstance] = {
+    (for{
+      oi <- outputInstancesQuery if oi.componentInstanceId === id
+    } yield oi).firstOption
+  }
+
   def descriptorsAppliedTo(inputInstance: InputInstance)(implicit session: Session) : Seq[Descriptor] = {
     (for {
       ctf <- componentFeaturesQuery if ctf.componentTemplateId === componentId

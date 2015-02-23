@@ -27,6 +27,12 @@ case class OutputInstance(
     } yield o).first
   }
 
+  def dataPortInstance(implicit session: Session) : DataPortInstance = {
+    (for {
+      i <- dataPortInstancesQuery if i.id === dataPortInstanceId
+    } yield i).first
+  }
+
   def componentInstance(implicit session: Session) : ComponentInstance = {
     (for {
       ci <- componentInstancesQuery if ci.id === componentInstanceId

@@ -34,6 +34,7 @@ package object entity {
   val dataPortBindingsQuery = TableQuery[DataPortBindingTable]
   val dataPortInstancesQuery = TableQuery[DataPortInstanceTable]
   val inputInstancesQuery = TableQuery[InputInstanceTable]
+  val outputInstancesQuery = TableQuery[OutputInstanceTable]
 
   val descriptorsQuery = TableQuery[DescriptorTable]
 

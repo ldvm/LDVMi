@@ -1,5 +1,6 @@
 package model.service.component
 
+import akka.actor.Props
 import com.hp.hpl.jena.rdf.model.Model
 import model.rdf.Graph
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
@@ -8,18 +9,22 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.message.BasicHeader
 import org.apache.http.protocol.HTTP
+import play.api.libs.concurrent.Akka
+import play.api.Play.current
 
 import scala.concurrent.Future
 
 trait AnalyzerPlugin {
 
-  def run(inputs: Seq[DataReference]): Future[(String, Option[String])]
+  def run(inputs: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])]
 
-  protected def pushToTripleStore(model: Model, endpoint: String, graphUri: String) = {
+  protected def pushToTripleStore(model: Model, endpoint: String, graphUri: String)(reporterProps: Props) = {
+
+    val reporter = Akka.system.actorOf(reporterProps)
 
     val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpoint.replace("/sparql",""), graphUri)
 
-    println("pushing to "+requestUri)
+    reporter ! "pushing to "+requestUri
 
     val stringData = Graph(model).toRdfXml
 
@@ -40,7 +45,7 @@ trait AnalyzerPlugin {
       case e: Throwable => throw e
     }
     finally {
-      println("no longer pushing to "+requestUri)
+      reporter ! "no longer pushing to "+requestUri
       httpClient.getConnectionManager.shutdown()
     }
   }
