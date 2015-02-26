@@ -14,6 +14,7 @@ GET         /api/v1/compatibility/check/:pipelineId        @controllers.api.Comp
 GET         /api/v1/pipelines/evaluate/:pipelineId         @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
 GET         /api/v1/pipelines                              @controllers.api.PipelineApiController.list(skip: Int ?= 0, pageSize: Int ?= 50, discoveryId: Option[Long] ?= None)
 GET         /api/v1/pipelines/discover                     @controllers.api.PipelineApiController.discover()
+GET         /api/v1/pipelines/evaluations/:id              @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
 #GET         /api/v1/pipelines/discovery/:id                @controllers.api.PipelineApiController.discoveryState(id: Long)
 GET         /api/v1/pipelines/visualization/:id            @controllers.api.PipelineApiController.visualizationById(id: Long)
 GET         /api/v1/pipelines/:id                          @controllers.api.PipelineApiController.findById(id: Long)

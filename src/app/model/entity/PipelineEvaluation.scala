@@ -12,6 +12,7 @@ object PipelineEvaluationId extends IdCompanion[PipelineEvaluationId]
 
 case class PipelineEvaluation(
   id: Option[PipelineEvaluationId],
+  pipelineId: PipelineId,
   isFinished: Boolean,
   isSuccess: Option[Boolean],
   var uuid: String = UUID.randomUUID().toString,
@@ -26,5 +27,9 @@ class PipelineEvaluationTable(tag: Tag) extends IdEntityTable[PipelineEvaluation
 
   def isSuccess = column[Option[Boolean]]("is_success")
 
-  def * = (id.?, isFinished, isSuccess, uuid, createdUtc, modifiedUtc) <> (PipelineEvaluation.tupled, PipelineEvaluation.unapply _)
+  def pipelineId = column[PipelineId]("pipeline_id")
+
+  def pipeline = foreignKey("pipeline", pipelineId, pipelinesQuery)(_.id)
+
+  def * = (id.?, pipelineId, isFinished, isSuccess, uuid, createdUtc, modifiedUtc) <> (PipelineEvaluation.tupled, PipelineEvaluation.unapply _)
 }

@@ -29,12 +29,8 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
       val sourceInstanceId = binding.source.componentInstanceId
       val targetInstanceId = binding.target.componentInstanceId
 
-      println(sourceInstanceId, targetInstanceId)
-
       instancesById.get(targetInstanceId).map { case (targetInstance, targetHasOutput, _) =>
-        println("target OK")
         instancesById.get(sourceInstanceId).map { case (sourceInstance, sourceHasOutput, _) =>
-          println("source OK")
           targetInstance.requestDataFrom(sourceInstance, binding.targetId)
         }
       }
@@ -48,11 +44,6 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
   }
 
   private def recursivePipeline(bindingSet: DataPortBindingSet, level: Integer): (Seq[DataPortBinding], Seq[(ComponentInstanceId, (InternalComponent, Boolean, Boolean))]) = {
-
-    println("original: ")
-    println(bindingSet.bindings.map(_.source.componentInstance.id.get))
-    println(bindingSet.bindings.map(_.target.componentInstance.id.get))
-
 
     if (level > 100) {
       (Seq(), Seq())

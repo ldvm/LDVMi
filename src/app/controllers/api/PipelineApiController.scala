@@ -32,6 +32,17 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     }
   }
 
+  def evaluations(id: Long, skip: Int = 0, take: Int = 50) = DBAction { implicit rws =>
+
+    val pipelineId = PipelineId(id)
+
+    val result = JsObject(Seq(
+      "data" -> Json.toJson(pipelineService.lastEvaluations(pipelineId, skip, take))
+    ))
+
+    Ok(result)
+  }
+
   def list(skip: Int = 0, take: Int = 50, discoveryId: Option[Long] = None) = DBAction { implicit rws =>
 
     val pipelineDiscoveryId = discoveryId.map(PipelineDiscoveryId.apply)

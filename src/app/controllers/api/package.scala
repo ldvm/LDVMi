@@ -56,6 +56,7 @@ package object api {
     implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
 
     implicit val pipelinesWrites = Json.writes[Pipeline]
+    implicit val pipelineEvaluationWrites = Json.writes[PipelineEvaluation]
 
     implicit val dataSourceWrites = Json.writes[DataSourceTemplate]
 

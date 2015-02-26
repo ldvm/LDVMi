@@ -52,6 +52,10 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     pipelineDiscoveryRepository.findById(pipelineDiscoveryId)
   }
 
+  def lastEvaluations(pipelineId: PipelineId, skip: Int = 0, take: Int = 10)(implicit session: Session): Seq[PipelineEvaluation] = {
+    pipelineEvaluationRepository.lastEvaluationsOf(pipelineId, skip, take)
+  }
+
   def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef) = {
     withSession { implicit session =>
       pipelines.map { pipeline =>
@@ -118,7 +122,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
 
   def evaluate(pipelineId: PipelineId)(logger: Props)(implicit session: Session): Option[PipelineEvaluationId] = {
     findById(pipelineId).map { pipeline =>
-      val evaluation = PipelineEvaluation(None, false, None)
+      val evaluation = PipelineEvaluation(None, pipelineId, false, None)
       new PipelineEvaluationAlgorithm(evaluation, logger).run(pipeline.bindingSet)
       pipelineEvaluationRepository.save(evaluation)
     }

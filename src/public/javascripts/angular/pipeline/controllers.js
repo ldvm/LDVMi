@@ -82,6 +82,10 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     $scope.data = data;
                 });
 
+                pipelines.evaluations($routeParams.id).then(function(data){
+                    $scope.evaluations = data.data;
+                });
+
             }])
         .controller('Discover', [
             '$scope', '$routeParams', 'Pipelines', '$connection',

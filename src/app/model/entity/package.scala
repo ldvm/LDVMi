@@ -17,6 +17,7 @@ package object entity {
   val nestedBindingsQuery = TableQuery[NestedDataPortBindingTable]
 
   val pipelineDiscoveriesQuery = TableQuery[PipelineDiscoveryTable]
+  val pipelinesQuery = TableQuery[PipelineTable]
 
   val dataPortTemplatesQuery = TableQuery[DataPortTemplateTable]
   val outputTemplatesQuery = TableQuery[OutputTemplateTable]

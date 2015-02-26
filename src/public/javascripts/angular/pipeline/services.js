@@ -10,6 +10,7 @@ define(['angular'], function (ng) {
                 get: {url: '/api/v1/pipelines/:id', isArray: false},
                 add: {url: '/api/v1/pipelines/ttl', isArray: false},
                 visualization: {url: '/api/v1/pipelines/visualization/:id', isArray: false},
+                evaluations: {url: '/api/v1/pipelines/evaluations/:id', isArray: false},
                 discover: {url: '/api/v1/pipelines/discover', isArray: false}
             });
         }])
@@ -51,6 +52,9 @@ define(['angular'], function (ng) {
                     },
                     visualization: function (id) {
                         return pipelineApi.visualization({id: id}).$promise;
+                    },
+                    evaluations: function (id) {
+                        return pipelineApi.evaluations({id: id}).$promise;
                     },
                     discover: function () {
                         return pipelineApi.discover().$promise;

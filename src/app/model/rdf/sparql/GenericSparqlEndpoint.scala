@@ -4,6 +4,8 @@ package model.rdf.sparql
 import _root_.model.rdf.Graph
 import _root_.model.rdf.vocabulary.{DSPARQL, SD}
 import com.hp.hpl.jena.query.{QueryExecution, QueryExecutionFactory}
+import com.hp.hpl.jena.update.{UpdateProcessor, UpdateFactory, UpdateExecutionFactory}
+import org.apache.jena.atlas.web.auth.{SimpleAuthenticator}
 
 import scala.collection.JavaConversions._
 
@@ -11,6 +13,9 @@ class GenericSparqlEndpoint(val endpointURL: String, val namedGraphs: Seq[String
 
   def queryExecutionFactory(): String => QueryExecution = { query =>
     QueryExecutionFactory.sparqlService(endpointURL, query, namedGraphs, List())
+  }
+  def updateExecutionFactory(): String => UpdateProcessor = { query =>
+    UpdateExecutionFactory.createRemote(UpdateFactory.create(query), endpointURL, new SimpleAuthenticator("dba", "dba".toCharArray))
   }
 
 }
