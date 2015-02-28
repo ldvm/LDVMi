@@ -1,16 +1,16 @@
 package model.service.component
 
 import akka.actor.{Actor, ActorRef, Props}
+import model.service.Connected
+import play.api.Play.current
 import play.api.libs.concurrent.Akka
 
-import play.api.Play.current
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
-import model.service.Connected
 
-case class RequestBinding(remoteActor: ActorRef, bindingMessage: BindMessage)
+case class RequestBindingCommand(remoteActor: ActorRef, bindingMessage: Bind)
 
-case class BindMessage(portUri: String)
+case class Bind(portUri: String)
 
 case class DataReference(portUri: String, endpointUri: String, graphUri: Option[String])
 
@@ -27,62 +27,79 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
   private val outgoingBindings = new ArrayBuffer[(ActorRef, String)]()
   private val expectedDataRefSenders = new ArrayBuffer[ActorRef]()
   private val dataReferencesBySender = new ArrayBuffer[(ActorRef, DataReference)]
-  private val allInputUris = withSession { implicit session => component.componentInstance.inputInstances.map(_.dataPortInstance.uri).distinct }
+  private val allInputUris = withSession { implicit session => component.componentInstance.inputInstances.map(_.dataPortInstance.uri).distinct}
   private val logger = Akka.system.actorOf(reporterProps)
-
-  def setResponse(sender: ActorRef, dataRef: DataReference) = dataReferencesBySender.append((sender, dataRef))
+  private var resultReceiver: Option[ActorRef] = None
 
   def receive = {
-    case requestBinding: RequestBinding => {
-      expectedDataRefSenders.append(requestBinding.remoteActor)
-      requestBinding.remoteActor ! requestBinding.bindingMessage
-    }
-    case bind: BindMessage => {
-      logger ! component.componentInstance.stringDescription + " bound to " + bind.portUri + " for " + sender().toString()
-      saveBinding((sender(), bind.portUri))
-    }
-    case dataReference: DataReference => {
-      logger ! component.componentInstance.stringDescription + " got dataRef " + dataReference
-      setResponse(sender(), dataReference)
+    case c: Run => onRun()
+    case c: Bind => onBind(c)
+    case c: Failure => onFailure(c)
+    case c: ResultRequest => onResultRequest()
+    case c: DataReference => onDataReference(c)
+    case c: RequestBindingCommand => onRequestBindingCommand(c)
+  }
 
-      val coveredInputUris = dataReferencesBySender.map { case (_, DataReference(portUri, _, _)) => portUri }.distinct
-      val canExecute = (coveredInputUris == allInputUris) && (expectedDataRefSenders.isEmpty || (dataReferencesBySender.map(_._1).toSeq == expectedDataRefSenders.toSeq))
-      if (canExecute) {
-        if(component.isVisualizer){
-          logger ! "==== DONE ===="
-        }else{
-          val eventualDataReference = component.evaluate(dataReferencesBySender.map(_._2).toSeq)
+  private def onDataReference(dataReference: DataReference) {
+    logger ! component.componentInstance.stringDescription + " got dataRef " + dataReference
+    setResponse(sender(), dataReference)
 
-          eventualDataReference.onSuccess{ case (endpoint, graph) =>
-            outgoingBindings.map { case (acceptor, port) =>
-              acceptor ! DataReference(port, endpoint, graph)
-            }
-          }
+    val coveredInputUris = dataReferencesBySender.map { case (_, DataReference(portUri, _, _)) => portUri}.distinct
+    val canExecute = (coveredInputUris == allInputUris) && (expectedDataRefSenders.isEmpty || (dataReferencesBySender.map(_._1).toSeq == expectedDataRefSenders.toSeq))
+    if (canExecute) {
+      if (component.isVisualizer) {
+        resultReceiver.map { r => r ! Result(dataReferencesBySender.map(_._2))}
+        logger ! "==== DONE ===="
+      } else {
+        val eventualDataReference = component.evaluate(dataReferencesBySender.map(_._2).toSeq)
 
-          eventualDataReference.onFailure { case t =>
-            self ! Failure("Component instance with ID " + component.componentInstance.id.map(_.toString).get + " has failed (" + t.getMessage + ").")
-          }
-        }
-      }
-    }
-    case run: Run => {
-      logger ! component.componentInstance.stringDescription + " got Run message "
-      if(component.isDataSource){
-        val maybeDsConfig = component.dataSourceConfiguration
-        maybeDsConfig.map { dsConfig =>
+        eventualDataReference.onSuccess { case (endpoint, graph) =>
           outgoingBindings.map { case (acceptor, port) =>
-            logger ! "Sending dr from " + self
-            acceptor ! DataReference(port, dsConfig._1, dsConfig._2)
+            acceptor ! DataReference(port, endpoint, graph)
           }
         }
-      }
-    }
-    case failure: Failure => {
-      outgoingBindings.map { case (acceptor, port) =>
-        acceptor ! failure
+
+        eventualDataReference.onFailure { case t =>
+          self ! Failure("Component instance with ID " + component.componentInstance.id.map(_.toString).get + " has failed (" + t.getMessage + ").")
+        }
       }
     }
   }
 
-  def saveBinding(binding: (ActorRef, String)) = outgoingBindings.append(binding)
+  private def setResponse(sender: ActorRef, dataRef: DataReference) = dataReferencesBySender.append((sender, dataRef))
+
+  private def onResultRequest() {
+    resultReceiver = Some(sender())
+  }
+
+  private def onRequestBindingCommand(requestBindingCommand: RequestBindingCommand) {
+    expectedDataRefSenders.append(requestBindingCommand.remoteActor)
+    requestBindingCommand.remoteActor ! requestBindingCommand.bindingMessage
+  }
+
+  private def onRun() {
+    logger ! component.componentInstance.stringDescription + " got Run message "
+    if (component.isDataSource) {
+      val maybeDsConfig = component.dataSourceConfiguration
+      maybeDsConfig.map { dsConfig =>
+        outgoingBindings.map { case (acceptor, port) =>
+          logger ! "Sending dr from " + self
+          acceptor ! DataReference(port, dsConfig._1, dsConfig._2)
+        }
+      }
+    }
+  }
+
+  private def onBind(bind: Bind) {
+    logger ! component.componentInstance.stringDescription + " bound to " + bind.portUri + " for " + sender().toString()
+    saveBinding((sender(), bind.portUri))
+  }
+
+  private def saveBinding(binding: (ActorRef, String)) = outgoingBindings.append(binding)
+
+  private def onFailure(failure: Failure) {
+    outgoingBindings.map { case (acceptor, port) =>
+      acceptor ! failure
+    }
+  }
 }

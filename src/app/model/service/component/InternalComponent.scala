@@ -118,7 +118,7 @@ class InternalComponent(val componentInstance: ComponentInstance, reporterProps:
   def requestDataFrom(remoteComponent: InternalComponent, myInputPortId: DataPortInstanceId)(implicit session: Session) = {
     val inputInstances = componentInstance.inputInstances
     val portInstanceUri = inputInstances.filter(_.dataPortInstanceId == myInputPortId).head.dataPortInstance.uri
-    actor ! RequestBinding(remoteComponent.actor, BindMessage(portInstanceUri))
+    actor ! RequestBindingCommand(remoteComponent.actor, Bind(portInstanceUri))
   }
 
   def checkIsCompatibleWith(descriptor: Descriptor, reporterProps: Props)(implicit session: Session): Future[CheckCompatibilityResponse] = {

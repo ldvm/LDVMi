@@ -12,12 +12,21 @@
                     <th>Duration</th>
                     <th>Viz</th>
                 </tr>
-                <tr ng-repeat="e in evaluations">
+                <tr ng-repeat="e in evaluations | orderBy: '-createdUtc'">
                     <td>{{e.id}}</td>
                     <td><span am-time-ago="e.createdUtc" tooltip="{{e.createdUtc | date : 'medium'}}"></span></td>
-                    <td>{{e.isFinished}}</td>
-                    <td>{{e.isSuccess}}</td>
-                    <td>{{e.duration}}</td>
+                    <td>
+                        <span ng-show="e.isFinished"><i class="glyphicon glyphicon-ok"></i></span>
+                        <span ng-hide="e.isFinished"><i class="glyphicon glyphicon-remove"></i></span>
+                    </td>
+                    <td>
+                        <span ng-show="e.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                        <span ng-hide="e.isSuccess"><i class="glyphicon glyphicon-question-sign"></i></span>
+                    </td>
+                    <td>
+                        <span ng-show="e.modifiedUtc">{{(e.modifiedUtc-e.createdUtc)/1000}} s</span>
+                        <span ng-hide="e.modifiedUtc">starting</span>
+                    </td>
                     <td>{{e.id}}</td>
                 </tr>
             </table>

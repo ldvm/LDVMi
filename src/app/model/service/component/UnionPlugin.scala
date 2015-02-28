@@ -26,13 +26,13 @@ class UnionPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
         val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, dataRef.graphUri.toSeq)
 
         try {
-          if (false && sameEndpoint) {
+          /*if (false && sameEndpoint) {
             val updateQuery = query.replaceAll("^(?i)construct", "WITH <" + resultGraph + "> INSERT")
             endpoint.updateExecutionFactory()(updateQuery).execute()
-          } else {
+          } else {*/
             val model = endpoint.queryExecutionFactory()(query).execConstruct()
             pushToTripleStore(model, endpointUrl, resultGraph)(reporterProps)
-          }
+          //}
         } catch {
           case e: org.apache.jena.atlas.web.HttpException => {
             println(e.getResponse)

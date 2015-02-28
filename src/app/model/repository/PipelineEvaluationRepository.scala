@@ -9,6 +9,6 @@ class PipelineEvaluationRepository extends CrudRepository[PipelineEvaluationId, 
   def lastEvaluationsOf(pipelineId: PipelineId, skip: Int, take: Int)(implicit session: Session) = {
     (for {
       q <- query if q.pipelineId === pipelineId
-    } yield q).drop(skip).take(take).list
+    } yield q).sortBy(e => (e.modifiedUtc.desc, e.createdUtc.desc)).drop(skip).take(take).list
   }
 }

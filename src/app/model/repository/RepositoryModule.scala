@@ -36,4 +36,5 @@ class RepositoryModule extends Module {
   binding to new PipelineRepository
   binding to new PipelineDiscoveryRepository
   binding to new PipelineEvaluationRepository
+  binding to new PipelineEvaluationResultRepository
 }

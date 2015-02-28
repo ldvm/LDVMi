@@ -3,15 +3,15 @@ package model.service.impl.pipeline
 import akka.actor.Props
 import model.entity._
 import model.service.Connected
-import model.service.component.{InternalComponent, Run}
+import model.service.component.{ResultRequest, ControlActor, InternalComponent, Run}
 import play.api.Play.current
 import play.api.db.slick._
 import play.api.libs.concurrent.Akka
-import scaldi.Injectable
+import scaldi.{Injector, Injectable}
 
 
 class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps: Props)
-  (implicit val session: Session) extends Connected with Injectable {
+  (implicit val session: Session, inj: Injector) extends Connected with Injectable {
 
   val logger = Akka.system.actorOf(reporterProps)
   logger ! evaluation.uuid.toString
@@ -36,10 +36,15 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
       }
     }
 
-    instancesById.map { case (_, (c, _, hasInput)) =>
-      if (!hasInput) {
-        c.actor ! Run()
-      }
+    val visualizer = instancesById.find{ case (_, (c, hasOutput, _)) => !hasOutput }.get
+    val visualizerUri = visualizer._2._1.componentInstance.componentTemplate.uri
+    val controlActor = Akka.system.actorOf(Props(new ControlActor(evaluation, reporterProps, visualizerUri)))
+
+
+    instancesById.foreach {
+      case (_, (c, false, _)) => c.actor.tell(ResultRequest(), controlActor)
+      case (_, (c, _, false)) => c.actor.tell(Run(), controlActor)
+      case _ =>
     }
   }
 
