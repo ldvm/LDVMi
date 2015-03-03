@@ -5,7 +5,7 @@ import model.entity.DataPortBindingSet
 import play.api.db.slick.Session
 
 case class BindingContext(context: Map[String, Component]) {
-  def apply(inputTemplateUri: String) = context.apply(inputTemplateUri)
+  def apply(inputTemplateUri: String) = context.get(inputTemplateUri)
 }
 
 object BindingContext {

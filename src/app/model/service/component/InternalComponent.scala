@@ -92,20 +92,23 @@ class InternalComponent(val componentInstance: ComponentInstance, reporterProps:
 
     val eventualComponentInstanceCompatibility = featuresWithDescriptors.map {
       case (feature, descriptors) => {
-        val eventualFeatureCompatibility = descriptors.map { descriptor =>
+        val eventualFeatureCompatibility = descriptors.flatMap { descriptor =>
           val descriptorInputTemplate = descriptor.inputTemplate
-          val componentForDescriptor = context(descriptorInputTemplate.dataPortTemplate.uri)
-          val eventualDescriptorCompatibility = componentForDescriptor.checkIsCompatibleWith(descriptor, reporterProps)
+          val maybeComponentForDescriptor = context(descriptorInputTemplate.dataPortTemplate.uri)
+          maybeComponentForDescriptor.map { componentForDescriptor =>
 
-          eventualDescriptorCompatibility.onSuccess {
-            case r => reporter ! r
+            val eventualDescriptorCompatibility = componentForDescriptor.checkIsCompatibleWith(descriptor, reporterProps)
+
+            eventualDescriptorCompatibility.onSuccess {
+              case r => reporter ! r
+            }
+
+            eventualDescriptorCompatibility.onFailure {
+              case e => reporter ! e.getMessage
+            }
+
+            eventualDescriptorCompatibility
           }
-
-          eventualDescriptorCompatibility.onFailure {
-            case e => reporter ! e.getMessage
-          }
-
-          eventualDescriptorCompatibility
         }
 
         Future.sequence(eventualFeatureCompatibility)

@@ -5,4 +5,6 @@ import model.entity._
 
 import scala.slick.lifted.TableQuery
 
-class TransformerInstanceRepository extends CrudRepository[TransformerInstanceId, TransformerInstance, TransformerInstanceTable](TableQuery[TransformerInstanceTable])
+class TransformerInstanceRepository extends CrudRepository[TransformerInstanceId, TransformerInstance, TransformerInstanceTable](TableQuery[TransformerInstanceTable]){
+
+}

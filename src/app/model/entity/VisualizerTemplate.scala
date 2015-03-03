@@ -19,9 +19,9 @@ case class VisualizerTemplate(
 
 class VisualizerTemplateTable(tag: Tag) extends IdEntityTable[VisualizerTemplateId, VisualizerTemplate](tag, "visualizer_templates") {
 
-  def component = foreignKey("fk_vt_ctt_component_template_id", componentId, componentTemplatesQuery)(_.id)
+  def componentTemplate = foreignKey("fk_vt_ctt_component_template_id", componentTemplateId, componentTemplatesQuery)(_.id)
 
-  def componentId = column[ComponentTemplateId]("component_id", O.NotNull)
+  def componentTemplateId = column[ComponentTemplateId]("component_id", O.NotNull)
 
-  def * = (id.?, componentId, uuid, createdUtc, modifiedUtc) <> (VisualizerTemplate.tupled, VisualizerTemplate.unapply _)
+  def * = (id.?, componentTemplateId, uuid, createdUtc, modifiedUtc) <> (VisualizerTemplate.tupled, VisualizerTemplate.unapply _)
 }

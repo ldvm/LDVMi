@@ -54,10 +54,16 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
         reportMessage("All completed pipelines: " + allCompleted.size)
 
-        pipelineService.saveDiscoveryResults(discoveryId, createdCompletedPipelines, reporter)
+        try {
+          pipelineService.saveDiscoveryResults(discoveryId, createdCompletedPipelines, reporter)
 
-        reportMessage("Completed pipelines saved.")
-        reporter ! Json.toJson(JsObject(Seq(("significantAction", JsString("pipelinesSaved")))))
+          reportMessage("Completed pipelines saved.")
+          reporter ! Json.toJson(JsObject(Seq(("significantAction", JsString("pipelinesSaved")))))
+        } catch {
+          case e: Throwable => {
+            e.printStackTrace()
+          }
+        }
 
         val usedPartialPipelines = givenPartialPipelines.map {
           case PartialPipeline(m, p, _) => PartialPipeline(m, p, notUsed = false)

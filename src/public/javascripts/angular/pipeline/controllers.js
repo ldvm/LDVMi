@@ -36,6 +36,13 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
 
             }])
         .controller('CompatibilityCheck', function(){})
+        .controller('Index', function($scope){
+            $scope.visualize = function(){
+
+                window.location.href = "/discover/?endpointUrl="+$scope.endpointUrl+"&graphUris="+$scope.graphUris;
+
+            };
+        })
         .controller('Compatibility', [
             '$scope', '$routeParams', 'Compatibility', 'VisualizationService',
             function ($scope, $routeParams, Compatibility, VisualizationService) {

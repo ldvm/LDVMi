@@ -8,7 +8,7 @@ define(['./app'], function (app) {
         $routeProvider.when('/list', {templateUrl: partialsPath + 'list.html', controller: 'List', reloadOnSearch: false});
         $routeProvider.when('/discover', {templateUrl: partialsPath + 'discover.html', controller: 'Discover', reloadOnSearch: false});
         $routeProvider.when('/evaluate/:id', {templateUrl: partialsPath + 'evaluate.html', controller: 'Evaluate', reloadOnSearch: false});
-        $routeProvider.when('/', {templateUrl: partialsPath + 'index.html', reloadOnSearch: false});
+        $routeProvider.when('/', {templateUrl: partialsPath + 'index.html', controller: 'Index', reloadOnSearch: false});
         $routeProvider.when('/:page', {templateUrl: partialsPath + 'list.html', controller: 'List', reloadOnSearch: false});
         $routeProvider.when('/compatibility/check/:id', {templateUrl: partialsPath + 'compatibilityCheck.html', controller: 'CompatibilityCheck', reloadOnSearch: false});
         $routeProvider.when('/compatibility/:id', {templateUrl: partialsPath + 'compatibility.html', controller: 'Compatibility', reloadOnSearch: false});

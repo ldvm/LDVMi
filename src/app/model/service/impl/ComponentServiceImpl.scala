@@ -56,6 +56,16 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
     ).toMap
   }
 
+  def getAllForDiscovery(maybeDatasourceTemplate: Option[DataSourceTemplate] = None)
+    (implicit session: Session): Map[ComponentType, Seq[SpecificComponentTemplate]] = {
+    Seq(
+      (ComponentType.DataSource, maybeDatasourceTemplate.map(Seq(_)).getOrElse(dataSourceTemplateRepository.findAll())),
+      (ComponentType.Analyzer, analyzerTemplateRepository.findAllWithMandatoryDescriptors),
+      (ComponentType.Transformer, transformerTemplateRepository.findAllWithMandatoryDescriptors),
+      (ComponentType.Visualizer, visualizerTemplateRepository.findAllWithMandatoryDescriptors)
+    ).toMap
+  }
+
   def save(componentTemplate: model.dto.ComponentTemplate)(implicit session: Session): ComponentTemplateId = {
 
     val maybeNestedResult = saveNestedMembers(componentTemplate.nestedMembers)
@@ -191,14 +201,14 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
   def getByInstance(analyzerInstance: model.dto.AnalyzerInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
     (for {
       c <- componentTemplatesQuery.filter(_.uri === analyzerInstance.componentInstance.templateUri)
-      a <- analyzerTemplatesQuery.filter(_.componentId === c.id)
+      a <- analyzerTemplatesQuery.filter(_.componentTemplateId === c.id)
     } yield a).firstOption
   }
 
   def getByInstance(visualizerInstance: model.dto.VisualizerInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
     (for {
       c <- componentTemplatesQuery.filter(_.uri === visualizerInstance.componentInstance.templateUri)
-      v <- visualizerTemplatesQuery.filter(_.componentId === c.id)
+      v <- visualizerTemplatesQuery.filter(_.componentTemplateId === c.id)
     } yield v).firstOption
   }
 
