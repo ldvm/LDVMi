@@ -30,11 +30,11 @@ object GenericSparqlEndpoint {
 
   private def getEndpointUrl(configurations: Seq[Option[Graph]]): Option[String] = {
 
-    configurations.filter(_.isDefined).map(_.get.jenaModel).map { configurationModel =>
+    configurations.filter(_.isDefined).map(_.get.jenaModel).flatMap { configurationModel =>
       val serviceStatements = configurationModel.listStatements(null, DSPARQL.service, null).toList
       serviceStatements.map { serviceStatement =>
         serviceStatement.getObject.asResource().listProperties(SD.endpoint).toList.headOption.map(_.getObject.asResource().getURI)
-      }.filter(_.isDefined).map(_.get).head
+      }.filter(_.isDefined).map(_.get)
     }.headOption
 
   }

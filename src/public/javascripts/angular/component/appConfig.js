@@ -10,7 +10,7 @@ define(['./app'], function (app) {
         .config(function ($provide) {
             $provide.decorator("$exceptionHandler", function ($delegate, $injector) {
                 return function (exception, cause) {
-                    alert("Unexpected error.");
+                    //alert("Unexpected error.");
                     $delegate(exception, cause);
                 };
             });

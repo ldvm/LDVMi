@@ -1,13 +1,14 @@
 package model.service.impl.pipeline
 
-import akka.actor.{Props, PoisonPill, ActorRef}
+import akka.actor.{PoisonPill, Props}
 import controllers.api.JsonImplicits._
 import controllers.api.ProgressReporter
 import model.entity.ComponentType.ComponentType
 import model.entity._
 import model.repository.PipelineDiscoveryRepository
 import model.service.component.{Component, InternalComponent}
-import model.service.{PipelineService, Connected, PartialPipeline, PortMapping}
+import model.service.{Connected, PartialPipeline, PipelineService, PortMapping}
+import play.api.Play.current
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
 import play.api.libs.json.{JsObject, JsString, Json}
@@ -16,7 +17,6 @@ import utils.CombinatoricsUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
-import play.api.Play.current
 
 class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[SpecificComponentTemplate]], reporterProps: Props, maxIterations: Int = 10)
   (implicit val inj: Injector, implicit val session: Session) extends Connected with Injectable {
@@ -29,15 +29,16 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
   val reporter = Akka.system.actorOf(reporterProps)
 
 
-  def runWith(dataSources: Seq[DataSourceTemplate])(implicit session: Session): PipelineDiscoveryId = {
+  def discoverPipelines(dataSources: Seq[DataSourceTemplate])(implicit session: Session): PipelineDiscoveryId = {
+    println(dataSources)
     reportProgress(discovery.lastPerformedIteration, discovery.isFinished, discovery.pipelinesDiscoveredCount, discovery.isSuccess)
-    iterate(0, wrapDataSourcesIntoPipelines(dataSources), Seq())
+    iterate(0, pipelinesFromDataSources(dataSources), Seq())
     discoveryId
   }
 
   def iterate(iterationNumber: Int, givenPartialPipelines: Seq[PartialPipeline], givenCompletedPipelines: Seq[PartialPipeline]): Future[Seq[PartialPipeline]] = {
 
-    reportMessage("Starting iteration " + iterationNumber + " with " + givenPartialPipelines.size + " partial pipeline(s)")
+    reportMessage("****** Starting iteration " + iterationNumber + " with " + givenPartialPipelines.size + " partial pipeline(s)")
 
     val eventualCreatedPipelines = Future.sequence(tryAddAllComponents(givenPartialPipelines))
     eventualCreatedPipelines.map(_.flatten).flatMap { createdPipelines =>
@@ -45,14 +46,14 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
       withSession { implicit session =>
 
         val createdPartialPartitions = createdPipelines.partition(_.componentInstances.last.hasOutput)
-        val createdPartialPipelines = createdPartialPartitions._2
-        val createdCompletedPipelines = createdPartialPartitions._1
+        val createdPartialPipelines = createdPartialPartitions._1
+        val createdCompletedPipelines = createdPartialPartitions._2
 
-        reportMessage("Created partial pipelines: " + createdPartialPipelines.size)
+        reportMessage("~~~~~~ Created partial pipelines: " + createdPartialPipelines.size)
 
         val allCompleted = givenCompletedPipelines ++ createdCompletedPipelines
 
-        reportMessage("All completed pipelines: " + allCompleted.size)
+        reportMessage("|||||| All completed pipelines: " + allCompleted.size)
 
         try {
           pipelineService.saveDiscoveryResults(discoveryId, createdCompletedPipelines, reporter)
@@ -149,7 +150,10 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
   : Future[Seq[Seq[Option[(PortMapping, PartialPipeline)]]]] = {
 
     val eventualPortResponses = inputTemplates.map { inputTemplate =>
-      val futures = partialPipelines.filter(_.notUsed).map { partialPipeline =>
+      val futures = partialPipelines
+        .filter(_.notUsed)
+        .filter(_.componentInstances.last.hasOutput)
+        .map { partialPipeline =>
         val portUri = inputTemplate.dataPortTemplate.uri
         val lastComponent = InternalComponent(partialPipeline.componentInstances.last, ProgressReporter.props)
 
@@ -164,13 +168,13 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
         future.collect({
           case true => {
             withSession { implicit session =>
-              reportMessage("Able to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri+"> to <"+lastComponent.componentInstance.componentTemplate.uri+">")
+              reportMessage("Able to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri + "> to <" + lastComponent.componentInstance.componentTemplate.uri + ">")
               Some(PortMapping(partialPipeline.componentInstances.last, componentToAdd.componentInstance, portUri), partialPipeline)
             }
           }
           case false => {
             withSession { implicit session =>
-              reportMessage("Unable to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri+"> to <"+lastComponent.componentInstance.componentTemplate.uri+">")
+              reportMessage("Unable to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri + "> to <" + lastComponent.componentInstance.componentTemplate.uri + ">")
               None
             }
           }
@@ -212,8 +216,8 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
     }
   }
 
-  private def wrapDataSourcesIntoPipelines(maybeDataSources: Seq[SpecificComponentTemplate]): Seq[PartialPipeline] = {
-    maybeDataSources.collect {
+  private def pipelinesFromDataSources(componentTemplates: Seq[SpecificComponentTemplate]): Seq[PartialPipeline] = {
+    componentTemplates.collect {
       case d: DataSourceTemplate => PartialPipeline(Seq(InternalComponent(d, ProgressReporter.props).componentInstance), Seq())
     }
   }

@@ -150,6 +150,7 @@ class InternalComponent(val componentInstance: ComponentInstance, reporterProps:
     maybeInputTemplate.map { inputTemplate =>
 
       val eventualResponses = inputTemplate.descriptors(onlyMandatory = true).map { descriptor =>
+        reporter ! "Port <" + portUri + "> compatibility with <" + componentToAsk.componentInstance.uri + ">"
         componentToAsk.checkIsCompatibleWith(descriptor, reporterProps)
       }
 
