@@ -18,6 +18,7 @@ package object entity {
 
   val pipelineDiscoveriesQuery = TableQuery[PipelineDiscoveryTable]
   val pipelineEvaluationsQuery = TableQuery[PipelineEvaluationTable]
+  val pipelineEvaluationResultsQuery = TableQuery[PipelineEvaluationResultTable]
   val pipelinesQuery = TableQuery[PipelineTable]
 
   val dataPortTemplatesQuery = TableQuery[DataPortTemplateTable]

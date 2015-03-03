@@ -8,6 +8,6 @@ import query.SparqlQuery
 
 trait SparqlEndpointService {
 
-  def getResult[Q <: SparqlQuery, R](dataSourceEagerBox: DataSourceTemplateEagerBox, query: Q, extractor: QueryExecutionResultExtractor[Q, R]): Option[R]
+  def getResult[Q <: SparqlQuery, R](sparqlEndpoint: SparqlEndpoint, query: Q, extractor: QueryExecutionResultExtractor[Q, R]): Option[R]
 
 }

@@ -1,58 +1,61 @@
 package model.rdf.sparql.datacube
 
-import model.entity.{DataSourceTemplateEagerBox, DataSourceTemplate}
-//import model.repositories.VisualizationQueriesService
-import play.api.libs.iteratee.Enumerator
-import play.api.libs.json._
-import scaldi.{Injectable, Injector}
-import model.rdf.sparql.{ValueFilter, SparqlEndpointService}
+import _root_.model.service.Connected
+import model.entity.PipelineEvaluation
 import model.rdf.sparql.datacube.extractor._
 import model.rdf.sparql.datacube.query._
-import utils.MD5
+import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpoint, SparqlEndpointService, ValueFilter}
+import play.api.libs.iteratee.Enumerator
+import scaldi.{Injectable, Injector}
 
-class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with Injectable {
+class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with Connected with Injectable {
 
   var sparqlEndpointService = inject[SparqlEndpointService]
   //var visualizationQueriesService = inject[VisualizationQueriesService]
 
-  def getDatasets(dataSource: DataSourceTemplate): Seq[DataCubeDataset] = {
-    //sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDatasetsQuery, new DataCubeDatasetsExtractor)
-    List()
+  def getDatasets(evaluation: PipelineEvaluation): Seq[DataCubeDataset] = {
+    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new DataCubeDatasetsQuery, new DataCubeDatasetsExtractor).get
   }
 
-  def getDataStructures(dataSource: DataSourceTemplate): Seq[DataCubeDataStructure] = {
-    //sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeDataStructuresQuery, new DataCubeDataStructuresExtractor)
-    List()
+  private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation): GenericSparqlEndpoint = {
+    withSession { implicit session =>
+      val evaluationResults = evaluation.results
+      evaluationResults.map { result => new GenericSparqlEndpoint(result.endpointUrl, result.graphUri.toSeq)}.head
+    }
   }
 
-  def getDataStructureComponents(dataSource: DataSourceTemplate, uri: String): Seq[DataCubeComponent] = {
+  def getDataStructures(evaluation: PipelineEvaluation): Seq[DataCubeDataStructure] = {
+    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new DataCubeDataStructuresQuery, new DataCubeDataStructuresExtractor).get
+  }
+
+  def getDataStructureComponents(evaluation: PipelineEvaluation, uri: String): Seq[DataCubeComponent] = {
     List("dimension", "measure", "attribute").par.map { componentType =>
-      //sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeComponentsQuery(uri, componentType), new DataCubeComponentsExtractor)
-      List()
+      sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new DataCubeComponentsQuery(uri, componentType), new DataCubeComponentsExtractor).get
     }.toList.flatten
   }
 
-  def getValues(dataSourceEagerBox: DataSourceTemplateEagerBox, uris: List[String]): Map[String, Option[Enumerator[Option[DataCubeComponentValue]]]] = {
+  def getValues(evaluation: PipelineEvaluation, uris: List[String]): Map[String, Option[Enumerator[Option[DataCubeComponentValue]]]] = {
     uris.reverse.map { uri =>
-      uri -> sparqlEndpointService.getResult(dataSourceEagerBox, new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
+      uri -> sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
     }.toMap
   }
-/*
-  def sliceCubeAndPersist(visualizationEagerBox: VisualizationEagerBox, queryData: DataCubeQueryData, jsonQueryData: JsValue)
-      (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
-    val token = MD5.hash(queryData.toString)
 
-    visualizationQueriesService.deleteByToken(token)
-    visualizationQueriesService.insert(VisualisationQuery(0, visualizationEagerBox.visualization.id, token, jsonQueryData.toString))
+  /*
+    def sliceCubeAndPersist(visualizationEagerBox: VisualizationEagerBox, queryData: DataCubeQueryData, jsonQueryData: JsValue)
+        (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
+      val token = MD5.hash(queryData.toString)
 
-    new DataCubeQueryResult(token, sliceCube(visualizationEagerBox.datasource, queryData))
-  }*/
+      visualizationQueriesService.deleteByToken(token)
+      visualizationQueriesService.insert(VisualisationQuery(0, visualizationEagerBox.visualization.id, token, jsonQueryData.toString))
+
+      new DataCubeQueryResult(token, sliceCube(visualizationEagerBox.datasource, queryData))
+    }*/
 
   def combine[A](xs: Traversable[Traversable[A]]): Seq[Seq[A]] = xs.foldLeft(Seq(Seq.empty[A])) { (x, y) =>
     for (a <- x.view; b <- y) yield a :+ b
   }
 
-  private def sliceCube(dataSource: DataSourceTemplate, queryData: DataCubeQueryData): Option[DataCube] = {
+  private def sliceCube(sparqlEndpoint: SparqlEndpoint, queryData: DataCubeQueryData): Option[DataCube] = {
 
     val allDimensionsHaveActiveValue = queryData.filters.componentFilters.filter(_.componentType == "dimension").forall(componentHasActiveValue)
 
@@ -60,11 +63,10 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
 
       val cubeKeys = getCubeKeys(queryData)
       val cells = cubeKeys.par.map { k =>
-        //sparqlEndpointService.getSparqlQueryResult(dataSource, new DataCubeCellQuery(ObservationPattern(k)), new DataCubeCellExtractor(k))
-        List()
+        sparqlEndpointService.getResult(sparqlEndpoint, new DataCubeCellQuery(ObservationPattern(k)), new DataCubeCellExtractor(k)).get
       }.toList
 
-      Some(DataCube(List(), slice(List()/*cells*/, queryData)))
+      Some(DataCube(List(), slice(cells, queryData)))
     } else {
       None
     }

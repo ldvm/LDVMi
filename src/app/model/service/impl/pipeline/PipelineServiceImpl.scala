@@ -56,6 +56,10 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     pipelineEvaluationRepository.lastEvaluationsOf(pipelineId, skip, take)
   }
 
+  def findEvaluationById(evaluationId: PipelineEvaluationId)(implicit session: Session): Option[PipelineEvaluation] = {
+    pipelineEvaluationRepository.findById(evaluationId)
+  }
+
   def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef) = {
     withSession { implicit session =>
       pipelines.map { pipeline =>

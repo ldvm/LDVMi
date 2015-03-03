@@ -1,29 +1,24 @@
 package model.rdf.sparql.datacube.extractor
 
+import com.hp.hpl.jena.query.QueryExecution
 import com.hp.hpl.jena.rdf.model.{Property, Resource, Statement}
 import com.hp.hpl.jena.shared.PropertyNotFoundException
+import com.hp.hpl.jena.vocabulary.RDF
+import model.rdf.extractor.{Descriptions, ExtractorHelpers, QueryExecutionResultExtractor}
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.datacube.query.DataCubeComponentsQuery
-import model.rdf.extractor.{ConstructResultExtractor, Descriptions, ExtractorHelpers}
-import model.rdf.sparql.jena.QueryExecutionTypeConstruct
 import model.rdf.vocabulary.QB
 
 import scala.collection.JavaConversions._
 
-class DataCubeComponentsExtractor extends ConstructResultExtractor[DataCubeComponentsQuery, Seq[DataCubeComponent]] {
+class DataCubeComponentsExtractor extends QueryExecutionResultExtractor[DataCubeComponentsQuery, Seq[DataCubeComponent]] {
 
-  /*  private lazy val model = ModelFactory.createDefaultModel
-
-    def extract(data: SparqlResult[JenaLangRdfXml]): Seq[DataCubeComponent] = {
-      val dataset = transformer.transform(data)
-      val iterator = dataset.getDefaultModel.listSubjectsWithProperty(RDF.`type`, model.createResource(QB.dataStructureDefinition.getURI))
-
-      iterator.toList.map { resource =>
-          extractComponents(resource)
-      }.flatten
-    }*/
-
-  override def extract(execution: QueryExecutionTypeConstruct): Option[Seq[DataCubeComponent]] = None
+  def extract(input: QueryExecution): Option[Seq[DataCubeComponent]] = {
+    val componentResources = input.execConstruct().listSubjectsWithProperty(RDF.`type`, QB.dataStructureDefinition).toList
+    Some(componentResources.map { resource =>
+      extractComponents(resource)
+    }.flatten)
+  }
 
   private def extractComponents(dataStructure: Resource): Seq[DataCubeComponent] = {
     val iterator = dataStructure.listProperties(QB.component)
@@ -121,4 +116,5 @@ class DataCubeComponentsExtractor extends ConstructResultExtractor[DataCubeCompo
       case e: PropertyNotFoundException => None
     }
   }
+
 }

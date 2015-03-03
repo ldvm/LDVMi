@@ -1,23 +1,20 @@
 package model.rdf.sparql.datacube.extractor
 
-import com.hp.hpl.jena.rdf.model.ModelFactory
+import com.hp.hpl.jena.query.QueryExecution
 import com.hp.hpl.jena.vocabulary.RDF
+import model.rdf.extractor.{ExtractorHelpers, QueryExecutionResultExtractor}
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.datacube.query.DataCubeDataStructuresQuery
-import model.rdf.extractor.{ConstructResultExtractor, ExtractorHelpers, SparqlResultExtractor}
-import model.rdf.sparql.jena.QueryExecutionTypeConstruct
 import model.rdf.vocabulary.QB
 
-class DataCubeDataStructuresExtractor extends ConstructResultExtractor[DataCubeDataStructuresQuery, Seq[DataCubeDataStructure]] {
-/*
-  private lazy val model = ModelFactory.createDefaultModel
-  val transformer = new RdfXmlJenaModelTransformer
+import scala.collection.JavaConversions._
 
-  def extract(data: SparqlResult[JenaLangRdfXml]): Seq[DataCubeDataStructure] = {
-    val dataset = transformer.transform(data)
-    val iterator = dataset.getDefaultModel.listSubjectsWithProperty(RDF.`type`, model.createResource(QB.dataStructureDefinition.getURI))
+class DataCubeDataStructuresExtractor extends QueryExecutionResultExtractor[DataCubeDataStructuresQuery, Seq[DataCubeDataStructure]] {
 
-    iterator.toList.map { resource =>
+  override def extract(input: QueryExecution): Option[Seq[DataCubeDataStructure]] = {
+    val dsds = input.execConstruct().listSubjectsWithProperty(RDF.`type`, QB.dataStructureDefinition).toList
+
+    Some(dsds.map { resource =>
 
       val descriptions = ExtractorHelpers.extractDescriptions(resource)
       new DataCubeDataStructure(
@@ -29,9 +26,6 @@ class DataCubeDataStructuresExtractor extends ConstructResultExtractor[DataCubeD
         descriptions.DCT_description,
         descriptions.SKOS_prefLabel
       )
-    }
+    })
   }
-
-  override def getLang: JenaLangRdfXml = transformer.getLang*/
-  override def extract(execution: QueryExecutionTypeConstruct): Option[Seq[DataCubeDataStructure]] = None
 }

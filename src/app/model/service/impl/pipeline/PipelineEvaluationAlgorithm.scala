@@ -37,9 +37,8 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
     }
 
     val visualizer = instancesById.find{ case (_, (c, hasOutput, _)) => !hasOutput }.get
-    val visualizerUri = visualizer._2._1.componentInstance.componentTemplate.uri
-    val controlActor = Akka.system.actorOf(Props(new ControlActor(evaluation, reporterProps, visualizerUri)))
-
+    val visualizerInstance = visualizer._2._1.componentInstance
+    val controlActor = Akka.system.actorOf(Props(new ControlActor(evaluation, reporterProps, visualizerInstance)))
 
     instancesById.foreach {
       case (_, (c, false, _)) => c.actor.tell(ResultRequest(), controlActor)

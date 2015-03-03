@@ -18,7 +18,15 @@ case class PipelineEvaluation(
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity[PipelineEvaluationId]
+  ) extends IdEntity[PipelineEvaluationId] {
+
+  def results(implicit session: Session) : Seq[PipelineEvaluationResult] = {
+    (for {
+      r <- pipelineEvaluationResultsQuery if r.pipelineEvaluationId === id
+    } yield r).list
+  }
+
+}
 
 
 class PipelineEvaluationTable(tag: Tag) extends IdEntityTable[PipelineEvaluationId, PipelineEvaluation](tag, "pipeline_evaluation") {

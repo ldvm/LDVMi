@@ -12,7 +12,7 @@ import scala.collection.JavaConversions._
 class GenericSparqlEndpoint(val endpointURL: String, val namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
 
   def queryExecutionFactory(): String => QueryExecution = { query =>
-    QueryExecutionFactory.sparqlService(endpointURL, query, namedGraphs, List())
+    QueryExecutionFactory.sparqlService(endpointURL, query, List(), namedGraphs)
   }
   def updateExecutionFactory(): String => UpdateProcessor = { query =>
     UpdateExecutionFactory.createRemote(UpdateFactory.create(query), endpointURL, new SimpleAuthenticator("dba", "dba".toCharArray))

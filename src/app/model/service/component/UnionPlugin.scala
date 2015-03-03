@@ -21,8 +21,9 @@ class UnionPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
     Future {
       val query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
 
+      println(dataReferences)
+
       dataReferences.map { dataRef =>
-        val sameEndpoint = dataRef.endpointUri == endpointUrl
         val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, dataRef.graphUri.toSeq)
 
         try {
