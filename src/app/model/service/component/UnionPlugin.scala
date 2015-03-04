@@ -24,7 +24,7 @@ class UnionPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
       println(dataReferences)
 
       dataReferences.map { dataRef =>
-        val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, dataRef.graphUri.toSeq)
+        val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, List(), dataRef.graphUri.toSeq)
 
         try {
           /*if (false && sameEndpoint) {

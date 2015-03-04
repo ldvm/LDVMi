@@ -20,7 +20,7 @@ define(['./app'], function (app) {
             return {
                 responseError: function responseError(rejection) {
 
-                    alert("Communication with server failed.");
+                    //alert("Communication with server failed.");
                     return $q.reject(rejection);
                 }
             };

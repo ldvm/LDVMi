@@ -25,7 +25,8 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
         val query = sparqlQuery(internalComponent.componentInstance.configuration).get
 
         val dataRef = dataReferences.head
-        val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, dataRef.graphUri.toSeq)
+        val graphUris = dataRef.graphUri.map { u => Seq(u)}.orNull
+        val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, List(), graphUris)
 
         reporter ! "Querying "+dataRef.endpointUri+"@"+dataRef.graphUri.toString
         val model = endpoint.queryExecutionFactory()(query).execConstruct()

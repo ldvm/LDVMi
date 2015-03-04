@@ -13,6 +13,7 @@ class SparqlEndpointCompatibilityChecker(componentInstanceConfiguration: Option[
         endpointOption.map { endpoint =>
           val queryExecutionFactory = endpoint.queryExecutionFactory()
           val qe = queryExecutionFactory(descriptor.query)
+          println(descriptor)
           sender() ! CheckCompatibilityResponse(Some(qe.execAsk()), descriptor)
         }.getOrElse {
           sender() ! CheckCompatibilityResponse(None, descriptor)

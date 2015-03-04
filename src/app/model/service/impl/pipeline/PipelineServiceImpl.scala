@@ -72,7 +72,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
           (componentInstance, result)
         }.toMap
 
-        pipelinesRepository.save(Pipeline(None, bindingSetId, "", "Generated pipeline", None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
+        val name = "Gen ["+pipeline.componentInstances.head.componentTemplate.title+" -> "+pipeline.componentInstances.last.componentTemplate.title+"]"
+        pipelinesRepository.save(Pipeline(None, bindingSetId, "", name, None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
 
         pipeline.portMappings.map { mapping =>
           val sourceId = instanceData(mapping.sourceComponentInstance)._3.get

@@ -9,10 +9,15 @@ import org.apache.jena.atlas.web.auth.{SimpleAuthenticator}
 
 import scala.collection.JavaConversions._
 
-class GenericSparqlEndpoint(val endpointURL: String, val namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
+class GenericSparqlEndpoint(val endpointURL: String, val defaultGraphs: Seq[String] = List(), val namedGraphs: Seq[String] = List()) extends SparqlEndpoint {
 
   def queryExecutionFactory(): String => QueryExecution = { query =>
-    QueryExecutionFactory.sparqlService(endpointURL, query, List(), namedGraphs)
+    QueryExecutionFactory.sparqlService(
+      endpointURL,
+      query,
+      defaultGraphs,
+      namedGraphs
+    )
   }
   def updateExecutionFactory(): String => UpdateProcessor = { query =>
     UpdateExecutionFactory.createRemote(UpdateFactory.create(query), endpointURL, new SimpleAuthenticator("dba", "dba".toCharArray))
@@ -24,7 +29,7 @@ object GenericSparqlEndpoint {
   def apply(instanceConfiguration: Option[Graph], configuration: Option[Graph]): Option[GenericSparqlEndpoint] = {
 
     getEndpointUrl(Seq(instanceConfiguration, configuration)).map { endpointUrl =>
-      new GenericSparqlEndpoint(endpointUrl, getNamedGraphs(Seq(instanceConfiguration, configuration)))
+      new GenericSparqlEndpoint(endpointUrl, List(), getNamedGraphs(Seq(instanceConfiguration, configuration)))
     }
   }
 

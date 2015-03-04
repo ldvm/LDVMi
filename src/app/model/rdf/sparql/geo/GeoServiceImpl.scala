@@ -24,7 +24,7 @@ class GeoServiceImpl(implicit val inj: Injector) extends GeoService with Connect
   private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation) : GenericSparqlEndpoint = {
     withSession { implicit session =>
       val evaluationResults = evaluation.results
-      evaluationResults.map { result => new GenericSparqlEndpoint(result.endpointUrl, result.graphUri.toSeq) }.head
+      evaluationResults.map { result => new GenericSparqlEndpoint(result.endpointUrl, List(), result.graphUri.toSeq) }.head
     }
   }
 }

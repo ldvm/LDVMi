@@ -27,7 +27,7 @@
                         <span ng-show="e.modifiedUtc">{{(e.modifiedUtc-e.createdUtc)/1000}} s</span>
                         <span ng-hide="e.modifiedUtc">starting</span>
                     </td>
-                    <td>{{e.id}}</td>
+                    <td><a href="/visualize/datacube#/id/{{e.id}}">DC visualization</a></td>
                 </tr>
             </table>
         </div>
