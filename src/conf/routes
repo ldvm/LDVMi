@@ -6,6 +6,7 @@
 GET         /                                              @controllers.ApplicationController.index
 GET         /visualize/datacube                            @controllers.DataCubeController.visualize
 GET         /visualize/map                                 @controllers.MapController.visualize
+GET         /visualize/treemap/:id                         @controllers.VisualizationController.treemap(id: Long)
 GET         /pipelines                                     @controllers.PipelineController.index
 GET         /components                                    @controllers.ComponentTemplateController.index
 
@@ -18,16 +19,17 @@ GET         /api/v1/pipelines/evaluations/:id              @controllers.api.Pipe
 #GET         /api/v1/pipelines/discovery/:id                @controllers.api.PipelineApiController.discoveryState(id: Long)
 GET         /api/v1/pipelines/visualization/:id            @controllers.api.PipelineApiController.visualizationById(id: Long)
 GET         /api/v1/pipelines/:id                          @controllers.api.PipelineApiController.findById(id: Long)
+GET         /api/v1/evaluation/:id/tree.json               @controllers.api.VisualizationApiController.tree(id: Long)
 
 
 #POST        /api/map/polygon-entities/:id                   @controllers.api.MapApiController.polygonEntities(id: Long)
 #GET         /api/map/polygon-entities-properties/:id        @controllers.api.MapApiController.polygonEntitiesProperties(id: Long)
 
-#GET         /api/datacube/datasets/:id                      @controllers.api.DataCubeApiController.datasets(id: Long)
-GET         /api/datacube/datastructures/:id                @controllers.api.DataCubeApiController.dataStructures(id: Long)
-#GET         /api/datacube/datastructure-components          @controllers.api.DataCubeApiController.dataStructureComponents(id: Long, uri: String)
-#POST        /api/datacube/values/:id                        @controllers.api.DataCubeApiController.values(id: Long)
-#POST        /api/datacube/slices/:id           co             @controllers.api.DataCubeApiController.sliceCube(id: Long)
+GET         /api/datacube/datasets/:id                     @controllers.api.DataCubeApiController.datasets(id: Long)
+GET         /api/datacube/datastructures/:id               @controllers.api.DataCubeApiController.dataStructures(id: Long)
+GET         /api/datacube/datastructure-components         @controllers.api.DataCubeApiController.dataStructureComponents(id: Long, uri: String)
+POST        /api/datacube/values/:id                       @controllers.api.DataCubeApiController.values(id: Long)
+POST        /api/datacube/slices/:id                       @controllers.api.DataCubeApiController.sliceCube(id: Long)
 
 #GET         /api/compatibility/check/:id                    @controllers.api.VisualizationApiController.checkCompatibility(id: Long)
 #GET         /api/compatibility/:id                          @controllers.api.VisualizationApiController.getCompatibilityForVisualization(id: Long)
@@ -38,10 +40,6 @@ GET         /api/datacube/datastructures/:id                @controllers.api.Dat
 #GET         /api/visualization/add                          @controllers.api.VisualizationApiController.addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String])
 #GET         /api/visualization/payola/:evaluationId         @controllers.api.VisualizationApiController.addPayola(evaluationId: String)
 #GET         /api/visualization/:id                          @controllers.api.VisualizationApiController.get(id: Long)
-
-
-#GET         /api/visualizer/list                            @controllers.api.VisualizerApiController.list(skip: Int, take: Int)
-#GET         /api/visualizer/add                             @controllers.api.VisualizerApiController.add(name: String, signature: String, url: String, description: Option[String], title: Option[String])
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /vassets/*file                                 controllers.Assets.versioned(path="/public", file: Asset)

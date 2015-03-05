@@ -1,10 +1,17 @@
 package controllers.api
 
+import controllers.api.JsonImplicits._
+import model.entity.PipelineEvaluation
+import model.rdf.sparql.datacube.DataCubeQueryData
 import play.api.Play.current
 import play.api.db.slick._
+import play.api.cache.Cache
 import play.api.libs.json._
+import play.api.mvc.Result
 import scaldi.Injector
-import controllers.api.JsonImplicits._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
 class DataCubeApiController(implicit inj: Injector) extends ApiController {
@@ -15,54 +22,56 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
     }
   }
 
-  /*
-    def dataStructureComponents(id: Long, uri: String) = DBAction { implicit rs =>
-      withVisualizationEagerBox(id) { visualizationEagerBox =>
-        val components = dataCubeService.getDataStructureComponents(visualizationEagerBox.datasource, uri)
-        val componentsJson = Seq("components" -> components).toMap
-        Ok(Json.toJson(componentsJson))
+
+  def dataStructureComponents(id: Long, uri: String) = DBAction { implicit rs =>
+    withEvaluation(id) { evaluation =>
+      val components = dataCubeService.getDataStructureComponents(evaluation, uri)
+      val componentsJson = Seq("components" -> components).toMap
+      Ok(Json.toJson(componentsJson))
+    }
+  }
+
+  def values(id: Long) = parsingFuture(id) { (evaluation, uris: List[String], _) =>
+    val futures = dataCubeService.getValues(evaluation, uris).flatMap { case (key, maybeEnumerator) =>
+      maybeEnumerator.map { enumerator =>
+        enumeratorToSeq(enumerator).transform(values => key -> values, t => t)
       }
     }
 
-    def values(id: Long) = parsingFuture(id) { (visualizationEagerBox, uris: List[String], _) =>
-      val futures = dataCubeService.getValues(visualizationEagerBox.datasource, uris).map(m =>
-        enumeratorToSeq(m._2).transform(values => m._1 -> values, t => t)
-      )
+    Future.sequence(futures).transform(s => Ok(Json.toJson(s.toMap)), t => t)
+  } { json => (json \ "uris").validate[List[String]]}
 
-      Future.sequence(futures).transform(s => Ok(Json.toJson(s.toMap)), t => t)
-    }{ json => (json \ "uris").validate[List[String]] }
+  def sliceCube(id: Long) = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
+    val json: JsValue = rs.request.body
 
-    def sliceCube(id: Long) = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
-      val json: JsValue = rs.request.body
+    withVisualizationEagerBox(id, json) { case (evaluation, queryData) =>
+      val result = dataCubeService.sliceCubeAndPersist(evaluation, queryData, json)
+      val jsonResult = Json.toJson(result)
+      Cache.set(jsonCacheKey(id, result.permalinkToken), jsonResult)
+      Ok(jsonResult)
+    }
+  }
 
-      withVisualizationEagerBox(id, json) { case (visualizationEagerBox, queryData) =>
-        val result = dataCubeService.sliceCubeAndPersist(visualizationEagerBox, queryData, json)
-        val jsonResult = Json.toJson(result)
-        Cache.set(jsonCacheKey(id, result.permalinkToken), jsonResult)
-        Ok(jsonResult)
-      }
+  private def withVisualizationEagerBox(id: Long, json: JsValue)
+    (func: (PipelineEvaluation, DataCubeQueryData) => Result)
+    (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
+
+    json.validate[DataCubeQueryData] match {
+      case s: JsSuccess[DataCubeQueryData] =>
+
+        withEvaluation(id) { evaluation =>
+          func(evaluation, s.get)
+        }
+
+      case e: JsError => UnprocessableEntity
     }
 
-    def datasets(id: Long) = DBAction { implicit rs =>
-      withVisualizationEagerBox(id) { visualizationEagerBox =>
-        Ok(Json.toJson(dataCubeService.getDatasets(visualizationEagerBox.datasource)))
-      }
+  }
+
+  def datasets(id: Long) = DBAction { implicit rs =>
+    withEvaluation(id) { evaluation =>
+      Ok(Json.toJson(dataCubeService.getDatasets(evaluation)))
     }
-
-    private def withVisualizationEagerBox(id: Long, json: JsValue)
-        (func: (VisualizationEagerBox, DataCubeQueryData) => Result)
-        (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
-
-      json.validate[DataCubeQueryData] match {
-        case s: JsSuccess[DataCubeQueryData] =>
-
-          withVisualizationEagerBox(id) { visualizationEagerBox =>
-            func(visualizationEagerBox, s.get)
-          }
-
-        case e: JsError => UnprocessableEntity
-      }
-
-    }*/
+  }
 
 }

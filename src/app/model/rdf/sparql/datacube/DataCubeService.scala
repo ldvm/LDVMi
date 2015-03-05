@@ -14,7 +14,7 @@ trait DataCubeService {
 
   def getValues(evaluation: PipelineEvaluation, uris: List[String]): Map[String, Option[Enumerator[Option[DataCubeComponentValue]]]]
 
-  /*def sliceCubeAndPersist(visualizationEagerBox: VisualizationEagerBox, queryData: DataCubeQueryData, queryDataJson: JsValue)
-    (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult*/
+  def sliceCubeAndPersist(evaluation: PipelineEvaluation, queryData: DataCubeQueryData, queryDataJson: JsValue)
+    (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult
 
 }

@@ -6,6 +6,7 @@ import model.entity._
 import model.rdf.sparql.ValueFilter
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.geo._
+import model.rdf.sparql.visualization.HierarchyNode
 import model.rdf.{LocalizedValue, Property}
 import play.api.db
 import play.api.db.slick._
@@ -33,6 +34,12 @@ package object api {
     implicit val idWrites : Writes[CustomUnicornPlay.BaseId] = Writes {
       typedId => JsNumber(typedId.id)
     }
+
+    implicit lazy val hierarchyWrites: Writes[HierarchyNode] = (
+        (__ \ "name").write[String] and
+        (__ \ "size").write[Option[Int]] and
+        (__ \ "children").lazyWrite(Writes.optionWithNull(Writes.seq[HierarchyNode](hierarchyWrites)))
+      )(unlift(HierarchyNode.unapply))
 
     implicit val pipelineDiscoveryWrites = Json.writes[PipelineDiscovery]
     implicit val pipelineCompatibilityCheckWrites = Json.writes[DataPortBindingSetCompatibilityCheck]

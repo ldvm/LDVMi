@@ -6,7 +6,9 @@ import model.rdf.sparql.datacube.extractor._
 import model.rdf.sparql.datacube.query._
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpoint, SparqlEndpointService, ValueFilter}
 import play.api.libs.iteratee.Enumerator
+import play.api.libs.json.JsValue
 import scaldi.{Injectable, Injector}
+import utils.MD5
 
 class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with Connected with Injectable {
 
@@ -40,16 +42,16 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     }.toMap
   }
 
-  /*
-    def sliceCubeAndPersist(visualizationEagerBox: VisualizationEagerBox, queryData: DataCubeQueryData, jsonQueryData: JsValue)
-        (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
-      val token = MD5.hash(queryData.toString)
 
-      visualizationQueriesService.deleteByToken(token)
-      visualizationQueriesService.insert(VisualisationQuery(0, visualizationEagerBox.visualization.id, token, jsonQueryData.toString))
+  def sliceCubeAndPersist(evaluation: PipelineEvaluation, queryData: DataCubeQueryData, jsonQueryData: JsValue)
+    (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
+    val token = MD5.hash(queryData.toString)
 
-      new DataCubeQueryResult(token, sliceCube(visualizationEagerBox.datasource, queryData))
-    }*/
+    //visualizationQueriesService.deleteByToken(token)
+    //visualizationQueriesService.insert(VisualisationQuery(0, visualizationEagerBox.visualization.id, token, jsonQueryData.toString))
+
+    new DataCubeQueryResult(token, sliceCube(evaluationToSparqlEndpoint(evaluation), queryData))
+  }
 
   def combine[A](xs: Traversable[Traversable[A]]): Seq[Seq[A]] = xs.foldLeft(Seq(Seq.empty[A])) { (x, y) =>
     for (a <- x.view; b <- y) yield a :+ b
