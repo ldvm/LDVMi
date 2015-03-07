@@ -12,7 +12,7 @@ class VisualizerTemplateRepository extends CrudRepository[VisualizerTemplateId, 
       sct <- query
       ctf <- componentFeaturesQuery if ctf.componentTemplateId === sct.componentTemplateId
       f <- featuresQuery if f.isMandatory
-      // d <- descriptorsQuery if d.featureId === f.id
+      d <- descriptorsQuery if d.featureId === f.id
     } yield sct).list.distinct
   }
 }

@@ -33,6 +33,27 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
             }])
+        .controller('Detail', [
+            '$scope', '$routeParams', 'ComponentsService',
+            function ($scope, $routeParams, components) {
+
+                components.get({id: $routeParams.id}, function(c){
+                    $scope.component = c;
+                });
+                components.features({id: $routeParams.id}, function(f){
+                    $scope.features = f;
+                });
+                components.inputs({id: $routeParams.id}, function(i){
+                    $scope.inputs = i;
+                });
+                components.output({id: $routeParams.id}, function(o){
+                    $scope.output = o;
+                });
+                components.descriptors({id: $routeParams.id}, function(d){
+                    $scope.descriptors = d;
+                });
+
+            }])
         .controller('Add', [
             '$scope', '$location', 'FileUploader',
             function ($scope, $location, FileUploader) {

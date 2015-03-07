@@ -7,11 +7,11 @@ import model.entity.ComponentType.ComponentType
 import model.entity.CustomUnicornPlay.driver.simple._
 import model.entity._
 import model.repository._
-import model.service.ComponentService
+import model.service.ComponentTemplateService
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 
-class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with Injectable {
+class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemplateService with Injectable {
 
   type DataPortInstanceUriMap[T] = Map[String, (T, DataPortInstanceId)]
 
@@ -392,18 +392,19 @@ class ComponentServiceImpl(implicit inj: Injector) extends ComponentService with
     val inputPorts = inputInstancesByUri.map { case (key, (_, portId)) => (key, portId)}
     val outputPorts = outputInstancesByUri.map { case (key, (_, portId)) => (key, portId)}
 
-    val ports = (inputPorts ++ outputPorts).toMap
+    val ports = inputPorts ++ outputPorts
 
     val bindingSetId = dataPortBindingSetsRepository.save(DataPortBindingSet(None))
 
     val inputInstances = pipeline.componentInstances.flatMap(_.componentInstance.inputInstances)
-    inputInstances.map { inputInstance =>
-      val inputInstanceId = inputInstancesByUri(inputInstance.uri)._2
-      val sourceUris = inputInstance.boundTo
+    inputInstances.foreach { inputInstance =>
+      inputInstancesByUri.get(inputInstance.uri).map { case (_, inputInstanceId) =>
+        val sourceUris = inputInstance.boundTo
 
-      sourceUris.map { sourceUri =>
-        ports.get(sourceUri).map { sourceId =>
-          dataPortBindingsRepository.save(DataPortBinding(None, bindingSetId, sourceId, inputInstanceId))
+        sourceUris.map { sourceUri =>
+          ports.get(sourceUri).map { sourceId =>
+            dataPortBindingsRepository.save(DataPortBinding(None, bindingSetId, sourceId, inputInstanceId))
+          }
         }
       }
     }

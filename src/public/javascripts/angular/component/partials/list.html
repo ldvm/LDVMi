@@ -5,9 +5,9 @@
 <table ng-table="tableParams" class="table table-striped">
     <tr ng-repeat="component in $data">
         <td data-title="'ID'">{{component.id}}</td>
-        <td data-title="'URI'">{{component.name}}</td>
-        <td data-title="'Title'">{{component.title}}</td>
-        <td data-title="'Type'">{{component.url}}</td>
+        <td data-title="'Title'"><a href="#/detail/{{component.id}}">{{component.title}}</a></td>
+        <td data-title="'URI'">{{component.uri}}</td>
+        <td data-title="'Description'">{{component.description}}</td>
     </tr>
     <tr ng-if="$data.length == 0">
         <td colspan="4">No available data.</td>

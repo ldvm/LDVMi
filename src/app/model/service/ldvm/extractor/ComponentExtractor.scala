@@ -95,8 +95,8 @@ class ComponentExtractor(implicit inj: Injector) extends GraphExtractor[Map[Stri
   }
 
   private def extractDescriptors(graphModel: Model, feature: Resource, inputs: Map[String, model.dto.InputTemplate]): Seq[model.dto.Descriptor] = {
-    val signatures = graphModel.listObjectsOfProperty(feature, LDVM.descriptor).toList
-    signatures.map {
+    val descriptors = graphModel.listObjectsOfProperty(feature, LDVM.descriptor).toList
+    descriptors.map {
       signature =>
         val signatureResource = signature.asResource()
         val title = getLabel(signatureResource)

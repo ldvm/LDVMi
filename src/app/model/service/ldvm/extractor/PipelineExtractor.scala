@@ -63,7 +63,7 @@ class PipelineExtractor extends GraphExtractor[Seq[model.dto.BoundComponentInsta
       val inputInstanceResource = inputStatement.getObject.asResource()
       val uri = inputInstanceResource.getURI
       val label = getLabel(inputInstanceResource)
-      val templateUri = inputInstanceResource.getProperty(LDVM.instanceOf).getObject.asResource().getURI
+      val templateUri = inputInstanceResource.getProperty(LDVM.dataPortInstanceOf).getObject.asResource().getURI
       val boundTo = inputInstanceResource.listProperties(LDVM.boundTo).toList.map(_.getObject.asResource().getURI).toList
       val nestedBoundTo = inputInstanceResource.listProperties(LDVM.nestedBoundTo).toList.map(_.getObject.asResource().getURI).toList
 
@@ -77,7 +77,7 @@ class PipelineExtractor extends GraphExtractor[Seq[model.dto.BoundComponentInsta
       val outputInstanceResource = outputStatement.getObject.asResource()
       val uri = outputInstanceResource.getURI
       val label = getLabel(outputInstanceResource)
-      val templateUri = outputInstanceResource.getProperty(LDVM.instanceOf).getResource.getURI
+      val templateUri = outputInstanceResource.getProperty(LDVM.dataPortInstanceOf).getResource.getURI
       val nestedBoundTo = outputInstanceResource.listProperties(LDVM.nestedBoundTo).toList.map(_.getObject.asResource().getURI).toList
 
       model.dto.OutputInstance(uri, label, templateUri, nestedBoundTo)

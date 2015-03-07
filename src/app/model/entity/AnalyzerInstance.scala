@@ -22,7 +22,7 @@ case class AnalyzerInstance(
 
 class AnalyzerInstanceTable(tag: Tag) extends IdEntityTable[AnalyzerInstanceId, AnalyzerInstance](tag, "analyzer_instances") {
 
-  def analyzer = foreignKey(fkName("at_analyzer_id"), analyzerId, analyzerTemplatesQuery)(_.id)
+  def analyzer = foreignKey(fkName("ats_analyzer_id"), analyzerId, analyzerTemplatesQuery)(_.id)
 
   def * = (id.?, componentInstanceId, analyzerId, uuid, createdUtc, modifiedUtc) <>(AnalyzerInstance.tupled, AnalyzerInstance.unapply _)
 

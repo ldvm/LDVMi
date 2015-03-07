@@ -13,7 +13,6 @@ class SparqlEndpointCompatibilityChecker(componentInstanceConfiguration: Option[
         endpointOption.map { endpoint =>
           val queryExecutionFactory = endpoint.queryExecutionFactory()
           val qe = queryExecutionFactory(descriptor.query)
-          println(descriptor)
           sender() ! CheckCompatibilityResponse(Some(qe.execAsk()), descriptor)
         }.getOrElse {
           sender() ! CheckCompatibilityResponse(None, descriptor)
@@ -21,7 +20,7 @@ class SparqlEndpointCompatibilityChecker(componentInstanceConfiguration: Option[
       } catch {
         case e: Throwable =>
           sender() ! akka.actor.Status.Failure(e)
-          throw e
+          e.printStackTrace()
       }
     }
   }

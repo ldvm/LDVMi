@@ -16,10 +16,21 @@ class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, H
 
     val nodes = model.listSubjectsWithProperty(RDF.`type`, SKOS.Concept).toList
     val hierarchyNodes = nodes.map { n =>
-      val name = model.getProperty(n.asResource(), SKOS.prefLabel).getString
-      HierarchyNode(name)
+
+      val nodeResource = n.asResource()
+
+      val name = model.getProperty(nodeResource, SKOS.prefLabel).getString
+      val value = model.getProperty(nodeResource, RDF.value)
+      val intValue = Option(value).map(_.getInt)
+      val broader = nodeResource.getPropertyResourceValue(SKOS.broader)
+      (nodeResource.getURI, (HierarchyNode(name, if(intValue.isDefined){intValue}else{Some(1)}), Option(broader).map(_.getURI)))
+    }.toMap
+
+    val tree = hierarchyNodes.map { case (uri, (node, broaderUri)) =>
+      val childNodes = hierarchyNodes.collect { case (_, (n, b)) if b.contains(uri) => n }.toSeq
+      (node.copy(children = if(childNodes.isEmpty) {None}else{Some(childNodes)}), broaderUri.isEmpty)
     }
 
-    hierarchyNodes.headOption
+    tree.find(n => n._2).map(_._1)
   }
 }

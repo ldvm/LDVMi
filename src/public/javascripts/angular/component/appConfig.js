@@ -3,6 +3,7 @@ define(['./app'], function (app) {
 
     app.config(['$routeProvider', '$locationProvider', function ($routeProvider) {
         $routeProvider.when('/', {templateUrl: '/assets/javascripts/angular/component/partials/list.html', controller: 'List', reloadOnSearch: false});
+        $routeProvider.when('/detail/:id', {templateUrl: '/assets/javascripts/angular/component/partials/detail.html', controller: 'Detail', reloadOnSearch: false});
         $routeProvider.when('/add', {templateUrl: '/assets/javascripts/angular/component/partials/add.html', controller: 'Add', reloadOnSearch: false});
         $routeProvider.when('/:page', {templateUrl: '/assets/javascripts/angular/component/partials/list.html', controller: 'List', reloadOnSearch: false});
         $routeProvider.otherwise({redirectTo: '/'});

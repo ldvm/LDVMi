@@ -37,8 +37,8 @@ package object api {
 
     implicit lazy val hierarchyWrites: Writes[HierarchyNode] = (
         (__ \ "name").write[String] and
-        (__ \ "size").write[Option[Int]] and
-        (__ \ "children").lazyWrite(Writes.optionWithNull(Writes.seq[HierarchyNode](hierarchyWrites)))
+        (__ \ "size").writeNullable[Int] and
+        (__ \ "children").lazyWriteNullable(Writes.seq[HierarchyNode](hierarchyWrites))
       )(unlift(HierarchyNode.unapply))
 
     implicit val pipelineDiscoveryWrites = Json.writes[PipelineDiscovery]
@@ -47,6 +47,8 @@ package object api {
     implicit val componentInstanceCompatibilityCheckWrites = Json.writes[ComponentInstanceCompatibilityCheck]
     implicit val descriptorCompatibilityCheckWrites = Json.writes[DescriptorCompatibilityCheck]
     implicit val descriptorWrites = Json.writes[Descriptor]
+    implicit val featureWrites = Json.writes[Feature]
+    implicit val portWrites = Json.writes[DataPortTemplate]
     implicit val compatibilityResponseWrites = Json.writes[CheckCompatibilityResponse]
 
     implicit val localizedLiteralWrites = Json.writes[LocalizedValue]

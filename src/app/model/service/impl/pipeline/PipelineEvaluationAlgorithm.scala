@@ -23,14 +23,14 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
     val instancesById = recursivePipelineData._2.toMap
     val bindings = recursivePipelineData._1
 
-    instancesById.map(i => println(i._1))
+    instancesById.foreach(i => println(i._1))
 
-    bindings.map { binding =>
+    bindings.foreach { binding =>
       val sourceInstanceId = binding.source.componentInstanceId
       val targetInstanceId = binding.target.componentInstanceId
 
-      instancesById.get(targetInstanceId).map { case (targetInstance, targetHasOutput, _) =>
-        instancesById.get(sourceInstanceId).map { case (sourceInstance, sourceHasOutput, _) =>
+      instancesById.get(targetInstanceId).foreach { case (targetInstance, targetHasOutput, _) =>
+        instancesById.get(sourceInstanceId).foreach { case (sourceInstance, sourceHasOutput, _) =>
           targetInstance.requestDataFrom(sourceInstance, binding.targetId)
         }
       }
@@ -42,6 +42,10 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
 
     instancesById.foreach {
       case (_, (c, false, _)) => c.actor.tell(ResultRequest(), controlActor)
+      case _ =>
+    }
+
+    instancesById.foreach {
       case (_, (c, _, false)) => c.actor.tell(Run(), controlActor)
       case _ =>
     }

@@ -29,8 +29,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   private val inputInstancesRepository = inject[InputInstanceRepository]
   private val outputInstancesRepository = inject[OutputInstanceRepository]
 
-  private val componentService = inject[ComponentService]
-  private val componentInstanceService = inject[ComponentService]
+  private val componentService = inject[ComponentTemplateService]
+  private val componentInstanceService = inject[ComponentTemplateService]
   private val compatibilityService = inject[CompatibilityService]
 
   def save(pipeline: model.dto.BoundComponentInstances)(implicit session: Session): PipelineId = {
@@ -72,7 +72,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
           (componentInstance, result)
         }.toMap
 
-        val name = "Gen ["+pipeline.componentInstances.head.componentTemplate.title+" -> "+pipeline.componentInstances.last.componentTemplate.title+"]"
+        val instances = pipeline.componentInstances
+        val name = "Gen ["+instances.head.componentTemplate.title+" -> ("+(instances.size-2)+") -> "+instances.last.componentTemplate.title+"]"
         pipelinesRepository.save(Pipeline(None, bindingSetId, "", name, None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
 
         pipeline.portMappings.map { mapping =>

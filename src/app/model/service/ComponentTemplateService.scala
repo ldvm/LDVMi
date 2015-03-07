@@ -5,7 +5,7 @@ import model.entity._
 import model.repository.ComponentTemplateRepository
 import play.api.db.slick._
 
-trait ComponentService extends CrudService[ComponentTemplateId, ComponentTemplate, ComponentTemplateTable, ComponentTemplateRepository] {
+trait ComponentTemplateService extends CrudService[ComponentTemplateId, ComponentTemplate, ComponentTemplateTable, ComponentTemplateRepository] {
 
   def getAllByType(implicit session: Session): Map[ComponentType, Seq[SpecificComponentTemplate]]
 

@@ -8,6 +8,7 @@ object SKOS extends Vocabulary {
   override val PREFIX_URL = "http://www.w3.org/2004/02/skos/core#"
 
   lazy val prefLabel: Property = m.createProperty(PREFIX_URL, "prefLabel")
+  lazy val broader: Property = m.createProperty(PREFIX_URL, "broader")
   lazy val Concept: Resource = m.createResource(PREFIX_URL + "Concept")
 
 }
