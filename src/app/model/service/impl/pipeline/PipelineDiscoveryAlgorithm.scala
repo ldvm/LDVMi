@@ -7,7 +7,7 @@ import model.entity.ComponentType.ComponentType
 import model.entity._
 import model.repository.PipelineDiscoveryRepository
 import model.service.component.{Component, InternalComponent}
-import model.service.{Connected, PartialPipeline, PipelineService, PortMapping}
+import model.service.{SessionScoped, PartialPipeline, PipelineService, PortMapping}
 import play.api.Play.current
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
@@ -19,7 +19,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 
 class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[SpecificComponentTemplate]], reporterProps: Props, maxIterations: Int = 10)
-  (implicit val inj: Injector, implicit val session: Session) extends Connected with Injectable {
+  (implicit val inj: Injector, implicit val session: Session) extends SessionScoped with Injectable {
 
   val pipelineDiscoveryRepository = inject[PipelineDiscoveryRepository]
   val pipelineService = inject[PipelineService]

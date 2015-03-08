@@ -1,6 +1,6 @@
 package model.rdf.sparql.datacube
 
-import _root_.model.service.Connected
+import _root_.model.service.SessionScoped
 import model.entity.PipelineEvaluation
 import model.rdf.sparql.datacube.extractor._
 import model.rdf.sparql.datacube.query._
@@ -10,7 +10,7 @@ import play.api.libs.json.JsValue
 import scaldi.{Injectable, Injector}
 import utils.MD5
 
-class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with Connected with Injectable {
+class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with SessionScoped with Injectable {
 
   var sparqlEndpointService = inject[SparqlEndpointService]
   //var visualizationQueriesService = inject[VisualizationQueriesService]

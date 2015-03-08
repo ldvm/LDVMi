@@ -2,7 +2,7 @@ package model.service.impl.pipeline
 
 import akka.actor.Props
 import model.entity._
-import model.service.Connected
+import model.service.SessionScoped
 import model.service.component.{ResultRequest, ControlActor, InternalComponent, Run}
 import play.api.Play.current
 import play.api.db.slick._
@@ -11,7 +11,7 @@ import scaldi.{Injector, Injectable}
 
 
 class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps: Props)
-  (implicit val session: Session, inj: Injector) extends Connected with Injectable {
+  (implicit val session: Session, inj: Injector) extends SessionScoped with Injectable {
 
   val logger = Akka.system.actorOf(reporterProps)
   logger ! evaluation.uuid.toString

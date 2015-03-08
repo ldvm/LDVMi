@@ -1,7 +1,7 @@
 package model.service.component
 
 import akka.actor.{Actor, ActorRef, Props}
-import model.service.Connected
+import model.service.SessionScoped
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 
@@ -22,7 +22,7 @@ object ComponentActor {
   def props(component: InternalComponent, reporterProps: Props) = Props(new ComponentActor(component, reporterProps))
 }
 
-class ComponentActor(component: InternalComponent, reporterProps: Props) extends Actor with Connected {
+class ComponentActor(component: InternalComponent, reporterProps: Props) extends Actor with SessionScoped {
 
   private val outgoingBindings = new ArrayBuffer[(ActorRef, String)]()
   private val expectedDataRefSenders = new ArrayBuffer[ActorRef]()

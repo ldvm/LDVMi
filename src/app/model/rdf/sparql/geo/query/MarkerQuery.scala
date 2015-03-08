@@ -1,12 +1,14 @@
 package model.rdf.sparql.geo.query
 
+import java.util.regex.Matcher
+
 import model.rdf.sparql.geo.MapQueryData
 import model.rdf.sparql.query.SparqlQuery
 import model.rdf.sparql.{ValueFilter, VariableGenerator}
 import model.rdf.vocabulary.SKOS
 
 
-class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
+class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
 
   lazy val variableGenerator = new VariableGenerator
 
@@ -14,15 +16,16 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
     val q = prefixes +
       """
         | SELECT ?s ?l ?p %v WHERE {
-        |   ?s <http://www.opengis.net/ont/geosparql#hasGeometry> ?g ;
-        |      skos:prefLabel ?l .
-        |   ?g <http://www.opengis.net/ont/geosparql#asWKT> ?p .
+        |   ?s s:geo ?g .
+        |   ?g  a s:GeoCoordinates ;
+        |       s:latitude ?lat ;
+        |       s:longitude ?lng .
         |
         |   %r
         | }
       """
         .replaceAll(
-          "%r", getRestrictions(queryData.filters))
+          "%r", Matcher.quoteReplacement(getRestrictions(queryData.filters)))
         .replaceAll("%v", if (queryData.filters.nonEmpty) { "?v1" } else {"" })
         .stripMargin
     q
@@ -31,6 +34,7 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
   private def prefixes =
     """
       | PREFIX skos: <%skos>
+      | PREFIX s: <http://schema.org/>
       |
 
     """
@@ -45,7 +49,7 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
       """
         .replaceAll("%s", uri)
         .replaceAll("%v", variableGenerator.next.getVariable)
-        .replaceAll("%rf", restrictionFilters(variableGenerator.getVariable, valueFilters))
+        .replaceAll("%rf", Matcher.quoteReplacement(restrictionFilters(variableGenerator.getVariable, valueFilters)))
         .stripMargin
     }.mkString("\n")
   }
@@ -57,7 +61,7 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
           |  FILTER(%v != %fv)
         """
           .replaceAll("%v", variable)
-          .replaceAll("%fv", s)
+          .replaceAll("%fv", Matcher.quoteReplacement(s))
           .stripMargin
       }
     }.filter(_.isDefined).map(_.get).mkString("\n")
@@ -73,12 +77,13 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
 
 }
 
-object WKTEntitiesQuery {
+object MarkerQuery {
 
   object NodeVariables extends Enumeration {
     type NodeVariables = Value
     val geolocatedEntity = Value("s")
-    val wkt = Value("p")
+    val lat = Value("lat")
+    val lng = Value("lng")
     val title = Value("l")
   }
 

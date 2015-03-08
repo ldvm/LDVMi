@@ -10,7 +10,7 @@ import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCo
 import model.entity._
 import model.rdf.Graph
 import model.rdf.vocabulary.{DSPARQL, SD}
-import model.service.Connected
+import model.service.SessionScoped
 import play.api.Play.current
 import play.api.db
 import play.api.db.slick.Session
@@ -40,7 +40,7 @@ object EndpointConfig {
   }
 }
 
-class InternalComponent(val componentInstance: ComponentInstance, reporterProps: Props) extends Component with Connected {
+class InternalComponent(val componentInstance: ComponentInstance, reporterProps: Props) extends Component with SessionScoped {
 
   implicit val timeout = Timeout(1, TimeUnit.MINUTES)
 

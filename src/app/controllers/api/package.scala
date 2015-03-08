@@ -75,7 +75,7 @@ package object api {
     implicit val propertyWrites = Json.writes[Property]
 
     implicit val visualizerWrites = Json.writes[ComponentTemplate]
-    //implicit val visualizerCompatibilityWrites = Json.writes[ComponentCompatibility]
+    implicit val markerWrites = Json.writes[Marker]
 
     /*implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
       visualizationEagerBox =>
@@ -118,7 +118,7 @@ package object api {
 
     implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData)
 
-    implicit val polygonQueryReads: Reads[WKTQueryData] = (JsPath \ "filters").read[Map[String, Seq[ValueFilter]]].map(WKTQueryData)
+    implicit val polygonQueryReads: Reads[MapQueryData] = (JsPath \ "filters").read[Map[String, Seq[ValueFilter]]].map(MapQueryData)
   }
 
 }

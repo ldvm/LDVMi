@@ -1,6 +1,6 @@
 package model.rdf.sparql.visualization
 
-import _root_.model.service.Connected
+import _root_.model.service.SessionScoped
 import model.entity.PipelineEvaluation
 import model.rdf.sparql.datacube.extractor._
 import model.rdf.sparql.datacube.query._
@@ -12,7 +12,7 @@ import play.api.libs.json.JsValue
 import scaldi.{Injectable, Injector}
 import utils.MD5
 
-class VisualizationServiceImpl(implicit val inj: Injector) extends VisualizationService with Connected with Injectable {
+class VisualizationServiceImpl(implicit val inj: Injector) extends VisualizationService with SessionScoped with Injectable {
 
   var sparqlEndpointService = inject[SparqlEndpointService]
 

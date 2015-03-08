@@ -44,7 +44,7 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
   def sliceCube(id: Long) = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
     val json: JsValue = rs.request.body
 
-    withVisualizationEagerBox(id, json) { case (evaluation, queryData) =>
+    withEvaluation(id, json) { case (evaluation, queryData) =>
       val result = dataCubeService.sliceCubeAndPersist(evaluation, queryData, json)
       val jsonResult = Json.toJson(result)
       Cache.set(jsonCacheKey(id, result.permalinkToken), jsonResult)
@@ -52,7 +52,7 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
     }
   }
 
-  private def withVisualizationEagerBox(id: Long, json: JsValue)
+  private def withEvaluation(id: Long, json: JsValue)
     (func: (PipelineEvaluation, DataCubeQueryData) => Result)
     (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
 

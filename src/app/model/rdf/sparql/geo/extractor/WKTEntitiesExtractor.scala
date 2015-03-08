@@ -5,9 +5,9 @@ import com.hp.hpl.jena.rdf.model.{Literal, RDFNode, Resource}
 import model.rdf.LocalizedValue
 import model.rdf.extractor.SimpleQueryExecutionResultExtractor
 import model.rdf.sparql.geo.query.WKTEntitiesQuery
-import model.rdf.sparql.geo.{WKTEntity, WKTQueryData}
+import model.rdf.sparql.geo.{WKTEntity, MapQueryData}
 
-class WKTEntitiesExtractor(data: WKTQueryData) extends SimpleQueryExecutionResultExtractor[WKTEntitiesQuery, WKTEntity] {
+class WKTEntitiesExtractor(data: MapQueryData) extends SimpleQueryExecutionResultExtractor[WKTEntitiesQuery, WKTEntity] {
 
   private lazy val groupByProperty = data.filters.headOption.map(_._1)
   val titleVariableName = WKTEntitiesQuery.NodeVariables.title.toString

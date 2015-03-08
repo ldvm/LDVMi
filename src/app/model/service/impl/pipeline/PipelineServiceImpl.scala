@@ -10,7 +10,7 @@ import scaldi.{Injectable, Injector}
 
 import scala.slick.lifted.Ordered
 
-class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with Injectable with Connected {
+class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with Injectable with SessionScoped {
 
   type DataPortUriMap[T] = Map[String, (T, DataPortInstanceId)]
 

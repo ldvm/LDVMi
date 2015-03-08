@@ -9,12 +9,12 @@ import play.api.Play.current
 import scaldi.{Injector, Injectable}
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
-import model.service.Connected
+import model.service.SessionScoped
 
 case class ResultRequest()
 case class Result(dataReferences: Seq[DataReference])
 
-class ControlActor(evaluation: PipelineEvaluation, reporterProps: Props, visualizerInstance: ComponentInstance)(implicit val inj: Injector) extends Actor with Connected with Injectable{
+class ControlActor(evaluation: PipelineEvaluation, reporterProps: Props, visualizerInstance: ComponentInstance)(implicit val inj: Injector) extends Actor with SessionScoped with Injectable{
 
   val evaluationRepo = inject[PipelineEvaluationRepository]
   val componentsRepo = inject[ComponentTemplateRepository]
