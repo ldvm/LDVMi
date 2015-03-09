@@ -445,7 +445,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                                     if (v.uri) {
                                         r.uri = v.uri;
                                     } else {
-                                        r.label = v.label;
+                                        r.label = ((v.label || {})[$scope.language])||((v.label || {})[""]);
                                     }
                                     r.isActive = v.isActive;
                                     return r;
