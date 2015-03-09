@@ -48,7 +48,7 @@ class LdvmServiceImpl(implicit inj: Injector) extends LdvmService with Injectabl
   }
 
   private def createGraphWithLDVMVocabulary(ttlFile: File): Graph = {
-    Graph(Play.getFile("public/ttl/ldvm/vocabulary.ttl")).get.union(Graph(ttlFile))
+    Graph(LdvmVocabulary.ttl).get.union(Graph(ttlFile))
   }
 
 }
