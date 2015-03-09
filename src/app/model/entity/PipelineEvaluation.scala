@@ -20,6 +20,12 @@ case class PipelineEvaluation(
   var modifiedUtc: Option[DateTime] = None
   ) extends IdEntity[PipelineEvaluationId] {
 
+  def pipeline(implicit session: Session) : Pipeline = {
+    (for {
+      p <- pipelinesQuery if p.id === pipelineId
+    } yield p).first
+  }
+
   def results(implicit session: Session) : Seq[PipelineEvaluationResult] = {
     (for {
       r <- pipelineEvaluationResultsQuery if r.pipelineEvaluationId === id

@@ -36,7 +36,7 @@ package object api {
     }
 
     implicit lazy val hierarchyWrites: Writes[HierarchyNode] = (
-        (__ \ "name").write[String] and
+      (__ \ "name").write[String] and
         (__ \ "size").writeNullable[Int] and
         (__ \ "children").lazyWriteNullable(Writes.seq[HierarchyNode](hierarchyWrites))
       )(unlift(HierarchyNode.unapply))
