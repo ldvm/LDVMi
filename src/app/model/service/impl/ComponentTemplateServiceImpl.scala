@@ -1,11 +1,15 @@
 package model.service.impl
 
 import java.io.StringWriter
+import java.util.UUID
 
+import com.hp.hpl.jena.rdf.model.{Model, ModelFactory}
+import com.hp.hpl.jena.vocabulary.RDF
 import model.dto.{BoundComponentInstances, ConcreteComponentInstance}
 import model.entity.ComponentType.ComponentType
 import model.entity.CustomUnicornPlay.driver.simple._
 import model.entity._
+import model.rdf.vocabulary.{SD, DSPARQL}
 import model.repository._
 import model.service.ComponentTemplateService
 import play.api.db.slick.Session
@@ -56,14 +60,75 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     ).toMap
   }
 
-  def getAllForDiscovery(maybeDatasourceTemplate: Option[DataSourceTemplate] = None)
+  def getAllForDiscovery(maybeDs: Option[(String, Seq[String])] = None)
     (implicit session: Session): Map[ComponentType, Seq[SpecificComponentTemplate]] = {
+
+    val maybeDsId = maybeDs.map(asTemporaryDataSourceTemplate)
+    val maybeDsTemplate = maybeDsId.flatMap { i =>
+      dataSourceTemplateRepository.findById(i)
+    }
+
+    val datasources = if(maybeDsTemplate.isDefined){
+      maybeDsTemplate.toSeq
+    }else{
+      dataSourceTemplateRepository.findPermanent
+    }
+
     Seq(
-      (ComponentType.DataSource, maybeDatasourceTemplate.map(Seq(_)).getOrElse(dataSourceTemplateRepository.findAll())),
+      (ComponentType.DataSource, datasources),
       (ComponentType.Analyzer, analyzerTemplateRepository.findAllWithMandatoryDescriptors),
       (ComponentType.Transformer, transformerTemplateRepository.findAllWithMandatoryDescriptors),
       (ComponentType.Visualizer, visualizerTemplateRepository.findAllWithMandatoryDescriptors)
     ).toMap
+  }
+
+  private def config(ds: (String, Seq[String]), resourceUri: String) : Model = {
+    val model = ModelFactory.createDefaultModel()
+
+    val configResource = model.createResource()
+    configResource.addProperty(RDF.`type`, DSPARQL.SparqlEndpointDataSourceConfiguration)
+
+    val serviceResource = model.createResource()
+    val endpointResource = model.createResource(ds._1)
+    serviceResource.addProperty(SD.endpoint, endpointResource)
+
+    val dataSetResource = model.createResource()
+    serviceResource.addProperty(SD.defaultDataset, dataSetResource)
+
+    ds._2.foreach { graphUri =>
+      val graphResource = model.createResource(graphUri)
+      val namedGraphResource = model.createResource()
+      namedGraphResource.addProperty(SD.name, graphResource)
+      dataSetResource.addProperty(SD.namedGraph, namedGraphResource)
+    }
+    configResource.addProperty(DSPARQL.service, serviceResource)
+
+    model
+  }
+
+  private def asTemporaryDataSourceTemplate(ds: (String, Seq[String]))(implicit session: Session): DataSourceTemplateId = {
+
+    val uuid = UUID.randomUUID().toString
+    val resourceUri = "http://payola.cz/resource/temporary/"+uuid
+
+    val dataPortTemplate = model.dto.DataPortTemplate(resourceUri+"/output",None,None)
+    val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
+
+    val componentTemplate = model.dto.ComponentTemplate(
+      resourceUri,
+      Some(ds._1),
+      None,
+      Some(config(ds, resourceUri)),
+      Seq(),
+      Some(outputTemplate),
+      Seq(),
+      Seq(),
+      isTemporary = true
+    )
+
+    val savedId = save(componentTemplate)
+
+    dataSourceTemplateRepository.save(DataSourceTemplate(None, savedId))
   }
 
   def save(componentTemplate: model.dto.ComponentTemplate)(implicit session: Session): ComponentTemplateId = {
@@ -106,6 +171,125 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     } else {
       Some(saveMembers(BoundComponentInstances(members)))
     }
+  }
+
+  def saveMembers(boundInstances: model.dto.BoundComponentInstances)(implicit session: Session): (DataPortBindingSetId, Map[String, ComponentInstanceId]) = {
+    val instanceIdsByUri = saveComponentInstances(boundInstances.componentInstances)
+    val inputInstancesByUri = saveInputInstances(boundInstances.inputInstancesWithComponentIds(instanceIdsByUri))
+    val outputInstancesByUri = saveOutputInstances(boundInstances.outputInstancesWithComponentIds(instanceIdsByUri))
+    val bindingSetId = saveBindings(boundInstances, inputInstancesByUri, outputInstancesByUri)
+
+    saveMemberships(bindingSetId, instanceIdsByUri.values.toList)
+    (bindingSetId, instanceIdsByUri)
+  }
+
+  private def saveMemberships(bindingSetId: DataPortBindingSetId, componentInstanceIds: Seq[ComponentInstanceId])(implicit session: Session) = {
+    componentInstanceIds.map { componentInstanceId =>
+      componentInstanceMembershipRepository.save(ComponentInstanceMembership(None, bindingSetId, componentInstanceId))
+    }
+  }
+
+  private def saveComponentInstances(instances: Seq[model.dto.ConcreteComponentInstance])(implicit session: Session): Map[String, ComponentInstanceId] = {
+    instances.flatMap { instance =>
+      val concreteComponentOption = getConcreteComponentByInstance(instance)
+      concreteComponentOption.map { concreteComponent =>
+
+        val configString = instance.componentInstance.configuration.map { config =>
+          val configWriter = new StringWriter()
+          config.write(configWriter, "N3")
+          configWriter.toString
+        }
+
+        val componentInstanceId = componentInstancesRepository.save(ComponentInstance(
+          id = None,
+          uri = instance.componentInstance.uri,
+          title = instance.componentInstance.label.getOrElse("Unlabeled instance"),
+          description = None,
+          componentId = concreteComponent.componentTemplateId,
+          configuration = configString
+        ))
+
+        concreteComponent match {
+          case a: AnalyzerTemplate => analyzerInstancesRepository.save(AnalyzerInstance(None, componentInstanceId, a.id.get))
+          case t: TransformerTemplate => transformerInstancesRepository.save(TransformerInstance(None, componentInstanceId, t.id.get))
+          case v: VisualizerTemplate => visualizerInstancesRepository.save(VisualizerInstance(None, componentInstanceId, v.id.get))
+          case d: DataSourceTemplate => dataSourcesInstancesRepository.save(DataSourceInstance(None, componentInstanceId, d.id.get))
+          case _ => throw new UnsupportedOperationException
+        }
+
+        (instance.componentInstance.uri, componentInstanceId)
+      }
+    }.toMap
+  }
+
+  def getConcreteComponentByInstance(concreteInstance: model.dto.ConcreteComponentInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
+
+    concreteInstance match {
+      case a: model.dto.AnalyzerInstance => getByInstance(a)
+      case v: model.dto.VisualizerInstance => getByInstance(v)
+      case t: model.dto.TransformerInstance => getByInstance(t)
+      case d: model.dto.DataSourceInstance => getByInstance(d)
+      case _ => throw new UnsupportedOperationException
+    }
+  }
+
+  def getByInstance(analyzerInstance: model.dto.AnalyzerInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
+    (for {
+      c <- componentTemplatesQuery.filter(_.uri === analyzerInstance.componentInstance.templateUri)
+      a <- analyzerTemplatesQuery.filter(_.componentTemplateId === c.id)
+    } yield a).firstOption
+  }
+
+  def getByInstance(visualizerInstance: model.dto.VisualizerInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
+    (for {
+      c <- componentTemplatesQuery.filter(_.uri === visualizerInstance.componentInstance.templateUri)
+      v <- visualizerTemplatesQuery.filter(_.componentTemplateId === c.id)
+    } yield v).firstOption
+  }
+
+  def getByInstance(transformerInstance: model.dto.TransformerInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
+    (for {
+      c <- componentTemplatesQuery.filter(_.uri === transformerInstance.componentInstance.templateUri)
+      t <- transformerTemplatesQuery.filter(_.componentTemplateId === c.id)
+    } yield t).firstOption
+  }
+
+  def getByInstance(dataSourceInstance: model.dto.DataSourceInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
+    (for {
+      c <- componentTemplatesQuery.filter(_.uri === dataSourceInstance.componentInstance.templateUri)
+      ds <- dataSourceTemplatesQuery.filter(_.componentTemplateId === c.id)
+    } yield ds).firstOption
+  }
+
+  private def saveBindings(
+    pipeline: model.dto.BoundComponentInstances,
+    inputInstancesByUri: DataPortInstanceUriMap[InputInstanceId],
+    outputInstancesByUri: DataPortInstanceUriMap[OutputInstanceId]
+    )
+    (implicit session: Session)
+  : DataPortBindingSetId = {
+
+    val inputPorts = inputInstancesByUri.map { case (key, (_, portId)) => (key, portId) }
+    val outputPorts = outputInstancesByUri.map { case (key, (_, portId)) => (key, portId) }
+
+    val ports = inputPorts ++ outputPorts
+
+    val bindingSetId = dataPortBindingSetsRepository.save(DataPortBindingSet(None))
+
+    val inputInstances = pipeline.componentInstances.flatMap(_.componentInstance.inputInstances)
+    inputInstances.foreach { inputInstance =>
+      inputInstancesByUri.get(inputInstance.uri).map { case (_, inputInstanceId) =>
+        val sourceUris = inputInstance.boundTo
+
+        sourceUris.map { sourceUri =>
+          ports.get(sourceUri).map { sourceId =>
+            dataPortBindingsRepository.save(DataPortBinding(None, bindingSetId, sourceId, inputInstanceId))
+          }
+        }
+      }
+    }
+
+    bindingSetId
   }
 
   private def saveInputTemplate(componentTemplateId: ComponentTemplateId, input: model.dto.InputTemplate)(implicit session: Session): (DataPortTemplateId, InputTemplateId) = {
@@ -167,112 +351,54 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     featureToComponentRepository.save(FeatureToComponent(None, componentId, featureId, ordering))
   }
 
-  def saveAnalyzer(analyzer: AnalyzerTemplate)(implicit session: Session): AnalyzerTemplateId = {
-    analyzerTemplateRepository.save(analyzer)
-  }
+  private def saveNestedBindings(
+    bindingSetId: DataPortBindingSetId,
+    boundInstances: BoundComponentInstances,
+    instanceIdsByUri: Map[String, ComponentInstanceId],
+    nestedCounterpartsByUri: Map[String, (DataPortTemplateId, _)] = Map()
+    )(implicit session: Session) = {
 
-  def saveVisualizer(visualizer: VisualizerTemplate)(implicit session: Session): VisualizerTemplateId = {
-    visualizerTemplateRepository.save(visualizer)
-  }
-
-  def saveTransformer(transformer: TransformerTemplate)(implicit session: Session): TransformerTemplateId = {
-    transformerTemplateRepository.save(transformer)
-  }
-
-  def saveDataSource(dataSource: DataSourceTemplate)(implicit session: Session): DataSourceTemplateId = {
-    dataSourceTemplateRepository.save(dataSource)
-  }
-
-  def getByUri(uri: String)(implicit session: Session): Option[ComponentTemplate] = {
-    componentTemplatesQuery.filter(_.uri === uri).firstOption
-  }
-
-  def getConcreteComponentByInstance(concreteInstance: model.dto.ConcreteComponentInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
-
-    concreteInstance match {
-      case a: model.dto.AnalyzerInstance => getByInstance(a)
-      case v: model.dto.VisualizerInstance => getByInstance(v)
-      case t: model.dto.TransformerInstance => getByInstance(t)
-      case d: model.dto.DataSourceInstance => getByInstance(d)
-      case _ => throw new UnsupportedOperationException
-    }
-  }
-
-  def getByInstance(analyzerInstance: model.dto.AnalyzerInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
-    (for {
-      c <- componentTemplatesQuery.filter(_.uri === analyzerInstance.componentInstance.templateUri)
-      a <- analyzerTemplatesQuery.filter(_.componentTemplateId === c.id)
-    } yield a).firstOption
-  }
-
-  def getByInstance(visualizerInstance: model.dto.VisualizerInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
-    (for {
-      c <- componentTemplatesQuery.filter(_.uri === visualizerInstance.componentInstance.templateUri)
-      v <- visualizerTemplatesQuery.filter(_.componentTemplateId === c.id)
-    } yield v).firstOption
-  }
-
-  def getByInstance(transformerInstance: model.dto.TransformerInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
-    (for {
-      c <- componentTemplatesQuery.filter(_.uri === transformerInstance.componentInstance.templateUri)
-      t <- transformerTemplatesQuery.filter(_.componentTemplateId === c.id)
-    } yield t).firstOption
-  }
-
-  def getByInstance(dataSourceInstance: model.dto.DataSourceInstance)(implicit session: Session): Option[SpecificComponentTemplate] = {
-    (for {
-      c <- componentTemplatesQuery.filter(_.uri === dataSourceInstance.componentInstance.templateUri)
-      ds <- dataSourceTemplatesQuery.filter(_.componentTemplateId === c.id)
-    } yield ds).firstOption
-  }
-
-  def saveMembers(boundInstances: model.dto.BoundComponentInstances)(implicit session: Session): (DataPortBindingSetId, Map[String, ComponentInstanceId]) = {
-    val instanceIdsByUri = saveComponentInstances(boundInstances.componentInstances)
     val inputInstancesByUri = saveInputInstances(boundInstances.inputInstancesWithComponentIds(instanceIdsByUri))
     val outputInstancesByUri = saveOutputInstances(boundInstances.outputInstancesWithComponentIds(instanceIdsByUri))
-    val bindingSetId = saveBindings(boundInstances, inputInstancesByUri, outputInstancesByUri)
 
-    saveMemberships(bindingSetId, instanceIdsByUri.values.toList)
-    (bindingSetId, instanceIdsByUri)
-  }
+    val inputInstances = boundInstances.componentInstances.flatMap(_.componentInstance.inputInstances)
+    inputInstances.map { inputInstance =>
+      val inputInstanceId = inputInstancesByUri(inputInstance.uri)._2
 
-  private def saveMemberships(bindingSetId: DataPortBindingSetId, componentInstanceIds: Seq[ComponentInstanceId])(implicit session: Session) = {
-    componentInstanceIds.map { componentInstanceId =>
-      componentInstanceMembershipRepository.save(ComponentInstanceMembership(None, bindingSetId, componentInstanceId))
-    }
-  }
-
-  private def saveComponentInstances(instances: Seq[model.dto.ConcreteComponentInstance])(implicit session: Session): Map[String, ComponentInstanceId] = {
-    instances.flatMap { instance =>
-      val concreteComponentOption = getConcreteComponentByInstance(instance)
-      concreteComponentOption.map { concreteComponent =>
-
-        val configString = instance.componentInstance.configuration.map { config =>
-          val configWriter = new StringWriter()
-          config.write(configWriter, "N3")
-          configWriter.toString
+      val nestedBoundUris = inputInstance.nestedBoundTo
+      nestedBoundUris.map { nestedCounterpartUri =>
+        nestedCounterpartsByUri.get(nestedCounterpartUri).map { nestedCounterPartId =>
+          nestedDataPortBindingsRepository.save(
+            NestedDataPortBinding(
+              None,
+              bindingSetId,
+              sourcePortTemplateId = Some(nestedCounterPartId._1),
+              targetPortInstanceId = Some(inputInstanceId)
+            )
+          )
         }
-
-        val componentInstanceId = componentInstancesRepository.save(ComponentInstance(
-          id = None,
-          uri = instance.componentInstance.uri,
-          title = instance.componentInstance.label.getOrElse("Unlabeled instance"),
-          description = None,
-          componentId = concreteComponent.componentTemplateId,
-          configuration = configString
-        ))
-
-        concreteComponent match {
-          case a: AnalyzerTemplate => analyzerInstancesRepository.save(AnalyzerInstance(None, componentInstanceId, a.id.get))
-          case t: TransformerTemplate => transformerInstancesRepository.save(TransformerInstance(None, componentInstanceId, t.id.get))
-          case v: VisualizerTemplate => visualizerInstancesRepository.save(VisualizerInstance(None, componentInstanceId, v.id.get))
-          case d: DataSourceTemplate => dataSourcesInstancesRepository.save(DataSourceInstance(None, componentInstanceId, d.id.get))
-          case _ => throw new UnsupportedOperationException
-        }
-
-        (instance.componentInstance.uri, componentInstanceId)
       }
-    }.toMap
+    }
+
+    val outputInstances = boundInstances.componentInstances.flatMap(_.componentInstance.outputInstance)
+    outputInstances.map { outputInstance =>
+      val outputInstanceId = outputInstancesByUri(outputInstance.uri)._2
+
+      val nestedBoundUris = outputInstance.nestedBoundTo
+      nestedBoundUris.map { nestedCounterpartUri =>
+        nestedCounterpartsByUri.get(nestedCounterpartUri).map { nestedCounterPartId =>
+          nestedDataPortBindingsRepository.save(
+            NestedDataPortBinding(
+              None,
+              bindingSetId,
+              targetPortTemplateId = Some(nestedCounterPartId._1),
+              sourcePortInstanceId = Some(outputInstanceId)
+            )
+          )
+        }
+      }
+    }
+
   }
 
   private def saveInputInstances(inputInstancesByComponentId: Seq[(ComponentInstanceId, Seq[model.dto.InputInstance])])(implicit session: Session): DataPortInstanceUriMap[InputInstanceId] = {
@@ -331,85 +457,24 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     }.toMap
   }
 
-  private def saveNestedBindings(
-    bindingSetId: DataPortBindingSetId,
-    boundInstances: BoundComponentInstances,
-    instanceIdsByUri: Map[String, ComponentInstanceId],
-    nestedCounterpartsByUri: Map[String, (DataPortTemplateId, _)] = Map()
-  )(implicit session: Session) = {
-
-    val inputInstancesByUri = saveInputInstances(boundInstances.inputInstancesWithComponentIds(instanceIdsByUri))
-    val outputInstancesByUri = saveOutputInstances(boundInstances.outputInstancesWithComponentIds(instanceIdsByUri))
-
-    val inputInstances = boundInstances.componentInstances.flatMap(_.componentInstance.inputInstances)
-    inputInstances.map { inputInstance =>
-      val inputInstanceId = inputInstancesByUri(inputInstance.uri)._2
-
-      val nestedBoundUris = inputInstance.nestedBoundTo
-      nestedBoundUris.map { nestedCounterpartUri =>
-        nestedCounterpartsByUri.get(nestedCounterpartUri).map { nestedCounterPartId =>
-          nestedDataPortBindingsRepository.save(
-            NestedDataPortBinding(
-              None,
-              bindingSetId,
-              sourcePortTemplateId = Some(nestedCounterPartId._1),
-              targetPortInstanceId = Some(inputInstanceId)
-            )
-          )
-        }
-      }
-    }
-
-    val outputInstances = boundInstances.componentInstances.flatMap(_.componentInstance.outputInstance)
-    outputInstances.map { outputInstance =>
-      val outputInstanceId = outputInstancesByUri(outputInstance.uri)._2
-
-      val nestedBoundUris = outputInstance.nestedBoundTo
-      nestedBoundUris.map { nestedCounterpartUri =>
-        nestedCounterpartsByUri.get(nestedCounterpartUri).map { nestedCounterPartId =>
-          nestedDataPortBindingsRepository.save(
-            NestedDataPortBinding(
-              None,
-              bindingSetId,
-              targetPortTemplateId = Some(nestedCounterPartId._1),
-              sourcePortInstanceId = Some(outputInstanceId)
-            )
-          )
-        }
-      }
-    }
-
+  def saveAnalyzer(analyzer: AnalyzerTemplate)(implicit session: Session): AnalyzerTemplateId = {
+    analyzerTemplateRepository.save(analyzer)
   }
 
-  private def saveBindings(
-    pipeline: model.dto.BoundComponentInstances,
-    inputInstancesByUri: DataPortInstanceUriMap[InputInstanceId],
-    outputInstancesByUri: DataPortInstanceUriMap[OutputInstanceId]
-  )
-    (implicit session: Session)
-  : DataPortBindingSetId = {
+  def saveVisualizer(visualizer: VisualizerTemplate)(implicit session: Session): VisualizerTemplateId = {
+    visualizerTemplateRepository.save(visualizer)
+  }
 
-    val inputPorts = inputInstancesByUri.map { case (key, (_, portId)) => (key, portId)}
-    val outputPorts = outputInstancesByUri.map { case (key, (_, portId)) => (key, portId)}
+  def saveTransformer(transformer: TransformerTemplate)(implicit session: Session): TransformerTemplateId = {
+    transformerTemplateRepository.save(transformer)
+  }
 
-    val ports = inputPorts ++ outputPorts
+  def saveDataSource(dataSource: DataSourceTemplate)(implicit session: Session): DataSourceTemplateId = {
+    dataSourceTemplateRepository.save(dataSource)
+  }
 
-    val bindingSetId = dataPortBindingSetsRepository.save(DataPortBindingSet(None))
-
-    val inputInstances = pipeline.componentInstances.flatMap(_.componentInstance.inputInstances)
-    inputInstances.foreach { inputInstance =>
-      inputInstancesByUri.get(inputInstance.uri).map { case (_, inputInstanceId) =>
-        val sourceUris = inputInstance.boundTo
-
-        sourceUris.map { sourceUri =>
-          ports.get(sourceUri).map { sourceId =>
-            dataPortBindingsRepository.save(DataPortBinding(None, bindingSetId, sourceId, inputInstanceId))
-          }
-        }
-      }
-    }
-
-    bindingSetId
+  def getByUri(uri: String)(implicit session: Session): Option[ComponentTemplate] = {
+    componentTemplatesQuery.filter(_.uri === uri).firstOption
   }
 
 }

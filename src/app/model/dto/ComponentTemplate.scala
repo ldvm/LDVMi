@@ -10,5 +10,6 @@ case class ComponentTemplate(
   inputTemplates: Seq[InputTemplate],
   outputTemplate: Option[OutputTemplate],
   nestedMembers: Seq[ConcreteComponentInstance],
-  features: Seq[Feature]
+  features: Seq[Feature],
+  isTemporary: Boolean = false
 )

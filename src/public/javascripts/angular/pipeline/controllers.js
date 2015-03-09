@@ -124,7 +124,8 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     loading: false
                 };
 
-                var connection = $connection("ws://localhost:9000/api/v1/pipelines/discover");
+                var l = window.location;
+                var connection = $connection("ws://"+ l.host + "/api/v1/pipelines/discover?endpointUrl="+$routeParams.endpointUrl+"&graphUris="+$routeParams.graphUris);
                 connection.listen(function () {
                     return true
                 }, function (data) {
@@ -158,7 +159,8 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                 $scope.isFinished = false;
                 $scope.duration = 0;
 
-                var connection = $connection("ws://localhost:9000/api/v1/pipelines/evaluate/"+$routeParams.id);
+                var l = window.location;
+                var connection = $connection("ws://"+ l.host+ "/api/v1/pipelines/evaluate/"+$routeParams.id);
                 connection.listen(function () {
                     return true
                 }, function (data) {

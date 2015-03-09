@@ -118,8 +118,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     repository.findPaginatedFilteredOrdered(skip, take)(pipelineDiscoveryId)(ordering)
   }
 
-  def discover(reporterProps: Props)(implicit session: Session): PipelineDiscoveryId = {
-    val allComponentsByType = componentService.getAllForDiscovery()
+  def discover(reporterProps: Props, maybeDs: Option[(String, Seq[String])] = None)(implicit session: Session): PipelineDiscoveryId = {
+    val allComponentsByType = componentService.getAllForDiscovery(maybeDs)
     new PipelineDiscoveryAlgorithm(allComponentsByType, reporterProps)
       .discoverPipelines(
         allComponentsByType(ComponentType.DataSource).collect { case d: DataSourceTemplate => d}

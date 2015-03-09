@@ -9,6 +9,7 @@ object SD extends Vocabulary {
   lazy val endpoint: Property = m.createProperty(PREFIX_URL, "endpoint")
   lazy val defaultDataset: Property = m.createProperty(PREFIX_URL, "defaultDataset")
   lazy val namedGraph: Property = m.createProperty(PREFIX_URL, "namedGraph")
+  lazy val defaultGraph: Property = m.createProperty(PREFIX_URL, "defaultGraph")
   lazy val name: Property = m.createProperty(PREFIX_URL, "name")
 
 

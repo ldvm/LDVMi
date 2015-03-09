@@ -20,6 +20,7 @@ case class ComponentTemplate(
   title: String,
   description: Option[String],
   nestedBindingSetId: Option[DataPortBindingSetId],
+  isTemporary: Boolean = false,
   defaultConfiguration: Option[String] = None,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
@@ -59,6 +60,7 @@ object ComponentEntity {
       template.label.getOrElse("Unlabeled component"),
       template.comment,
       nestedBindingSetId,
+      template.isTemporary,
       configString
     )
   }
@@ -66,11 +68,13 @@ object ComponentEntity {
 
 class ComponentTemplateTable(tag: Tag) extends UriIdentifiedEntityTable[ComponentTemplateId, ComponentTemplate](tag, "component_templates") {
 
+  def isTemporary = column[Boolean]("is_temporary")
+
   def defaultConfiguration = column[Option[String]]("default_configuration")
 
   def nestedBindingSetId = column[Option[DataPortBindingSetId]]("data_port_binding_set_id")
 
-  def * = (id.?, uri, title, description, nestedBindingSetId, defaultConfiguration, uuid, createdUtc, modifiedUtc) <> (ComponentTemplate.tupled, ComponentTemplate.unapply _)
+  def * = (id.?, uri, title, description, nestedBindingSetId, isTemporary, defaultConfiguration, uuid, createdUtc, modifiedUtc) <> (ComponentTemplate.tupled, ComponentTemplate.unapply _)
 
 }
 

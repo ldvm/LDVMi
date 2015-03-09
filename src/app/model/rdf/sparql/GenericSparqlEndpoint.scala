@@ -4,6 +4,7 @@ package model.rdf.sparql
 import _root_.model.rdf.Graph
 import _root_.model.rdf.vocabulary.{DSPARQL, SD}
 import com.hp.hpl.jena.query.{QueryExecution, QueryExecutionFactory}
+import com.hp.hpl.jena.rdf.model.Property
 import com.hp.hpl.jena.update.{UpdateProcessor, UpdateFactory, UpdateExecutionFactory}
 import org.apache.jena.atlas.web.auth.{SimpleAuthenticator}
 
@@ -15,8 +16,8 @@ class GenericSparqlEndpoint(val endpointURL: String, val defaultGraphs: Seq[Stri
     QueryExecutionFactory.sparqlService(
       endpointURL,
       query,
-      defaultGraphs,
-      namedGraphs
+      defaultGraphs++namedGraphs,
+      List()
     )
   }
   def updateExecutionFactory(): String => UpdateProcessor = { query =>
@@ -29,7 +30,14 @@ object GenericSparqlEndpoint {
   def apply(instanceConfiguration: Option[Graph], configuration: Option[Graph]): Option[GenericSparqlEndpoint] = {
 
     getEndpointUrl(Seq(instanceConfiguration, configuration)).map { endpointUrl =>
-      new GenericSparqlEndpoint(endpointUrl, List(), getNamedGraphs(Seq(instanceConfiguration, configuration)))
+
+      val configs = Seq(instanceConfiguration, configuration)
+
+      new GenericSparqlEndpoint(
+        endpointUrl,
+        getDefaultGraphs(configs),
+        getNamedGraphs(configs)
+      )
     }
   }
 
@@ -44,14 +52,22 @@ object GenericSparqlEndpoint {
 
   }
 
+  private def getDefaultGraphs(configurations: Seq[Option[Graph]]): Seq[String] = {
+    getGraphs(configurations, SD.defaultGraph)
+  }
+
   private def getNamedGraphs(configurations: Seq[Option[Graph]]): Seq[String] = {
+    getGraphs(configurations, SD.namedGraph)
+  }
+
+  private def getGraphs(configurations: Seq[Option[Graph]], graphUriProperty: Property): Seq[String] = {
 
     val namedGraphUris = configurations.filter(_.isDefined).map(_.get.jenaModel).map { configurationModel =>
       val serviceStatements = configurationModel.listStatements(null, DSPARQL.service, null).toList
       serviceStatements.map { serviceStatement =>
         val datasetStatements = serviceStatement.getObject.asResource().listProperties(SD.defaultDataset).toList
         datasetStatements.map { datasetStatement =>
-          val namedGraphsStatements = datasetStatement.getObject.asResource().listProperties(SD.namedGraph).toList
+          val namedGraphsStatements = datasetStatement.getObject.asResource().listProperties(graphUriProperty).toList
           namedGraphsStatements.map { namedGraphsStatement =>
             namedGraphsStatement.getProperty(SD.name).getObject.asResource().getURI
           }
