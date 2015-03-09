@@ -65,7 +65,9 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
           func(visualizationEagerBox, s.get)
         }
 
-      case e: JsError => UnprocessableEntity
+      case e: JsError => {
+        InternalServerError(e.errors.toString)
+      }
     }
 
   }
