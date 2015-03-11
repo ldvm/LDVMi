@@ -16,7 +16,9 @@ case class AnalyzerTemplate(
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity[AnalyzerTemplateId] with SpecificComponentTemplate
+  ) extends IdEntity[AnalyzerTemplateId] with SpecificComponentTemplate{
+  def componentType = ComponentType.Analyzer
+}
 
 
 class AnalyzerTemplateTable(tag: Tag) extends IdEntityTable[AnalyzerTemplateId, AnalyzerTemplate](tag, "analyzer_templates") {

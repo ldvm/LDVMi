@@ -60,6 +60,15 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     ).toMap
   }
 
+  def findSpecificIn(ids: Seq[ComponentTemplateId])(implicit session: Session): Seq[SpecificComponentTemplate] = {
+    val analyzers = analyzerTemplateRepository.findByComponentIds(ids)
+    val visualizers = visualizerTemplateRepository.findByComponentIds(ids)
+    val transformers = transformerTemplateRepository.findByComponentIds(ids)
+    val dataSources = dataSourceTemplateRepository.findByComponentIds(ids)
+
+    analyzers ++ visualizers ++ transformers ++ dataSources
+  }
+
   def getAllForDiscovery(maybeDs: Option[(String, Seq[String])] = None)
     (implicit session: Session): Map[ComponentType, Seq[SpecificComponentTemplate]] = {
 

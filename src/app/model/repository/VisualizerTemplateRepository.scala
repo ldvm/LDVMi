@@ -15,4 +15,10 @@ class VisualizerTemplateRepository extends CrudRepository[VisualizerTemplateId, 
       d <- descriptorsQuery if d.featureId === f.id
     } yield sct).list.distinct
   }
+
+  def findByComponentIds(ids: Seq[ComponentTemplateId])(implicit session: Session): Seq[SpecificComponentTemplate] = {
+    (for {
+      s <- query if s.componentTemplateId inSetBind ids
+    } yield s).list
+  }
 }

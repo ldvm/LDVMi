@@ -15,4 +15,9 @@ class DataSourceTemplateRepository extends CrudRepository[DataSourceTemplateId, 
     } yield t).list
   }
 
+  def findByComponentIds(ids: Seq[ComponentTemplateId])(implicit session: Session): Seq[SpecificComponentTemplate] = {
+    (for {
+      s <- query if s.componentTemplateId inSetBind ids
+    } yield s).list
+  }
 }

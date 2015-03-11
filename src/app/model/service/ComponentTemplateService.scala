@@ -31,4 +31,6 @@ trait ComponentTemplateService extends CrudService[ComponentTemplateId, Componen
 
   def saveMembers(boundInstances: model.dto.BoundComponentInstances)(implicit session: Session) :  (DataPortBindingSetId, Map[String, ComponentInstanceId])
 
+  def findSpecificIn(componentIds: Seq[ComponentTemplateId])(implicit session: Session) : Seq[SpecificComponentTemplate]
+
 }

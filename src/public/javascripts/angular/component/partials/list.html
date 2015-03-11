@@ -2,17 +2,18 @@
     <div class="pull-right"><a ng-href="/components#/add" class="btn btn-success">Add new</a></div>
 </div>
 <table ng-table="tableParams" class="table table-striped">
-    <tr ng-repeat="component in $data">
-        <td data-title="'ID'">{{component.id}}</td>
-        <td data-title="'Title'"><a href="#/detail/{{component.id}}">{{component.title}}</a></td>
-        <td data-title="'URI'">{{component.uri}}</td>
-        <td data-title="'Description'">{{component.description}}</td>
+    <tr ng-repeat="s in $data">
+        <td data-title="'ID'">{{s.componentTemplate.id}}</td>
+        <td data-title="'Title'"><a href="#/detail/{{s.componentType | lowercase}}/{{s.componentTemplate.id}}">{{s.componentTemplate.title}}</a></td>
+        <td data-title="'URI'">{{s.componentTemplate.uri}}</td>
+        <td data-title="'Description'">{{s.componentTemplate.description}}</td>
+        <td data-title="'Type'">{{s.componentType}}</td>
         <td data-title="'Is temporary'" class="text-center">
-            <span class="glyphicon glyphicon-ok" ng-show="component.isTemporary"></span>
-            <span class="glyphicon glyphicon-remove" ng-show="!component.isTemporary"></span>
+            <span class="glyphicon glyphicon-ok" ng-show="s.componentTemplate.isTemporary"></span>
+            <span class="glyphicon glyphicon-remove" ng-show="!s.componentTemplate.isTemporary"></span>
         </td>
         <td data-title="'Last modified'" style="white-space: nowrap;">
-            <span am-time-ago="time(component.modifiedUtc, component.createdUtc)" tooltip="{{time(component.modifiedUtc, component.createdUtc) | date : 'medium'}}"></span>
+            <span am-time-ago="time(s.componentTemplate.modifiedUtc, s.componentTemplate.createdUtc)" tooltip="{{time(s.componentTemplate.modifiedUtc, s.componentTemplate.createdUtc) | date : 'medium'}}"></span>
         </td>
     </tr>
     <tr ng-if="$data.length == 0">

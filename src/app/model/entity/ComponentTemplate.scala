@@ -3,6 +3,7 @@ package model.entity
 import java.io.StringWriter
 import java.util.UUID
 
+import model.entity.ComponentType.ComponentType
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
@@ -79,9 +80,14 @@ class ComponentTemplateTable(tag: Tag) extends UriIdentifiedEntityTable[Componen
 }
 
 trait SpecificComponentTemplate {
+
+  def id: Option[BaseId]
+
   def componentTemplateId: ComponentTemplateId
 
   def componentTemplate(implicit session: Session): ComponentTemplate = componentTemplatesQuery.filter(_.id === componentTemplateId).first
+
+  def componentType: ComponentType
 }
 
 object ComponentType extends Enumeration {

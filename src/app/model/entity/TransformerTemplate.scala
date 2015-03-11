@@ -14,7 +14,9 @@ case class TransformerTemplate(
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdEntity[TransformerTemplateId] with SpecificComponentTemplate
+) extends IdEntity[TransformerTemplateId] with SpecificComponentTemplate{
+  def componentType = ComponentType.Transformer
+}
 
 
 class TransformerTemplateTable(tag: Tag) extends IdEntityTable[TransformerTemplateId, TransformerTemplate](tag, "transformer_templates") {

@@ -14,7 +14,9 @@ case class VisualizerTemplate(
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdEntity[VisualizerTemplateId] with SpecificComponentTemplate
+) extends IdEntity[VisualizerTemplateId] with SpecificComponentTemplate {
+  def componentType = ComponentType.Visualizer
+}
 
 
 class VisualizerTemplateTable(tag: Tag) extends IdEntityTable[VisualizerTemplateId, VisualizerTemplate](tag, "visualizer_templates") {

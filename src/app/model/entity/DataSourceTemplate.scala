@@ -17,7 +17,9 @@ case class DataSourceTemplate(
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdEntity[DataSourceTemplateId] with SpecificComponentTemplate
+) extends IdEntity[DataSourceTemplateId] with SpecificComponentTemplate{
+  def componentType = ComponentType.DataSource
+}
 
 
 class DataSourceTemplateTable(tag: Tag) extends IdEntityTable[DataSourceTemplateId, DataSourceTemplate](tag, "datasource_templates") {

@@ -61,6 +61,8 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope.descriptors = d;
                 });
 
+                $scope.componentType = $routeParams.type;
+
             }])
         .controller('Add', [
             '$scope', '$location', 'FileUploader',

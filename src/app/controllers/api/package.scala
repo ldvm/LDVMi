@@ -35,6 +35,14 @@ package object api {
       typedId => JsNumber(typedId.id)
     }
 
+    implicit val specificComponentWrites : Writes[(Option[SpecificComponentTemplate], ComponentTemplate)] = Writes { case (sc, c) =>
+      JsObject(Seq(
+        "id" -> Json.toJson(sc.map(_.id).orNull),
+        "componentType" -> Json.toJson(sc.map(_.componentType.toString)),
+        "componentTemplate" -> Json.toJson(c)
+      ))
+    }
+
     implicit lazy val hierarchyWrites: Writes[HierarchyNode] = (
       (__ \ "name").write[String] and
         (__ \ "size").writeNullable[Int] and

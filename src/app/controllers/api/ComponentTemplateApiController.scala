@@ -12,8 +12,17 @@ class ComponentTemplateApiController(implicit inj: Injector) extends ApiControll
 
   def list(skip: Int = 0, take: Int = 50) = DBAction { implicit rws =>
 
+    val componentTemplates = componentTemplateService.findPaginated(skip, take)()
+    val ids = componentTemplates.map(_.id.get)
+
+    val specificTemplates = componentTemplateService.findSpecificIn(ids)
+
+    val specific = componentTemplates.map { ct =>
+      (specificTemplates.find(_.componentTemplateId == ct.id.get), ct)
+    }
+
     val result = JsObject(Seq(
-      "data" -> Json.toJson(componentTemplateService.findPaginated(skip, take)()),
+      "data" -> Json.toJson(specific),
       "count" -> JsNumber(componentTemplateService.countAll)
     ))
 
