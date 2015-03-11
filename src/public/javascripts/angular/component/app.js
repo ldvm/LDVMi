@@ -1,5 +1,6 @@
 define([
         'angular',
+        "codemirror-sparql",
         './controllers',
         './directives',
         './filters',
@@ -12,7 +13,8 @@ define([
         'ng-table',
         "bootstrap",
         "angular-moment",
-        "angular-file-upload"
+        "angular-file-upload",
+        "ui-codemirror"
     ],
     function (ng) {
         'use strict';
@@ -25,6 +27,7 @@ define([
             'ngRoute',
             'ngResource',
             'ui.bootstrap',
+            'ui.codemirror',
             'ngTable',
             'angular-loading-bar',
             'angularMoment',

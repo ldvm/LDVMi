@@ -50,7 +50,9 @@ libraryDependencies ++= Seq(
   "org.joda" % "joda-convert" % "1.6",
   "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
   "com.vividsolutions" % "jts" % "1.8",
-  "org.webjars" % "openlayers" % "3.0.0"
+  "org.webjars" % "openlayers" % "3.0.0",
+  "org.webjars" % "codemirror" % "5.0",
+  "org.webjars" % "ui-codemirror" % "0.1.5"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node

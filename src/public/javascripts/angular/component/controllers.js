@@ -37,6 +37,14 @@ define(['angular', 'underscorejs'], function (ng, _) {
             '$scope', '$routeParams', 'ComponentsService',
             function ($scope, $routeParams, components) {
 
+                $scope.mirrorOpts = {
+                    lineWrapping : true,
+                    lineNumbers: true,
+                    readOnly: 'nocursor',
+                    mode: 'sparql'
+                };
+
+
                 components.get({id: $routeParams.id}, function(c){
                     $scope.component = c;
                 });

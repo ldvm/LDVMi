@@ -10,6 +10,10 @@
                 }
 
                 requirejs.config({ paths: { "angular-file-upload": "/webjars/nervgh-angular-file-upload/1.1.5/angular-file-upload" } });
+
+                requirejs.config({ paths: { "codemirror" : ["/webjars/codemirror/5.0/lib/codemirror","codemirror"] } });
+                requirejs.config({ paths: { "codemirror-sparql" : ["/webjars/codemirror/5.0/mode/sparql/sparql"] } , shim: {"codemirror-sparql": ["codemirror"]} });
+
             }
         };
         </script>
@@ -20,6 +24,7 @@
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("loading-bar.css"))'>
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("ng-table.css"))'>
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("codemirror.css"))'>
         <style>
 
         .my-drop-zone { border: dotted 3px lightgray; }
