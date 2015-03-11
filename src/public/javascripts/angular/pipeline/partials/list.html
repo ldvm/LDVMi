@@ -18,7 +18,7 @@
             <td data-title="'Evaluate'">
                 <a ng-href="#/evaluate/{{pipeline.id}}" class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Run</a>
             </td>
-            <td data-title="'Compatibility'" class="text-center">
+            <!--<td data-title="'Compatibility'" class="text-center">
                 <div class="btn-group">
                     <a ng-href="#/compatibility/{{pipeline.id}}" class="btn" ng-class="{'btn-success': 'pipeline.isCompatible', 'btn-danger': '!pipeline.isCompatible'}">
                         <span class="glyphicon glyphicon-ok" ng-show="pipeline.isCompatible"></span>
@@ -33,7 +33,7 @@
                         <li><a ng-href="#/compatibility/check/{{pipeline.id}}">Re-check</a></li>
                     </ul>
                 </div>
-            </td>
+            </td>-->
             <td data-title="'Is temporary'" class="text-center">
                 <span class="glyphicon glyphicon-ok" ng-show="pipeline.isTemporary"></span>
                 <span class="glyphicon glyphicon-remove" ng-show="!pipeline.isTemporary"></span>

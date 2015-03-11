@@ -7,8 +7,15 @@
         <td data-title="'Title'"><a href="#/detail/{{component.id}}">{{component.title}}</a></td>
         <td data-title="'URI'">{{component.uri}}</td>
         <td data-title="'Description'">{{component.description}}</td>
+        <td data-title="'Is temporary'" class="text-center">
+            <span class="glyphicon glyphicon-ok" ng-show="component.isTemporary"></span>
+            <span class="glyphicon glyphicon-remove" ng-show="!component.isTemporary"></span>
+        </td>
+        <td data-title="'Last modified'" style="white-space: nowrap;">
+            <span am-time-ago="time(component.modifiedUtc, component.createdUtc)" tooltip="{{time(component.modifiedUtc, component.createdUtc) | date : 'medium'}}"></span>
+        </td>
     </tr>
     <tr ng-if="$data.length == 0">
-        <td colspan="4">No available data.</td>
+        <td colspan="6">No available data.</td>
     </tr>
 </table>
