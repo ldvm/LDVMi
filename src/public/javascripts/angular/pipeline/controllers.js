@@ -35,11 +35,18 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                 };
 
             }])
-        .controller('CompatibilityCheck', function(){})
-        .controller('Index', function($scope){
-            $scope.visualize = function(){
-
-                window.location.href = "/discover/?endpointUrl="+$scope.endpointUrl+"&graphUris="+$scope.graphUris;
+        .controller('CompatibilityCheck', function () {
+        })
+        .controller('Index', function ($scope) {
+            $scope.visualize = function () {
+                var uri = "/discover/";
+                if ($scope.endpointUrl) {
+                    uri += "?endpointUrl=" + $scope.endpointUrl;
+                    if ($scope.showMore && $scope.graphUris) {
+                        uri += "&graphUris=" + $scope.graphUris;
+                    }
+                }
+                window.location.href = uri;
 
             };
         })
@@ -80,6 +87,8 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
             '$scope', '$routeParams', 'Pipelines',
             function ($scope, $routeParams, pipelines) {
 
+                $scope.pipelineId = $routeParams.id;
+
                 $scope.data = {
                     "nodes": [],
                     "links": []
@@ -89,7 +98,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     $scope.data = data;
                 });
 
-                pipelines.evaluations($routeParams.id).then(function(data){
+                pipelines.evaluations($routeParams.id).then(function (data) {
                     $scope.evaluations = data.data;
                 });
 
@@ -125,7 +134,14 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                 };
 
                 var l = window.location;
-                var connection = $connection("ws://"+ l.host + "/api/v1/pipelines/discover?endpointUrl="+$routeParams.endpointUrl+"&graphUris="+$routeParams.graphUris);
+                var uri = "ws://" + l.host + "/api/v1/pipelines/discover";
+                if ("endpointUrl" in $routeParams && $routeParams.endpointUrl) {
+                    uri += "?endpointUrl=" + $routeParams.endpointUrl;
+                    if ("graphUris" in $routeParams && $routeParams.graphUris) {
+                        uri += "&graphUris=" + $routeParams.graphUris;
+                    }
+                }
+                var connection = $connection(uri);
                 connection.listen(function () {
                     return true
                 }, function (data) {
@@ -160,12 +176,19 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                 $scope.duration = 0;
 
                 var l = window.location;
-                var connection = $connection("ws://"+ l.host+ "/api/v1/pipelines/evaluate/"+$routeParams.id);
+                var connection = $connection("ws://" + l.host + "/api/v1/pipelines/evaluate/" + $routeParams.id);
                 connection.listen(function () {
                     return true
                 }, function (data) {
                     $scope.$apply(function () {
                         $scope.info.unshift(data);
+
+                        if(data.message && data.message == "==== DONE ===="){
+                            $scope.info = [{message: "Pipeline evaluation is done. You are being redirected."}];
+                            window.setTimeout(function(){
+                                window.location.href = "/pipelines#/detail/"+$routeParams.id;
+                            }, 2000);
+                        }
 
                         if ("isFinished" in data) {
                             $scope.isFinished = data.isFinished;

@@ -37,7 +37,8 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
   }
 
   def discover(endpointUrl: Option[String] = None, graphUris: Option[String] = None) = Action {
-    TemporaryRedirect("/pipelines#/discover?endpointUrl="+endpointUrl.orNull+"&graphUris="+graphUris.orNull)
+
+    TemporaryRedirect("/pipelines#/discover?endpointUrl="+endpointUrl.orNull+graphUris.map("&graphUris="+_).getOrElse(""))
   }
 
 }
