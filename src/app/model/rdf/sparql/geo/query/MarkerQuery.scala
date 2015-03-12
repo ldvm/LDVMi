@@ -15,11 +15,10 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
   def get: String = {
     val q = prefixes +
       """
-        | SELECT ?s ?l ?p %v WHERE {
+        | SELECT ?s ?lat ?lng %v WHERE {
         |   ?s s:geo ?g .
-        |   ?g  a s:GeoCoordinates ;
-        |       s:latitude ?lat ;
-        |       s:longitude ?lng .
+        |   ?g s:latitude ?lat ;
+        |      s:longitude ?lng .
         |
         |   %r
         | }

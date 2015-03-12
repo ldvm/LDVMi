@@ -63,10 +63,14 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
           self ! Failure("Component instance with ID " + component.componentInstance.id.map(_.toString).get + " has failed (" + t.getMessage + ").")
         }
       }
+    }else {
+      logger ! "Cannot exec yet."
     }
   }
 
-  private def setResponse(sender: ActorRef, dataRef: DataReference) = dataReferencesBySender.append((sender, dataRef))
+  private def setResponse(sender: ActorRef, dataRef: DataReference) = synchronized {
+    dataReferencesBySender.append((sender, dataRef))
+  }
 
   private def onResultRequest() {
     resultReceiver = Some(sender())

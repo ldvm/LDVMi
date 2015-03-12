@@ -16,7 +16,7 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
   override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
 
     val endpointUrl = "http://live.payola.cz:8890/sparql"
-    val resultGraph = "http://" + UUID.randomUUID().toString
+    val resultGraph = "urn:" + UUID.randomUUID().toString
 
     val reporter = Akka.system.actorOf(reporterProps)
 
@@ -25,7 +25,7 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
         val query = sparqlQuery(internalComponent.componentInstance.configuration).get
 
         val dataRef = dataReferences.head
-        val graphUris = dataRef.graphUri.map { u => Seq(u)}.orNull
+        val graphUris = dataRef.graphUri.map { u => Seq(u)}.getOrElse {List()}
         val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, List(), graphUris)
 
         reporter ! "Querying "+dataRef.endpointUri+"@"+dataRef.graphUri.toString

@@ -28,6 +28,12 @@ case class Graph(jenaModel: com.hp.hpl.jena.rdf.model.Model) {
     sw.toString
   }
 
+  def toTTL: String = {
+    val sw = new StringWriter()
+    jenaModel.write(sw, "N3", null)
+    sw.toString
+  }
+
 }
 
 object Graph {

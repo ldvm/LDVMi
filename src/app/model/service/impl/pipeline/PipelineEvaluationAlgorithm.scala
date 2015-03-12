@@ -23,8 +23,6 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
     val instancesById = recursivePipelineData._2.toMap
     val bindings = recursivePipelineData._1
 
-    instancesById.foreach(i => println(i._1))
-
     bindings.foreach { binding =>
       val sourceInstanceId = binding.source.componentInstanceId
       val targetInstanceId = binding.target.componentInstanceId

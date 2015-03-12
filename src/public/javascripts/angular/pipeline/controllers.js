@@ -184,9 +184,10 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                         $scope.info.unshift(data);
 
                         if(data.message && data.message == "==== DONE ===="){
-                            $scope.info = [{message: "Pipeline evaluation is done. You are being redirected."}];
+                            $scope.info.unshift({});
+                            $scope.info.unshift({message: "Pipeline evaluation is done. You are being redirected."});
                             window.setTimeout(function(){
-                                window.location.href = "/pipelines#/detail/"+$routeParams.id;
+                                //window.location.href = "/pipelines#/detail/"+$routeParams.id;
                             }, 2000);
                         }
 
