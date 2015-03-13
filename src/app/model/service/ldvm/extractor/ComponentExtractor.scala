@@ -51,10 +51,13 @@ class ComponentExtractor(implicit inj: Injector) extends GraphExtractor[Map[Stri
   }
 
   private def extractNestedMembers(graphModel: Model, component: Resource) = {
-    val nestedMembers = graphModel.listObjectsOfProperty(LDVM.nestedMember).toList
-    val componentInstances = nestedMembers.map { member =>
-      val memberResource = member.asResource()
-      pipelineExtractor.extractComponentInstance(memberResource, graphModel)
+    val nestedPipelines = graphModel.listObjectsOfProperty(LDVM.nestedPipeline).toList
+    val componentInstances = nestedPipelines.flatMap {p =>
+      val nestedMembers = graphModel.listObjectsOfProperty(LDVM.member).toList
+      nestedMembers.map { member =>
+        val memberResource = member.asResource()
+        pipelineExtractor.extractComponentInstance(memberResource, graphModel)
+      }
     }
     componentInstances
   }

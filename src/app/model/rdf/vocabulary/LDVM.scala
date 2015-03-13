@@ -16,7 +16,7 @@ object LDVM extends Vocabulary {
   lazy val outputTemplate = m.createProperty(PREFIX_URL, "outputTemplate")
   lazy val outputDataSample = m.createProperty(PREFIX_URL, "outputDataSample")
   lazy val member = m.createProperty(PREFIX_URL, "member")
-  lazy val nestedMember = m.createProperty(PREFIX_URL, "nestedMember")
+  lazy val nestedPipeline = m.createProperty(PREFIX_URL, "nestedPipeline")
   lazy val instanceOf = m.createProperty(PREFIX_URL, "instanceOf")
   lazy val dataPortInstanceOf = m.createProperty(PREFIX_URL, "dataportInstanceOf")
   lazy val inputInstance = m.createProperty(PREFIX_URL, "inputInstance")
