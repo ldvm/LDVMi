@@ -83,6 +83,7 @@ package object api {
     implicit val propertyWrites = Json.writes[Property]
 
     implicit val visualizerWrites = Json.writes[ComponentTemplate]
+    implicit val coordWrites = Json.writes[Coordinates]
     implicit val markerWrites = Json.writes[Marker]
 
     /*implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {

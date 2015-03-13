@@ -2,7 +2,10 @@
 
     <div class="col-lg-3" id="left">
 
-
+        <div ng-hide="queryingDataset || properties.length" class="alert alert-danger">
+            No filtering properties discovered. Press Refresh button to visualize
+            all unfiltered data. It may take a while...
+        </div>
 
         <div ng-repeat="property in properties">
             <ul class="list-group">
@@ -41,7 +44,8 @@
             <div class="alert alert-info">
                 <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
             </div>
-            <osm entities="entities" colors="colors" style="width: 100%; height: 800px;"></osm>
+            <osm ng-if="entities" entities="entities" colors="colors" style="width: 100%; height: 800px;"></osm>
+            <gmaps ng-if="markers" markers="markers" zoom="zoom" center="center" style="width: 100%; height: 800px;"></gmaps>
         </div>
 
     </div>

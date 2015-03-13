@@ -2,7 +2,7 @@ package model.rdf.sparql.geo.extractor
 
 import com.hp.hpl.jena.query.{QueryExecution, QuerySolution}
 import model.rdf.extractor.QueryExecutionResultExtractor
-import model.rdf.sparql.geo.{MapQueryData, Marker}
+import model.rdf.sparql.geo.{Coordinates, MapQueryData, Marker}
 import model.rdf.sparql.geo.query.{MarkerQuery, GeoPropertiesQuery}
 
 import scala.collection.JavaConversions._
@@ -14,8 +14,10 @@ class MarkerExtractor(queryData: MapQueryData) extends QueryExecutionResultExtra
     val markerIterator = results.map { querySolution =>
       Marker(
         querySolution.getResource("s").getURI,
-        querySolution.getLiteral("lat").getFloat,
-        querySolution.getLiteral("lng").getFloat
+        Coordinates(
+          querySolution.getLiteral("lat").getFloat,
+          querySolution.getLiteral("lng").getFloat
+        )
       )
     }
 

@@ -141,8 +141,11 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                     MapService.markers({evaluationId: $id}, {filters: filters}, function (data) {
                         $scope.queryingDataset = null;
-                        $scope.entities = data;
+                        $scope.markers = data;
                     });
+
+                    $scope.zoom = 10;
+                    $scope.center = {lat: 49, lng: 15};
                 };
 
             }]);
