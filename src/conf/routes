@@ -12,6 +12,7 @@ GET         /pipelines                                      @controllers.Pipelin
 GET         /components                                     @controllers.ComponentTemplateController.index
 
 POST        /ttlupload                                      @controllers.VisualizationController.ttlupload()
+POST        /ttldl                                          @controllers.VisualizationController.ttldownload()
 GET         /ttlds                                          @controllers.VisualizationController.ttlds()
 GET         /discover/                                      @controllers.VisualizationController.discover(endpointUrl: Option[String] ?= None, graphUris: Option[String] ?= None)
 

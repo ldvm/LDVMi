@@ -9,6 +9,7 @@ import com.hp.hpl.jena.vocabulary.RDF
 import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCompatibilityChecker, SparqlEndpointCompatibilityChecker}
 import model.entity._
 import model.rdf.Graph
+import model.rdf.sparql.GenericSparqlEndpoint
 import model.rdf.vocabulary.{DSPARQL, SD}
 import model.service.SessionScoped
 import play.api.Play.current
@@ -24,18 +25,10 @@ import scala.concurrent.{Future, Promise}
 object EndpointConfig {
   def apply(ttl: Option[String]): Option[(String, Option[String])] = {
     Graph(ttl).flatMap { g =>
-      val jenaModel = g.jenaModel
-      val configs = jenaModel.listSubjectsWithProperty(RDF.`type`, DSPARQL.SparqlEndpointDataSourceConfiguration).toList
-      configs.flatMap { c =>
-        val services = c.asResource().listProperties(DSPARQL.service).toList
-        services.map { s =>
-          val endpoints = s.getObject.asResource().listProperties(SD.endpoint).toList
-          val endpointUris = endpoints.map { e =>
-            e.getObject.asResource.getURI
-          }
-          endpointUris.map { e => (e, None)}
-        }.head
-      }.headOption
+      val maybeEndpointUrl = GenericSparqlEndpoint.getEndpointUrl(Seq(Some(g)))
+      val maybeGraphUri = GenericSparqlEndpoint.getNamedGraphs(Seq(Some(g)))
+
+      maybeEndpointUrl.map(e => (e, maybeGraphUri.headOption))
     }
   }
 }

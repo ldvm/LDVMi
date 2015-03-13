@@ -39,7 +39,7 @@
                 <span class="glyphicon glyphicon-remove" ng-show="!pipeline.isTemporary"></span>
             </td>
             <td data-title="'Discovery'" class="text-center">
-                <a ng-href="#/list/?discoveryId={{pipeline.pipelineDiscovery}}" ng-show="pipeline.pipelineDiscovery">Detail</a>
+                <a ng-href="#/list/?discoveryId={{pipeline.pipelineDiscovery}}" ng-show="pipeline.pipelineDiscovery">Filter</a>
             </td>
             <td data-title="'Last modified'" style="white-space: nowrap;">
                 <span am-time-ago="time(pipeline.modifiedUtc, pipeline.createdUtc)" tooltip="{{time(pipeline.modifiedUtc, pipeline.createdUtc) | date : 'medium'}}"></span>

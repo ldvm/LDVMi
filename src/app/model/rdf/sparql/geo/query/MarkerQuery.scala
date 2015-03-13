@@ -27,6 +27,9 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
           "%r", Matcher.quoteReplacement(getRestrictions(queryData.filters)))
         .replaceAll("%v", if (queryData.filters.nonEmpty) { "?v1" } else {"" })
         .stripMargin
+
+    println(q)
+
     q
   }
 
@@ -43,7 +46,7 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
   private def getRestrictions(rule: Map[String, Seq[ValueFilter]]): String = {
     rule.map { case (uri, valueFilters) =>
       """
-        |  ?s <%s> %v
+        |  ?g <%s> %v
         |  %rf
       """
         .replaceAll("%s", uri)

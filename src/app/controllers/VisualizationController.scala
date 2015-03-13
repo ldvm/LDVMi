@@ -1,5 +1,7 @@
 package controllers
 
+import java.net.URL
+
 import model.entity.{PipelineEvaluation, PipelineEvaluationId}
 import model.rdf.Graph
 import model.service.PipelineService
@@ -21,6 +23,20 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
       val filename = ttl.filename
       val contentType = ttl.contentType
       Graph(ttl.ref.file).map { g =>
+        val urn = g.pushToRandomGraph
+        Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn)))
+      }.getOrElse {
+        UnprocessableEntity
+      }
+    }.getOrElse {
+      Redirect(routes.ApplicationController.index()).flashing(
+        "error" -> "Missing file")
+    }
+  }
+
+  def ttldownload = Action(parse.urlFormEncoded) { request =>
+    request.body.get("ttlurl").map { url =>
+      Graph(new URL(url.head)).map { g =>
         val urn = g.pushToRandomGraph
         Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn)))
       }.getOrElse {

@@ -41,7 +41,7 @@ object GenericSparqlEndpoint {
     }
   }
 
-  private def getEndpointUrl(configurations: Seq[Option[Graph]]): Option[String] = {
+  def getEndpointUrl(configurations: Seq[Option[Graph]]): Option[String] = {
 
     configurations.filter(_.isDefined).map(_.get.jenaModel).flatMap { configurationModel =>
       val serviceStatements = configurationModel.listStatements(null, DSPARQL.service, null).toList
@@ -52,11 +52,11 @@ object GenericSparqlEndpoint {
 
   }
 
-  private def getDefaultGraphs(configurations: Seq[Option[Graph]]): Seq[String] = {
+  def getDefaultGraphs(configurations: Seq[Option[Graph]]): Seq[String] = {
     getGraphs(configurations, SD.defaultGraph)
   }
 
-  private def getNamedGraphs(configurations: Seq[Option[Graph]]): Seq[String] = {
+  def getNamedGraphs(configurations: Seq[Option[Graph]]): Seq[String] = {
     getGraphs(configurations, SD.namedGraph)
   }
 

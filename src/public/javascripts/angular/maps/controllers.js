@@ -144,7 +144,8 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         $scope.markers = data;
                     });
 
-                    $scope.zoom = 10;
+                    $scope.zoom = 3;
+                    $scope.fitBounds = true;
                     $scope.center = {lat: 49, lng: 15};
                 };
 
