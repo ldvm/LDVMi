@@ -52,7 +52,6 @@ POST        /api/datacube/slices/:id                        @controllers.api.Dat
 #GET         /api/visualization/cached/:id/:token            @controllers.api.VisualizationApiController.getCachedResult(id: Long, token: String)
 #GET         /api/visualization/add-datasource               @controllers.api.VisualizationApiController.addDataSource(endpointUri: String, graphUri: Option[String])
 #GET         /api/visualization/add                          @controllers.api.VisualizationApiController.addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String])
-#GET         /api/visualization/payola/:evaluationId         @controllers.api.VisualizationApiController.addPayola(evaluationId: String)
 #GET         /api/visualization/:id                          @controllers.api.VisualizationApiController.get(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
