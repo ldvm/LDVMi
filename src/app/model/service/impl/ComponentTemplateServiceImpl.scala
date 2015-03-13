@@ -69,7 +69,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     analyzers ++ visualizers ++ transformers ++ dataSources
   }
 
-  def getAllForDiscovery(maybeDs: Option[(String, Seq[String])] = None)
+  def getAllForDiscovery(maybeDs: Option[(String, Seq[String])] = None, combine: Boolean)
     (implicit session: Session): Map[ComponentType, Seq[SpecificComponentTemplate]] = {
 
     val maybeDsId = maybeDs.map(asTemporaryDataSourceTemplate)
@@ -77,9 +77,11 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
       dataSourceTemplateRepository.findById(i)
     }
 
-    val datasources = if(maybeDsTemplate.isDefined){
+    val datasources = if(combine) {
+      maybeDsTemplate.toSeq ++ dataSourceTemplateRepository.findPermanent
+    } else if(maybeDsTemplate.isDefined){
       maybeDsTemplate.toSeq
-    }else{
+    } else {
       dataSourceTemplateRepository.findPermanent
     }
 

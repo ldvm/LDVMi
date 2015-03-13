@@ -24,7 +24,8 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
       val contentType = ttl.contentType
       Graph(ttl.ref.file).map { g =>
         val urn = g.pushToRandomGraph
-        Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn)))
+        val combine = request.body.dataParts.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
+        Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine))
       }.getOrElse {
         UnprocessableEntity
       }
@@ -38,7 +39,8 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     request.body.get("ttlurl").map { url =>
       Graph(new URL(url.head)).map { g =>
         val urn = g.pushToRandomGraph
-        Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn)))
+        val combine = request.body.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
+        Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine))
       }.getOrElse {
         UnprocessableEntity
       }
@@ -73,9 +75,15 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     pipelineService.findEvaluationById(PipelineEvaluationId(id)).map(func).getOrElse(NotFound)
   }
 
-  def discover(endpointUrl: Option[String] = None, graphUris: Option[String] = None) = Action {
+  def discover(endpointUrl: Option[String] = None, graphUris: Option[String] = None, combine: Boolean = false) = Action {
 
-    TemporaryRedirect("/pipelines#/discover?endpointUrl=" + endpointUrl.orNull + graphUris.map("&graphUris=" + _).getOrElse(""))
+    val n = if(combine){1}else{0}
+
+    val url: String = "/pipelines#/discover?endpointUrl=" +
+      endpointUrl.orNull +
+      graphUris.map("&graphUris=" + _).getOrElse("") + "&combine=" + n.toString
+
+    TemporaryRedirect(url)
   }
 
 }

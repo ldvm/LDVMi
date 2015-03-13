@@ -18,7 +18,13 @@
             </div>
             <div class="form-group has-warning has-feedback" ng-show="showMore">
                 <textarea placeholder="Enter graphURIs, one per each line" ng-model="graphUris"
-                       class="input-lg form-control" name="graphUris"></textarea>
+                          class="input-lg form-control" name="graphUris"></textarea>
+
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="combine"> Combine with another datasources
+                    </label>
+                </div>
             </div>
 
             <div style="text-align: center;">

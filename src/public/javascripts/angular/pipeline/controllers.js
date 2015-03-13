@@ -46,6 +46,9 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     if ($scope.showMore && $scope.graphUris) {
                         uri += "&graphUris=" + $scope.graphUris;
                     }
+                    if ($scope.showMore && $scope.combine) {
+                        uri += "&combine=1";
+                    }
                 }
                 window.location.href = uri;
 
@@ -140,6 +143,9 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     uri += "?endpointUrl=" + $routeParams.endpointUrl;
                     if ("graphUris" in $routeParams && $routeParams.graphUris) {
                         uri += "&graphUris=" + $routeParams.graphUris;
+                    }
+                    if($routeParams.combine && $routeParams.combine > 0){
+                        uri += "&combine=true";
                     }
                 }
                 var connection = $connection(uri);

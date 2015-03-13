@@ -19,7 +19,7 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
     (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
     (implicit session: Session): Seq[Pipeline]
 
-  def discover(reporterProps: Props, maybeDs: Option[(String, Seq[String])] = None)(implicit session: Session): PipelineDiscoveryId
+  def discover(reporterProps: Props, maybeDs: Option[(String, Seq[String])] = None, combine: Boolean = false)(implicit session: Session): PipelineDiscoveryId
 
   def evaluate(pipelineId: PipelineId)(reporterProps: Props)(implicit session: Session): Option[PipelineEvaluationId]
 

@@ -14,13 +14,13 @@ GET         /components                                     @controllers.Compone
 POST        /ttlupload                                      @controllers.VisualizationController.ttlupload()
 POST        /ttldl                                          @controllers.VisualizationController.ttldownload()
 GET         /ttlds                                          @controllers.VisualizationController.ttlds()
-GET         /discover/                                      @controllers.VisualizationController.discover(endpointUrl: Option[String] ?= None, graphUris: Option[String] ?= None)
+GET         /discover/                                      @controllers.VisualizationController.discover(endpointUrl: Option[String] ?= None, graphUris: Option[String] ?= None, combine: Boolean ?= false)
 
 POST        /api/v1/components/add/ttl                      @controllers.api.LdvmApiController.ttl
 GET         /api/v1/compatibility/check/:pipelineId         @controllers.api.CompatibilityApiController.check(pipelineId: Long)
 GET         /api/v1/pipelines/evaluate/:pipelineId          @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
 GET         /api/v1/pipelines                               @controllers.api.PipelineApiController.list(skip: Int ?= 0, pageSize: Int ?= 50, discoveryId: Option[Long] ?= None, visualizerId: Option[Long] ?= None)
-GET         /api/v1/pipelines/discover                      @controllers.api.PipelineApiController.discover(endpointUrl: Option[String] ?= None, graphUris: Option[String] ?= None)
+GET         /api/v1/pipelines/discover                      @controllers.api.PipelineApiController.discover(endpointUrl: Option[String] ?= None, graphUris: Option[String] ?= None, combine: Boolean ?= false)
 GET         /api/v1/pipelines/evaluations/:id               @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
 #GET         /api/v1/pipelines/discovery/:id                @controllers.api.PipelineApiController.discoveryState(id: Long)
 GET         /api/v1/pipelines/visualization/:id             @controllers.api.PipelineApiController.visualizationById(id: Long)
