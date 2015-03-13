@@ -4,7 +4,7 @@ import akka.actor.{Actor, Props, ActorRef}
 import controllers.api.JsonImplicits._
 import model.actor.CheckCompatibilityResponse
 import model.entity.{DataPortBindingSetCompatibilityCheck, ComponentInstanceCompatibilityCheck, FeatureCompatibilityCheck, DescriptorCompatibilityCheck}
-import play.api.libs.json.{Json, JsString, JsObject}
+import play.api.libs.json.{JsValue, Json, JsString, JsObject}
 
 object ProgressReporter {
   def props(out: ActorRef) = Props(new ProgressReporter(out))
@@ -36,6 +36,7 @@ class ProgressReporter(jsLogger: ActorRef) extends Actor {
       jsLogger ! Json.toJson(pipelineCheck)
     }
     case r : CheckCompatibilityResponse => jsLogger ! Json.toJson(r)
+    case j: JsValue => jsLogger ! j
     case msg: String => jsLogger ! JsObject(Seq(("message", JsString(msg))))
   }
 }

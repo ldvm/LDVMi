@@ -30,7 +30,6 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
 
   def discoverPipelines(dataSources: Seq[DataSourceTemplate])(implicit session: Session): PipelineDiscoveryId = {
-    println(dataSources)
     reportProgress(discovery.lastPerformedIteration, discovery.isFinished, discovery.pipelinesDiscoveredCount, discovery.isSuccess)
     iterate(0, pipelinesFromDataSources(dataSources), Seq())
     discoveryId
@@ -39,6 +38,8 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
   def iterate(iterationNumber: Int, givenPartialPipelines: Seq[PartialPipeline], givenCompletedPipelines: Seq[PartialPipeline]): Future[Seq[PartialPipeline]] = {
 
     reportMessage("****** Starting iteration " + iterationNumber + " with " + givenPartialPipelines.size + " partial pipeline(s)")
+
+
 
     val eventualCreatedPipelines = Future.sequence(tryAddAllComponents(givenPartialPipelines))
     eventualCreatedPipelines.map(_.flatten).flatMap { createdPipelines =>
@@ -49,11 +50,11 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
         val createdPartialPipelines = createdPartialPartitions._1
         val createdCompletedPipelines = createdPartialPartitions._2
 
-        reportMessage("~~~~~~ Created partial pipelines: " + createdPartialPipelines.size)
+        reportMessage("Created partial pipelines: " + createdPartialPipelines.size)
 
         val allCompleted = givenCompletedPipelines ++ createdCompletedPipelines
 
-        reportMessage("|||||| All completed pipelines: " + allCompleted.size)
+        reportMessage("All completed pipelines: " + allCompleted.size)
 
         try {
           pipelineService.saveDiscoveryResults(discoveryId, createdCompletedPipelines, reporter)
