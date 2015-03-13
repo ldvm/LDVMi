@@ -17,7 +17,7 @@ case class ComponentInstance(
   uri: String,
   title: String,
   description: Option[String],
-  componentId: ComponentTemplateId,
+  componentTemplateId: ComponentTemplateId,
   configuration: Option[String] = None,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
@@ -43,14 +43,14 @@ case class ComponentInstance(
 
   def descriptorsAppliedTo(inputInstance: InputInstance)(implicit session: Session) : Seq[Descriptor] = {
     (for {
-      ctf <- componentFeaturesQuery if ctf.componentTemplateId === componentId
+      ctf <- componentFeaturesQuery if ctf.componentTemplateId === componentTemplateId
       d <- descriptorsQuery if d.featureId === ctf.featureId && d.inputTemplateId === inputInstance.inputTemplateId
     } yield d).list
   }
 
   def componentTemplate(implicit session: Session) : ComponentTemplate = {
     (for {
-      c <- componentTemplatesQuery if c.id === componentId
+      c <- componentTemplatesQuery if c.id === componentTemplateId
     } yield c).first
   }
 

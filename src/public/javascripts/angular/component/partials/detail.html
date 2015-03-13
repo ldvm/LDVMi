@@ -1,4 +1,14 @@
+
+<div class="panel panel-default" ng-if="componentType == 'visualizer'">
+    <div class="panel-body">
+        <div class="text-right">
+            <a href="/pipelines#/list?visualizerId={{component.id}}" class="btn btn-default">List pipelines using this visualizer</a>
+        </div>
+    </div>
+</div>
+
 <h2>{{component.title}}</h2>
+
 <p>Type: {{componentType}}</p>
 <p>{{component.description}}</p>
 <p>{{component.uri}}</p>

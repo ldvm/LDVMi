@@ -9,15 +9,23 @@ class PipelineRepository extends CrudRepository[PipelineId, Pipeline, PipelineTa
 
   def findPaginatedFilteredOrdered[T <% Ordered]
   (skip: Int = 0, pageSize: Int = 0)
-    (pipelineDiscoveryId: Option[PipelineDiscoveryId] = None)
+    (pipelineDiscoveryId: Option[PipelineDiscoveryId] = None, visualizerId: Option[ComponentTemplateId] = None)
     (f: PipelineTable => T)(implicit s: Session)
   : Seq[Pipeline] = {
-    pipelineDiscoveryId.map { id =>
+
+    if(visualizerId.isDefined){
       (for {
-        e <- query.filter(_.pipelineDiscoveryId === pipelineDiscoveryId).sortBy(f).drop(skip).take(pageSize)
-      } yield e).list
-    }.getOrElse {
-      super.findPaginatedOrdered(skip, pageSize)(f)
+        e <- query
+      } yield e).list.filter(_.componentInstances.exists(_.componentTemplateId == visualizerId.get))
+    } else {
+      pipelineDiscoveryId.map { id =>
+        (for {
+          e <- query.filter(_.pipelineDiscoveryId === pipelineDiscoveryId).sortBy(f).drop(skip).take(pageSize)
+        } yield e).list
+      }.getOrElse {
+        super.findPaginatedOrdered(skip, pageSize)(f)
+      }
     }
+
   }
 }

@@ -13,7 +13,8 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     page: page,            // show first page
                     count: count,           // count per page,
                     filter: {
-                        discoveryId: $routeParams.discoveryId
+                        discoveryId: $routeParams.discoveryId,
+                        visualizerId: $routeParams.visualizerId
                     },
                     sorting: {
                         //name: 'asc'

@@ -15,7 +15,7 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
     pipelines.map(save)
   }
 
-  def findPaginatedFiltered[T <% Ordered](skip: Int = 0, take: Int = 50, pipelineDiscoveryId: Option[PipelineDiscoveryId] = None)
+  def findPaginatedFiltered[T <% Ordered](skip: Int = 0, take: Int = 50, pipelineDiscoveryId: Option[PipelineDiscoveryId] = None, visualizerId: Option[ComponentTemplateId] = None)
     (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
     (implicit session: Session): Seq[Pipeline]
 

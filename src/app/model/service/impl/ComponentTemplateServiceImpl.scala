@@ -214,7 +214,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
           uri = instance.componentInstance.uri,
           title = instance.componentInstance.label.getOrElse("Unlabeled instance"),
           description = None,
-          componentId = concreteComponent.componentTemplateId,
+          componentTemplateId = concreteComponent.componentTemplateId,
           configuration = configString
         ))
 

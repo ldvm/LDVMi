@@ -3,7 +3,7 @@ package controllers.api
 import akka.actor._
 import controllers.api.JsonImplicits._
 import controllers.api.ProgressReporter._
-import model.entity.{PipelineDiscoveryId, Pipeline, PipelineId}
+import model.entity.{ComponentTemplateId, PipelineDiscoveryId, Pipeline, PipelineId}
 import model.service.PipelineService
 import play.api.db
 import play.api.db.slick._
@@ -43,12 +43,13 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     Ok(result)
   }
 
-  def list(skip: Int = 0, take: Int = 50, discoveryId: Option[Long] = None) = DBAction { implicit rws =>
+  def list(skip: Int = 0, take: Int = 50, discoveryId: Option[Long] = None, visualizerId: Option[Long] = None) = DBAction { implicit rws =>
 
     val pipelineDiscoveryId = discoveryId.map(PipelineDiscoveryId.apply)
+    val visualizerTemplateId = visualizerId.map(ComponentTemplateId.apply)
 
     val result = JsObject(Seq(
-      "data" -> Json.toJson(pipelineService.findPaginatedFiltered(skip, take, pipelineDiscoveryId)()),
+      "data" -> Json.toJson(pipelineService.findPaginatedFiltered(skip, take, pipelineDiscoveryId, visualizerTemplateId)()),
       "count" -> JsNumber(pipelineService.countAll)
     ))
 

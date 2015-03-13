@@ -23,7 +23,7 @@ case class AnalyzerTemplate(
 
 class AnalyzerTemplateTable(tag: Tag) extends IdEntityTable[AnalyzerTemplateId, AnalyzerTemplate](tag, "analyzer_templates") {
 
-  def componentTemplate = foreignKey("fk_at_ctt_component_template_id", componentTemplateId, componentTemplatesQuery)(_.id)
+  def componentTemplate = foreignKey("fks_at_ctt_component_template_id", componentTemplateId, componentTemplatesQuery)(_.id)
 
   def componentTemplateId = column[ComponentTemplateId]("component_template_id", O.NotNull)
 
