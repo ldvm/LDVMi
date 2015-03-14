@@ -170,7 +170,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                             }
 
                             if(data.isFinished && data.isSuccess){
-                                //window.location.href = "/pipelines#/list?discoveryId="+data.id;
+                                window.location.href = "/pipelines#/list?discoveryId="+data.id;
                             }
                         }
 
