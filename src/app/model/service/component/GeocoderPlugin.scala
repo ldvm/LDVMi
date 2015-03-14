@@ -73,9 +73,6 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
         val p = dataModel.getProperty("http://ruian.linked.opendata.cz/ontology/links/obec")
         val entities = dataModel.listObjectsOfProperty(p).toList
         entities.foreach { e =>
-
-          println(e.asResource().getURI)
-
           val q = geoQueryPattern.replaceAll("%o%",e.asResource().getURI)
           val model = geoEndpoint.queryExecutionFactory()(q).execConstruct()
 
