@@ -47,6 +47,7 @@ class InternalComponent(val componentInstance: ComponentInstance, reporterProps:
       componentInstance.componentTemplate.uri match {
         case "http://linked.opendata.cz/resource/ldvm/analyzer/sparql/SparqlAnalyzerTemplate" => new SparqlPlugin(this)
         case "http://linked.opendata.cz/resource/ldvm/analyzer/union/UnionAnalyzerTemplate" => new UnionPlugin(this)
+        case "http://ldvm.opendata.cz/resource/template/analyzer/ruian/geocoder" => new GeocoderPlugin(this)
         case _ => {
           throw new NotImplementedError()
         }

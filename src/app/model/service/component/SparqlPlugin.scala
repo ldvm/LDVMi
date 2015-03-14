@@ -3,6 +3,7 @@ package model.service.component
 import java.util.UUID
 
 import akka.actor.Props
+import model.entity.ComponentInstance
 import model.rdf.Graph
 import model.rdf.sparql.GenericSparqlEndpoint
 import play.api.libs.concurrent.Akka
@@ -47,4 +48,6 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
       queryObjects.headOption.map(_.asLiteral().getString)
     }
   }
+
+  override def componentInstance: ComponentInstance = internalComponent.componentInstance
 }

@@ -3,6 +3,7 @@ package model.service.component
 import java.util.UUID
 
 import akka.actor.Props
+import model.entity.ComponentInstance
 import model.rdf.sparql.GenericSparqlEndpoint
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
@@ -42,4 +43,6 @@ class UnionPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
       (endpointUrl, Some(resultGraph))
     }
   }
+
+  override def componentInstance: ComponentInstance = internalComponent.componentInstance
 }

@@ -45,7 +45,12 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
     setResponse(sender(), dataReference)
 
     val coveredInputUris = dataReferencesBySender.map { case (_, DataReference(portUri, _, _)) => portUri}.distinct
-    val canExecute = (coveredInputUris == allInputUris) && (expectedDataRefSenders.isEmpty || (dataReferencesBySender.map(_._1).toSeq == expectedDataRefSenders.toSeq))
+
+    val allInputsCovered = (coveredInputUris.toSet == allInputUris.toSet)
+    val nothingExpected = expectedDataRefSenders.isEmpty
+    val allExpectedReceived = (dataReferencesBySender.map(_._1).toSet == expectedDataRefSenders.toSet)
+
+    val canExecute = allInputsCovered && (nothingExpected || allExpectedReceived)
     if (canExecute) {
       if (component.isVisualizer) {
         resultReceiver.map { r => r ! Result(dataReferencesBySender.map(_._2))}
@@ -64,7 +69,7 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
         }
       }
     }else {
-      logger ! "Cannot exec yet."
+      logger ! "Cannot exec yet: ((aic: "+allInputsCovered+") && (nex: "+nothingExpected+" || aer: "+allExpectedReceived+"))"
     }
   }
 
