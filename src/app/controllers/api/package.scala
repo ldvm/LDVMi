@@ -37,7 +37,7 @@ package object api {
 
     implicit val specificComponentWrites : Writes[(Option[SpecificComponentTemplate], ComponentTemplate)] = Writes { case (sc, c) =>
       JsObject(Seq(
-        "id" -> Json.toJson(sc.map(_.id).orNull),
+        "id" -> Json.toJson(sc.map(_.id)),
         "componentType" -> Json.toJson(sc.map(_.componentType.toString)),
         "componentTemplate" -> Json.toJson(c)
       ))

@@ -11,7 +11,7 @@ class AnalyzerTemplateRepository extends CrudRepository[AnalyzerTemplateId, Anal
     (for {
       sct <- query
       ctf <- componentFeaturesQuery if ctf.componentTemplateId === sct.componentTemplateId
-      f <- featuresQuery if f.isMandatory
+      f <- featuresQuery if f.isMandatory && f.id === ctf.featureId
       d <- descriptorsQuery if d.featureId === f.id
     } yield sct).list.distinct
   }

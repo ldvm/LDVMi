@@ -18,7 +18,7 @@ import utils.CombinatoricsUtils
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 
-class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[SpecificComponentTemplate]], reporterProps: Props, maxIterations: Int = 10)
+class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[SpecificComponentTemplate]], reporterProps: Props, maxIterations: Int = 5)
   (implicit val inj: Injector, implicit val session: Session) extends SessionScoped with Injectable {
 
   val pipelineDiscoveryRepository = inject[PipelineDiscoveryRepository]
@@ -68,12 +68,10 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
         }
 
         val usedPartialPipelines = givenPartialPipelines.map {
-          case PartialPipeline(m, p, _) => PartialPipeline(m, p, notUsed = false)
+          case PartialPipeline(m, p, _) => PartialPipeline(m, p, used = true)
         }
 
-        reportMessage("Already used partial pipelines: " + usedPartialPipelines.size)
-
-        val allPartial = usedPartialPipelines ++ createdPartialPipelines
+        val allPartial = (usedPartialPipelines ++ createdPartialPipelines)
 
         reportMessage("All partial pipelines: " + allPartial.size)
 
@@ -152,9 +150,13 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
     val eventualPortResponses = inputTemplates.map { inputTemplate =>
       val futures = partialPipelines
-        .filter(_.notUsed)
+        //.filter(!_.used)
         .filter(_.componentInstances.last.hasOutput)
-        .map { partialPipeline =>
+        .collect {
+
+        case partialPipeline if componentToAdd.componentInstance.componentTemplate.uri != partialPipeline.componentInstances.last.componentTemplate.uri =>
+
+
         val portUri = inputTemplate.dataPortTemplate.uri
         val lastComponent = InternalComponent(partialPipeline.componentInstances.last, ProgressReporter.props)
 
@@ -200,7 +202,9 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
     }
     case s => {
       val solutions = s.map(_.collect { case Some(y) => y})
-      val solutionCombinations = CombinatoricsUtils.combine(solutions)
+      val solutionCombinations = CombinatoricsUtils.combine(solutions).filter { combination =>
+        combination.exists(_._2.used == false) //at least one needs to be unused
+      }
 
       reportMessage("Found " + solutionCombinations.size + " solution(s).")
 

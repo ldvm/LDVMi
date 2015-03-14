@@ -6,10 +6,12 @@ case class PortMapping(sourceComponentInstance: ComponentInstance, targetCompone
   override def toString = sourceComponentInstance.toString + "<-" + targetComponentInstance.toString
 }
 
-case class PartialPipeline(componentInstances: Seq[ComponentInstance], portMappings: Seq[PortMapping], notUsed : Boolean = true) {
+case class PartialPipeline(componentInstances: Seq[ComponentInstance], portMappings: Seq[PortMapping], used : Boolean = false) {
   override def toString =
     """
       components: """ + componentInstances.toString() +
       """
-      portMappings: """ + portMappings.toString()
+      portMappings: """ + portMappings.toString() + """
+      used: """ + used.toString
+
 }
