@@ -16,7 +16,6 @@ import scala.collection.JavaConversions._
 class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
   override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
     val endpointUrl = "http://live.payola.cz:8890/sparql"
-    val resultGraph = "urn:" + UUID.randomUUID().toString
 
     val reporter = Akka.system.actorOf(reporterProps)
     reporter ! "Running implementation of GEOcoder plugin"
@@ -59,29 +58,34 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
 
         val geoEndpoint = new GenericSparqlEndpoint(geoRef.get.endpointUri, geoRef.get.graphUri.toSeq, List())
 
-        // one day, a query like this won't throw HTTP 500 without the LIMIT clause
-        val dataQuery = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 200000"
-        val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUri.toSeq, List())
-        val dataModel = dataEndpoint.queryExecutionFactory()(dataQuery).execConstruct()
+        if(datasetRef.get.endpointUri == endpointUrl) {
+          // one day, a query like this won't throw HTTP 500 without the LIMIT clause
+          val dataQuery = "CONSTRUCT { ?s <http://ruian.linked.opendata.cz/ontology/links/obec> ?o } WHERE { ?s <http://ruian.linked.opendata.cz/ontology/links/obec> ?o }"
+          val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUri.toSeq, List())
+          val dataModel = dataEndpoint.queryExecutionFactory()(dataQuery).execConstruct()
 
-        // for each entity from model having geolink, add another data
-        val p = dataModel.getProperty("http://ruian.linked.opendata.cz/ontology/links/obec")
-        val entities = dataModel.listStatements(null, p, null).toList
+          // for each entity from model having geolink, add another data
+          val p = dataModel.getProperty("http://ruian.linked.opendata.cz/ontology/links/obec")
+          val entities = dataModel.listStatements(null, p, null).toList
 
-        reporter ! "Trying to link " + entities.size() + " geo entities"
+          reporter ! "Trying to link " + entities.size() + " geo entities"
 
-        entities.foreach { e =>
-          val q = geoQueryPattern
-            .replaceAll("%town%",e.getObject.asResource().getURI)
-            .replaceAll("%subject%", e.getSubject.asResource().getURI)
+          entities.foreach { e =>
+            val q = geoQueryPattern
+              .replaceAll("%town%", e.getObject.asResource().getURI)
+              .replaceAll("%subject%", e.getSubject.asResource().getURI)
 
-          val model = geoEndpoint.queryExecutionFactory()(q).execConstruct()
+            val model = geoEndpoint.queryExecutionFactory()(q).execConstruct()
 
-          dataModel.add(model)
+            dataModel.add(model)
+          }
+
+          pushToTripleStore(dataModel, endpointUrl, datasetRef.get.graphUri.head)(reporterProps)
+          (endpointUrl, Some(datasetRef.get.graphUri.head))
+        }else {
+          val resultGraph = "urn:" + UUID.randomUUID().toString
+          (endpointUrl, Some(resultGraph))
         }
-
-
-        pushToTripleStore(dataModel, endpointUrl, resultGraph)(reporterProps)
       } catch {
         case e: QueryExceptionHTTP => {
           reporter ! "Error when querying: " + e.getResponseCode + " : " + e.getResponseMessage
@@ -92,8 +96,6 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
         }
       }
       }
-
-      (endpointUrl, Some(resultGraph))
     }
   }
 
