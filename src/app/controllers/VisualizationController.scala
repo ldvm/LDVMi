@@ -31,7 +31,7 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
         body.file("ttlfile").map { ttl =>
         forwardToTriplestore(ttl.ref.file, ttl.contentType).map { urn =>
           val combine = body.dataParts.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
-          Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine))
+          Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine, Some(ttl.filename)))
         }.getOrElse {
           Redirect(routes.ApplicationController.index()).flashing("error" -> "Not a valid TTL file.")
         }
@@ -79,7 +79,7 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
       Graph(new URL(url.head)).map { g =>
         val urn = g.pushToRandomGraph
         val combine = request.body.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
-        Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine))
+        Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine, url.headOption))
       }.getOrElse {
         UnprocessableEntity
       }
@@ -114,13 +114,15 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     pipelineService.findEvaluationById(PipelineEvaluationId(id)).map(func).getOrElse(NotFound)
   }
 
-  def discover(endpointUrl: Option[String] = None, graphUris: Option[String] = None, combine: Boolean = false) = Action {
+  def discover(endpointUrl: Option[String] = None, graphUris: Option[String] = None, combine: Boolean = false, name: Option[String] = None) = Action {
 
     val n = if(combine){1}else{0}
 
     val url: String = "/pipelines#/discover?endpointUrl=" +
       endpointUrl.orNull +
-      graphUris.map("&graphUris=" + _).getOrElse("") + "&combine=" + n.toString
+      graphUris.map("&graphUris=" + _).getOrElse("") +
+        "&combine=" + n.toString +
+        name.map("&name=" + _).getOrElse("")
 
     TemporaryRedirect(url)
   }

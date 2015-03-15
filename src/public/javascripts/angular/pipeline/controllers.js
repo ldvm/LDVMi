@@ -147,6 +147,9 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     if($routeParams.combine && $routeParams.combine > 0){
                         uri += "&combine=true";
                     }
+                    if($routeParams.name && $routeParams.name.length > 0){
+                        uri += "&name="+$routeParams.name;
+                    }
                 }
                 var connection = $connection(uri);
                 connection.listen(function () {

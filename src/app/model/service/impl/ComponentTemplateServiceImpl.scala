@@ -69,10 +69,10 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     analyzers ++ visualizers ++ transformers ++ dataSources
   }
 
-  def getAllForDiscovery(maybeDs: Option[(String, Seq[String])] = None, combine: Boolean)
+  def getAllForDiscovery(maybeDs: Option[(String, Seq[String])] = None, combine: Boolean, name: Option[String] = None)
     (implicit session: Session): Map[ComponentType, Seq[SpecificComponentTemplate]] = {
 
-    val maybeDsId = maybeDs.map(asTemporaryDataSourceTemplate)
+    val maybeDsId = maybeDs.map(d => asTemporaryDataSourceTemplate(d, name))
     val maybeDsTemplate = maybeDsId.flatMap { i =>
       dataSourceTemplateRepository.findById(i)
     }
@@ -117,7 +117,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     model
   }
 
-  private def asTemporaryDataSourceTemplate(ds: (String, Seq[String]))(implicit session: Session): DataSourceTemplateId = {
+  private def asTemporaryDataSourceTemplate(ds: (String, Seq[String]), name: Option[String] = None)(implicit session: Session): DataSourceTemplateId = {
 
     val uuid = UUID.randomUUID().toString
     val resourceUri = "http://payola.cz/resource/temporary/"+uuid
@@ -125,9 +125,15 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     val dataPortTemplate = model.dto.DataPortTemplate(resourceUri+"/output",None,None)
     val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
 
+    val storedName = if(name.isDefined){
+      name
+    }else{
+      Some(ds._1)
+    }
+
     val componentTemplate = model.dto.ComponentTemplate(
       resourceUri,
-      Some(ds._1),
+      storedName,
       None,
       Some(config(ds, resourceUri)),
       Seq(),
