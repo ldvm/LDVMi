@@ -39,13 +39,12 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
             |		prefix ogcgml:	<http://www.opengis.net/ont/gml#>
             |		prefix ruian:	<http://ruian.linked.opendata.cz/ontology/>
             |		CONSTRUCT {
-            |		  <%o%>	s:geo ?geo .
+            |		  <%object%>	s:geo ?geo .
             |		  ?geo	rdf:type	s:GeoCoordinates ;
             |			  s:longitude	?lng ;
             |			  s:latitude	?lat .
             |		} WHERE {
-            |		  <%o%>	ruian:definicniBod	?definicniBod .
-            |
+            |		  <%town%>	ruian:definicniBod	?definicniBod .
             |
             |		  ?definicniBod	rdf:type	ogcgml:MultiPoint ;
             |			  ogcgml:pointMember	?pointMember .
@@ -64,12 +63,15 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
 
         // for each entity from model having geolink, add another data
         val p = dataModel.getProperty("http://ruian.linked.opendata.cz/ontology/links/obec")
-        val entities = dataModel.listObjectsOfProperty(p).toList
+        val entities = dataModel.listStatements(null, p, null).toList
 
         reporter ! "Trying to link " + entities.size() + " geo entities"
 
         entities.foreach { e =>
-          val q = geoQueryPattern.replaceAll("%o%",e.asResource().getURI)
+          val q = geoQueryPattern
+            .replaceAll("%town%",e.getObject.asResource().getURI)
+            .replaceAll("%object%", e.getResource.getURI)
+
           val model = geoEndpoint.queryExecutionFactory()(q).execConstruct()
 
           dataModel.add(model)
