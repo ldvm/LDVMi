@@ -39,14 +39,7 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
             |		prefix ogcgml:	<http://www.opengis.net/ont/gml#>
             |		prefix ruian:	<http://ruian.linked.opendata.cz/ontology/>
             |		CONSTRUCT {
-            |		  <%o%>	ruian:definicniBod	?definicniBod .
-            |
-            |
-            |		  ?definicniBod	rdf:type	ogcgml:MultiPoint ;
-            |			  ogcgml:pointMember	?pointMember .
-            |
-            |		  ?pointMember rdf:type	ogcgml:Point ;
-            |			  s:geo ?geo .
+            |		  <%o%>	s:geo ?geo .
             |		  ?geo	rdf:type	s:GeoCoordinates ;
             |			  s:longitude	?lng ;
             |			  s:latitude	?lat .
