@@ -39,8 +39,6 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
 
     reportMessage("****** Starting iteration " + iterationNumber + " with " + givenPartialPipelines.size + " partial pipeline(s)")
 
-
-
     val eventualCreatedPipelines = Future.sequence(tryAddAllComponents(givenPartialPipelines))
     eventualCreatedPipelines.map(_.flatten).flatMap { createdPipelines =>
 

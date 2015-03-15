@@ -73,7 +73,10 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
         }.toMap
 
         val instances = pipeline.componentInstances
-        val name = "Gen ["+instances.head.componentTemplate.title+" -> ("+(instances.size-2)+") -> "+instances.last.componentTemplate.title+"]"
+
+        val dsNames = "(" + instances.filter(_.componentTemplate.inputTemplates.size == 0).map(_.title).mkString(", ") + ")"
+        val vizName = "(" + instances.filter(_.componentTemplate.outputTemplate.isEmpty).map(_.title).mkString(", ") + ")"
+        val name = dsNames+" -> ("+(instances.size-2)+") -> "+vizName
         pipelinesRepository.save(Pipeline(None, bindingSetId, "", name, None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
 
         pipeline.portMappings.map { mapping =>

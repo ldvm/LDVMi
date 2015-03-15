@@ -177,7 +177,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                             }
                         }
 
-                        $scope.info.splice(-100);
+                        $scope.info.splice(100);
                     });
                 });
             },
