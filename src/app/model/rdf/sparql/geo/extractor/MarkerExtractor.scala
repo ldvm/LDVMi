@@ -17,10 +17,17 @@ class MarkerExtractor(queryData: MapQueryData) extends QueryExecutionResultExtra
         Coordinates(
           querySolution.getLiteral("lat").getFloat,
           querySolution.getLiteral("lng").getFloat
-        )
+        ),
+        label(querySolution)
       )
     }
 
     Some(markerIterator.toSeq)
+  }
+
+  def label(querySolution: QuerySolution) : Option[String] = {
+    GeoPropertiesQuery.LabelVariables.values.collectFirst{
+      case varName if querySolution.contains(varName.toString) => querySolution.getLiteral(varName.toString).getString
+    }
   }
 }

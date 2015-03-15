@@ -7,7 +7,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <h4>Last 10 executions</h4>
             <table class="table table-striped">
                 <tr>
@@ -33,10 +33,14 @@
                         <span ng-show="e.modifiedUtc">{{(e.modifiedUtc-e.createdUtc)/1000}} s</span>
                         <span ng-hide="e.modifiedUtc">starting</span>
                     </td>
-                    <td><a href="/visualize/{{e.id}}">Visualization</a></td>
+                    <td><a href="/visualize/{{e.id}}" class="btn btn-primary">Visualization</a></td>
+                </tr>
+                <tr ng-show="evaluations.length == 0">
+                    <td colspan="6">You need to run the pipeline first to be able to visualize its results.</td>
                 </tr>
             </table>
         </div>
+        <!--
         <div class="col-md-6">
             <h4>Last 10 compatibility checks</h4>
             <table class="table table-striped">
@@ -47,7 +51,7 @@
                     <th>Success</th>
                 </tr>
             </table>
-        </div>
+        </div>-->
     </div>
 
     <force-layout data="data"></force-layout>

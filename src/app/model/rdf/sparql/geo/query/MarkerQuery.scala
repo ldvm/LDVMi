@@ -20,18 +20,25 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
 
     val q = prefixes +
       """
-        | SELECT ?s ?lat ?lng %v WHERE {
+        | SELECT ?s ?lat ?lng ?spl ?l ?sn %v WHERE {
         |   ?s s:geo ?g .
         |   ?g s:latitude ?lat ;
         |      s:longitude ?lng .
+        |
+        |   OPTIONAL { ?s skos:prefLabel ?spl . }
+        |   OPTIONAL { ?s rdfs:label ?l . }
+        |   OPTIONAL { ?s skos:notion ?sn . }
         |
         |   %r
         | }
       """
         .replaceAll(
           "%r", Matcher.quoteReplacement(getRestrictions(effectiveFilter)))
-        .replaceAll("%v", if (queryData.filters.nonEmpty) { "?v1" } else {"" })
+        .replaceAll("%v", if (effectiveFilter.nonEmpty) { "?v1" } else {"" })
         .stripMargin
+
+    println(q)
+
     q
   }
 
@@ -39,8 +46,8 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
     """
       | PREFIX skos: <%skos>
       | PREFIX s: <http://schema.org/>
+      | PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       |
-
     """
       .replaceAll("%skos", SKOS.PREFIX_URL)
       .stripMargin

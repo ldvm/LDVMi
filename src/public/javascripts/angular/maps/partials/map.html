@@ -48,6 +48,9 @@
             </div>
             <osm ng-if="entities" entities="entities" colors="colors" style="width: 100%; height: 800px;"></osm>
             <gmaps ng-if="markers" fit-bounds="true" markers="markers" zoom="zoom" center="center" style="width: 100%; height: 800px;"></gmaps>
+            <div class="alert alert-warning" ng-show="!entities && !markers">
+                Change your filter settings and press refresh to see data on a map!
+            </div>
         </div>
 
     </div>
