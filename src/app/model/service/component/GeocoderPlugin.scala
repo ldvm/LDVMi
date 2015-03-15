@@ -117,6 +117,8 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
           (endpointUrl, Some(resultGraph))
         }
       }
+      }else{
+        (endpointUrl, Some(resultGraph))
       }
     }
   }
