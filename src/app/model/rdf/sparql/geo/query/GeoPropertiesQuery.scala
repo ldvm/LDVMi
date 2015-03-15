@@ -4,13 +4,13 @@ import model.rdf.sparql.query.SparqlQuery
 
 
 class GeoPropertiesQuery extends SparqlQuery {
-  
+
   def get: String = prefixes +
     """
       | SELECT DISTINCT ?p ?l ?spl ?sn WHERE {
       |   ?s s:geo [] ;
-      |      ?p [] .
-      |   ?p a skos:Concept .
+      |      ?p ?o .
+      |   ?o a skos:Concept .
       |
       |   OPTIONAL { ?p skos:prefLabel ?spl . }
       |   OPTIONAL { ?p rdfs:label ?l . }

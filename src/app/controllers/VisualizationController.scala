@@ -16,6 +16,8 @@ import play.api.mvc.{Action, Controller, Result}
 import scaldi.{Injectable, Injector}
 import views.VisualizerRoute
 
+import scala.io.Source
+
 class VisualizationController(implicit inj: Injector) extends Controller with Injectable {
 
   val pipelineService = inject[PipelineService]
@@ -44,45 +46,69 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
 
   private def forwardToTriplestore(file: File, contentType: Option[String]) ={
 
-      val endpoint: String = "http://live.payola.cz:8890"
-      val graphUri: String = "urn:"+UUID.randomUUID().toString
+    val endpoint: String = "http://live.payola.cz:8890"
+    val graphUri: String = "urn:"+UUID.randomUUID().toString
 
-      val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpoint, graphUri)
+    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpoint, graphUri)
 
-      val credentials = new UsernamePasswordCredentials("dba", "dba")
-      val httpClient = new DefaultHttpClient()
-      val post = new HttpPost(requestUri)
-      post.addHeader("X-Requested-Auth", "Digest")
-      try {
-        httpClient.getCredentialsProvider.setCredentials(AuthScope.ANY, credentials)
-        val fileEntity = new FileEntity(file, ContentType.create(contentType.getOrElse("text/turtle")))
+    val credentials = new UsernamePasswordCredentials("dba", "dba")
+    val httpClient = new DefaultHttpClient()
+    val post = new HttpPost(requestUri)
+    post.addHeader("X-Requested-Auth", "Digest")
+    try {
+      httpClient.getCredentialsProvider.setCredentials(AuthScope.ANY, credentials)
+      val fileEntity = new FileEntity(file, ContentType.create(contentType.getOrElse("text/turtle")))
 
-        post.setEntity(fileEntity)
-        val response = httpClient.execute(post)
+      post.setEntity(fileEntity)
+      val response = httpClient.execute(post)
 
-        if(response.getStatusLine.getStatusCode > 400) {
-          None
-        } else {
-          Some(graphUri)
-        }
+      if(response.getStatusLine.getStatusCode > 400) {
+        None
+      } else {
+        Some(graphUri)
       }
-      catch {
-        case e: Throwable => throw e
-      }
-      finally {
-        httpClient.getConnectionManager.shutdown()
-      }
+    }
+    catch {
+      case e: Throwable => throw e
+    }
+    finally {
+      httpClient.getConnectionManager.shutdown()
+    }
+  }
+  def pushToRandomGraph(ttl: String) : String = {
+
+    val endpoint: String = "http://live.payola.cz:8890"
+    val graphUri: String = "urn:"+UUID.randomUUID().toString
+
+    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpoint, graphUri)
+    val credentials = new UsernamePasswordCredentials("dba", "dba")
+    val httpClient = new DefaultHttpClient()
+    val post = new HttpPost(requestUri)
+    post.addHeader("X-Requested-Auth", "Digest")
+    try {
+      httpClient.getCredentialsProvider.setCredentials(AuthScope.ANY, credentials)
+      val stringEntity = new StringEntity(ttl, "UTF-8")
+      post.setEntity(stringEntity)
+      httpClient.execute(post)
+
+      graphUri
+    }
+    catch {
+      case e: Throwable => throw e
+    }
+    finally {
+      httpClient.getConnectionManager.shutdown()
+    }
   }
 
   def ttldownload = Action(parse.urlFormEncoded) { request =>
     request.body.get("ttlurl").map { url =>
-      Graph(new URL(url.head)).map { g =>
-        val urn = g.pushToRandomGraph
-        val combine = request.body.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
-        Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine, url.headOption))
-      }.getOrElse {
-        UnprocessableEntity
-      }
+
+      val html = Source.fromURL(url.head)
+      val urn = pushToRandomGraph(html.mkString)
+      val combine = request.body.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
+      Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine, url.headOption))
+
     }.getOrElse {
       Redirect(routes.ApplicationController.index()).flashing(
         "error" -> "Missing file")
