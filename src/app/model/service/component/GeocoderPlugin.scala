@@ -39,7 +39,7 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
             |		prefix ogcgml:	<http://www.opengis.net/ont/gml#>
             |		prefix ruian:	<http://ruian.linked.opendata.cz/ontology/>
             |		CONSTRUCT {
-            |		  <%object%>	s:geo ?geo .
+            |		  <%subject%>	s:geo ?geo .
             |		  ?geo	rdf:type	s:GeoCoordinates ;
             |			  s:longitude	?lng ;
             |			  s:latitude	?lat .
@@ -70,7 +70,7 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
         entities.foreach { e =>
           val q = geoQueryPattern
             .replaceAll("%town%",e.getObject.asResource().getURI)
-            .replaceAll("%object%", e.getResource.getURI)
+            .replaceAll("%subject%", e.getSubject.asResource().getURI)
 
           val model = geoEndpoint.queryExecutionFactory()(q).execConstruct()
 
