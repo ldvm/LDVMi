@@ -16,63 +16,83 @@ define(['angular'], function (ng) {
 
                     var color = d3.scale.category20();
 
-                    scope.$watch('data', function (json) {
+                    scope.$watch('data', function (links) {
                         element.html("");
-                        if (json) {
+                        if (links) {
+                            var nodes = {};
+
+// Compute the distinct nodes from the links.
+                            links.forEach(function(link) {
+                                link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+                                link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+                            });
+
+                            var width = 960,
+                                height = 500;
+
+                            var force = d3.layout.force()
+                                .nodes(d3.values(nodes))
+                                .links(links)
+                                .size([width, height])
+                                .linkDistance(60)
+                                .charge(-300)
+                                .on("tick", tick)
+                                .start();
+
                             var svg = d3.select(element[0]).append("svg")
                                 .attr("width", width)
                                 .attr("height", height);
 
+// Per-type markers, as they don't inherit styles.
+                            svg.append("defs").selectAll("marker")
+                                .data(["suit", "licensing", "resolved"])
+                                .enter().append("marker")
+                                .attr("id", function(d) { return d; })
+                                .attr("viewBox", "0 -5 10 10")
+                                .attr("refX", 15)
+                                .attr("refY", -1.5)
+                                .attr("markerWidth", 6)
+                                .attr("markerHeight", 6)
+                                .attr("orient", "auto")
+                                .append("path")
+                                .attr("d", "M0,-5L10,0L0,5");
 
-                            var force = d3.layout.force()
-                                .gravity(.05)
-                                .distance(100)
-                                .charge(-100)
-                                .size([width, height]);
+                            var path = svg.append("g").selectAll("path")
+                                .data(force.links())
+                                .enter().append("path")
+                                .attr("class", function(d) { return "link " + d.type; })
+                                .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
 
-                            force
-                                .nodes(json.nodes)
-                                .links(json.links)
-                                .start();
-
-                            var link = svg.selectAll(".link")
-                                .data(json.links)
-                                .enter().append("line")
-                                .attr("class", "link");
-
-                            var node = svg.selectAll(".node")
-                                .data(json.nodes)
-                                .enter().append("g")
-                                .attr("class", "node")
+                            var circle = svg.append("g").selectAll("circle")
+                                .data(force.nodes())
+                                .enter().append("circle")
+                                .attr("r", 6)
                                 .call(force.drag);
 
-                            node.append("circle")
-                                .attr("class", "node-cirlce")
-                                .attr("r", 15)
-                                .style("fill", function(d, i) { return color(d.group); })
-                                .style("stroke", function(d, i) { return "white"; })
-                                .call(force.drag);
+                            var text = svg.append("g").selectAll("text")
+                                .data(force.nodes())
+                                .enter().append("text")
+                                .attr("x", 8)
+                                .attr("y", ".31em")
+                                .text(function(d) { return d.name; });
 
-                            node.append("image")
-                                .attr("xlink:href", "https://github.com/favicon.ico")
-                                .attr("x", -8)
-                                .attr("y", -8)
-                                .attr("width", 16)
-                                .attr("height", 16);
+// Use elliptical arc path segments to doubly-encode directionality.
+                            function tick() {
+                                path.attr("d", linkArc);
+                                circle.attr("transform", transform);
+                                text.attr("transform", transform);
+                            }
 
-                            node.append("text")
-                                .attr("dx", 20)
-                                .attr("dy", ".55em")
-                                .text(function(d) { return d.name });
+                            function linkArc(d) {
+                                var dx = d.target.x - d.source.x,
+                                    dy = d.target.y - d.source.y,
+                                    dr = Math.sqrt(dx * dx + dy * dy);
+                                return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+                            }
 
-                            force.on("tick", function() {
-                                link.attr("x1", function(d) { return d.source.x; })
-                                    .attr("y1", function(d) { return d.source.y; })
-                                    .attr("x2", function(d) { return d.target.x; })
-                                    .attr("y2", function(d) { return d.target.y; });
-
-                                node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-                            });
+                            function transform(d) {
+                                return "translate(" + d.x + "," + d.y + ")";
+                            }
                         }
                     });
 

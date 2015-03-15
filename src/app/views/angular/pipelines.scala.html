@@ -26,12 +26,33 @@
         <style>
 
         .link {
-        stroke: #ccc;
+        fill: none;
+        stroke: #666;
+        stroke-width: 1.5px;
         }
 
-        .node text {
+        #licensing {
+        fill: green;
+        }
+
+        .link.licensing {
+        stroke: green;
+        }
+
+        .link.resolved {
+        stroke-dasharray: 0,2 1;
+        }
+
+        circle {
+        fill: #ccc;
+        stroke: #333;
+        stroke-width: 1.5px;
+        }
+
+        text {
+        font: 10px sans-serif;
         pointer-events: none;
-        font: 15px sans-serif;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
         }
 
 

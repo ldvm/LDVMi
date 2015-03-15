@@ -66,27 +66,18 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
 
   def pipelineToJson(pipeline: Pipeline)(implicit session: Session) = {
     val set = pipeline.bindingSet
-    val numberedComponents = set.componentInstances.zipWithIndex
 
-    val nodes = numberedComponents.sortBy(_._2).map { c =>
-      JsObject(Seq(
-        "name" -> JsString(c._1.title),
-        "group" -> JsNumber(c._2)
-      ))
-    }
     val links = set.bindings.map { b =>
       val source = b.source.componentInstance
       val target = b.targetInputInstance.map(_.componentInstance)
 
       JsObject(Seq(
-        "target" -> JsNumber(numberedComponents.find(c => target.exists(t => t.id.get == c._1.id.get)).map(_._2).get),
-        "source" -> JsNumber(numberedComponents.find(c => c._1.id.get == source.id.get).map(_._2).get)
+        "target" -> JsString(target.get.componentTemplate.title + " ["+target.get.id.map(_.id.toString).get+"]"),
+        "source" -> JsString(source.componentTemplate.title + " ["+source.id.map(_.id.toString).get+"]"),
+        "type" -> JsString("resolved")
       ))
     }
 
-    JsObject(Seq(
-      "nodes" -> JsArray(nodes),
-      "links" -> JsArray(links)
-    ))
+    JsArray(links)
   }
 }
