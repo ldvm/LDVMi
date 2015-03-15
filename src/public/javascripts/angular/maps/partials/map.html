@@ -39,10 +39,12 @@
     </div>
 
     <div ng-if="!queryingDataset">
-
         <div class="col-lg-9" id="right">
-            <div class="alert alert-info">
+            <div class="alert" ng-class="{'alert-danger': lastError, 'alert-info': !lastError}">
                 <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+                <div ng-show="lastError">
+                    The last query has failed. Probably a Virtuoso timeout.
+                </div>
             </div>
             <osm ng-if="entities" entities="entities" colors="colors" style="width: 100%; height: 800px;"></osm>
             <gmaps ng-if="markers" fit-bounds="true" markers="markers" zoom="zoom" center="center" style="width: 100%; height: 800px;"></gmaps>

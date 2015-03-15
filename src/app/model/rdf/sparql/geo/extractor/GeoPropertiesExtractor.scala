@@ -16,7 +16,7 @@ class GeoPropertiesExtractor extends QueryExecutionResultExtractor[GeoProperties
       )
     }
 
-    Some(tupleIterator.toSeq)
+    Some(tupleIterator.toMap.toSeq)
   }
 
   def label(querySolution: QuerySolution) : Option[String] = {

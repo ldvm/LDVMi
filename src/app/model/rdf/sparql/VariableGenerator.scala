@@ -18,4 +18,8 @@ class VariableGenerator {
     "v" + i.toString
   }
 
+  def reset {
+    i = 0
+  }
+
 }

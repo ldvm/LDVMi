@@ -121,6 +121,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.refresh = function () {
                     $scope.queryingDataset = "geolocated entities";
+                    $scope.lastError = false;
 
                     var filters = {};
 
@@ -142,6 +143,10 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     MapService.markers({evaluationId: $id}, {filters: filters}, function (data) {
                         $scope.queryingDataset = null;
                         $scope.markers = data;
+                        $scope.lastError = false;
+                    }, function(e){
+                        $scope.lastError = true;
+                        $scope.queryingDataset = null;
                     });
 
                     $scope.zoom = 3;

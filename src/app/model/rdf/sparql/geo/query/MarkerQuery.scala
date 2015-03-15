@@ -10,9 +10,14 @@ import model.rdf.vocabulary.SKOS
 
 class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
 
-  lazy val variableGenerator = new VariableGenerator
+  val variableGenerator = new VariableGenerator
 
   def get: String = {
+
+    variableGenerator.reset
+
+    val effectiveFilter = queryData.filters.filter(_._2.exists(_.isActive.getOrElse(false) == false))
+
     val q = prefixes +
       """
         | SELECT ?s ?lat ?lng %v WHERE {
@@ -24,12 +29,9 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
         | }
       """
         .replaceAll(
-          "%r", Matcher.quoteReplacement(getRestrictions(queryData.filters)))
+          "%r", Matcher.quoteReplacement(getRestrictions(effectiveFilter)))
         .replaceAll("%v", if (queryData.filters.nonEmpty) { "?v1" } else {"" })
         .stripMargin
-
-    println(q)
-
     q
   }
 
@@ -46,7 +48,7 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
   private def getRestrictions(rule: Map[String, Seq[ValueFilter]]): String = {
     rule.map { case (uri, valueFilters) =>
       """
-        |  ?g <%s> %v
+        |  ?s <%s> %v .
         |  %rf
       """
         .replaceAll("%s", uri)
