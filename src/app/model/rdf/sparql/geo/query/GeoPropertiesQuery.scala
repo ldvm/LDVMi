@@ -8,17 +8,15 @@ class GeoPropertiesQuery extends SparqlQuery {
   def get: String = prefixes +
     """
       | SELECT DISTINCT ?p ?l ?spl ?sn WHERE {
-      |   ?s s:geo [
-      |     ?p []
-      |   ] .
+      |   ?s s:geo [] ;
+      |      ?p [] .
       |
       |   OPTIONAL { ?p skos:prefLabel ?spl . }
       |   OPTIONAL { ?p rdfs:label ?l . }
       |   OPTIONAL { ?p skos:notion ?sn . }
       |
       |   FILTER(?p != skos:prefLabel)
-      |   FILTER(?p != <http://schema.org/latitude>)
-      |   FILTER(?p != <http://schema.org/longitude>)
+      |   FILTER(?p != <http://schema.org/geo>)
       |
       | } LIMIT 1000
     """.stripMargin

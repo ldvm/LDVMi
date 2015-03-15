@@ -44,7 +44,9 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
   private def sparqlQuery(ttl: Option[String]): Option[String] = {
     Graph(ttl).flatMap { g =>
       val jenaModel = g.jenaModel
-      val queryObjects = jenaModel.listObjectsOfProperty(g.jenaModel.createProperty("http://linked.opendata.cz/ontology/ldvm/analyzer/sparql/query")).toList
+      val queryObjects = jenaModel.listObjectsOfProperty(
+        g.jenaModel.createProperty("http://linked.opendata.cz/ontology/ldvm/analyzer/sparql/query")
+      ).toList
       queryObjects.headOption.map(_.asLiteral().getString)
     }
   }
