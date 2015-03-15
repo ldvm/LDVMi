@@ -17,6 +17,8 @@ trait ComponentTemplateService extends CrudService[ComponentTemplateId, Componen
     components.map(save)
   }
 
+  def delete(componentTemplate: ComponentTemplate)(implicit session: Session)
+
   def saveAnalyzer(analyzer: AnalyzerTemplate)(implicit session: Session): AnalyzerTemplateId
 
   def saveVisualizer(visualizer: VisualizerTemplate)(implicit session: Session): VisualizerTemplateId

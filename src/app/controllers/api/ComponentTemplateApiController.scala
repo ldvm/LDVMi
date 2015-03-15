@@ -10,6 +10,13 @@ import scaldi.{Injectable, Injector}
 
 class ComponentTemplateApiController(implicit inj: Injector) extends ApiController with Injectable {
 
+  def delete(componentTemplateId: Long) = DBAction { implicit rws =>
+    withComponentTemplate(componentTemplateId) { ct =>
+      componentTemplateService.delete(ct)
+      Ok
+    }
+  }
+
   def list(skip: Int = 0, take: Int = 50) = DBAction { implicit rws =>
 
     val componentTemplates = componentTemplateService.findPaginated(skip, take)()

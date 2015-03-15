@@ -468,6 +468,10 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     }.toMap
   }
 
+  def delete(componentTemplate: ComponentTemplate)(implicit session: Session) = {
+    repository.remove(componentTemplate)
+  }
+
   def saveAnalyzer(analyzer: AnalyzerTemplate)(implicit session: Session): AnalyzerTemplateId = {
     analyzerTemplateRepository.save(analyzer)
   }

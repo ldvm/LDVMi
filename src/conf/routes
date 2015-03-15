@@ -17,6 +17,7 @@ GET         /ttlds                                          @controllers.Visuali
 GET         /discover/                                      @controllers.VisualizationController.discover(endpointUrl: Option[String] ?= None, graphUris: Option[String] ?= None, combine: Boolean ?= false)
 
 POST        /api/v1/components/add/ttl                      @controllers.api.LdvmApiController.ttl
+GET         /api/v1/components/delete/:id                   @controllers.api.ComponentTemplateApiController.delete(id: Long)
 GET         /api/v1/compatibility/check/:pipelineId         @controllers.api.CompatibilityApiController.check(pipelineId: Long)
 GET         /api/v1/pipelines/evaluate/:pipelineId          @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
 GET         /api/v1/pipelines                               @controllers.api.PipelineApiController.list(skip: Int ?= 0, pageSize: Int ?= 50, discoveryId: Option[Long] ?= None, visualizerId: Option[Long] ?= None)

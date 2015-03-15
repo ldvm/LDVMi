@@ -48,4 +48,10 @@ ETable <: Table[E] with IdEntityTable[Id, E]
   override def saveAll(rows: Seq[E])(implicit s: Session): Seq[Id] = {
     rows.toIndexedSeq map save
   }
+
+  def remove(row: E)(implicit s: Session) = {
+    row.id.map { i =>
+      super.deleteById(i)
+    }
+  }
 }
