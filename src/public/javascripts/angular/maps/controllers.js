@@ -107,6 +107,12 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         $scope.values = propertiesValuesMap;
                         $scope.colors = {};
 
+                        angular.forEach($scope.values, function(values, k){
+                            angular.forEach(values, function(v){
+                                v.isActive = true;
+                            });
+                        });
+
                         if ($scope.mainProperty) {
                             angular.forEach($scope.values[$scope.mainProperty.uri], function (v) {
                                 var key = v.uri || v.label.variants[$scope.currentLanguage];
