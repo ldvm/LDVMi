@@ -4,12 +4,13 @@ import model.rdf.sparql.query.SparqlQuery
 
 
 class GeoPropertiesQuery extends SparqlQuery {
-
+  
   def get: String = prefixes +
     """
       | SELECT DISTINCT ?p ?l ?spl ?sn WHERE {
       |   ?s s:geo [] ;
       |      ?p [] .
+      |   ?p a skos:Concept .
       |
       |   OPTIONAL { ?p skos:prefLabel ?spl . }
       |   OPTIONAL { ?p rdfs:label ?l . }
@@ -17,6 +18,8 @@ class GeoPropertiesQuery extends SparqlQuery {
       |
       |   FILTER(?p != skos:prefLabel)
       |   FILTER(?p != <http://schema.org/geo>)
+      |   FILTER(?p != <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>)
+      |   FILTER(?p != <http://www.w3.org/2000/01/rdf-schema#seeAlso>)
       |
       | } LIMIT 1000
     """.stripMargin

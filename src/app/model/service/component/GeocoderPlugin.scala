@@ -56,7 +56,10 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
             |			  s:latitude	?lat .
             |		}
           """.stripMargin
+
         val geoEndpoint = new GenericSparqlEndpoint(geoRef.get.endpointUri, geoRef.get.graphUri.toSeq, List())
+
+        // one day, a query like this won't throw HTTP 500 without the LIMIT clause
         val dataQuery = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 200000"
         val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUri.toSeq, List())
         val dataModel = dataEndpoint.queryExecutionFactory()(dataQuery).execConstruct()
