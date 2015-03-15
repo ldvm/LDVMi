@@ -29,7 +29,7 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
         val graphUris = dataRef.graphUri.map { u => Seq(u)}.getOrElse {List()}
         val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, List(), graphUris)
 
-        reporter ! "Querying "+dataRef.endpointUri+"@"+dataRef.graphUri.toString
+        reporter ! "Querying <"+dataRef.endpointUri+"> (graph: "+dataRef.graphUri.map("<"+_+">").toString+")"
         val model = endpoint.queryExecutionFactory()(query).execConstruct()
 
         pushToTripleStore(model, endpointUrl, resultGraph)(reporterProps)

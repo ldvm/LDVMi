@@ -3,6 +3,7 @@ package model.service.component
 import java.util.UUID
 
 import akka.actor.Props
+import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP
 import model.entity.ComponentInstance
 import model.rdf.sparql.GenericSparqlEndpoint
 import play.api.Play.current
@@ -18,7 +19,7 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
     val resultGraph = "urn:" + UUID.randomUUID().toString
 
     val reporter = Akka.system.actorOf(reporterProps)
-    reporter ! "Running GEO-coder"
+    reporter ! "Running implementation of GEOcoder plugin"
 
     Future {
 
@@ -64,14 +65,16 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
             |		}
           """.stripMargin
         val geoEndpoint = new GenericSparqlEndpoint(geoRef.get.endpointUri, geoRef.get.graphUri.toSeq, List())
-
-        val dataQuery = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
+        val dataQuery = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o } LIMIT 200000"
         val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUri.toSeq, List())
         val dataModel = dataEndpoint.queryExecutionFactory()(dataQuery).execConstruct()
 
         // for each entity from model having geolink, add another data
         val p = dataModel.getProperty("http://ruian.linked.opendata.cz/ontology/links/obec")
         val entities = dataModel.listObjectsOfProperty(p).toList
+
+        reporter ! "Trying to link " + entities.size() + " geo entities"
+
         entities.foreach { e =>
           val q = geoQueryPattern.replaceAll("%o%",e.asResource().getURI)
           val model = geoEndpoint.queryExecutionFactory()(q).execConstruct()
@@ -82,8 +85,9 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
 
         pushToTripleStore(dataModel, endpointUrl, resultGraph)(reporterProps)
       } catch {
-        case e: org.apache.jena.atlas.web.HttpException => {
-          println(e.getResponse)
+        case e: QueryExceptionHTTP => {
+          reporter ! "Error when querying: " + e.getResponseCode + " : " + e.getResponseMessage
+          println(e.getResponseCode + " : " + e.getResponseMessage )
         }
         case e: Throwable => {
           println(e)

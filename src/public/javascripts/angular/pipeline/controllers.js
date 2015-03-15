@@ -7,7 +7,10 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
             function ($scope, pipelines, $routeParams, ngTableParams) {
 
                 var page = $routeParams.page || 1;
-                var count = $routeParams.count || 10;
+                var count = $routeParams.count || 50;
+
+
+                var showPagination = !($routeParams.discoveryId || $routeParams.visualizerId);
 
                 $scope.tableParams = new ngTableParams({
                     page: page,            // show first page
@@ -24,7 +27,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     getData: function ($defer, params) {
                         var promise = pipelines.findPaginated(params.page(), params.count(), params.filter());
                         promise.then(function (data) {
-                            params.total(data.count);
+                            params.total(showPagination ? data.count : data.data.length);
                             $defer.resolve(data.data);
                         });
 
@@ -203,7 +206,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                             $scope.info.unshift({});
                             $scope.info.unshift({message: "Pipeline evaluation is done. You are being redirected."});
                             window.setTimeout(function(){
-                                window.location.href = "/pipelines#/detail/"+$routeParams.id;
+                                //window.location.href = "/pipelines#/detail/"+$routeParams.id;
                             }, 2000);
                         }
 
