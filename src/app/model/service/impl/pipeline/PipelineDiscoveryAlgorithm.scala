@@ -18,7 +18,12 @@ import utils.CombinatoricsUtils
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 
-class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[SpecificComponentTemplate]], reporterProps: Props, maxIterations: Int = 5)
+class PipelineDiscoveryAlgorithm(
+  allComponentsByType: Map[ComponentType, Seq[SpecificComponentTemplate]],
+  reporterProps: Props,
+  maybeGeneralDs: Option[DataSourceTemplate] = None,
+  maxIterations: Int = 5
+  )
   (implicit val inj: Injector, implicit val session: Session) extends SessionScoped with Injectable {
 
   val pipelineDiscoveryRepository = inject[PipelineDiscoveryRepository]
@@ -55,7 +60,12 @@ class PipelineDiscoveryAlgorithm(allComponentsByType: Map[ComponentType, Seq[Spe
         reportMessage("All completed pipelines: " + allCompleted.size)
 
         try {
-          pipelineService.saveDiscoveryResults(discoveryId, createdCompletedPipelines, reporter)
+          val pipelinesToSave = if(maybeGeneralDs.isEmpty){
+            createdCompletedPipelines
+          }else {
+            createdCompletedPipelines.filter(_.componentInstances.exists(_.componentTemplateId == maybeGeneralDs.get.componentTemplateId))
+          }
+          pipelineService.saveDiscoveryResults(discoveryId, pipelinesToSave, reporter)
 
           reportMessage("Completed pipelines saved.")
           reporter ! Json.toJson(JsObject(Seq(("significantAction", JsString("pipelinesSaved")))))

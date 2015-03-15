@@ -70,7 +70,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
   }
 
   def getAllForDiscovery(maybeDs: Option[(String, Seq[String])] = None, combine: Boolean, name: Option[String] = None)
-    (implicit session: Session): Map[ComponentType, Seq[SpecificComponentTemplate]] = {
+    (implicit session: Session): (Map[ComponentType, Seq[SpecificComponentTemplate]], Option[DataSourceTemplate]) = {
 
     val maybeDsId = maybeDs.map(d => asTemporaryDataSourceTemplate(d, name))
     val maybeDsTemplate = maybeDsId.flatMap { i =>
@@ -85,12 +85,13 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
       dataSourceTemplateRepository.findPermanent
     }
 
-    Seq(
+    (Seq(
       (ComponentType.DataSource, datasources),
       (ComponentType.Analyzer, analyzerTemplateRepository.findAllWithMandatoryDescriptors),
       (ComponentType.Transformer, transformerTemplateRepository.findAllWithMandatoryDescriptors),
       (ComponentType.Visualizer, visualizerTemplateRepository.findAllWithMandatoryDescriptors)
-    ).toMap
+    ).toMap,
+      maybeDsTemplate)
   }
 
   private def config(ds: (String, Seq[String]), resourceUri: String) : Model = {
