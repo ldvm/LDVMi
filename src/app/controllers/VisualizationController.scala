@@ -30,24 +30,32 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     request.body.fold({ ms =>
       Redirect(routes.ApplicationController.index()).flashing("error" -> "Max size exceeded.")
     }, { body =>
-        body.file("ttlfile").map { ttl =>
-        forwardToTriplestore(ttl.ref.file, ttl.contentType).map { urn =>
-          val combine = body.dataParts.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
-          Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine, Some(ttl.filename)))
-        }.getOrElse {
-          Redirect(routes.ApplicationController.index()).flashing("error" -> "Not a valid TTL file.")
+
+        val urn = UUID.randomUUID()
+
+        body.files.filter(_.key == "ttlfile").toParArray.map { ttl =>
+          forwardToTripleStore(urn, ttl.ref.file, ttl.contentType)
         }
-      }.getOrElse {
-        Redirect(routes.ApplicationController.index()).flashing(
-          "error" -> "Missing file")
-      }
+
+        val filename = body.files.find(_.key == "ttlfile").map(_.filename)
+
+        val combine = body.dataParts.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
+        Redirect(
+          routes.VisualizationController.discover(
+            Some("http://live.payola.cz:8890/sparql"),
+            Some("urn:" + urn.toString),
+            combine,
+            filename
+          )
+        )
+
     })
   }
 
-  private def forwardToTriplestore(file: File, contentType: Option[String]) ={
+  private def forwardToTripleStore(urn: UUID, file: File, contentType: Option[String]) ={
 
     val endpoint: String = "http://live.payola.cz:8890"
-    val graphUri: String = "urn:"+UUID.randomUUID().toString
+    val graphUri: String = "urn:"+urn.toString
 
     val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpoint, graphUri)
 
@@ -75,10 +83,10 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
       httpClient.getConnectionManager.shutdown()
     }
   }
-  def pushToRandomGraph(ttl: String) : String = {
+  private def pushToGraph(urn: UUID, ttl: String) : String = {
 
     val endpoint: String = "http://live.payola.cz:8890"
-    val graphUri: String = "urn:"+UUID.randomUUID().toString
+    val graphUri: String = "urn:"+urn.toString
 
     val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpoint, graphUri)
     val credentials = new UsernamePasswordCredentials("dba", "dba")
@@ -104,10 +112,28 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
   def ttldownload = Action(parse.urlFormEncoded) { request =>
     request.body.get("ttlurl").map { url =>
 
-      val html = Source.fromURL(url.head)
-      val urn = pushToRandomGraph(html.mkString)
-      val combine = request.body.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
-      Redirect(routes.VisualizationController.discover(Some("http://live.payola.cz:8890/sparql"), Some(urn), combine, url.headOption))
+      val urn = UUID.randomUUID()
+
+      val urls = url.flatMap(_.split("\n"))
+      urls.toParArray.map { u =>
+        val ttl = Source.fromURL(u).mkString
+        pushToGraph(urn, ttl)
+      }.mkString
+
+      val combine = request
+        .body
+        .get("combine")
+        .flatMap(_.headOption.map(_ == "true"))
+        .getOrElse(false)
+
+      Redirect(
+        routes.VisualizationController.discover(
+          Some("http://live.payola.cz:8890/sparql"),
+          Some("urn:" + urn.toString),
+          combine,
+          url.headOption.flatMap(_.split("\n").headOption)
+        )
+      )
 
     }.getOrElse {
       Redirect(routes.ApplicationController.index()).flashing(
