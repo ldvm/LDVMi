@@ -15,7 +15,8 @@ import play.api.db.slick._
 import play.api.mvc.{Action, Controller, Result}
 import scaldi.{Injectable, Injector}
 import views.VisualizerRoute
-
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.io.Source
 
 class VisualizationController(implicit inj: Injector) extends Controller with Injectable {
@@ -26,30 +27,32 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     Ok(views.html.visualization.ttlds())
   }
 
-  def ttlupload = Action(parse.maxLength(100 * 1024 * 1024, parse.multipartFormData)) { request =>
-    request.body.fold({ ms =>
-      Redirect(routes.ApplicationController.index()).flashing("error" -> "Max size exceeded.")
-    }, { body =>
+  def ttlupload = Action.async(parse.maxLength(100 * 1024 * 1024, parse.multipartFormData)) { request =>
+    Future {
+      request.body.fold({ ms =>
+        Redirect(routes.ApplicationController.index()).flashing("error" -> "Max size exceeded.")
+      }, { body =>
 
-        val urn = UUID.randomUUID()
+          val urn = UUID.randomUUID()
 
-        body.files.filter(_.key == "ttlfile").toParArray.map { ttl =>
-          forwardToTripleStore(urn, ttl.ref.file, ttl.contentType)
-        }
+          body.files.filter(_.key == "ttlfile").map { ttl =>
+            forwardToTripleStore(urn, ttl.ref.file, ttl.contentType)
+          }
 
-        val filename = body.files.find(_.key == "ttlfile").map(_.filename)
+          val filename = body.files.find(_.key == "ttlfile").map(_.filename)
 
-        val combine = body.dataParts.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
-        Redirect(
-          routes.VisualizationController.discover(
-            Some("http://live.payola.cz:8890/sparql"),
-            Some("urn:" + urn.toString),
-            combine,
-            filename
+          val combine = body.dataParts.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
+          Redirect(
+            routes.VisualizationController.discover(
+              Some("http://live.payola.cz:8890/sparql"),
+              Some("urn:" + urn.toString),
+              combine,
+              filename
+            )
           )
-        )
 
-    })
+      })
+    }
   }
 
   private def forwardToTripleStore(urn: UUID, file: File, contentType: Option[String]) ={
@@ -109,35 +112,39 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     }
   }
 
-  def ttldownload = Action(parse.urlFormEncoded) { request =>
-    request.body.get("ttlurl").map { url =>
+  def ttldownload = Action.async(parse.urlFormEncoded) { request =>
+    Future {
+      request.body.get("ttlurl").map { url =>
 
-      val urn = UUID.randomUUID()
+        val urn = UUID.randomUUID()
 
-      val urls = url.flatMap(_.split("\n"))
-      urls.toParArray.map { u =>
-        val ttl = Source.fromURL(u).mkString
-        pushToGraph(urn, ttl)
-      }.mkString
+        val urls = url.flatMap(_.split("\n")).map(_.trim).filter(_.nonEmpty)
+        urls.map{ u =>
+          val source = Source.fromURL(u)
+          val ttl = source.mkString
+          source.close()
+          pushToGraph(urn, ttl)
+        }.mkString
 
-      val combine = request
-        .body
-        .get("combine")
-        .flatMap(_.headOption.map(_ == "true"))
-        .getOrElse(false)
+        val combine = request
+          .body
+          .get("combine")
+          .flatMap(_.headOption.map(_ == "true"))
+          .getOrElse(false)
 
-      Redirect(
-        routes.VisualizationController.discover(
-          Some("http://live.payola.cz:8890/sparql"),
-          Some("urn:" + urn.toString),
-          combine,
-          url.headOption.flatMap(_.split("\n").headOption)
+        Redirect(
+          routes.VisualizationController.discover(
+            Some("http://live.payola.cz:8890/sparql"),
+            Some("urn:" + urn.toString),
+            combine,
+            urls.headOption
+          )
         )
-      )
 
-    }.getOrElse {
-      Redirect(routes.ApplicationController.index()).flashing(
-        "error" -> "Missing file")
+      }.getOrElse {
+        Redirect(routes.ApplicationController.index()).flashing(
+          "error" -> "Missing file")
+      }
     }
   }
 
