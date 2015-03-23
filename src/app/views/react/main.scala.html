@@ -1,0 +1,20 @@
+@()
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		@Html(com.newrelic.api.agent.NewRelic.getBrowserTimingHeader())
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>React</title>
+		<script src="@routes.Assets.at("main.js")"></script>
+		<link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+		<link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
+	</head>
+	<body>
+		Tobice's new app root!
+
+		<div id="mountpoint"></div>
+		@Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
+	</body>
+</html>
