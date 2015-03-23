@@ -2,18 +2,22 @@ var path = require('path');
 var webpack = require('webpack');
 var argv = require('minimist')(process.argv.slice(2));
 
+console.log('Running SbtBabel.js' + argv.out);
+console.log(' --in ' + argv.in);
+console.log(' --out ' + argv.out);
+console.time('elapsed');
+
 var compiler = webpack({
     entry: argv.in,
     devtool: 'source-map',
     cache: true,
     module: {
         loaders: [
-            {test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'}
+            {test: /\.jsx$/, exclude: /node_modules/, loader: 'babel-loader'}
         ]
     },
     output: {
-        path: path.dirname(argv.out),
-        filename: path.basename(argv.out)
+        filename: argv.out
     }
 });
 
@@ -27,4 +31,6 @@ compiler.run(function (err, stats) {
         console.log(json.errors);
         throw json.errors[0];
     }
+
+    console.timeEnd('elapsed');
 });

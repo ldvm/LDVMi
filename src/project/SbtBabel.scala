@@ -34,9 +34,10 @@ object SbtBabel extends AutoPlugin {
 
   override def projectSettings = Seq(
     includeFilter in babel := GlobFilter("*.js"),
-    sourceFileNames in babel in Assets := Seq("javascripts/main.js"),
+    // TODO: make it somehow configurable from the outside...
+    sourceFileNames in babel in Assets := Seq("javascripts/react/main.jsx"),
     sourceFileNames in babel in TestAssets := Seq("javascript-tests/main.js"),
-    outputFileNames in babel in Assets := Seq("main.js"),
+    outputFileNames in babel in Assets := Seq("javascripts/react/main.js"),
     outputFileNames in babel in TestAssets := Seq("main-test.js"),
     babel in Assets := runBabel(Assets).dependsOn(webJarsNodeModules in Plugin).value,
     babel in TestAssets := runBabel(TestAssets).dependsOn(webJarsNodeModules in Plugin).value,
@@ -49,11 +50,13 @@ object SbtBabel extends AutoPlugin {
   }
 
   private def runBabel(config: Configuration): Def.Initialize[Task[Seq[File]]] = Def.task {
+    streams.value.log.info("Compiling with Babel")
+
     val sourceDir = (sourceDirectory in config).value
-    val outputDir = (resourceManaged in config).value
+    val outputDir = (target in config).value / "web" / "public" / "main"
 
     // Select all *.js files in the source directory (all might get compiled)
-    val inputFileCandidates = (sourceDir ** (includeFilter in babel).value).get
+    val inputFileCandidates = (sourceDir ** "*.jsx").get
 
     val sourceFiles = (sourceFileNames in babel in config).value
       .map(file => sourceDir / file).filter(_.exists)
