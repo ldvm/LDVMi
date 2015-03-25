@@ -1,5 +1,17 @@
 import React from 'react'
+import Router from 'react-router'
+import routes from './routes.jsx'
 
-var log = message => console.log(message);
+function run() {
+    const approot = document.getElementById('approot');
+    Router.run(routes, Router.HistoryLocation, function (Handler) {
+        React.render(React.createElement(Handler), approot);
+    });
+}
 
-log('greetings stranger!');
+// Wait until the page is fully loaded.
+if (window.addEventListener) {
+    window.addEventListener('DOMContentLoaded', run);
+} else {
+    window.attachEvent('onload', run);
+}
