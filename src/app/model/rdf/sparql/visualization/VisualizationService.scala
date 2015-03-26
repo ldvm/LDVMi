@@ -6,6 +6,6 @@ import play.api.libs.json.JsValue
 
 trait VisualizationService {
 
-  def hierarchy(evaluation: PipelineEvaluation): Option[HierarchyNode]
+  def hierarchy(evaluation: PipelineEvaluation): Option[Seq[HierarchyNode]]
 
 }
