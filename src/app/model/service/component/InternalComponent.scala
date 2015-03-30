@@ -11,7 +11,7 @@ import model.entity._
 import model.rdf.Graph
 import model.rdf.sparql.GenericSparqlEndpoint
 import model.rdf.vocabulary.{DSPARQL, SD}
-import model.service.SessionScoped
+import model.service.{GraphStore, SessionScoped}
 import play.api.Play.current
 import play.api.db
 import play.api.db.slick.Session
@@ -33,26 +33,23 @@ object EndpointConfig {
   }
 }
 
-class InternalComponent(val componentInstance: ComponentInstance, reporterProps: Props) extends Component with SessionScoped {
+class InternalComponent(val componentInstance: ComponentInstance, pluginFactory: PluginFactory, reporterProps: Props) extends Component with SessionScoped {
 
   implicit val timeout = Timeout(1, TimeUnit.MINUTES)
 
   val props = ComponentActor.props(this, reporterProps)
   val actor = Akka.system.actorOf(props)
 
-  def evaluate(dataReferences: Seq[DataReference]): Future[(String, Option[String])] = plugin.run(dataReferences, reporterProps)
-
-  def plugin: AnalyzerPlugin = {
-    withSession { implicit session =>
-      componentInstance.componentTemplate.uri match {
-        case "http://linked.opendata.cz/resource/ldvm/analyzer/sparql/SparqlAnalyzerTemplate" => new SparqlPlugin(this)
-        case "http://linked.opendata.cz/resource/ldvm/analyzer/union/UnionAnalyzerTemplate" => new UnionPlugin(this)
-        case "http://ldvm.opendata.cz/resource/template/analyzer/ruian/geocoder" => new GeocoderPlugin(this)
-        case _ => {
-          throw new NotImplementedError()
-        }
-      }
+  def evaluate(dataReferences: Seq[DataReference]): Future[(String, Option[String])] = {
+    plugin.map{ p =>
+      p.run(dataReferences, reporterProps)
+    }.getOrElse {
+      throw new NotImplementedError()
     }
+  }
+
+  def plugin: Option[AnalyzerPlugin] = withSession { implicit session =>
+    pluginFactory.get(this, componentInstance.componentTemplate.uri)
   }
 
   def isDataSource: Boolean = withSession { implicit session =>
@@ -141,7 +138,7 @@ class InternalComponent(val componentInstance: ComponentInstance, reporterProps:
     reporter ! "Trying port <" + portUri + ">"
 
     val maybeInputTemplate = componentInstance.componentTemplate.inputTemplates.find(_.dataPortTemplate.uri == portUri)
-    maybeInputTemplate.map { inputTemplate =>
+    maybeInputTemplate.foreach { inputTemplate =>
 
       val eventualResponses = inputTemplate.descriptors(onlyMandatory = true).map { descriptor =>
         reporter ! "Port <" + portUri + "> compatibility with <" + componentToAsk.componentInstance.uri + ">"
@@ -155,7 +152,9 @@ class InternalComponent(val componentInstance: ComponentInstance, reporterProps:
         reporter ! "Port <" + portUri + "> compatibility with <" + componentToAsk.componentInstance.uri + "> result: " + x
         p.trySuccess(x)
       }
-    }.getOrElse {
+    }
+
+    if(maybeInputTemplate.isEmpty) {
       p.tryFailure(new UnsupportedOperationException)
     }
 
@@ -165,14 +164,21 @@ class InternalComponent(val componentInstance: ComponentInstance, reporterProps:
 }
 
 object InternalComponent {
+
+  val pluginFactory = new PluginFactory(new GraphStore(play.api.Play.configuration.getString("ldvmi.triplestore.push").getOrElse("")))
+
   def apply(componentInstance: ComponentInstance, reporterProps: Props): InternalComponent = {
-    new InternalComponent(componentInstance, reporterProps)
+    new InternalComponent(componentInstance, pluginFactory, reporterProps)
   }
 
   def apply(specificComponentTemplate: SpecificComponentTemplate, reporterProps: Props): InternalComponent = {
     implicit val session = db.slick.DB.createSession()
     val componentTemplate = specificComponentTemplate.componentTemplate
     session.close()
-    new InternalComponent(ComponentInstance(None, componentTemplate.uri + "#instance", componentTemplate.title + " instance", None, specificComponentTemplate.componentTemplateId, None), reporterProps)
+    new InternalComponent(
+      ComponentInstance(None, componentTemplate.uri + "#instance", componentTemplate.title + " instance", None, specificComponentTemplate.componentTemplateId, None),
+      pluginFactory,
+      reporterProps
+    )
   }
 }

@@ -1,130 +1,57 @@
 package controllers
 
-import java.io.File
-import java.net.URL
-import java.util.UUID
-
-import model.entity.{PipelineEvaluation, PipelineEvaluationId}
-import model.rdf.Graph
-import model.service.PipelineService
-import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.{ContentType, FileEntity, StringEntity}
-import org.apache.http.impl.client.DefaultHttpClient
+import model.entity.{PipelineEvaluationId, PipelineEvaluation}
+import model.service.{DataSourceService, PipelineService}
 import play.api.db.slick._
-import play.api.mvc.{Action, Controller, Result}
+import play.api.mvc.{Result, Action, Controller}
 import scaldi.{Injectable, Injector}
+import play.api.Play.current
 import views.VisualizerRoute
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.io.Source
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class VisualizationController(implicit inj: Injector) extends Controller with Injectable {
 
   val pipelineService = inject[PipelineService]
+  val dataSourceService = inject[DataSourceService]
+  val internalEndpoint = play.api.Play.configuration.getString("ldvmi.triplestore.push").getOrElse("")
 
-  def ttlds = DBAction { implicit rws =>
-    Ok(views.html.visualization.ttlds())
+  def dataSource = DBAction { implicit rws =>
+    Ok(views.html.visualization.dataSource())
   }
 
-  def ttlupload = Action.async(parse.maxLength(100 * 1024 * 1024, parse.multipartFormData)) { request =>
+  def fromFiles = Action.async(parse.maxLength(100 * 1024 * 1024, parse.multipartFormData)) { request =>
     Future {
       request.body.fold({ ms =>
         Redirect(routes.ApplicationController.index()).flashing("error" -> "Max size exceeded.")
       }, { body =>
 
-          val urn = UUID.randomUUID()
+        val files = body.files.filter(_.key == "ttlfile").map(f => (f.contentType, f.ref.file))
+        val urnUuid = dataSourceService.createDataSourceFromFiles(files)
 
-          body.files.filter(_.key == "ttlfile").map { ttl =>
-            forwardToTripleStore(urn, ttl.ref.file, ttl.contentType)
-          }
 
-          val filename = body.files.find(_.key == "ttlfile").map(_.filename)
+        val fileNames = body.files.filter(_.key == "ttlfile").map(_.filename)
 
-          val combine = body.dataParts.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
-          Redirect(
-            routes.VisualizationController.discover(
-              Some("http://live.payola.cz:8890/sparql"),
-              Some("urn:" + urn.toString),
-              combine,
-              filename
-            )
+        val combine = body.dataParts.get("combine").flatMap(_.headOption.map(_ == "true")).getOrElse(false)
+        Redirect(
+          routes.VisualizationController.discover(
+            Some(internalEndpoint),
+            Some("urn:" + urnUuid.toString),
+            combine,
+            Some(fileNames.mkString(", "))
           )
+        )
 
       })
     }
   }
 
-  private def forwardToTripleStore(urn: UUID, file: File, contentType: Option[String]) ={
-
-    val endpoint: String = "http://live.payola.cz:8890"
-    val graphUri: String = "urn:"+urn.toString
-
-    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpoint, graphUri)
-
-    val credentials = new UsernamePasswordCredentials("dba", "dba")
-    val httpClient = new DefaultHttpClient()
-    val post = new HttpPost(requestUri)
-    post.addHeader("X-Requested-Auth", "Digest")
-    try {
-      httpClient.getCredentialsProvider.setCredentials(AuthScope.ANY, credentials)
-      val fileEntity = new FileEntity(file, ContentType.create(contentType.getOrElse("text/turtle")))
-
-      post.setEntity(fileEntity)
-      val response = httpClient.execute(post)
-
-      if(response.getStatusLine.getStatusCode > 400) {
-        None
-      } else {
-        Some(graphUri)
-      }
-    }
-    catch {
-      case e: Throwable => throw e
-    }
-    finally {
-      httpClient.getConnectionManager.shutdown()
-    }
-  }
-  private def pushToGraph(urn: UUID, ttl: String) : String = {
-
-    val endpoint: String = "http://live.payola.cz:8890"
-    val graphUri: String = "urn:"+urn.toString
-
-    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpoint, graphUri)
-    val credentials = new UsernamePasswordCredentials("dba", "dba")
-    val httpClient = new DefaultHttpClient()
-    val post = new HttpPost(requestUri)
-    post.addHeader("X-Requested-Auth", "Digest")
-    try {
-      httpClient.getCredentialsProvider.setCredentials(AuthScope.ANY, credentials)
-      val stringEntity = new StringEntity(ttl, "UTF-8")
-      post.setEntity(stringEntity)
-      httpClient.execute(post)
-
-      graphUri
-    }
-    catch {
-      case e: Throwable => throw e
-    }
-    finally {
-      httpClient.getConnectionManager.shutdown()
-    }
-  }
-
-  def ttldownload = Action.async(parse.urlFormEncoded) { request =>
+  def fromRemoteData = Action.async(parse.urlFormEncoded) { request =>
     Future {
-      request.body.get("ttlurl").map { url =>
+      request.body.get("ttlurl").map { urls =>
 
-        val urn = UUID.randomUUID()
-
-        val urls = url.flatMap(_.split("\n")).map(_.trim).filter(_.nonEmpty)
-        urls.map{ u =>
-          val source = Source.fromURL(u)
-          val ttl = source.mkString
-          source.close()
-          pushToGraph(urn, ttl)
-        }.mkString
+        val sanitizedList = urls.flatMap(_.split("\n")).map(_.trim).filter(_.nonEmpty)
+        val urn = dataSourceService.createDataSourceFromRemoteTtl(sanitizedList)
 
         val combine = request
           .body
@@ -134,10 +61,10 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
 
         Redirect(
           routes.VisualizationController.discover(
-            Some("http://live.payola.cz:8890/sparql"),
+            Some(internalEndpoint),
             Some("urn:" + urn.toString),
             combine,
-            urls.headOption
+            Some(sanitizedList.mkString(", "))
           )
         )
 
@@ -175,13 +102,13 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
 
   def discover(endpointUrl: Option[String] = None, graphUris: Option[String] = None, combine: Boolean = false, name: Option[String] = None) = Action {
 
-    val n = if(combine){1}else{0}
+    val n = if (combine) {1} else {0}
 
     val url: String = "/pipelines#/discover?endpointUrl=" +
       endpointUrl.orNull +
       graphUris.map("&graphUris=" + _).getOrElse("") +
-        "&combine=" + n.toString +
-        name.map("&name=" + _).getOrElse("")
+      "&combine=" + n.toString +
+      name.map("&name=" + _).getOrElse("")
 
     TemporaryRedirect(url)
   }

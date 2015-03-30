@@ -16,7 +16,7 @@ class VisualizationServiceImpl(implicit val inj: Injector) extends Visualization
 
   var sparqlEndpointService = inject[SparqlEndpointService]
 
-  def hierarchy(evaluation: PipelineEvaluation): Option[HierarchyNode] = {
+  def hierarchy(evaluation: PipelineEvaluation): Option[Seq[HierarchyNode]] = {
     sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new HierarchyQuery, new HierarchyExtractor)
   }
 

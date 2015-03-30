@@ -1,6 +1,8 @@
 package model.rdf
 
 import model.rdf.sparql.visualization.{VisualizationService, VisualizationServiceImpl}
+import model.service.DataSourceService
+import model.service.impl.DataSourceServiceImpl
 import model.service.ldvm.extractor.{ComponentExtractor, PipelineExtractor}
 import scaldi.Module
 import model.rdf.sparql.datacube.{DataCubeService, DataCubeServiceImpl}
@@ -15,4 +17,6 @@ class RdfModule extends Module {
 
   bind [PipelineExtractor] to new PipelineExtractor
   bind [ComponentExtractor] to new ComponentExtractor
+
+  bind [DataSourceService] to new DataSourceServiceImpl
 }

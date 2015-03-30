@@ -6,6 +6,7 @@ import akka.actor.Props
 import model.entity.ComponentInstance
 import model.rdf.Graph
 import model.rdf.sparql.GenericSparqlEndpoint
+import model.service.GraphStore
 import play.api.libs.concurrent.Akka
 
 import scala.collection.JavaConversions._
@@ -13,10 +14,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import play.api.Play.current
 
-class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
+class SparqlPlugin(internalComponent: InternalComponent, graphStore: GraphStore) extends AnalyzerPlugin {
   override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
-
-    val endpointUrl = "http://live.payola.cz:8890/sparql"
     val resultGraph = "urn:" + UUID.randomUUID().toString
 
     val reporter = Akka.system.actorOf(reporterProps)
@@ -32,12 +31,12 @@ class SparqlPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin 
         reporter ! "Querying <"+dataRef.endpointUri+"> (graph: "+dataRef.graphUri.map("<"+_+">").toString+")"
         val model = endpoint.queryExecutionFactory()(query).execConstruct()
 
-        pushToTripleStore(model, endpointUrl, resultGraph)(reporterProps)
+        graphStore.pushToTripleStore(model, resultGraph)(reporterProps)
       } catch {
         case e: Throwable => println(e)
       }
 
-      (endpointUrl, Some(resultGraph))
+      (graphStore.endpointUrl, Some(resultGraph))
     }
   }
 

@@ -15,76 +15,100 @@
     </script>
     <script src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     <script>
-        require(["d3js"], function(d3){
-    var w = 1220,
-    h = 600,
-    x = d3.scale.linear().range([0, w]),
-    y = d3.scale.linear().range([0, h]);
+        require(["d3js", "jquery"], function(d3, $){
 
-    var vis = d3.select("#body").append("div")
-    .attr("class", "chart")
-    .style("width", w + "px")
-    .style("height", h + "px")
-    .append("svg:svg")
-    .attr("width", w)
-    .attr("height", h);
+            d3.json("/api/v1/evaluation/@evaluationId.id/tree.json", function(roots) {
+                var list = document.getElementById("list");
+                list.innerHTML = "";
 
-    var partition = d3.layout.partition()
-    .value(function(d) { return d.size; });
+                var cnt = 0;
+                for (var r in roots){
+                    var root = roots[r];
+                    var item = document.createElement("li");
+                    item.appendChild(document.createTextNode("Hierarchy " + (++cnt) ));
+                    list.appendChild(item);
+                    item.onclick = function(){
+                        (function(root){
+                            document.getElementById("body").innerHTML = "";
+                            onListItemClick($.extend({}, roots[0]));
+                        })(root);
+                    }
+                }
 
-    d3.json("/api/v1/evaluation/@evaluationId.id/tree.json", function(root) {
-    var g = vis.selectAll("g")
-    .data(partition.nodes(root))
-    .enter().append("svg:g")
-    .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
-    .on("click", click);
+                if(roots.length === 1){
+                    onListItemClick($.extend({}, roots[0]));
+                }
+            });
 
-    var kx = w / root.dx,
-    ky = h / 1;
+            var onListItemClick = function(root){
+                var w = 1220,
+                    h = 600,
+                    x = d3.scale.linear().range([0, w]),
+                    y = d3.scale.linear().range([0, h]);
 
-    g.append("svg:rect")
-    .attr("width", root.dy * kx)
-    .attr("height", function(d) { return d.dx * ky; })
-    .attr("class", function(d) { return d.children ? "parent" : "child"; });
+                var vis = d3.select("#body").append("div")
+                    .attr("class", "chart")
+                    .style("width", w + "px")
+                    .style("height", h + "px")
+                    .append("svg:svg")
+                    .attr("width", w)
+                    .attr("height", h);
 
-    g.append("svg:text")
-    .attr("transform", transform)
-    .attr("dy", ".35em")
-    .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; })
-    .text(function(d) { return d.name; })
+                var partition = d3.layout.partition()
+                    .value(function(d) { return d.size; });
 
-    d3.select(window)
-    .on("click", function() { click(root); })
+                var g = vis.selectAll("g")
+                    .data(partition.nodes(root))
+                    .enter().append("svg:g")
+                    .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
+                    .on("click", click);
 
-    function click(d) {
-    if (!d.children) return;
+                var kx = w / root.dx,
+                    ky = h / 1;
 
-    kx = (d.y ? w - 40 : w) / (1 - d.y);
-    ky = h / d.dx;
-    x.domain([d.y, 1]).range([d.y ? 40 : 0, w]);
-    y.domain([d.x, d.x + d.dx]);
+                g.append("svg:rect")
+                    .attr("width", root.dy * kx)
+                    .attr("height", function(d) { return d.dx * ky; })
+                    .attr("class", function(d) { return d.children ? "parent" : "child"; });
 
-    var t = g.transition()
-    .duration(d3.event.altKey ? 7500 : 750)
-    .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
+                g.append("svg:text")
+                    .attr("transform", transform)
+                    .attr("dy", ".35em")
+                    .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; })
+                    .text(function(d) { return d.name; });
 
-    t.select("rect")
-    .attr("width", d.dy * kx)
-    .attr("height", function(d) { return d.dx * ky; });
+                d3.select(window)
+                    .on("click", function() { click(root); });
 
-    t.select("text")
-    .attr("transform", transform)
-    .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; });
+                function click(d) {
+                    if (!d.children) return;
 
-    d3.event.stopPropagation();
-    }
+                    kx = (d.y ? w - 40 : w) / (1 - d.y);
+                    ky = h / d.dx;
+                    x.domain([d.y, 1]).range([d.y ? 40 : 0, w]);
+                    y.domain([d.x, d.x + d.dx]);
 
-    function transform(d) {
-    return "translate(8," + d.dx * ky / 2 + ")";
-    }
-    });
+                    var t = g.transition()
+                    .duration(d3.event.altKey ? 7500 : 750)
+                    .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
 
-    });
+                    t.select("rect")
+                    .attr("width", d.dy * kx)
+                    .attr("height", function(d) { return d.dx * ky; });
+
+                    t.select("text")
+                    .attr("transform", transform)
+                    .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; });
+
+                    d3.event.stopPropagation();
+                }
+
+                function transform(d) {
+                    return "translate(8," + d.dx * ky / 2 + ")";
+                }
+            };
+
+        });
     </script>
 }
 
@@ -117,8 +141,9 @@
 
 @main("Treemap visualization", scripts, styles) {
 
-    <div id="body" style="padding-top: 60px;">
-
+    <div style="padding-top: 60px;">
+        <ul id="list"></ul>
+        <div id="body"></div>
     </div>
 
 }

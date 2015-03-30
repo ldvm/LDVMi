@@ -46,7 +46,7 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
 
     val coveredInputUris = dataReferencesBySender.map { case (_, DataReference(portUri, _, _)) => portUri}.distinct
 
-    val allInputsCovered = (coveredInputUris.toSet == allInputUris.toSet)
+    val allInputsCovered = coveredInputUris.toSet == allInputUris.toSet
     val nothingExpected = expectedDataRefSenders.isEmpty
     val allExpectedReceived = (dataReferencesBySender.map(_._1).toSet == expectedDataRefSenders.toSet)
 

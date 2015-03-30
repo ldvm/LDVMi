@@ -9,9 +9,9 @@ import model.rdf.vocabulary.SKOS
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
-class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, HierarchyNode] {
+class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, Seq[HierarchyNode]] {
 
-  def extract(input: QueryExecution): Option[HierarchyNode] = {
+  def extract(input: QueryExecution): Option[Seq[HierarchyNode]] = {
 
     val model = input.execConstruct()
 
@@ -19,9 +19,8 @@ class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, H
 
     val nodesMap = new mutable.HashMap[String, HierarchyNode]
     val broaderMap = new mutable.HashMap[String, Seq[String]]
-    var rootUri: Option[String] = None
 
-    nodes.foreach { n =>
+    val roots = nodes.flatMap { n =>
 
       val nodeResource = n.asResource()
 
@@ -36,15 +35,19 @@ class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, H
       Option(broader).map{ b => broaderMap.put(b.getURI, broaderMap.getOrElse(b.getURI, Seq()) ++ Seq(nodeResource.getURI)) }
 
       if(broader == null){
-        rootUri = Some(nodeResource.getURI)
+        Some(nodeResource.getURI)
+      }else{
+        None
       }
 
     }
 
-    rootUri.flatMap(u => tree(u, broaderMap, nodesMap))
+    Some(roots.flatMap(u => tree(u, broaderMap, nodesMap)))
   }
 
-  def tree(rootUri: String, broaderMap: mutable.HashMap[String, Seq[String]], nodesMap: mutable.HashMap[String, HierarchyNode]) : Option[HierarchyNode] = {
+  def tree(rootUri: String, broaderMap: mutable.HashMap[String, Seq[String]], nodesMap: mutable.HashMap[String, HierarchyNode])
+  : Option[HierarchyNode] = {
+
     nodesMap.get(rootUri).map { n =>
 
       val maybeChildrenList = broaderMap.get(rootUri)
@@ -56,5 +59,7 @@ class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, H
 
       HierarchyNode(n.name, if(children.isEmpty) { Some(1) }else{ None }, children)
     }
+
   }
+
 }
