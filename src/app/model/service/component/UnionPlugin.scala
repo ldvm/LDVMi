@@ -5,15 +5,15 @@ import java.util.UUID
 import akka.actor.Props
 import model.entity.ComponentInstance
 import model.rdf.sparql.GenericSparqlEndpoint
+import model.service.GraphStore
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UnionPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
+class UnionPlugin(internalComponent: InternalComponent, graphStore: GraphStore) extends AnalyzerPlugin {
   override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
-    val endpointUrl = "http://live.payola.cz:8890/sparql"
     val resultGraph = "urn:" + UUID.randomUUID().toString
 
     val reporter = Akka.system.actorOf(reporterProps)
@@ -29,7 +29,7 @@ class UnionPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
           val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri,dataRef.graphUri.toSeq, List())
 
           val model = endpoint.queryExecutionFactory()(query).execConstruct()
-          pushToTripleStore(model, endpointUrl, resultGraph)(reporterProps)
+          graphStore.pushToTripleStore(model, resultGraph)(reporterProps)
         } catch {
           case e: org.apache.jena.atlas.web.HttpException => {
             println(e.getResponse)
@@ -40,7 +40,7 @@ class UnionPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
         }
       }
 
-      (endpointUrl, Some(resultGraph))
+      (graphStore.endpointUrl, Some(resultGraph))
     }
   }
 

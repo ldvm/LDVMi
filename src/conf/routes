@@ -11,9 +11,9 @@ GET         /visualize/:id                                  @controllers.Visuali
 GET         /pipelines                                      @controllers.PipelineController.index
 GET         /components                                     @controllers.ComponentTemplateController.index
 
-POST        /ttlupload                                      @controllers.VisualizationController.ttlupload()
-POST        /ttldl                                          @controllers.VisualizationController.ttldownload()
-GET         /ttlds                                          @controllers.VisualizationController.ttlds()
+POST        /ttlupload                                      @controllers.VisualizationController.fromFiles()
+POST        /ttldl                                          @controllers.VisualizationController.fromRemoteData()
+GET         /ttlds                                          @controllers.VisualizationController.dataSource()
 GET         /discover/                                      @controllers.VisualizationController.discover(endpointUrl: Option[String] ?= None, graphUris: Option[String] ?= None, combine: Boolean ?= false, name: Option[String] ?= None)
 
 POST        /api/v1/components/add/ttl                      @controllers.api.LdvmApiController.ttl

@@ -6,6 +6,7 @@ import akka.actor.Props
 import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP
 import model.entity.ComponentInstance
 import model.rdf.sparql.GenericSparqlEndpoint
+import model.service.GraphStore
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 
@@ -13,9 +14,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.collection.JavaConversions._
 
-class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugin {
+class GeocoderPlugin(internalComponent: InternalComponent, graphStore: GraphStore) extends AnalyzerPlugin {
   override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
-    val endpointUrl = "http://live.payola.cz:8890/sparql"
     val resultGraph = "urn:" + UUID.randomUUID().toString
 
     val reporter = Akka.system.actorOf(reporterProps)
@@ -59,7 +59,7 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
 
         val geoEndpoint = new GenericSparqlEndpoint(geoRef.get.endpointUri, geoRef.get.graphUri.toSeq, List())
 
-        if(datasetRef.get.endpointUri == endpointUrl) {
+        if(datasetRef.get.endpointUri == graphStore.endpointUrl) {
           val dataQuery = "CONSTRUCT { ?s <http://ruian.linked.opendata.cz/ontology/links/obec> ?o } WHERE { ?s <http://ruian.linked.opendata.cz/ontology/links/obec> ?o }"
           val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUri.toSeq, List())
           val dataModel = dataEndpoint.queryExecutionFactory()(dataQuery).execConstruct()
@@ -80,8 +80,8 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
             dataModel.add(model)
           }
 
-          pushToTripleStore(dataModel, endpointUrl, datasetRef.get.graphUri.head)(reporterProps)
-          (endpointUrl, Some(datasetRef.get.graphUri.head))
+          graphStore.pushToTripleStore(dataModel, datasetRef.get.graphUri.head)(reporterProps)
+          (graphStore.endpointUrl, Some(datasetRef.get.graphUri.head))
         }else {
           val dataQuery = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
           val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUri.toSeq, List())
@@ -103,22 +103,22 @@ class GeocoderPlugin(internalComponent: InternalComponent) extends AnalyzerPlugi
             dataModel.add(model)
           }
 
-          pushToTripleStore(dataModel, endpointUrl, resultGraph)(reporterProps)
-          (endpointUrl, Some(resultGraph))
+          graphStore.pushToTripleStore(dataModel, resultGraph)(reporterProps)
+          (graphStore.endpointUrl, Some(resultGraph))
         }
       } catch {
         case e: QueryExceptionHTTP => {
           reporter ! "Error when querying: " + e.getResponseCode + " : " + e.getResponseMessage
           println(e.getResponseCode + " : " + e.getResponseMessage )
-          (endpointUrl, Some(resultGraph))
+          (graphStore.endpointUrl, Some(resultGraph))
         }
         case e: Throwable => {
           println(e)
-          (endpointUrl, Some(resultGraph))
+          (graphStore.endpointUrl, Some(resultGraph))
         }
       }
       }else{
-        (endpointUrl, Some(resultGraph))
+        (graphStore.endpointUrl, Some(resultGraph))
       }
     }
   }
