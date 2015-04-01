@@ -6,11 +6,40 @@
 GET         /                                               @controllers.ApplicationController.index
 GET         /visualize/datacube                             @controllers.DataCubeController.visualize
 GET         /visualize/map                                  @controllers.MapController.visualize
-GET         /visualizations                                 @controllers.VisualizationController.index
-GET         /visualizers                                    @controllers.VisualizerController.index
+GET         /visualize/treemap/:id                          @controllers.VisualizationController.treemap(id: Long)
+GET         /visualize/:id                                  @controllers.VisualizationController.visualize(id: Long)
+GET         /pipelines                                      @controllers.PipelineController.index
+GET         /components                                     @controllers.ComponentTemplateController.index
+
+POST        /ttlupload                                      @controllers.VisualizationController.fromFiles()
+POST        /ttldl                                          @controllers.VisualizationController.fromRemoteData()
+GET         /ttlds                                          @controllers.VisualizationController.dataSource()
+GET         /discover/                                      @controllers.VisualizationController.discover(endpointUrl: Option[String] ?= None, graphUris: Option[String] ?= None, combine: Boolean ?= false, name: Option[String] ?= None)
+
+POST        /api/v1/components/add/ttl                      @controllers.api.LdvmApiController.ttl
+GET         /api/v1/components/delete/:id                   @controllers.api.ComponentTemplateApiController.delete(id: Long)
+GET         /api/v1/compatibility/check/:pipelineId         @controllers.api.CompatibilityApiController.check(pipelineId: Long)
+GET         /api/v1/pipelines/evaluate/:pipelineId          @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
+GET         /api/v1/pipelines                               @controllers.api.PipelineApiController.list(skip: Int ?= 0, pageSize: Int ?= 50, discoveryId: Option[Long] ?= None, visualizerId: Option[Long] ?= None)
+GET         /api/v1/pipelines/discover                      @controllers.api.PipelineApiController.discover(endpointUrl: Option[String] ?= None, graphUris: Option[String] ?= None, combine: Boolean ?= false, name: Option[String] ?= None)
+GET         /api/v1/pipelines/evaluations/:id               @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
+#GET         /api/v1/pipelines/discovery/:id                @controllers.api.PipelineApiController.discoveryState(id: Long)
+GET         /api/v1/pipelines/visualization/:id             @controllers.api.PipelineApiController.visualizationById(id: Long)
+GET         /api/v1/pipelines/:id                           @controllers.api.PipelineApiController.findById(id: Long)
+GET         /api/v1/evaluation/:id/tree.json                @controllers.api.VisualizationApiController.tree(id: Long)
+
+GET         /api/v1/component/list                          @controllers.api.ComponentTemplateApiController.list(skip: Int ?= 0, pageSize: Int ?= 50)
+GET         /api/v1/component/:id                           @controllers.api.ComponentTemplateApiController.findById(id: Long)
+GET         /api/v1/component/:id/features                  @controllers.api.ComponentTemplateApiController.featuresById(id: Long)
+GET         /api/v1/component/:id/inputs                    @controllers.api.ComponentTemplateApiController.inputsById(id: Long)
+GET         /api/v1/component/:id/output                    @controllers.api.ComponentTemplateApiController.outputById(id: Long)
+GET         /api/v1/component/:id/descriptors               @controllers.api.ComponentTemplateApiController.descriptorsById(id: Long)
+
 
 POST        /api/map/polygon-entities/:id                   @controllers.api.MapApiController.polygonEntities(id: Long)
 GET         /api/map/polygon-entities-properties/:id        @controllers.api.MapApiController.polygonEntitiesProperties(id: Long)
+GET         /api/map/properties/:id                         @controllers.api.MapApiController.properties(id: Long)
+POST        /api/map/markers/:id                            @controllers.api.MapApiController.markers(id: Long)
 
 GET         /api/datacube/datasets/:id                      @controllers.api.DataCubeApiController.datasets(id: Long)
 GET         /api/datacube/datastructures/:id                @controllers.api.DataCubeApiController.dataStructures(id: Long)
@@ -18,18 +47,14 @@ GET         /api/datacube/datastructure-components          @controllers.api.Dat
 POST        /api/datacube/values/:id                        @controllers.api.DataCubeApiController.values(id: Long)
 POST        /api/datacube/slices/:id                        @controllers.api.DataCubeApiController.sliceCube(id: Long)
 
-GET         /api/compatibility/check/:id                    @controllers.api.VisualizationApiController.checkCompatibility(id: Long)
-GET         /api/compatibility/:id                          @controllers.api.VisualizationApiController.getCompatibilityForVisualization(id: Long)
-GET         /api/visualization/list                         @controllers.api.VisualizationApiController.list(skip: Int, take: Int)
+#GET         /api/compatibility/check/:id                    @controllers.api.VisualizationApiController.checkCompatibility(id: Long)
+#GET         /api/compatibility/:id                          @controllers.api.VisualizationApiController.getCompatibilityForVisualization(id: Long)
+#GET         /api/visualization/list                         @controllers.api.VisualizationApiController.list(skip: Int, take: Int)
 GET         /api/visualization/queries/:id                  @controllers.api.VisualizationApiController.queries(id: Long, permalinkToken: String)
 GET         /api/visualization/cached/:id/:token            @controllers.api.VisualizationApiController.getCachedResult(id: Long, token: String)
-GET         /api/visualization/add-datasource               @controllers.api.VisualizationApiController.addDataSource(endpointUri: String, graphUri: Option[String])
-GET         /api/visualization/add                          @controllers.api.VisualizationApiController.addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String])
-GET         /api/visualization/payola/:evaluationId         @controllers.api.VisualizationApiController.addPayola(evaluationId: String)
-GET         /api/visualization/:id                          @controllers.api.VisualizationApiController.get(id: Long)
-
-GET         /api/visualizer/list                            @controllers.api.VisualizerApiController.list(skip: Int, take: Int)
-GET         /api/visualizer/add                             @controllers.api.VisualizerApiController.add(name: String, signature: String, url: String, description: Option[String], dsdSignature: Option[String])
+#GET         /api/visualization/add-datasource               @controllers.api.VisualizationApiController.addDataSource(endpointUri: String, graphUri: Option[String])
+#GET         /api/visualization/add                          @controllers.api.VisualizationApiController.addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String])
+#GET         /api/visualization/:id                          @controllers.api.VisualizationApiController.get(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /vassets/*file                                  controllers.Assets.versioned(path="/public", file: Asset)

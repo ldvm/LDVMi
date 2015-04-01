@@ -1,9 +1,10 @@
 package controllers.api
 
-import model.dao.VisualizationEagerBox
-import model.services.VisualizationService
-import model.services.rdf.sparql.datacube.DataCubeService
-import model.services.rdf.sparql.geo.GeoService
+import model.entity.{PipelineEvaluation, PipelineEvaluationId}
+import model.rdf.sparql.datacube.DataCubeService
+import model.rdf.sparql.geo.GeoService
+import model.rdf.sparql.visualization.VisualizationService
+import model.service.{ComponentTemplateService, PipelineService}
 import play.api.Play.current
 import play.api.db.slick._
 import play.api.libs.concurrent.Execution.Implicits._
@@ -17,27 +18,27 @@ import scala.concurrent.Future
 abstract class ApiController(implicit inj: Injector) extends Controller with Injectable {
 
   val dataCubeService = inject[DataCubeService]
+  val pipelineService = inject[PipelineService]
+  val componentTemplateService = inject[ComponentTemplateService]
   val visualizationService = inject[VisualizationService]
   val geoService = inject[GeoService]
 
+  protected def simpleParsingFuture[E, JsonType](id: Long)
+    (enumeratorGetter: (PipelineEvaluation, JsonType, JsValue) => Option[Enumerator[Option[E]]])
+    (jsonValidate: JsValue => JsResult[JsonType])
+    (jsonFormatter: List[E] => JsValue) = parsingFuture(id) { (pipelineEvaluation, entity: JsonType, json) =>
 
-  protected def simpleFuture[E]
-    (id: Long)
-      (enumeratorGetter: VisualizationEagerBox => Enumerator[Option[E]])
-      (jsonFormatter: List[E] => JsValue) = Action.async { implicit request =>
-    DB.withSession { s =>
-      withVisualizationAndDataSourcesFuture(id) { visualizationEagerBox =>
-
-        val enumerator = enumeratorGetter(visualizationEagerBox)
-        futureToResult(enumeratorToSeq(enumerator), jsonFormatter)
-
-      }(s)
+    enumeratorGetter(pipelineEvaluation, entity, json).map { enumerator =>
+      futureToResult(enumeratorToSeq(enumerator), jsonFormatter)
+    }.getOrElse{
+      Future(NotFound)
     }
-  }
+
+  }(jsonValidate)
 
   protected def parsingFuture[E, JsonType](id: Long)
-      (futureGetter: (VisualizationEagerBox, JsonType, JsValue) => Future[Result])
-      (jsonValidate: JsValue => JsResult[JsonType]) = Action.async(parse.json(1024 * 1024 * 100)) { implicit request =>
+    (futureGetter: (PipelineEvaluation, JsonType, JsValue) => Future[Result])
+    (jsonValidate: JsValue => JsResult[JsonType]) = Action.async(parse.json(1024 * 1024 * 100)) { implicit request =>
     val json: JsValue = request.body
 
     jsonValidate(json) match {
@@ -45,8 +46,8 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
       case jsonSuccess: JsSuccess[JsonType] =>
 
         DB.withSession { s =>
-          withVisualizationAndDataSourcesFuture(id) { visualizationEagerBox =>
-            futureGetter(visualizationEagerBox, jsonSuccess.get, json)
+          withVisualizationAndDataSourcesFuture(id) { pipelineEvaluation =>
+            futureGetter(pipelineEvaluation, jsonSuccess.get, json)
           }(s)
         }
 
@@ -54,36 +55,31 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
     }
   }
 
-  protected def simpleParsingFuture[E, JsonType](id: Long)
-      (enumeratorGetter: (VisualizationEagerBox, JsonType, JsValue) => Enumerator[Option[E]])
-      (jsonValidate: JsValue => JsResult[JsonType])
-      (jsonFormatter: List[E] => JsValue) = parsingFuture(id) { (visualizationEagerBox, entity: JsonType, json) =>
+  protected def simpleFuture[E]
+  (id: Long)
+    (enumeratorGetter: PipelineEvaluation => Option[Enumerator[Option[E]]])
+    (jsonFormatter: List[E] => JsValue) = Action.async { implicit request =>
+    DB.withSession { s =>
+      withVisualizationAndDataSourcesFuture(id) { visualizationEagerBox =>
 
-        val enumerator = enumeratorGetter(visualizationEagerBox, entity, json)
-        futureToResult(enumeratorToSeq(enumerator), jsonFormatter)
+        enumeratorGetter(visualizationEagerBox).map { enumerator =>
+          futureToResult(enumeratorToSeq(enumerator), jsonFormatter)
+        }.getOrElse {
+          Future(NotFound)
+        }
 
-  }(jsonValidate)
-
-
-  protected def withVisualizationAndDataSourcesFuture(id: Long)
-      (func: VisualizationEagerBox => Future[Result])
-      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {
-
-    visualizationService.getByIdWithEager(id).map { visualizationEagerBox =>
-      func(visualizationEagerBox)
-    }.getOrElse {
-      Future { NotFound }
+      }(s)
     }
   }
 
-  protected def withVisualizationEagerBox(id: Long)
-      (func: VisualizationEagerBox => Result)
-      (implicit rs: play.api.db.slick.Config.driver.simple.Session): Result = {
+  protected def withVisualizationAndDataSourcesFuture(id: Long)
+    (func: PipelineEvaluation => Future[Result])
+    (implicit rs: play.api.db.slick.Config.driver.simple.Session): Future[Result] = {
 
-    visualizationService.getByIdWithEager(id).map { visualizationEagerBox =>
+    pipelineService.findEvaluationById(PipelineEvaluationId(id)).map { visualizationEagerBox =>
       func(visualizationEagerBox)
     }.getOrElse {
-      NotFound
+      Future {NotFound}
     }
   }
 
@@ -95,6 +91,10 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
 
   protected def futureToResult[E](future: Future[List[E]], jsonFormatter: List[E] => JsValue): Future[Result] = {
     future.transform(r => Results.Ok(jsonFormatter(r)), t => t)
+  }
+
+  protected def withEvaluation(id: Long)(func: PipelineEvaluation => Result)(implicit session: Session): Result = {
+    pipelineService.findEvaluationById(PipelineEvaluationId(id)).map(func).getOrElse(NotFound)
   }
 
 }

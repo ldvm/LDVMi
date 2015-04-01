@@ -1,4 +1,5 @@
 @(title: String, scripts: Html = Html(""), styles: Html = Html(""))(content: Html)
+@import play.api.Play
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -18,6 +19,18 @@
     </head>
     <body>
 
+        @Play.current.configuration.getString("analytics.ua").map{ ua =>
+            <script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-@ua', 'auto');
+                ga('send', 'pageview');
+            </script>
+        }
+
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -27,13 +40,13 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/">Payola visualizations</a>
+                    <a class="navbar-brand" href="/">LDVMi</a>
                 </div>
                 <div class="navbar-collapse collapse">
 
                     <ul class="nav navbar-nav">
-                        <li class=""><a href="/visualizations#/list">Visualizations</a></li>
-                        <li class=""><a href="/visualizers">Visualizers</a></li>
+                        <li class=""><a href="/pipelines#/list">Pipelines</a></li>
+                        <li class=""><a href="/components">Components</a></li>
                     </ul>
 <!--
                     <form class="navbar-form navbar-right" role="form">

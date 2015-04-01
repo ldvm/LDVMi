@@ -12,7 +12,6 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
             return {
                 scope: {
                     markerData: '=markers',
-                    polygonData: '=polygons',
                     mapType: '@',
                     zoom: '=',
                     center: '=',
@@ -59,23 +58,6 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                         });
                     };
 
-                    $scope.updatePolygons = function () {
-                        angular.forEach($scope.polygonData, function (entity) {
-                            angular.forEach(entity.polygons, function (polygon) {
-                                var mapPolygon = new google.maps.Polygon({
-                                    paths: polygon.points,
-                                    strokeColor: '#FF0000',
-                                    strokeOpacity: 0.8,
-                                    strokeWeight: 2,
-                                    fillColor: '#FF0000',
-                                    fillOpacity: 0.35
-                                });
-
-                                mapPolygon.setMap($scope.map);
-                            });
-                        });
-                    };
-
                     $scope.updateMarkers = function () {
 
                         var newMarkersMap = {};
@@ -106,7 +88,7 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                             $scope.bounds.extend(marker.position);
 
                             // INFO WINDOW
-                            var contentString = '<p>' + item.description.replace(/\n/g, "<br />") + '</p>';
+                            var contentString = '<p>' + ((item.description)||"").replace(/\n/g, "<br />") + '</p>';
 
                             google.maps.event.addListener(marker, 'click', function (content) {
                                 return function () {
@@ -144,10 +126,6 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
 
                     $scope.$watch('markerData', function () {
                         $scope.updateMarkers();
-                    });
-
-                    $scope.$watch('polygonData', function () {
-                        $scope.updatePolygons();
                     });
 
                     $scope.$watch('zoom', function () {

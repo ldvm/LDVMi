@@ -2,13 +2,18 @@
 
     <div class="col-lg-3" id="left">
 
+        <div ng-hide="queryingDataset || properties.length" class="alert alert-danger">
+            No filtering properties discovered. Press Refresh button to visualize
+            all unfiltered data. It may take a while...
+        </div>
+
         <div ng-repeat="property in properties">
             <ul class="list-group">
                 <li class="list-group-item active">http://...{{property.uri | limitTo: -20}}
-                <li class="list-group-item" ng-repeat="value in values[property.uri]" ng-show="value.label">
+                <li class="list-group-item" ng-repeat="value in values[property.uri]">
                     <input type="checkbox" ng-model="value.isActive" />
                     <span ng-if="property.uri == mainProperty.uri" ng-style="value.colorStyle" style="display: inline-block; min-width: 30px; min-height: 15px;"></span>
-                    {{value.label.variants[""]}}
+                    {{value.label.variants[""] || value.uri}}
                 </li>
             </ul>
         </div>
@@ -34,12 +39,18 @@
     </div>
 
     <div ng-if="!queryingDataset">
-
         <div class="col-lg-9" id="right">
-            <div class="alert alert-info">
+            <div class="alert" ng-class="{'alert-danger': lastError, 'alert-info': !lastError}">
                 <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh</button>
+                <div ng-show="lastError">
+                    The last query has failed. Probably a Virtuoso timeout.
+                </div>
             </div>
-            <osm entities="entities" colors="colors" style="width: 100%; height: 800px;"></osm>
+            <osm ng-if="entities" entities="entities" colors="colors" style="width: 100%; height: 800px;"></osm>
+            <gmaps ng-if="markers" fit-bounds="true" markers="markers" zoom="zoom" center="center" style="width: 100%; height: 800px;"></gmaps>
+            <div class="alert alert-warning" ng-show="!entities && !markers">
+                Change your filter settings and press refresh to see data on a map!
+            </div>
         </div>
 
     </div>

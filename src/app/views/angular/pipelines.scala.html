@@ -1,0 +1,66 @@
+@()
+
+    @scripts = {
+        <script>
+        var require = {
+            callback: function() {
+                // default requirejs configs
+                @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
+                    requirejs.config(@Html(webJarJson.toString));
+                }
+
+                requirejs.config({ paths: { "highcharts-all": "/webjars/highcharts/4.0.3/highcharts-all" } });
+                requirejs.config({ paths:{"highcharts-ng":["/webjars/highcharts-ng/0.0.6/highcharts-ng","highcharts-ng"]},"shim":{"highcharts-ng":["angular","highcharts-all"]}});
+            }
+        };
+        </script>
+        <script data-main="@routes.Assets.versioned("javascripts/angular/pipeline/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+    }
+
+    @styles = {
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("loading-bar.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("ng-table.css"))'>
+        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui.min.css"))'>
+        <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
+
+        <style>
+
+        .link {
+        fill: none;
+        stroke: #666;
+        stroke-width: 1.5px;
+        }
+
+        #licensing {
+        fill: green;
+        }
+
+        .link.licensing {
+        stroke: green;
+        }
+
+        .link.resolved {
+        stroke-dasharray: 0,2 1;
+        }
+
+        circle {
+        fill: #ccc;
+        stroke: #333;
+        stroke-width: 1.5px;
+        }
+
+        text {
+        font: 10px sans-serif;
+        pointer-events: none;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+        }
+
+
+        </style>
+    }
+
+@main("LDVMi", scripts, styles) {
+
+    <div ng-view></div>
+
+}

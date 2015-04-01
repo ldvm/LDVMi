@@ -1,0 +1,3 @@
+package model.rdf.sparql.jena
+
+class QueryExecutionTypeConstruct extends QueryExecutionType

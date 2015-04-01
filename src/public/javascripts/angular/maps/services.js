@@ -7,7 +7,9 @@ define(['angular'], function (ng) {
         .factory('MapService', ['$resource', function ($resource) {
             return $resource('', null, {
                 polygonEntities: {url: '/api/map/polygon-entities/:visualizationId', method: 'POST', isArray: true},
-                polygonEntitiesProperties: {url: '/api/map/polygon-entities-properties/:visualizationId', isArray: true}
+                polygonEntitiesProperties: {url: '/api/map/polygon-entities-properties/:visualizationId', isArray: true},
+                properties: {url: '/api/map/properties/:evaluationId', isArray: true},
+                markers: {url: '/api/map/markers/:evaluationId', isArray: true, method: 'POST'}
             });
         }])
         .factory('DataCubeService', ['$resource', function ($resource) {

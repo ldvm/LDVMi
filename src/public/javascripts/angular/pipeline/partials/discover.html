@@ -1,0 +1,44 @@
+<div class="container-fluid" style="padding-top : 60px;">
+
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="alert" ng-class="{'alert-info': !isFinished,'alert-danger': isFinished && !isSuccess, 'alert-success': isFinished && isSuccess}">
+                <div class="alert-body">
+                    <ul class="list-unstyled">
+                        <li>
+                            State: <span ng-show="!isFinished">Running</span>
+                            <span ng-show="isFinished">Finished with
+                                <span ng-show="isSuccess">success</span><span ng-show="!isSuccess">failure</span>
+                            </span>
+                        </li>
+                        <li>
+                            Last completed iteration: <span ng-bind="lastPerformedIteration"></span>
+                        </li>
+                        <li>
+                            Pipelines discovered: <span ng-bind="pipelinesDiscoveredCount"></span>
+                        </li>
+                        <li>
+                            Duration: <span ng-bind="duration"></span> ms
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <highchart id="chart1" config="chartData"></highchart>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div style="height: 500px; overflow-y: scroll">
+                <ul>
+                    <li ng-repeat="i in info">
+                        <span ng-if="i.message" ng-bind="i.message"></span>
+                        <span ng-if="!i.message"><strong>{{i|json}}</strong></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>

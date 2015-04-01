@@ -1,0 +1,57 @@
+<h2>{{component.title}}</h2>
+
+<p>Type: {{componentType}}</p>
+<p>{{component.description}}</p>
+<p>{{component.uri}}</p>
+
+<p>
+    <a href="/pipelines#/list?visualizerId={{component.id}}" class="btn btn-default">List pipelines using this visualizer</a>
+</p>
+
+<h3>Default configuration</h3>
+<pre>{{component.defaultConfiguration}}</pre>
+
+<h3>Features</h3>
+<table class="table table-striped">
+    <tr ng-repeat="feature in features">
+        <td>{{feature.id}}</td>
+        <td>{{feature.title}}</td>
+        <td>{{feature.isMandatory}}</td>
+        <td>{{feature.description}}</td>
+        <td>{{feature.uri}}</td>
+    </tr>
+</table>
+
+<h3>Inputs</h3>
+<table class="table table-striped">
+    <tr ng-repeat="dataPort in inputs">
+        <td>{{dataPort.id}}</td>
+        <td>{{dataPort.title}}</td>
+        <td>{{dataPort.description}}</td>
+        <td>{{dataPort.uri}}</td>
+    </tr>
+</table>
+
+
+<h3>Output</h3>
+<table class="table table-striped">
+    <tr>
+        <td>{{output.id}}</td>
+        <td>{{output.title}}</td>
+        <td>{{output.description}}</td>
+        <td>{{output.uri}}</td>
+    </tr>
+</table>
+
+<h3>Descriptors</h3>
+<table class="table table-striped">
+    <tr ng-repeat="descriptor in descriptors">
+        <td>{{descriptor.id}}</td>
+        <td>{{descriptor.title}}</td>
+        <td>{{descriptor.description}}</td>
+        <td><ui-codemirror ng-model="descriptor.query" ui-codemirror-opts="mirrorOpts"></ui-codemirror></td>
+        <td>{{descriptor.uri}}</td>
+        <td>{{descriptor.featureId}}</td>
+        <td>{{descriptor.inputTemplateId}}</td>
+    </tr>
+</table>
