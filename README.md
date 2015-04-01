@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-![Payola logo (credits Martin Mraz)](https://raw.github.com/siroky/Payola/develop/docs/img/logo_medium.png)
-
 [![Build Status](https://travis-ci.org/payola/payola-viz.svg?branch=ldvm)](https://travis-ci.org/payola/payola-viz)
 
-payola-viz
-=======
 LDVMi
->>>>>>> b2460e8e9d216e8f222f915e84592159fd4b3f23
 ==========
 
 This project is developed as a replacement for visualization parts in Payola project. Its goal is to provide better reliability, scalability and resolve some issues which cannot be easily resolved Payola due to its architecture.
