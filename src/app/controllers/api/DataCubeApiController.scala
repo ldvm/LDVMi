@@ -63,7 +63,9 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
           func(evaluation, s.get)
         }
 
-      case e: JsError => UnprocessableEntity
+      case e: JsError => {
+        InternalServerError(e.errors.toString)
+      }
     }
 
   }
@@ -73,5 +75,5 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
       Ok(Json.toJson(dataCubeService.getDatasets(evaluation)))
     }
   }
-
 }
+
