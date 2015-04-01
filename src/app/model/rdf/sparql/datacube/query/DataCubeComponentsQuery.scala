@@ -8,6 +8,7 @@ class DataCubeComponentsQuery(dataStructureUri: String, componentType: String = 
   def get: String = """
                       | PREFIX qb: <http://purl.org/linked-data/cube#>
                       | PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+                      | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
                       |
                       | CONSTRUCT {
                       |     <@s> a qb:DataStructureDefinition ;

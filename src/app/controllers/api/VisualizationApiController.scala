@@ -22,4 +22,11 @@ class VisualizationApiController(implicit inj: Injector) extends ApiController w
     }
   }
 
+  def queries(id: Long, permalinkToken: String) = DBAction { implicit rs =>
+    withEvaluation(id) { evaluation =>
+      val query = pipelineService.findQueryByIdAndToken(evaluation.id.get, permalinkToken)
+      query.map(q => Ok(q.storedData)).getOrElse(NotFound)
+    }
+  }
+
 }

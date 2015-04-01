@@ -31,4 +31,8 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
 
   def findEvaluationById(evaluationId: PipelineEvaluationId)(implicit session: Session): Option[PipelineEvaluation]
 
+  def setEvaluationQuery(token: String, query: PipelineEvaluationQuery)(implicit session: Session)
+
+  def findQueryByIdAndToken(id: PipelineEvaluationId, token: String)(implicit session: Session) : Option[PipelineEvaluationQuery]
+
 }

@@ -21,6 +21,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
 
   private val pipelineDiscoveryRepository = inject[PipelineDiscoveryRepository]
   private val pipelineEvaluationRepository = inject[PipelineEvaluationRepository]
+  private val pipelineEvaluationQueryRepository = inject[PipelineEvaluationQueryRepository]
   private val pipelinesRepository = inject[PipelineRepository]
 
   private val dataPortBindingsRepository = inject[DataPortBindingRepository]
@@ -58,6 +59,15 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
 
   def findEvaluationById(evaluationId: PipelineEvaluationId)(implicit session: Session): Option[PipelineEvaluation] = {
     pipelineEvaluationRepository.findById(evaluationId)
+  }
+
+  def setEvaluationQuery(token: String, query: PipelineEvaluationQuery)(implicit session: Session) = {
+    pipelineEvaluationQueryRepository.findByToken(token).map(q => pipelineEvaluationQueryRepository.remove(q))
+    pipelineEvaluationQueryRepository.save(query)
+  }
+
+  def findQueryByIdAndToken(id: PipelineEvaluationId, token: String)(implicit session: Session) : Option[PipelineEvaluationQuery] = {
+    pipelineEvaluationQueryRepository.findByToken(token)
   }
 
   def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef) = {

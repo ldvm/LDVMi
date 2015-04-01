@@ -1,7 +1,7 @@
 package model.rdf.sparql.datacube
 
-import _root_.model.service.SessionScoped
-import model.entity.PipelineEvaluation
+import model.service.{PipelineService, SessionScoped}
+import model.entity.{PipelineEvaluationQuery, PipelineEvaluation}
 import model.rdf.sparql.datacube.extractor._
 import model.rdf.sparql.datacube.query._
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpoint, SparqlEndpointService, ValueFilter}
@@ -13,7 +13,7 @@ import utils.MD5
 class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with SessionScoped with Injectable {
 
   var sparqlEndpointService = inject[SparqlEndpointService]
-  //var visualizationQueriesService = inject[VisualizationQueriesService]
+  var pipelineService = inject[PipelineService]
 
   def getDatasets(evaluation: PipelineEvaluation): Seq[DataCubeDataset] = {
     sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new DataCubeDatasetsQuery, new DataCubeDatasetsExtractor).get
@@ -37,7 +37,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
   }
 
   def getValues(evaluation: PipelineEvaluation, uris: List[String]): Map[String, Option[Enumerator[Option[DataCubeComponentValue]]]] = {
-    uris.reverse.map { uri =>
+    uris.reverseMap { uri =>
       uri -> sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
     }.toMap
   }
@@ -47,8 +47,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult = {
     val token = MD5.hash(queryData.toString)
 
-    //visualizationQueriesService.deleteByToken(token)
-    //visualizationQueriesService.insert(VisualisationQuery(0, visualizationEagerBox.visualization.id, token, jsonQueryData.toString))
+    pipelineService.setEvaluationQuery(token, PipelineEvaluationQuery(None, evaluation.id.get, token, jsonQueryData.toString()))
 
     new DataCubeQueryResult(token, sliceCube(evaluationToSparqlEndpoint(evaluation), queryData))
   }

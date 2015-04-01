@@ -31,7 +31,7 @@ class PipelineEvaluationResultTable(tag: Tag) extends IdEntityTable[PipelineEval
 
   def pipelineEvaluationId = column[PipelineEvaluationId]("pipeline_evaluation_id")
 
-  def pipelineEvaluation = foreignKey("pipeline_evaluation", pipelineEvaluationId, pipelineEvaluationsQuery)(_.id)
+  def pipelineEvaluation = foreignKey("pipeline_evaluation", pipelineEvaluationId, pipelineEvaluationQuery)(_.id)
 
   def visualizerId = column[ComponentTemplateId]("component_template_id")
 
