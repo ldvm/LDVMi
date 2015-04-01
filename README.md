@@ -7,6 +7,8 @@ This project is developed as a replacement for visualization parts in Payola pro
 
 Based on LDVM principles, it enables a user to visualized data in their dataset while it automatically offers list of suitable visualizers.
 
+Live DEMO could be found at http://ldvm.opendata.cz
+
 Right now, it provides those visualization techniques:
 - DataCube
 - OpenLayers WKT multipolygon (in progress)
@@ -17,6 +19,7 @@ Implemented analyzers:
 - RUIAN geocoder
 - SPARQL Query
 - UNION
+- RUIAN Geocoder [CZ]
 
 It also provides a simple JSON API in order to allow creating datasources and visualizations automatically by 3rd party software.
 
