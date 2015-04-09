@@ -11,7 +11,7 @@ Live DEMO could be found at http://ldvm.opendata.cz
 
 Right now, it provides those visualization techniques:
 - DataCube
-- OpenLayers WKT multipolygon (in progress)
+- OpenLayers WKT multipolygon
 - Treemap
 - GoogleMaps
 
