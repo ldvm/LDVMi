@@ -36,7 +36,7 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
         Redirect(
           routes.VisualizationController.discover(
             Some(internalEndpoint),
-            Some("urn:" + urnUuid.toString),
+            urnUuid.map(u => "urn:" + u.toString),
             combine,
             Some(fileNames.mkString(", "))
           )
@@ -62,7 +62,7 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
         Redirect(
           routes.VisualizationController.discover(
             Some(internalEndpoint),
-            Some("urn:" + urn.toString),
+            urn.map(u => "urn:" + u.toString),
             combine,
             Some(sanitizedList.mkString(", "))
           )

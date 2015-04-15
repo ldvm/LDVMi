@@ -104,8 +104,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     console.info('onCompleteItem', fileItem, response, status, headers);
                 };
                 uploader.onCompleteAll = function() {
-                    window.location.href = "/components";
-                    console.info('onCompleteAll');
+
                 };
 
                 console.info('uploader', uploader);
