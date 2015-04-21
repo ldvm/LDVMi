@@ -20,23 +20,22 @@ class DummyReporter extends Actor {
 class ProgressReporter(jsLogger: ActorRef) extends Actor {
   def receive = {
     case descriptorCheck: DescriptorCompatibilityCheck => {
-
       jsLogger ! Json.toJson(descriptorCheck)
     }
     case featureCheck: FeatureCompatibilityCheck => {
-
       jsLogger ! Json.toJson(featureCheck)
     }
     case componentInstanceCheck: ComponentInstanceCompatibilityCheck => {
-
       jsLogger ! Json.toJson(componentInstanceCheck)
     }
     case pipelineCheck: DataPortBindingSetCompatibilityCheck => {
-
       jsLogger ! Json.toJson(pipelineCheck)
     }
+    case checkResponse: CheckCompatibilityResponse => {
+      jsLogger ! Json.toJson(checkResponse)
+    }
     case r : CheckCompatibilityResponse => jsLogger ! Json.toJson(r)
-    case j: JsValue => jsLogger ! j
+    case j : JsValue => jsLogger ! j
     case msg: String => jsLogger ! JsObject(Seq(("message", JsString(msg))))
   }
 }

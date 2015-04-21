@@ -4,6 +4,7 @@ import akka.actor.{Actor, Props, ActorRef}
 import controllers.api.ProgressReporter
 import model.actor.CheckCompatibilityResponse
 import model.entity._
+import model.repository.DataPortBindingSetCompatibilityCheckRepository
 import model.service.CompatibilityService
 import model.service.component.{BindingContext, InternalComponent}
 import play.api.db.slick._
@@ -15,27 +16,28 @@ import controllers.api.JsonImplicits._
 
 class CompatibilityServiceImpl(implicit inj: Injector) extends CompatibilityService with Injectable {
 
-  //val pipelineCompatibilityCheckRepository = inject[PipelineCompatibilityCheckRepository]
+  val dataPortBindingSetCompatibilityCheckRepository = inject[DataPortBindingSetCompatibilityCheckRepository]
 
   def check(bindingSet: DataPortBindingSet, reporterProps: Props)(implicit session: Session) : DataPortBindingSetCompatibilityCheckId = {
 
-    val pipelineCompatibilityCheck = DataPortBindingSetCompatibilityCheck(None, bindingSet.id.get, isFinished = false, isSuccess = None)
-    val pipelineCompatibilityCheckId = save(pipelineCompatibilityCheck)
+    var pipelineCompatibilityCheck = DataPortBindingSetCompatibilityCheck(None, bindingSet.id.get, isFinished = false, isSuccess = None)
+    val dpbsCompatibilityCheckId = save(pipelineCompatibilityCheck)
+    pipelineCompatibilityCheck = pipelineCompatibilityCheck.copy(id = Some(dpbsCompatibilityCheckId))
 
     val reporter = Akka.system.actorOf(reporterProps)
     reporter ! pipelineCompatibilityCheck
 
     val componentInstances = bindingSet.componentInstances
 
-    componentInstances.map { componentInstance =>
-      InternalComponent(componentInstance, ProgressReporter.props).check(BindingContext(bindingSet), reporterProps)
+    componentInstances.foreach { componentInstance =>
+      InternalComponent(componentInstance, ProgressReporter.props)
+        .check(BindingContext(bindingSet), reporterProps)
     }
 
-    pipelineCompatibilityCheckId
+    dpbsCompatibilityCheckId
   }
 
   def save(pipelineCompatibilityCheck: DataPortBindingSetCompatibilityCheck)(implicit session: Session) : DataPortBindingSetCompatibilityCheckId = {
-    //pipelineCompatibilityCheckRepository.save(pipelineCompatibilityCheck)
-    DataPortBindingSetCompatibilityCheckId(1)
+    dataPortBindingSetCompatibilityCheckRepository.save(pipelineCompatibilityCheck)
   }
 }

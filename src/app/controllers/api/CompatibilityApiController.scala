@@ -15,6 +15,7 @@ class CompatibilityApiController(implicit inj: Injector) extends Controller with
 
   def check(pipelineId: Long) = withWebSocket { logger => implicit session =>
     val maybePipeline = pipelineService.findById(PipelineId(pipelineId))
+    println(maybePipeline)
     maybePipeline.map { pipeline =>
       compatibilityService.check(pipeline.bindingSet, logger)
     }

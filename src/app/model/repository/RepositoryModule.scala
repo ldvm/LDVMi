@@ -38,4 +38,5 @@ class RepositoryModule extends Module {
   binding to new PipelineEvaluationRepository
   binding to new PipelineEvaluationQueryRepository
   binding to new PipelineEvaluationResultRepository
+  binding to new DataPortBindingSetCompatibilityCheckRepository
 }

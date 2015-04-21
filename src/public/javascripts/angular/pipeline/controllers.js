@@ -39,8 +39,33 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                 };
 
             }])
-        .controller('CompatibilityCheck', function () {
-        })
+        .controller('CompatibilityCheck', [
+            '$scope', '$routeParams', '$connection',
+            function ($scope, $routeParams, $connection) {
+
+                $scope.info = [];
+                $scope.descriptorsCompatibility = [];
+
+                var pipelineId = $routeParams.id; var l = window.location;
+                var url = "ws://" + l.host + "/api/v1/compatibility/check/" + pipelineId;
+
+                var connection = $connection(url);
+                connection.listen(function () {
+                    return true;
+                }, function (data) {
+                    $scope.$apply(function () {
+                        if("isCompatible" in data){
+                            $scope.descriptorsCompatibility.push(data);
+                        }else{
+                            $scope.info.unshift(data);
+                        }
+
+                        $scope.info.splice(100);
+                    });
+                });
+
+
+            }])
         .controller('Index', function ($scope) {
             $scope.visualize = function () {
                 var uri = "/discover/";
@@ -147,16 +172,16 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     if ("graphUris" in $routeParams && $routeParams.graphUris) {
                         uri += "&graphUris=" + $routeParams.graphUris;
                     }
-                    if($routeParams.combine && $routeParams.combine > 0){
+                    if ($routeParams.combine && $routeParams.combine > 0) {
                         uri += "&combine=true";
                     }
-                    if($routeParams.name && $routeParams.name.length > 0){
-                        uri += "&name="+$routeParams.name;
+                    if ($routeParams.name && $routeParams.name.length > 0) {
+                        uri += "&name=" + $routeParams.name;
                     }
                 }
                 var connection = $connection(uri);
                 connection.listen(function () {
-                    return true
+                    return true;
                 }, function (data) {
                     $scope.$apply(function () {
                         $scope.info.unshift(data);
@@ -175,7 +200,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                                 $scope.chartData.series[0].data.push(data.pipelinesDiscoveredCount);
                             }
 
-                            if(data.isFinished && data.isSuccess){
+                            if (data.isFinished && data.isSuccess) {
                                 //window.location.href = "/pipelines#/list?discoveryId="+data.id;
                             }
                         }
@@ -183,7 +208,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                         $scope.info.splice(100);
                     });
                 });
-            },
+            }
 
         ])
         .controller('Evaluate', [
@@ -202,11 +227,11 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     $scope.$apply(function () {
                         $scope.info.unshift(data);
 
-                        if(data.message && data.message == "==== DONE ===="){
+                        if (data.message && data.message == "==== DONE ====") {
                             $scope.info.unshift({});
                             $scope.info.unshift({message: "Pipeline evaluation is done. You are being redirected."});
-                            window.setTimeout(function(){
-                                window.location.href = "/pipelines#/detail/"+$routeParams.id;
+                            window.setTimeout(function () {
+                                window.location.href = "/pipelines#/detail/" + $routeParams.id;
                             }, 2000);
                         }
 

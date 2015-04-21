@@ -6,7 +6,7 @@ import akka.actor.Props
 import model.entity.ComponentInstance
 import model.rdf.Graph
 import model.rdf.sparql.GenericSparqlEndpoint
-import model.service.GraphStore
+import model.service.GraphStoreProtocol
 import play.api.libs.concurrent.Akka
 
 import scala.collection.JavaConversions._
@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import play.api.Play.current
 
-class SparqlPlugin(internalComponent: InternalComponent, graphStore: GraphStore) extends AnalyzerPlugin {
+class SparqlPlugin(internalComponent: InternalComponent, graphStore: GraphStoreProtocol) extends AnalyzerPlugin {
   override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
     val resultGraph = "urn:" + UUID.randomUUID().toString
 
@@ -36,7 +36,7 @@ class SparqlPlugin(internalComponent: InternalComponent, graphStore: GraphStore)
         case e: Throwable => println(e)
       }
 
-      (graphStore.endpointUrl, Some(resultGraph))
+      (graphStore.internalEndpointUrl, Some(resultGraph))
     }
   }
 

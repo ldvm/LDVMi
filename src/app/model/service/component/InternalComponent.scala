@@ -11,7 +11,7 @@ import model.entity._
 import model.rdf.Graph
 import model.rdf.sparql.GenericSparqlEndpoint
 import model.rdf.vocabulary.{DSPARQL, SD}
-import model.service.{GraphStore, SessionScoped}
+import model.service.{GraphStoreProtocol, SessionScoped}
 import play.api.Play.current
 import play.api.db
 import play.api.db.slick.Session
@@ -85,7 +85,11 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
       case (feature, descriptors) => {
         val eventualFeatureCompatibility = descriptors.flatMap { descriptor =>
           val descriptorInputTemplate = descriptor.inputTemplate
-          val maybeComponentForDescriptor = context(descriptorInputTemplate.dataPortTemplate.uri)
+
+          val inputTemplateUri = descriptorInputTemplate.dataPortTemplate.uri
+          val inputInstanceUri = componentInstance.inputInstances.find(_.dataPortInstance.dataPortTemplate.uri == inputTemplateUri).map(_.dataPortInstance.uri)
+
+          val maybeComponentForDescriptor = inputInstanceUri.flatMap(context(_))
           maybeComponentForDescriptor.map { componentForDescriptor =>
 
             val eventualDescriptorCompatibility = componentForDescriptor.checkIsCompatibleWith(descriptor, reporterProps)
@@ -165,7 +169,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
 
 object InternalComponent {
 
-  val pluginFactory = new PluginFactory(new GraphStore(play.api.Play.configuration.getString("ldvmi.triplestore.push").getOrElse("")))
+  val pluginFactory = new PluginFactory(new GraphStoreProtocol)
 
   def apply(componentInstance: ComponentInstance, reporterProps: Props): InternalComponent = {
     new InternalComponent(componentInstance, pluginFactory, reporterProps)

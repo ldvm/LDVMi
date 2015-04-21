@@ -12,10 +12,12 @@ import org.apache.http.impl.client.DefaultHttpClient
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 
-class GraphStore(val endpointUrl: String) {
+class GraphStoreProtocol {
+  
+  val internalEndpointUrl = play.api.Play.configuration.getString("ldvmi.triplestore.push").getOrElse("")
 
   def pushToTripleStore(file: File, graphUri: String, contentType: Option[String]) = {
-    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpointUrl, graphUri)
+    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl, graphUri)
 
     val credentials = new UsernamePasswordCredentials("dba", "dba")
     val httpClient = new DefaultHttpClient()
@@ -43,7 +45,7 @@ class GraphStore(val endpointUrl: String) {
   }
 
   def pushToTripleStore(ttl: String, graphUri: String) = {
-    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpointUrl, graphUri)
+    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl, graphUri)
     val credentials = new UsernamePasswordCredentials("dba", "dba")
     val httpClient = new DefaultHttpClient()
     val post = new HttpPost(requestUri)
@@ -68,7 +70,7 @@ class GraphStore(val endpointUrl: String) {
 
     val reporter = Option(reporterProps).map(Akka.system.actorOf)
 
-    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", endpointUrl.replace("/sparql",""), graphUri)
+    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl.replace("/sparql",""), graphUri)
 
     reporter.foreach(r => r ! "pushing to "+requestUri + " ["+(model.size() + " statements")+"]")
 

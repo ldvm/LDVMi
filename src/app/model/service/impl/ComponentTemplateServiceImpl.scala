@@ -69,12 +69,11 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     analyzers ++ visualizers ++ transformers ++ dataSources
   }
 
-  def getAllForDiscovery(maybeDs: Option[(String, Seq[String])] = None, combine: Boolean, name: Option[String] = None)
+  def getAllForDiscovery(dataSourceTemplateId: Option[Long], combine: Boolean)
     (implicit session: Session): (Map[ComponentType, Seq[SpecificComponentTemplate]], Option[DataSourceTemplate]) = {
 
-    val maybeDsId = maybeDs.map(d => asTemporaryDataSourceTemplate(d, name))
-    val maybeDsTemplate = maybeDsId.flatMap { i =>
-      dataSourceTemplateRepository.findById(i)
+    val maybeDsTemplate = dataSourceTemplateId.flatMap { i =>
+      dataSourceTemplateRepository.findById(DataSourceTemplateId(i))
     }
 
     val datasources = if(combine) {
@@ -92,61 +91,6 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
       (ComponentType.Visualizer, visualizerTemplateRepository.findAllWithMandatoryDescriptors)
     ).toMap,
       maybeDsTemplate)
-  }
-
-  private def config(ds: (String, Seq[String]), resourceUri: String) : Model = {
-    val model = ModelFactory.createDefaultModel()
-
-    val configResource = model.createResource()
-    configResource.addProperty(RDF.`type`, DSPARQL.SparqlEndpointDataSourceConfiguration)
-
-    val serviceResource = model.createResource()
-    val endpointResource = model.createResource(ds._1)
-    serviceResource.addProperty(SD.endpoint, endpointResource)
-
-    val dataSetResource = model.createResource()
-    serviceResource.addProperty(SD.defaultDataset, dataSetResource)
-
-    ds._2.foreach { graphUri =>
-      val graphResource = model.createResource(graphUri)
-      val namedGraphResource = model.createResource()
-      namedGraphResource.addProperty(SD.name, graphResource)
-      dataSetResource.addProperty(SD.namedGraph, namedGraphResource)
-    }
-    configResource.addProperty(DSPARQL.service, serviceResource)
-
-    model
-  }
-
-  private def asTemporaryDataSourceTemplate(ds: (String, Seq[String]), name: Option[String] = None)(implicit session: Session): DataSourceTemplateId = {
-
-    val uuid = UUID.randomUUID().toString
-    val resourceUri = "http://payola.cz/resource/temporary/"+uuid
-
-    val dataPortTemplate = model.dto.DataPortTemplate(resourceUri+"/output",None,None)
-    val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
-
-    val storedName = if(name.isDefined){
-      name
-    }else{
-      Some(ds._1)
-    }
-
-    val componentTemplate = model.dto.ComponentTemplate(
-      resourceUri,
-      storedName,
-      None,
-      Some(config(ds, resourceUri)),
-      Seq(),
-      Some(outputTemplate),
-      Seq(),
-      Seq(),
-      isTemporary = true
-    )
-
-    val savedId = save(componentTemplate)
-
-    dataSourceTemplateRepository.save(DataSourceTemplate(None, savedId))
   }
 
   def save(componentTemplate: model.dto.ComponentTemplate)(implicit session: Session): ComponentTemplateId = {

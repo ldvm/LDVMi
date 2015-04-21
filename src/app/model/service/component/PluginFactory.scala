@@ -1,8 +1,8 @@
 package model.service.component
 
-import model.service.GraphStore
+import model.service.GraphStoreProtocol
 
-class PluginFactory(graphStore: GraphStore) {
+class PluginFactory(graphStore: GraphStoreProtocol) {
 
   def get(internalComponent: InternalComponent, uri: String) : Option[AnalyzerPlugin] = {
     val plugin = uri match {

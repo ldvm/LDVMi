@@ -56,8 +56,8 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     Ok(result)
   }
 
-  def discover(endpointUrl: Option[String] = None, graphUris: Option[String] = None, combine: Boolean = false, name: Option[String] = None) =  withWebSocket { logger => implicit session =>
-    pipelineService.discover(logger, endpointUrl.map { u => (u, graphUris.map(_.split("\n")).toSeq.flatten) }, combine, name)
+  def discover(dataSourceTemplateId: Option[Long], combine: Boolean = false) =  withWebSocket { logger => implicit session =>
+    pipelineService.discover(logger, dataSourceTemplateId, combine)
   }
 
   def evaluate(id: Long) = withWebSocket { logger => implicit session =>

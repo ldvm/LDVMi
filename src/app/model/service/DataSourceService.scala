@@ -1,12 +1,14 @@
 package model.service
 
-import java.io.File
-import java.util.UUID
+import model.entity.DataSourceTemplateId
+import play.api.db.slick.Session
+import play.api.libs.Files
+import play.api.mvc.MultipartFormData
 
 trait DataSourceService {
 
-  def createDataSourceFromRemoteTtl(uris: Seq[String]) : Option[UUID]
+  def createDataSourceFromRemoteTtl(uris: Seq[String])(implicit session: Session): Option[DataSourceTemplateId]
 
-  def createDataSourceFromFiles(files: Seq[(Option[String], File)]) : Option[UUID]
+  def createDataSourceFromFiles(files: Seq[MultipartFormData.FilePart[Files.TemporaryFile]])(implicit session: Session): Option[DataSourceTemplateId]
 
 }

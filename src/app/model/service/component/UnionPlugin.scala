@@ -5,14 +5,14 @@ import java.util.UUID
 import akka.actor.Props
 import model.entity.ComponentInstance
 import model.rdf.sparql.GenericSparqlEndpoint
-import model.service.GraphStore
+import model.service.GraphStoreProtocol
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UnionPlugin(internalComponent: InternalComponent, graphStore: GraphStore) extends AnalyzerPlugin {
+class UnionPlugin(internalComponent: InternalComponent, graphStore: GraphStoreProtocol) extends AnalyzerPlugin {
   override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
     val resultGraph = "urn:" + UUID.randomUUID().toString
 
@@ -40,7 +40,7 @@ class UnionPlugin(internalComponent: InternalComponent, graphStore: GraphStore) 
         }
       }
 
-      (graphStore.endpointUrl, Some(resultGraph))
+      (graphStore.internalEndpointUrl, Some(resultGraph))
     }
   }
 

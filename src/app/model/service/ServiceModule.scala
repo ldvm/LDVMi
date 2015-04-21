@@ -10,5 +10,5 @@ class ServiceModule extends Module {
   bind[PipelineService] to new PipelineServiceImpl
   bind[CompatibilityService] to new CompatibilityServiceImpl
   bind[LdvmService] to new LdvmServiceImpl
-  binding to new GraphStore(Play.current.configuration.getString("ldvmi.triplestore.push").getOrElse(""))
+  binding to new GraphStoreProtocol
 }
