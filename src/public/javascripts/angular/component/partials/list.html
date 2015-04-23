@@ -1,10 +1,15 @@
+<div class="block-header">
+    <h2>Components registered in this instance</h2>
+</div>
+
 <div class="panel-default panel">
     <div class="panel-body"><a ng-href="/components#/add" class="btn btn-success">Add new</a></div>
 </div>
 <table ng-table="tableParams" class="table table-striped">
     <tr ng-repeat="s in $data">
         <td data-title="'ID'">{{s.componentTemplate.id}}</td>
-        <td data-title="'Title'"><a href="#/detail/{{s.componentType | lowercase}}/{{s.componentTemplate.id}}">{{s.componentTemplate.title}}</a></td>
+        <td data-title="'Title'"><a href="#/detail/{{s.componentType | lowercase}}/{{s.componentTemplate.id}}">{{s.componentTemplate.title}}</a>
+        </td>
         <td data-title="'URI'">{{s.componentTemplate.uri}}</td>
         <td data-title="'Description'">{{s.componentTemplate.description}}</td>
         <td data-title="'Type'">{{s.componentType}}</td>
@@ -13,7 +18,8 @@
             <span class="glyphicon glyphicon-remove" ng-show="!s.componentTemplate.isTemporary"></span>
         </td>
         <td data-title="'Last modified'" style="white-space: nowrap;">
-            <span am-time-ago="time(s.componentTemplate.modifiedUtc, s.componentTemplate.createdUtc)" tooltip="{{time(s.componentTemplate.modifiedUtc, s.componentTemplate.createdUtc) | date : 'medium'}}"></span>
+            <span am-time-ago="time(s.componentTemplate.modifiedUtc, s.componentTemplate.createdUtc)"
+                  tooltip="{{time(s.componentTemplate.modifiedUtc, s.componentTemplate.createdUtc) | date : 'medium'}}"></span>
         </td>
     </tr>
     <tr ng-if="$data.length == 0">

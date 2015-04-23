@@ -6,33 +6,34 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
         ['$scope', 'Pipelines', '$routeParams', 'ngTableParams',
             function ($scope, pipelines, $routeParams, ngTableParams) {
 
-                var page = $routeParams.page || 1;
-                var count = $routeParams.count || 50;
+                $scope.page = $routeParams.page || 1;
+                $scope.count = $routeParams.count || 50;
+                $scope.filter = {
+                    discoveryId: $routeParams.discoveryId,
+                    visualizerId: $routeParams.visualizerId
+                };
+                $scope.total = 0;
 
+                $scope.pages = function () {
+                    var num = Math.ceil($scope.total / $scope.count);
+                    return Array.apply(null, Array(num)).map(function (_, i) {
+                        return i;
+                    });
+                };
 
                 var showPagination = !($routeParams.discoveryId || $routeParams.visualizerId);
 
-                $scope.tableParams = new ngTableParams({
-                    page: page,            // show first page
-                    count: count,           // count per page,
-                    filter: {
-                        discoveryId: $routeParams.discoveryId,
-                        visualizerId: $routeParams.visualizerId
-                    },
-                    sorting: {
-                        //name: 'asc'
-                    }
-                }, {
-                    total: 0, // length of data
-                    getData: function ($defer, params) {
-                        var promise = pipelines.findPaginated(params.page(), params.count(), params.filter());
-                        promise.then(function (data) {
-                            params.total(showPagination ? data.count : data.data.length);
-                            $defer.resolve(data.data);
-                        });
+                $scope.pipelines = [];
 
-                    }
-                });
+                var getPipelines = function () {
+                    var promise = pipelines.findPaginated($scope.page, $scope.count, $scope.filter);
+                    promise.then(function (data) {
+                        $scope.total = (showPagination ? data.count : data.data.length);
+                        $scope.pipelines = data.data;
+                    });
+                };
+
+                $scope.$watch('page', getPipelines);
 
                 $scope.time = function (a, b) {
                     return a || b;
@@ -46,7 +47,8 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                 $scope.info = [];
                 $scope.descriptorsCompatibility = [];
 
-                var pipelineId = $routeParams.id; var l = window.location;
+                var pipelineId = $routeParams.id;
+                var l = window.location;
                 var url = "ws://" + l.host + "/api/v1/compatibility/check/" + pipelineId;
 
                 var connection = $connection(url);
@@ -54,9 +56,9 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     return true;
                 }, function (data) {
                     $scope.$apply(function () {
-                        if("isCompatible" in data){
+                        if ("isCompatible" in data) {
                             $scope.descriptorsCompatibility.push(data);
-                        }else{
+                        } else {
                             $scope.info.unshift(data);
                         }
 

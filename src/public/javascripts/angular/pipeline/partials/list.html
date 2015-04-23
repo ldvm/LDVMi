@@ -1,55 +1,107 @@
-<div class="container-fluid" style="padding-top : 60px;">
+<div class="container">
+    <div class="block-header">
+        <h2>Pipelines</h2>
+    </div>
     <div>
         <div class="panel panel-default">
             <div class="panel-body">
-                <a ng-href="/components#/add" class="btn btn-success">Add new</a>
+                <a ng-href="/components#/add" class="btn btn-primary">Add new</a>
                 <a ng-href="#/discover" class="btn btn-default">Run discovery</a>
-                <a ng-href="#/list" ng-click="tableParams.filter({})" class="btn btn-default">Clear filters</a>
             </div>
         </div>
     </div>
 
-    <h3>List of available pipelines</h3>
+    <div class="card">
+        <div class="listview lv-bordered lv-lg">
+            <div class="lv-header-alt">
+                <h2 class="lvh-label hidden-xs">Available visualization pipelines</h2>
 
-    <table ng-table="tableParams" class="table table-striped">
-        <tr ng-repeat="pipeline in $data">
-            <td data-title="'ID'">{{pipeline.id}}</td>
-            <td data-title="'Title'">
-                <a ng-href="#/detail/{{pipeline.id}}">{{pipeline.title}}</a>
-            </td>
-            <td data-title="'Evaluate'">
-                <a ng-href="#/evaluate/{{pipeline.id}}" class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Run</a>
-            </td>
-            <td data-title="'Compatibility'" class="text-center">
-                <div class="btn-group">
-                    <a ng-href="#/compatibility/{{pipeline.id}}" class="btn" ng-class="{'btn-success': 'pipeline.isCompatible', 'btn-danger': '!pipeline.isCompatible'}">
-                        <span class="glyphicon glyphicon-ok" ng-show="pipeline.isCompatible"></span>
-                        <span class="glyphicon glyphicon-remove" ng-show="!pipeline.isCompatible"></span>
-                    </a>
-                    <button type="button" class="btn dropdown-toggle" ng-class="{'btn-success': 'pipeline.isCompatible', 'btn-danger': '!pipeline.isCompatible'}" data-toggle="dropdown">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <li class="divider"></li>
-                        <li><a ng-href="#/compatibility/check/{{pipeline.id}}">Re-check</a></li>
-                    </ul>
+                <ul class="lv-actions actions">
+                    <li>
+                        <a href="">
+                            <i class="md md-access-time"></i>
+                        </a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="" data-toggle="dropdown" aria-expanded="true">
+                            <i class="md md-sort"></i>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="">Last Modified</a>
+                            </li>
+                            <li>
+                                <a href="">Name</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href=""><i class="md md-cached"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="lv-body">
+                <div class="lv-item media" ng-repeat="pipeline in pipelines">
+                    <div class="checkbox pull-left">
+                        <label>
+                            <input type="checkbox" value="">
+                            <i class="input-helper"></i>
+                        </label>
+                    </div>
+                    <div class="media-body">
+                        <a ng-href="#/detail/{{pipeline.id}}" class="lv-title" ng-bind="pipeline.title"></a>
+
+                        <ul class="lv-attrs">
+                            <li>
+                                Last modified:
+                                <span am-time-ago="time(pipeline.modifiedUtc, pipeline.createdUtc)"
+                                    tooltip="{{time(pipeline.modifiedUtc, pipeline.createdUtc) | date : 'medium'}}">
+                                </span>
+                            </li>
+                            <li ng-show="pipeline.isTemporary" class="warning">Temporary</li>
+                            <li ng-class="{'danger': 'pipeline.isCompatible'}">
+                                Compatibility:
+                                <span ng-show="pipeline.isCompatible">OK</span>
+                                <span ng-hide="pipeline.isCompatible">Error</span>
+                            </li>
+                        </ul>
+
+                        <div class="lv-actions actions dropdown">
+                            <a href="" data-toggle="dropdown" aria-expanded="true">
+                                <i class="md md-more-vert"></i>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li>
+                                    <a ng-href="#/evaluate/{{pipeline.id}}">Run</a>
+                                </li>
+                                <li>
+                                    <a ng-href="#/compatibility/check/{{pipeline.id}}">Re-check compatibility</a>
+                                </li>
+                                <li>
+                                    <a ng-href="#/list/?discoveryId={{pipeline.pipelineDiscovery}}" ng-show="pipeline.pipelineDiscovery">Discovery details</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </td>
-            <td data-title="'Is temporary'" class="text-center">
-                <span class="glyphicon glyphicon-ok" ng-show="pipeline.isTemporary"></span>
-                <span class="glyphicon glyphicon-remove" ng-show="!pipeline.isTemporary"></span>
-            </td>
-            <td data-title="'Discovery'" class="text-center">
-                <a ng-href="#/list/?discoveryId={{pipeline.pipelineDiscovery}}" ng-show="pipeline.pipelineDiscovery">Filter</a>
-            </td>
-            <td data-title="'Last modified'" style="white-space: nowrap;">
-                <span am-time-ago="time(pipeline.modifiedUtc, pipeline.createdUtc)" tooltip="{{time(pipeline.modifiedUtc, pipeline.createdUtc) | date : 'medium'}}"></span>
-            </td>
-        </tr>
-        <tr ng-if="$data.length == 0">
-            <td colspan="7">No available data.</td>
-        </tr>
-    </table>
+            </div>
+        </div>
 
+        <ul class="pagination lv-pagination">
+            <li>
+                <a aria-label="Previous" ng-click="$scope.page = $scope.page-1" ng-show="$scope.page > 1">
+                    <i class="md md-chevron-left"></i>
+                </a>
+            </li>
+            <li ng-repeat="p in pages()" ng-class="{'active': 'p == page'}"><a href="" ng-bind="p+1"></a></li>
+            <li>
+                <a href="$scope.page = $scope.page+1" aria-label="Next"  ng-show="$scope.page < total">
+                    <i class="md md-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>

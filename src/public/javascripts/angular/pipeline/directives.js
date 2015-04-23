@@ -1,4 +1,4 @@
-define(['angular'], function (ng) {
+define(['angular', 'jquery'], function (ng, $) {
     'use strict';
 
     ng.module('pipeline.directives', []).
@@ -27,8 +27,8 @@ define(['angular'], function (ng) {
                                 link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
                             });
 
-                            var width = 960,
-                                height = 500;
+                            var width = $(element[0].parentElement).width(),
+                                height = $(element[0].parentElement).width()/2;
 
                             var force = d3.layout.force()
                                 .nodes(d3.values(nodes))

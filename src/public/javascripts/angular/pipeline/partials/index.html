@@ -63,65 +63,20 @@
                     </div>
 
                     <div class="pl-body">
-                        <div class="col-xs-3">
+                        <div class="col-xs-4">
                             <a href="">
-                                <img src="img/headers/square/1.png" alt="">
+                                <img src="/assets/images/mapvis.png" alt="">
                             </a>
                         </div>
 
-                        <div class="col-xs-3">
+                        <div class="col-xs-4">
                             <a href="">
-                                <img src="img/headers/square/2.png" alt="">
+                                <img src="/assets/images/datacube.png" alt="">
                             </a>
                         </div>
-                        <div class="col-xs-3">
+                        <div class="col-xs-4">
                             <a href="">
-                                <img src="img/headers/square/3.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="">
-                                <img src="img/headers/square/4.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="">
-                                <img src="img/headers/square/5.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="">
-                                <img src="img/headers/square/6.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="">
-                                <img src="img/headers/square/7.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="">
-                                <img src="img/headers/square/8.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="">
-                                <img src="img/headers/square/9.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="">
-                                <img src="img/headers/square/1.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="">
-                                <img src="img/headers/square/2.png" alt="">
-                            </a>
-                        </div>
-                        <div class="col-xs-3">
-                            <a href="">
-                                <img src="img/headers/square/3.png" alt="">
+                                <img src="/assets/images/treemap.png" alt="">
                             </a>
                         </div>
                     </div>
@@ -190,67 +145,23 @@
                             </li>
                         </ul>
 
-                        <button class="btn bgm-cyan btn-float waves-effect"><i class="md md-add"></i></button>
+                        <!--<button class="btn bgm-cyan btn-float waves-effect"><i class="md md-add"></i></button>-->
                     </div>
 
                     <div class="card-body">
                         <div class="listview">
-                            <a class="lv-item" href="">
+                            <a class="lv-item" href="/pipelines/#/id/{{pipeline.id}}" ng-repeat="pipeline in recentPipelines">
                                 <div class="media">
                                     <div class="pull-left">
                                         <img class="lv-img-sm" src="img/profile-pics/1.jpg" alt="">
                                     </div>
                                     <div class="media-body">
-                                        <div class="lv-title">David Belle</div>
-                                        <small class="lv-small">Cum sociis natoque penatibus et magnis dis parturient montes</small>
+                                        <div class="lv-title" ng-bind="pipeline.title"></div>
+                                        <small class="lv-small" ng-bind="pipeline.descriptions"></small>
                                     </div>
                                 </div>
                             </a>
-                            <a class="lv-item" href="">
-                                <div class="media">
-                                    <div class="pull-left">
-                                        <img class="lv-img-sm" src="img/profile-pics/2.jpg" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <div class="lv-title">Jonathan Morris</div>
-                                        <small class="lv-small">Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="lv-item" href="">
-                                <div class="media">
-                                    <div class="pull-left">
-                                        <img class="lv-img-sm" src="img/profile-pics/3.jpg" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <div class="lv-title">Fredric Mitchell Jr.</div>
-                                        <small class="lv-small">Phasellus a ante et est ornare accumsan at vel magnauis blandit turpis at augue ultricies</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="lv-item" href="">
-                                <div class="media">
-                                    <div class="pull-left">
-                                        <img class="lv-img-sm" src="img/profile-pics/4.jpg" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <div class="lv-title">Glenn Jecobs</div>
-                                        <small class="lv-small">Ut vitae lacus sem ellentesque maximus, nunc sit amet varius dignissim, dui est consectetur neque</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="lv-item" href="">
-                                <div class="media">
-                                    <div class="pull-left">
-                                        <img class="lv-img-sm" src="img/profile-pics/4.jpg" alt="">
-                                    </div>
-                                    <div class="media-body">
-                                        <div class="lv-title">Bill Phillips</div>
-                                        <small class="lv-small">Proin laoreet commodo eros id faucibus. Donec ligula quam, imperdiet vel ante placerat</small>
-                                    </div>
-                                </div>
-                            </a>
-                            <a class="lv-footer" href="">View All</a>
+                            <a class="lv-footer" href="/pipelines#/list">View All</a>
                         </div>
                     </div>
                 </div>

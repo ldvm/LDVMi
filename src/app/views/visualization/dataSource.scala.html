@@ -2,64 +2,66 @@
 
 @main("LDVMi - upload your TTL") {
 
-    <div class="container-fluid" style="padding-top : 60px;">
-
-        <h3>Create a LDVM datasource by uploading your own TTL (max. 100 MB)</h3>
+    <div class="container">
+        <div class="block-header">
+            <h2>Create a LDVM datasource by from your own TTL files (max. 100 MB)</h2>
+        </div>
         <div class="row">
-            <div class="col-sm-6 col-sm-offset-3">
-                <div class="well">
-                    <form action="/ttlupload" class="form-horizontal" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="ttlfile" class="col-sm-4">TTL File</label>
-                            <div class="col-sm-8">
-                                <input type="file" name="ttlfile" id="ttlfile" multiple />
-                            </div>
-                        </div>
+            <div class="col-sm-6">
 
-                        <div class="form-group">
-                            <div class="col-sm-offset-4 col-sm-8">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="combine" value="true"> Combine with other datasources
-                                    </label>
+                <div class="card">
+                    <div class="card-header ch-alt">
+                        <h2>Upload <small>Upload TTL files from your machine.</small></h2>
+                    </div>
+
+                    <div class="card-body card-padding">
+                        <form action="/ttlupload" method="post" enctype="multipart/form-data">
+                            <div class="form-group fg-float">
+                                <div class="fg-line">
+                                    <input type="file" name="ttlfile" id="ttlfile" multiple />
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <div class="col-sm-offset-4 col-sm-8">
-                                <button type="submit" class="btn btn-primary">Upload</button>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="combine" value="true">
+                                    <i class="input-helper"></i>
+                                    Combine with other datasources
+                                </label>
                             </div>
-                        </div>
-                    </form>
+
+                            <button type="submit" class="btn btn-primary waves-effect">Upload</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-6 col-sm-offset-3">
-                <div class="well">
-                    <form action="/ttldl" class="form-horizontal" method="post" enctype="application/x-www-form-urlencoded">
-                        <div class="form-group">
-                            <label for="ttlurl" class="col-sm-4">TTL URLs (separated by newline)</label>
-                            <div class="col-sm-8">
-                                <textarea placeholder="http://example.com/test.ttl" class="form-control" name="ttlurl" id="ttlurl"></textarea>
-                            </div>
-                        </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-header ch-alt">
+                        <h2>Use remote TTL <small>Paste a list of URLs containing TTL files.</small></h2>
+                    </div>
 
-                        <div class="form-group">
-                            <div class="col-sm-offset-4 col-sm-8">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="combine" value="true"> Combine with other datasources
-                                    </label>
+                    <div class="card-body card-padding">
+                        <form action="/ttldl" method="post" enctype="application/x-www-form-urlencoded">
+
+                            <div class="form-group">
+                                <div class="fg-line">
+                                    <textarea name="ttlurl" id="ttlurl" class="form-control auto-size" placeholder="http://example.com/test.ttl" style="overflow: hidden; word-wrap: break-word; height: 140px;"></textarea>
                                 </div>
+                                <label for="ttlurl">TTL URLs (separated by newline)</label>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <div class="col-sm-offset-4 col-sm-8">
-                                <button type="submit" class="btn btn-primary">Use</button>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="combine" value="true">
+                                    <i class="input-helper"></i>
+                                    Combine with other datasources
+                                </label>
                             </div>
-                        </div>
-                    </form>
+
+                            <button type="submit" class="btn btn-primary waves-effect">Use</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

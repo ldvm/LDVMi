@@ -265,7 +265,10 @@
             </div>
         </header>
 
-        @content
+        <section id="content">
+            @content
+        </section>
+
 
 
         @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
