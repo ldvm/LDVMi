@@ -12,7 +12,7 @@
         module.exports = factory(require('jquery'));
     }
     else if(typeof define === 'function' && define.amd) {
-        define(['jquery.easypiechart.js'], factory);
+        define(['jquery'], factory);
     }
     else {
         factory(root.jQuery);

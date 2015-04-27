@@ -1,4 +1,4 @@
-@(title: String, scripts: Html = Html(""), styles: Html = Html(""))(content: Html)
+@(title: String, scripts: Html = Html(""), styles: Html = Html(""), requirePath: Option[String] = None, requireConfig: Html = Html(""))(content: Html)
 @import play.api.Play
 <!DOCTYPE html>
 <html lang="en">
@@ -11,15 +11,56 @@
 
         @scripts
 
+        <script>
+            var require = {
+                callback: function() {
+                    // default requirejs configs
+                    @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
+                        requirejs.config(@Html(webJarJson.toString));
+                    }
+
+                    requirejs.config({
+                        "paths":{
+                            "material":['@routes.Assets.versioned("javascripts/material/functions.js").url.replace(".js", "")'],
+                            "nicescroll": ['@routes.Assets.versioned("vendors/nicescroll/jquery.nicescroll").url.replace(".js", "")'],
+                            "flot-resize": ['@routes.Assets.versioned("vendors/flot/jquery.flot.resize").url.replace(".js", "")'],
+                            "jquery-sparkline": ['@routes.Assets.versioned("vendors/sparklines/jquery.sparkline").url.replace(".js", "")'],
+                            "curved-lines": ['@routes.Assets.versioned("vendors/flot/plugins/curvedLines").url.replace(".js", "")'],
+                            "jquery-easypiechart": ['@routes.Assets.versioned("vendors/easypiechart/jquery.easypiechart").url.replace(".js", "")']
+                        },
+                        "shim":{
+                            "nicescroll": ['jquery'],
+                            "flot-resize": ['jquery.flot'],
+                            "curved-lines": ['jquery.flot'],
+                            "jquery-sparkline": ['jquery'],
+                            "jquery-easypiechart": ['jquery'],
+                            "jquery.colorhelpers": ['jquery']
+                        }
+                    });
+
+                    @Html(requireConfig.toString().replace("<script>","").replace("</script>",""))
+                }
+            };
+        </script>
+
+        @requirePath.map { p =>
+            <script data-main="@p" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+        }
+
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
         <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/material/css/app.min.css")'>
+
+        <link href="@routes.Assets.versioned("vendors/fullcalendar/fullcalendar.css")" rel="stylesheet">
+        <link href="@routes.Assets.versioned("vendors/animate-css/animate.min.css")" rel="stylesheet">
+        <link href="@routes.Assets.versioned("vendors/sweet-alert/sweet-alert.min.css")" rel="stylesheet">
+
 
         @styles
 
     </head>
     <body>
 
-        @Play.current.configuration.getString("analytics.ua").map{ ua =>
+        @Play.current.configuration.getString("analytics.ua").map { ua =>
             <script>
                 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -56,7 +97,7 @@
                         <li id="top-search">
                             <a class="tm-search" href=""></a>
                         </li>
-                        <!--<li class="dropdown">
+                            <!--<li class="dropdown">
                             <a data-toggle="dropdown" class="tm-message" href=""><i class="tmn-counts">6</i></a>
                             <div class="dropdown-menu dropdown-menu-lg pull-right">
                                 <div class="listview">
@@ -123,7 +164,7 @@
                                     <a class="lv-footer" href="">View All</a>
                                 </div>
                             </div>
-                        </li>-->
+                        </li>
                         <li class="dropdown">
                             <a data-toggle="dropdown" class="tm-notification" href=""><i class="tmn-counts">9</i></a>
                             <div class="dropdown-menu dropdown-menu-lg pull-right">
@@ -233,15 +274,17 @@
                                     <a class="lv-footer" href="">View All</a>
                                 </div>
                             </div>
-                        </li>
+                        </li>-->
                         <li class="dropdown">
                             <a data-toggle="dropdown" class="tm-settings" href=""></a>
                             <ul class="dropdown-menu dm-icon pull-right">
                                 <li>
-                                    <a data-action="fullscreen" href=""><i class="md md-fullscreen"></i> Toggle Fullscreen</a>
+                                    <a data-action="fullscreen" href=""><i class="md md-fullscreen"></i>
+                                        Toggle Fullscreen</a>
                                 </li>
                                 <li>
-                                    <a data-action="clear-localstorage" href=""><i class="md md-delete"></i> Clear Local Storage</a>
+                                    <a data-action="clear-localstorage" href=""><i class="md md-delete"></i>
+                                        Clear Local Storage</a>
                                 </li>
                                 <li>
                                     <a href=""><i class="md md-person"></i> Privacy Settings</a>
@@ -265,11 +308,64 @@
             </div>
         </header>
 
-        <section id="content">
+        <section id="main">
+            <aside id="sidebar">
+                <div class="sidebar-inner">
+                    <div class="si-inner">
+                        <div class="profile-menu">
+                            <a href="">
+                                <div class="profile-pic">
+                                    <img src="img/profile-pics/1.jpg" alt="">
+                                </div>
+
+                                <div class="profile-info">
+                                    LDVM user
+
+                                    <i class="md md-arrow-drop-down"></i>
+                                </div>
+                            </a>
+
+                            <ul class="main-menu">
+                                <li>
+                                    <a href=""><i class="md md-person"></i> View Profile</a>
+                                </li>
+                                <li>
+                                    <a href=""><i class="md md-settings-input-antenna"></i> Privacy Settings</a>
+                                </li>
+                                <li>
+                                    <a href=""><i class="md md-settings"></i> Settings</a>
+                                </li>
+                                <li>
+                                    <a href=""><i class="md md-history"></i> Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <ul class="main-menu">
+                            <li class="active"><a href="/"><i class="md md-home"></i> Home</a></li>
+                            <li>
+                                <a href="/pipelines#/list"><i class="md md-now-widgets"></i> Pipelines</a>
+                            </li>
+                            <li>
+                                <a href="/components#/list"><i class="md md-now-widgets"></i> Components</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+
+            <aside id="chat">
+                <ul class="tab-nav tn-justified" role="tablist">
+                    <li role="presentation" class="active"><a href="#friends" aria-controls="friends" role="tab" data-toggle="tab">Context</a></li>
+                    <li role="presentation"><a href="#online" aria-controls="online" role="tab" data-toggle="tab">Generic</a></li>
+                </ul>
+            </aside>
+
+
+            <section id="content">
             @content
+            </section>
         </section>
-
-
 
         @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
     </body>

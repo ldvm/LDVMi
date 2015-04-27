@@ -1,4 +1,13 @@
-require(['jquery'], function ($) {
+define([
+    'jquery',
+    'nicescroll',
+    'bootstrap-growl',
+    'jquery.flot',
+    'flot-resize',
+    'curved-lines',
+    'jquery-sparkline',
+    'jquery-easypiechart'
+], function ($) {
 
     /*
      * Layout
@@ -589,11 +598,6 @@ require(['jquery'], function ($) {
                 }
             });
         };
-
-        //Welcome Message (not for login page)
-        if (!$('.login-content')[0]) {
-            notify('Welcome back Mallinda Hollaway', 'inverse');
-        }
 
         /*
          * Waves Animation

@@ -52,7 +52,9 @@ libraryDependencies ++= Seq(
   "com.vividsolutions" % "jts" % "1.8",
   "org.webjars" % "openlayers" % "3.2.0",
   "org.webjars" % "codemirror" % "5.0",
-  "org.webjars" % "ui-codemirror" % "0.1.5"
+  "org.webjars" % "ui-codemirror" % "0.1.5",
+  "org.webjars" % "bootstrap-growl" % "2.0.1",
+  "org.webjars" % "flot" % "0.8.3"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
