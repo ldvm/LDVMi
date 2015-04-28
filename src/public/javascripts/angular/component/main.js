@@ -1,3 +1,3 @@
-require(['./appBootstrap'], function(){
+require(['material', './appBootstrap'], function(){
 
 });

@@ -101,7 +101,7 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     val n = if (combine) {1} else {0}
 
     val url: String = "/pipelines#/discover?" +
-      "dataSourceTemplateId=" + dataSourceTemplateId.orNull
+      "dataSourceTemplateId=" + dataSourceTemplateId.orNull +
       "&combine=" + n.toString
 
     TemporaryRedirect(url)

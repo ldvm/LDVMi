@@ -81,7 +81,6 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     }
                 }
                 window.location.href = uri;
-
             };
         })
         .controller('Compatibility', [
@@ -142,43 +141,22 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
             function ($scope, $routeParams, pipelines, $connection) {
 
                 $scope.info = [];
+                $scope.checks = [];
+                $scope.portChecks = [];
+
                 $scope.isFinished = false;
                 $scope.lastPerformedIteration = 0;
                 $scope.pipelinesDiscoveredCount = 0;
                 $scope.duration = 0;
 
-                $scope.chartData = {
-                    options: {
-                        chart: {
-                            type: 'line',
-                            height: 200,
-                            width: 300
-                        }
-                    },
-                    series: [{name: "Pipelines count", data: []}],
-                    title: {
-                        text: 'Progress'
-                    },
-                    yAxis: {
-                        title: {
-                            text: ""
-                        }
-                    },
-                    loading: false
-                };
+                $scope.data = [];
 
                 var l = window.location;
                 var uri = "ws://" + l.host + "/api/v1/pipelines/discover";
-                if ("endpointUrl" in $routeParams && $routeParams.endpointUrl) {
-                    uri += "?endpointUrl=" + $routeParams.endpointUrl;
-                    if ("graphUris" in $routeParams && $routeParams.graphUris) {
-                        uri += "&graphUris=" + $routeParams.graphUris;
-                    }
+                if ("dataSourceTemplateId" in $routeParams && $routeParams.dataSourceTemplateId) {
+                    uri += "?dataSourceTemplateId=" + $routeParams.dataSourceTemplateId;
                     if ($routeParams.combine && $routeParams.combine > 0) {
                         uri += "&combine=true";
-                    }
-                    if ($routeParams.name && $routeParams.name.length > 0) {
-                        uri += "&name=" + $routeParams.name;
                     }
                 }
                 var connection = $connection(uri);
@@ -199,12 +177,20 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                             }
 
                             if ("pipelinesDiscoveredCount" in data) {
-                                $scope.chartData.series[0].data.push(data.pipelinesDiscoveredCount);
+                                $scope.data.push([$scope.lastPerformedIteration, data.pipelinesDiscoveredCount]);
                             }
 
                             if (data.isFinished && data.isSuccess) {
                                 //window.location.href = "/pipelines#/list?discoveryId="+data.id;
                             }
+                        }
+
+                        if("descriptor" in data){
+                            $scope.checks.unshift(data);
+                        }
+
+                        if("portOwnerComponentUri" in data){
+                            $scope.portChecks.unshift(data);
                         }
 
                         $scope.info.splice(100);

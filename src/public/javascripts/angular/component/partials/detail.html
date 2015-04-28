@@ -49,7 +49,7 @@
         <td>{{descriptor.id}}</td>
         <td>{{descriptor.title}}</td>
         <td>{{descriptor.description}}</td>
-        <td><ui-codemirror ng-model="descriptor.query" ui-codemirror-opts="mirrorOpts"></ui-codemirror></td>
+        <td><pre ng-bind="descriptor.query" ui-codemirror-opts="mirrorOpts"></pre></td>
         <td>{{descriptor.uri}}</td>
         <td>{{descriptor.featureId}}</td>
         <td>{{descriptor.inputTemplateId}}</td>

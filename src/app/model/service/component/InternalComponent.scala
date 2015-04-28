@@ -128,7 +128,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
       reporter ! "Checking compatibility of descriptor " + descriptor.title
       o.dataSample match {
         case Some(uri) => Akka.system.actorOf(Props(classOf[RdfCompatibilityChecker], uri))
-        case None => Akka.system.actorOf(Props(classOf[SparqlEndpointCompatibilityChecker], Graph(componentInstance.configuration), Graph(component.defaultConfiguration)))
+        case None => Akka.system.actorOf(Props(classOf[SparqlEndpointCompatibilityChecker], Graph(componentInstance.configuration), Graph(component.defaultConfiguration), component.uri))
       }
     }.get
 

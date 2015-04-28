@@ -17,7 +17,9 @@ class GraphStoreProtocol {
   val internalEndpointUrl = play.api.Play.configuration.getString("ldvmi.triplestore.push").getOrElse("")
 
   def pushToTripleStore(file: File, graphUri: String, contentType: Option[String]) = {
-    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl, graphUri)
+    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl.replace("/sparql",""), graphUri)
+
+    println(requestUri)
 
     val credentials = new UsernamePasswordCredentials("dba", "dba")
     val httpClient = new DefaultHttpClient()

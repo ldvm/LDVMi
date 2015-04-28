@@ -4,8 +4,11 @@
 
         <div class="col-sm-4">
             <div class="card">
-                <div class="card-header" ng-class="{'bgm-teal': !isFinished,'bgm-darkorange': isFinished && !isSuccess, 'bgm-green': isFinished && isSuccess}">
-                    <h2>Progress <small>Discovery state</small></h2>
+                <div class="card-header"
+                     ng-class="{'bgm-teal': !isFinished,'bgm-darkorange': isFinished && !isSuccess, 'bgm-green': isFinished && isSuccess}">
+                    <h2>Progress
+                        <small>Discovery state</small>
+                    </h2>
                 </div>
 
                 <div class="card-body card-padding">
@@ -31,19 +34,72 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h2>Pipelines count <small>What was discovered so far</small></h2>
+                    <h2>Pipelines count</h2>
                 </div>
 
-                <div class="card-body card-padding">
-                    <highchart id="chart1" config="chartData"></highchart>
+                <div class="card-body card-padding-sm">
+                    <div id="dynamic-chart" dynamic-chart data="data" class="flot-chart"></div>
+                    <div class="flc-dynamic"></div>
                 </div>
             </div>
         </div>
 
         <div class="col-sm-8">
             <div class="card">
+                <div class="listview lv-bordered lv-lg">
+                    <div class="lv-header-alt">
+                        <h2 class="lvh-label hidden-xs">Descriptors checks</h2>
+                    </div>
+
+                    <div class="lv-body">
+                        <div class="lv-item media" ng-repeat="c in checks">
+                            <div class="media-body">
+                                <div class="lv-title">
+                                    <span ng-bind="c.descriptor.title"></span>
+                                </div>
+                                <span ng-bind="c.descriptor.query"></span>
+                                <ul class="lv-attrs">
+                                    <li ng-show="c.isCompatible" class="bgm-green">Y</li>
+                                    <li ng-hide="c.isCompatible" class="bgm-red">N</li>
+                                    <li><i ng-bind="c.rdfUri || c.sourceUri"></i></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="listview lv-bordered lv-lg">
+                    <div class="lv-header-alt">
+                        <h2 class="lvh-label hidden-xs">Port checks</h2>
+                    </div>
+
+                    <div class="lv-body">
+                        <div class="lv-item media" ng-repeat="pc in portChecks">
+                            <div class="media-body">
+                                <div class="lv-title">
+                                    <span ng-bind="pc.portUri"></span>
+                                </div>
+                                of
+                                <span ng-bind="pc.portOwnerComponentUri"></span>
+                                against
+                                <span ng-bind="pc.sourceUri"></span>
+                                <ul class="lv-attrs">
+                                    <li ng-show="pc.isCompatible" class="bgm-green">Y</li>
+                                    <li ng-hide="pc.isCompatible" class="bgm-red">N</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
                 <div class="card-header">
-                    <h2>Log <small>What was discovered so far</small></h2>
+                    <h2>Log
+                        <small>What was discovered so far</small>
+                    </h2>
                 </div>
 
                 <div class="card-body card-padding">
@@ -54,9 +110,9 @@
                         </li>
                     </ul>
                 </div>
-                </div>
             </div>
         </div>
     </div>
+</div>
 
 </div>

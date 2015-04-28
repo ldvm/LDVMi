@@ -12,7 +12,7 @@ class RdfCompatibilityChecker(uri: String) extends CompatibilityChecker {
         model.read(uri, null, "N3")
         val qe = QueryExecutionFactory.create(descriptor.query, model)
         val result = qe.execAsk()
-        sender() ! CheckCompatibilityResponse(Some(result), descriptor)
+        sender() ! CheckCompatibilityResponse(Some(result), descriptor, rdfUri = Some(uri))
       } catch {
         case e: Throwable =>
           sender() ! akka.actor.Status.Failure(e)

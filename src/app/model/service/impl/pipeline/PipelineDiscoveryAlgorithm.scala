@@ -2,7 +2,7 @@ package model.service.impl.pipeline
 
 import akka.actor.{PoisonPill, Props}
 import controllers.api.JsonImplicits._
-import controllers.api.ProgressReporter
+import controllers.api.{PortCheckResult, ProgressReporter}
 import model.entity.ComponentType.ComponentType
 import model.entity._
 import model.repository.PipelineDiscoveryRepository
@@ -180,12 +180,14 @@ class PipelineDiscoveryAlgorithm(
           case true => {
             withSession { implicit session =>
               reportMessage("Able to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri + "> to <" + lastComponent.componentInstance.componentTemplate.uri + ">")
+              reporter ! PortCheckResult(true, portUri, componentToAdd.componentInstance.componentTemplate.uri, lastComponent.componentInstance.componentTemplate.uri)
               Some(PortMapping(partialPipeline.componentInstances.last, componentToAdd.componentInstance, portUri), partialPipeline)
             }
           }
           case false => {
             withSession { implicit session =>
               reportMessage("Unable to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri + "> to <" + lastComponent.componentInstance.componentTemplate.uri + ">")
+              reporter ! PortCheckResult(false, portUri, componentToAdd.componentInstance.componentTemplate.uri, lastComponent.componentInstance.componentTemplate.uri)
               None
             }
           }
