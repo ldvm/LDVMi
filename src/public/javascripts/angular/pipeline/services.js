@@ -24,6 +24,11 @@ define(['angular'], function (ng) {
                 get: {url: '/api/v1/compatibility/:id', isArray: true},
                 check: {url: '/api/v1/compatibility/check/:id', isArray: true}
             });
+        }])
+        .factory('ComponentsApi', ['$resource', function ($resource) {
+            return $resource(null, null, {
+                createDatasource: {url: '/api/v1/datasources/add', method: 'POST', isArray: false}
+            });
         }]);
 
     ng.module('payola.utils', [])
@@ -47,7 +52,7 @@ define(['angular'], function (ng) {
                 return {
                     findPaginated: function (page, pageSize, filters) {
                         var query = paginationUtils.buildQuery(page, pageSize);
-                        ng.extend(query,filters);
+                        ng.extend(query, filters);
                         return pipelineApi.query(query).$promise;
                     },
                     visualization: function (id) {
@@ -58,6 +63,16 @@ define(['angular'], function (ng) {
                     },
                     discover: function () {
                         return pipelineApi.discover().$promise;
+                    }
+                };
+            }
+        ])
+        .service('Components', [
+            'ComponentsApi',
+            function (componentsApi) {
+                return {
+                    createDatasource: function (data) {
+                        return componentsApi.createDatasource(data).$promise;
                     }
                 };
             }
@@ -129,14 +144,14 @@ define(['angular'], function (ng) {
                     $rootScope.queuedMessages = $rootScope.queuedMessages || [];
 
                     /*
-                    setTimeout(function () {
-                        ws = connect();
-                    }, 5000);*/
+                     setTimeout(function () {
+                     ws = connect();
+                     }, 5000);*/
                 };
 
                 var onMessage = function (msg) {
                     var obj = JSON.parse(msg.data);
-                    
+
                     for (var i = 0; i < listeners.length; i++) {
                         var listener = listeners[i];
                         if (listener.p(obj))
@@ -157,7 +172,7 @@ define(['angular'], function (ng) {
                 };
 
                 var onError = function () {
-                    
+
                 };
 
                 me.send = function (obj) {
@@ -176,7 +191,7 @@ define(['angular'], function (ng) {
                 };
 
                 var connect = function () {
-                    
+
                     var w = new WebSocket(websocketUrl);
                     setHandlers(w);
                     return w;

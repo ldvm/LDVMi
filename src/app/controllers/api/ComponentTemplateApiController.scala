@@ -66,6 +66,22 @@ class ComponentTemplateApiController(implicit inj: Injector) extends ApiControll
     }
   }
 
+  def addDatasource = DBAction { implicit rws =>
+    rws.request.body.asJson.flatMap { json =>
+      val endpointUrl = (json \ "endpointUrl").as[String]
+      val graphUris = (json \ "graphUris").as[Seq[String]]
+
+      val maybeId = dataSourceService.createDataSourceFromUris(endpointUrl, graphUris)
+      maybeId.map { id =>
+        Ok(JsObject(Seq(
+          "id" -> JsNumber(id.id)
+        )))
+      }
+    }.getOrElse{
+      BadRequest
+    }
+  }
+
   private def withComponentTemplate(id: Long)(func: ComponentTemplate => Result)(implicit session: Session): Result = {
     componentTemplateService.findById(ComponentTemplateId(id)).map(func)
   }.getOrElse {

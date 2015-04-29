@@ -18,6 +18,7 @@ GET         /ttlds                                          @controllers.Visuali
 GET         /discover/                                      @controllers.VisualizationController.discover(dataSourceTemplateId : Option[Long], combine: Boolean ?= false)
 
 POST        /api/v1/components/add/ttl                      @controllers.api.LdvmApiController.ttl
+POST        /api/v1/datasources/add                         @controllers.api.ComponentTemplateApiController.addDatasource
 GET         /api/v1/components/delete/:id                   @controllers.api.ComponentTemplateApiController.delete(id: Long)
 GET         /api/v1/compatibility/check/:pipelineId         @controllers.api.CompatibilityApiController.check(pipelineId: Long)
 GET         /api/v1/pipelines/evaluate/:pipelineId          @controllers.api.PipelineApiController.evaluate(pipelineId: Long)

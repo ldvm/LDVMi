@@ -1,4 +1,4 @@
-define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
+define(['angular', 'underscorejs', "d3js", 'material'], function (ng, _, d3, material) {
     'use strict';
 
     ng.module('pipeline.controllers', ['pipeline.model', 'websocket']).
@@ -68,21 +68,26 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
 
 
             }])
-        .controller('Index', function ($scope) {
+        .controller('Index', ['$scope', 'Components', function ($scope, components) {
             $scope.visualize = function () {
-                var uri = "/discover/";
-                if ($scope.endpointUrl) {
-                    uri += "?endpointUrl=" + $scope.endpointUrl;
-                    if ($scope.showMore && $scope.graphUris) {
-                        uri += "&graphUris=" + $scope.graphUris;
-                    }
+
+                var data = {
+                    endpointUrl: $scope.endpointUrl,
+                    graphUris: ($scope.graphUris||"").split("\n")
+                };
+
+                var promise = components.createDatasource(data);
+                promise.then(function(id){
+                    var uri = "/discover/?dataSourceTemplateId=" + id.id;
                     if ($scope.showMore && $scope.combine) {
-                        uri += "&combine=1";
+                        uri += "&combine=true";
                     }
-                }
-                window.location.href = uri;
+                    window.location.href = uri;
+                });
             };
-        })
+
+            material.initForms();
+        }])
         .controller('Compatibility', [
             '$scope', '$routeParams', 'Compatibility', 'VisualizationService',
             function ($scope, $routeParams, Compatibility, VisualizationService) {
@@ -177,7 +182,7 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                             }
 
                             if ("pipelinesDiscoveredCount" in data) {
-                                $scope.data.push([$scope.lastPerformedIteration, data.pipelinesDiscoveredCount]);
+                                $scope.data.push(data.pipelinesDiscoveredCount);
                             }
 
                             if (data.isFinished && data.isSuccess) {

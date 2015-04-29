@@ -91,6 +91,29 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     model
   }
 
+  def createDataSourceFromUris(endpointUrl: String, graphUris: Seq[String])(implicit session: Session): Option[DataSourceTemplateId] = {
+
+    val resourceUri = endpointUrl
+    val dataPortTemplate = model.dto.DataPortTemplate(resourceUri+"/output",None,None)
+    val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
+
+    val componentTemplate = model.dto.ComponentTemplate(
+      resourceUri,
+      Some(endpointUrl),
+      None,
+      Some(config(endpointUrl, graphUris)),
+      Seq(),
+      Some(outputTemplate),
+      Seq(),
+      Seq(),
+      isTemporary = true
+    )
+
+    val savedId = componentTemplateService.save(componentTemplate)
+
+    Some(dataSourceTemplateRepository.save(DataSourceTemplate(None, savedId)))
+  }
+
   private def createDataSource(name: String, randomGraph: RandomGraph)(implicit session: Session): DataSourceTemplateId = {
 
     val resourceUri = "urn:datasources/" + randomGraph.uuid.toString
@@ -116,7 +139,6 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
   }
 
 }
-
 
 class RandomGraph {
   val uuid = UUID.randomUUID()

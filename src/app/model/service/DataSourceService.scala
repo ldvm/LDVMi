@@ -11,4 +11,6 @@ trait DataSourceService {
 
   def createDataSourceFromFiles(files: Seq[MultipartFormData.FilePart[Files.TemporaryFile]])(implicit session: Session): Option[DataSourceTemplateId]
 
+  def createDataSourceFromUris(endpointUrl: String, graphUris: Seq[String])(implicit session: Session): Option[DataSourceTemplateId]
+
 }

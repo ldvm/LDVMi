@@ -1,29 +1,22 @@
 @(title: String)
 
     @scripts = {
-        <script>
-            var require = {
-                callback: function() {
-                    @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
-                        requirejs.config(@Html(webJarJson.toString));
-                    }
-
-                    requirejs.config({
-                        shim: {
-                            openlayers: {
-                                exports: "ol"
-                            }
-                        },
-                        paths: {
-                            openlayers: "@routes.WebJarAssets.at(WebJarAssets.locate("ol.js")).url.replaceAll(".js", "")"
-                        }
-                    });
-                }
-            };
-        </script>
-
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCesJn7XyQUzK78CRLwJusuLUR1-Wy8fVc"></script>
-        <script data-main="@routes.Assets.versioned("javascripts/angular/maps/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+    }
+
+    @requireConfig = {
+        <script>
+            requirejs.config({
+                shim: {
+                    openlayers: {
+                        exports: "ol"
+                    }
+                },
+                paths: {
+                    openlayers: "@routes.WebJarAssets.at(WebJarAssets.locate("ol.js")).url.replaceAll(".js", "")"
+                }
+            });
+        </script>
     }
 
     @styles = {
@@ -33,7 +26,7 @@
         <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
     }
 
-@main("Map", scripts, styles) {
+@main("Map", scripts, styles, requirePath = Some(routes.Assets.versioned("javascripts/angular/maps/main.js").url), requireConfig = requireConfig) {
 
     <div class="container-fluid" style="padding-top : 60px;">
 

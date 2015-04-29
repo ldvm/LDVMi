@@ -32,14 +32,13 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>Pipelines count</h2>
-                </div>
-
-                <div class="card-body card-padding-sm">
-                    <div id="dynamic-chart" dynamic-chart data="data" class="flot-chart"></div>
-                    <div class="flc-dynamic"></div>
+            <div class="mini-charts-item bgm-cyan">
+                <div class="clearfix">
+                    <div class="chart stats-bar" sparkline-bar="data" style="width: 113px;"></div>
+                    <div class="count">
+                        <small>Discovered pipelines</small>
+                        <h2 ng-bind="pipelinesDiscoveredCount">0</h2>
+                    </div>
                 </div>
             </div>
         </div>

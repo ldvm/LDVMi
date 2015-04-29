@@ -1,3 +1,3 @@
-require(['material', './appBootstrap'], function(){
-
+require(['material', './appBootstrap'], function(material){
+    material.init();
 });
