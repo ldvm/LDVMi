@@ -1,6 +1,5 @@
 package controllers
 
-import controllers.react
 import scaldi.Module
 
 class ControllerModule extends Module {
@@ -11,5 +10,5 @@ class ControllerModule extends Module {
   binding to new ComponentTemplateController
   binding to new VisualizationController
 
-  binding to new react.ApplicationController
+  binding to new appgen.ApplicationController
 }

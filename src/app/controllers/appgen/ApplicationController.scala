@@ -1,10 +1,10 @@
-package controllers.react
+package controllers.appgen
 
 import play.api.mvc.{Action, Controller}
 import scaldi.{Injectable, Injector}
 
 class ApplicationController(implicit inj: Injector) extends Controller with Injectable {
-  def index() = Action {
-    Ok(views.html.react.main())
+  def index(any: Any) = Action {
+    Ok(views.html.appgen.main())
   }
 }

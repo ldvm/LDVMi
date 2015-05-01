@@ -56,7 +56,7 @@ POST        /api/datacube/slices/:id                        @controllers.api.Dat
 #GET         /api/visualization/add                          @controllers.api.VisualizationApiController.addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String])
 #GET         /api/visualization/:id                          @controllers.api.VisualizationApiController.get(id: Long)
 
-GET         /react                                          @controllers.react.ApplicationController.index
+GET         /appgen$any<.*>                                 @controllers.appgen.ApplicationController.index(any)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /vassets/*file                                  controllers.Assets.versioned(path="/public", file: Asset)
