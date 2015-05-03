@@ -12,7 +12,7 @@ export default React.createClass({
                     <li><Link to="home">Sign In</Link></li>
                 </Nav>
             </Navbar>
-            <br /><br /><br />
+            <br /><br />
             <RouteHandler/>
         </div>
     },

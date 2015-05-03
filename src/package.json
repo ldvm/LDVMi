@@ -5,10 +5,13 @@
     "appgen-dev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./conf/webpack/appgen-dev.js --progress --colors --port 9090 --hot --inline"
   },
   "dependencies": {
+    "invariant": "^2.0.0",
     "lodash": "^3.6.0",
     "minimist": "^1.1.1",
+    "object-assign": "^2.0.0",
     "react": "^0.13.1",
     "react-bootstrap": "^0.18.0",
+    "react-mixin": "^1.2.2",
     "react-router": "^0.13.1",
     "rest": "^1.3.0",
     "revalidator": "^0.3.1"

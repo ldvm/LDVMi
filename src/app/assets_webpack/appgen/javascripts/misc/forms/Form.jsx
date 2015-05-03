@@ -1,5 +1,8 @@
+import React from '../../../../../../node_modules/react/addons'
+import reactMixin from 'react-mixin'
 import _ from 'lodash'
 import revalidator from 'revalidator'
+import invariant from 'invariant'
 
 /**
  * Component mixin that adds simple form validation using revalidator plugin.
@@ -8,35 +11,63 @@ import revalidator from 'revalidator'
  * @property {Object[]} errors - List of errors in the form
  * @property {string[]} dirty - List of dirty form fields
  */
-export default {
+export default class Form extends React.Component {
 
-    componentWillReceiveProps: function () {
+    constructor(props) {
+        super(props);
+        this.state = this.getStateFromProps(props);
         this.reset();
-    },
+    }
 
-    componentWillMount: function () {
+    componentWillReceiveProps(nextProps) {
         this.reset();
-    },
+        this.setState(this.getStateFromProps(nextProps));
+    }
 
-    componentWillUpdate: function (nextProps, nextState) {
+    componentDidMount() {
+        this.reset();
+    }
+
+    componentWillUpdate(nextProps, nextState) {
         this.updateDirty(nextState);
         this.validate(nextState);
-    },
+    }
+
+    getValidationScheme() {
+        invariant(this.constructor.validationScheme, 'Form ' + this.constructor.name + ' is missing validationScheme');
+        return this.constructor.validationScheme;
+    }
 
     /**
      * Reset form state.
      */
-    reset: function () {
+    reset() {
         this.valid = false;
         this.errors = [];
         this.dirty = [];
-    },
+        this.validate(this.state);
+    }
+
+    getStateFromProps(props) {
+        let state = {};
+
+        // Use the scheme to generate empty state skelet.
+        Object.getOwnPropertyNames(this.getValidationScheme().properties).forEach(
+            (name) => state[name] = null);
+
+        // Load default values (if any)
+        if (props.defaults) {
+            Object.assign(state, props.defaults);
+        }
+
+        return state;
+    }
 
     /**
      * Update the list of dirty inputs.
      * @param {object} nextState
      */
-    updateDirty: function (nextState) {
+    updateDirty(nextState) {
         for (var key in nextState) {
             if (nextState.hasOwnProperty(key) && this.state.hasOwnProperty(key)) {
                 if (nextState[key] != this.state[key]) {
@@ -46,17 +77,17 @@ export default {
                 }
             }
         }
-    },
+    }
 
     /**
      * Perform validation of the current component state.
      * @param {object} state
      */
-    validate: function (state) {
+    validate(state) {
         var validation = revalidator.validate(state, this.getValidationScheme());
         this.valid = validation.valid;
         this.errors = validation.errors;
-    },
+    }
 
     /**
      * Return object of connecting functions for given input. The connecting
@@ -65,7 +96,7 @@ export default {
      * @param {string} name of input
      * @returns {{linkState: (*|ReactLink), bsStyle: Function, help: Function}}
      */
-    connect: function (name) {
+    connect(name) {
         var form = this;
 
         return {
@@ -95,24 +126,45 @@ export default {
                 return error ? error.message : null;
             }
         };
-    },
+    }
 
     /**
      * Return error object for given input or null if there is no error.
      * @param {string} name of the input
      * @returns {object|null}
      */
-    getError: function (name) {
+    getError(name) {
         var errors = _.where(this.errors, {property: name});
         return errors.length === 0 ? null : errors[0];
-    },
+    }
 
     /**
      * Return if given input is dirty.
      * @param {string} name
      * @returns {boolean}
      */
-    isDirty: function (name) {
+    isDirty(name) {
         return _.contains(this.dirty, name);
     }
+
+    handleSubmit(e) {
+        e.preventDefault();
+
+        if (!this.props.onSubmit) {
+            console.log('Submitting form: ');
+            console.log(this.state);
+        } else {
+            this.props.onSubmit(this.state);
+        }
+    }
 };
+
+let PropTypes = React.PropTypes;
+
+Form.propTypes = {
+    defaults: PropTypes.object,
+    onSubmit: PropTypes.func
+};
+
+
+reactMixin(Form.prototype, React.addons.LinkedStateMixin);

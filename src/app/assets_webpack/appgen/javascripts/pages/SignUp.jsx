@@ -1,42 +1,23 @@
-import React from '../../../../../node_modules/react/addons'
+import React from 'react'
 import Router from 'react-router'
 import {Grid, Col} from 'react-bootstrap'
 
-import FormValidationMixin from '../misc/forms/FormValidationMixin.jsx'
-import InputH from '../misc/forms/InputH.jsx'
+import Card from '../misc/material/Card.jsx'
+import SignUpForm from '../forms/SignUpForm.jsx'
 
 export default React.createClass({
-    mixins: [React.addons.LinkedStateMixin, FormValidationMixin],
 
-    getInitialState: function () {
-        return {
-            email: ''
-        };
-    },
-
-    getValidationScheme: function () {
-        return {
-            properties: {
-                title: {
-                    description: 'Post title',
-                    type: 'string',
-                    required: true,
-                    allowEmpty: false,
-                    message: 'Please fill in the title'
-                }
-            }
-        };
+    signUp: function (data) {
+        console.log('Sign up:');
+        console.log(data);
     },
 
     render: function () {
         return (
             <Grid>
-                <h1>Sign up to Payola!</h1>
-                <Col xs={6}>
-                    <form className="form-horizontal">
-                        <InputH type="text" label="Your e-mail" labelWidth={4} connect={this.connect('email')}/>
-                    </form>
-                </Col>
+                <Card title="Sign up to Payola!" subtitle="Please fill out the form">
+                    <SignUpForm onSubmit={this.signUp}/>
+                </Card>
             </Grid>
         )
     }
