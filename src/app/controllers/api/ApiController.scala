@@ -4,7 +4,7 @@ import model.entity.{PipelineEvaluation, PipelineEvaluationId}
 import model.rdf.sparql.datacube.DataCubeService
 import model.rdf.sparql.geo.GeoService
 import model.rdf.sparql.visualization.VisualizationService
-import model.service.{ComponentTemplateService, PipelineService}
+import model.service.{DataSourceService, ComponentTemplateService, PipelineService}
 import play.api.Play.current
 import play.api.db.slick._
 import play.api.libs.concurrent.Execution.Implicits._
@@ -20,6 +20,7 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
   val dataCubeService = inject[DataCubeService]
   val pipelineService = inject[PipelineService]
   val componentTemplateService = inject[ComponentTemplateService]
+  val dataSourceService = inject[DataSourceService]
   val visualizationService = inject[VisualizationService]
   val geoService = inject[GeoService]
 

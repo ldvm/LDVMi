@@ -1,23 +1,13 @@
 @()
 
-    @scripts = {
+    @scripts = {}
+
+    @requireConfig = {
         <script>
-        var require = {
-            callback: function() {
-                // default requirejs configs
-                @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
-                    requirejs.config(@Html(webJarJson.toString));
-                }
-
-                requirejs.config({ paths: { "angular-file-upload": "/webjars/nervgh-angular-file-upload/1.1.5/angular-file-upload" } });
-
-                requirejs.config({ paths: { "codemirror" : ["/webjars/codemirror/5.0/lib/codemirror","codemirror"] } });
-                requirejs.config({ paths: { "codemirror-sparql" : ["/webjars/codemirror/5.0/mode/sparql/sparql"] } , shim: {"codemirror-sparql": ["codemirror"]} });
-
-            }
-        };
+            requirejs.config({ paths: { "angular-file-upload": "/webjars/nervgh-angular-file-upload/1.1.5/angular-file-upload" } });
+            requirejs.config({ paths: { "codemirror" : ["/webjars/codemirror/5.0/lib/codemirror","codemirror"] } });
+            requirejs.config({ paths: { "codemirror-sparql" : ["/webjars/codemirror/5.0/mode/sparql/sparql"] } , shim: {"codemirror-sparql": ["codemirror"]} });
         </script>
-        <script data-main="@routes.Assets.versioned("javascripts/angular/component/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     }
 
     @styles = {
@@ -35,9 +25,9 @@
         </style>
     }
 
-@main("LDVM components", scripts, styles) {
+@main("LDVM components", scripts, styles, Some(routes.Assets.versioned("javascripts/angular/component/main.js").url), requireConfig) {
 
-    <div class="container-fluid" style="padding-top : 60px;">
+    <div class="container">
         <div ng-view></div>
     </div> <!-- /container -->
 

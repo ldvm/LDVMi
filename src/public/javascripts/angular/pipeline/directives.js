@@ -1,4 +1,4 @@
-define(['angular'], function (ng) {
+define(['angular', 'jquery', 'jquery-sparkline'], function (ng, $) {
     'use strict';
 
     ng.module('pipeline.directives', []).
@@ -22,13 +22,13 @@ define(['angular'], function (ng) {
                             var nodes = {};
 
 // Compute the distinct nodes from the links.
-                            links.forEach(function(link) {
+                            links.forEach(function (link) {
                                 link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
                                 link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
                             });
 
-                            var width = 960,
-                                height = 500;
+                            var width = $(element[0].parentElement).width(),
+                                height = $(element[0].parentElement).width() / 2;
 
                             var force = d3.layout.force()
                                 .nodes(d3.values(nodes))
@@ -47,7 +47,9 @@ define(['angular'], function (ng) {
                             svg.append("defs").selectAll("marker")
                                 .data(["suit", "licensing", "resolved"])
                                 .enter().append("marker")
-                                .attr("id", function(d) { return d; })
+                                .attr("id", function (d) {
+                                    return d;
+                                })
                                 .attr("viewBox", "0 -5 10 10")
                                 .attr("refX", 15)
                                 .attr("refY", -1.5)
@@ -60,8 +62,12 @@ define(['angular'], function (ng) {
                             var path = svg.append("g").selectAll("path")
                                 .data(force.links())
                                 .enter().append("path")
-                                .attr("class", function(d) { return "link " + d.type; })
-                                .attr("marker-end", function(d) { return "url(#" + d.type + ")"; });
+                                .attr("class", function (d) {
+                                    return "link " + d.type;
+                                })
+                                .attr("marker-end", function (d) {
+                                    return "url(#" + d.type + ")";
+                                });
 
                             var circle = svg.append("g").selectAll("circle")
                                 .data(force.nodes())
@@ -74,7 +80,9 @@ define(['angular'], function (ng) {
                                 .enter().append("text")
                                 .attr("x", 8)
                                 .attr("y", ".31em")
-                                .text(function(d) { return d.name; });
+                                .text(function (d) {
+                                    return d.name;
+                                });
 
 // Use elliptical arc path segments to doubly-encode directionality.
                             function tick() {
@@ -96,6 +104,100 @@ define(['angular'], function (ng) {
                         }
                     });
 
+                }
+            };
+        }])
+        .directive('sparklineBar', [function(){
+            return {
+                scope: {
+                    sparklineBar: '='
+                },
+                link: function($scope, $element) {
+
+                    function sparklineBar(element, values, height, barWidth, barColor, barSpacing) {
+                        element.sparkline(values, {
+                            type: 'bar',
+                            height: height,
+                            barWidth: barWidth,
+                            barColor: barColor,
+                            barSpacing: barSpacing
+                        });
+                    }
+
+                    function render(data) {
+                        if ($element[0]) {
+                            sparklineBar($element, data, '45px', 3, '#fff', 2);
+                        }
+                    }
+
+                    $scope.$watch('sparklineBar', function (newVal) {
+                        render(newVal || []);
+                    }, true);
+                }
+            };
+        }])
+        .directive('dynamicChart', [function () {
+            return {
+                scope: {
+                    data: '='
+                },
+                link: function ($scope, $element) {
+
+                    var plot = $.plot($element[0], [$scope.data] || [], {
+                        series: {
+                            label: "Discovered pipelines",
+                            lines: {
+                                show: true,
+                                lineWidth: 0.2,
+                                fill: 0.6
+                            },
+
+                            color: '#00BCD4',
+                            shadowSize: 0,
+                        },
+                        yaxis: {
+                            tickColor: '#eee',
+                            font: {
+                                lineHeight: 13,
+                                style: "normal",
+                                color: "#9f9f9f"
+                            },
+                            shadowSize: 0,
+                            min: 0,
+                            max: 10
+                        },
+                        xaxis: {
+                            tickColor: '#eee',
+                            show: true,
+                            font: {
+                                lineHeight: 13,
+                                style: "normal",
+                                color: "#9f9f9f"
+                            },
+                            shadowSize: 0,
+                            min: 0
+                        },
+                        grid: {
+                            borderWidth: 1,
+                            borderColor: '#eee',
+                            labelMargin: 10,
+                            hoverable: true,
+                            clickable: true,
+                            mouseActiveRadius: 6
+                        },
+                        legend: {
+                            container: '.flc-dynamic',
+                            backgroundOpacity: 0.5,
+                            noColumns: 0,
+                            backgroundColor: "white",
+                            lineWidth: 0
+                        }
+                    });
+
+                    $scope.$watch('data', function (newVal) {
+                        plot.setData([newVal]);
+                        plot.draw();
+                    }, true);
                 }
             };
         }]);

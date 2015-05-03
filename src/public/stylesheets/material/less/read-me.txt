@@ -1,0 +1,3 @@
+Please use a LESS compiler whenever you modifiy these files.
+
+Grunt JS is highly recommanded for compiling LESS files. 

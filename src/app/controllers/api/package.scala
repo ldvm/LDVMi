@@ -54,6 +54,7 @@ package object api {
     implicit val featureCompatibilityCheckWrites = Json.writes[FeatureCompatibilityCheck]
     implicit val componentInstanceCompatibilityCheckWrites = Json.writes[ComponentInstanceCompatibilityCheck]
     implicit val descriptorCompatibilityCheckWrites = Json.writes[DescriptorCompatibilityCheck]
+    implicit val portCompatibilityCheckWrites = Json.writes[PortCheckResult]
     implicit val descriptorWrites = Json.writes[Descriptor]
     implicit val featureWrites = Json.writes[Feature]
     implicit val portWrites = Json.writes[DataPortTemplate]

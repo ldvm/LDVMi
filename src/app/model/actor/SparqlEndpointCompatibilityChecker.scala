@@ -6,7 +6,7 @@ import org.apache.jena.atlas.web.HttpException
 
 class SparqlEndpointNotConfiguredException extends Throwable
 
-class SparqlEndpointCompatibilityChecker(componentInstanceConfiguration: Option[Graph], componentConfiguration: Option[Graph]) extends CompatibilityChecker {
+class SparqlEndpointCompatibilityChecker(componentInstanceConfiguration: Option[Graph], componentConfiguration: Option[Graph], componentUri: String) extends CompatibilityChecker {
   def receive: Receive = {
     case CheckCompatibilityRequest(descriptor) => {
       try {
@@ -15,9 +15,9 @@ class SparqlEndpointCompatibilityChecker(componentInstanceConfiguration: Option[
 
           val queryExecutionFactory = endpoint.queryExecutionFactory()
           val qe = queryExecutionFactory(descriptor.query)
-          sender() ! CheckCompatibilityResponse(Some(qe.execAsk()), descriptor)
+          sender() ! CheckCompatibilityResponse(Some(qe.execAsk()), descriptor, sourceUri = Some(componentUri))
         }.getOrElse {
-          sender() ! CheckCompatibilityResponse(None, descriptor)
+          sender() ! CheckCompatibilityResponse(None, descriptor, sourceUri = Some(componentUri))
         }
       } catch {
         case e: com.hp.hpl.jena.query.QueryException => {

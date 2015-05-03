@@ -1,0 +1,19 @@
+.breadcrumb {
+    border-bottom: 1px solid #E5E5E5;
+    border-radius: 0;
+
+    @media (min-width: @screen-sm-min) {
+        padding: 10px 77px 11px;
+    }
+    
+    & > li {
+        
+        & > a {
+            color: #A9A9A9;
+            
+            &:hover {
+                color: @breadcrumb-active-color;
+            }
+        }
+    }
+}

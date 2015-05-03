@@ -1,4 +1,4 @@
-@(title: String, scripts: Html = Html(""), styles: Html = Html(""))(content: Html)
+@(title: String, scripts: Html = Html(""), styles: Html = Html(""), requirePath: Option[String] = None, requireConfig: Html = Html(""))(content: Html)
 @import play.api.Play
 <!DOCTYPE html>
 <html lang="en">
@@ -11,15 +11,64 @@
 
         @scripts
 
+        <script>
+            var require = {
+                callback: function() {
+                    // default requirejs configs
+                    @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
+                        requirejs.config(@Html(webJarJson.toString));
+                    }
+
+                    requirejs.config({
+                        "paths":{
+                            "material":['@routes.Assets.versioned("javascripts/material/functions.js").url.replace(".js", "")'],
+                            "nicescroll": ['@routes.Assets.versioned("vendors/nicescroll/jquery.nicescroll").url.replace(".js", "")'],
+                            "flot-resize": ['@routes.Assets.versioned("vendors/flot/jquery.flot.resize").url.replace(".js", "")'],
+                            "jquery-sparkline": ['@routes.Assets.versioned("vendors/sparklines/jquery.sparkline").url.replace(".js", "")'],
+                            "curved-lines": ['@routes.Assets.versioned("vendors/flot/plugins/curvedLines").url.replace(".js", "")'],
+                            "jquery-easypiechart": ['@routes.Assets.versioned("vendors/easypiechart/jquery.easypiechart").url.replace(".js", "")'],
+                            "waves":  ['@routes.Assets.versioned("vendors/waves/waves").url.replace(".js", "")'],
+                            "input-mask":  ['@routes.Assets.versioned("vendors/input-mask/input-mask").url.replace(".js", "")'],
+                            "fileinput":  ['@routes.Assets.versioned("vendors/fileinput/fileinput").url.replace(".js", "")'],
+                            "auto-size":  ['@routes.Assets.versioned("vendors/auto-size/jquery.autosize").url.replace(".js", "")'],
+                            "sweet-alert":  ['@routes.Assets.versioned("vendors/sweet-alert/sweet-alert").url.replace(".js", "")']
+                        },
+                        "shim":{
+                            "nicescroll": ['jquery'],
+                            "flot-resize": ['jquery.flot'],
+                            "curved-lines": ['jquery.flot'],
+                            "jquery-sparkline": ['jquery'],
+                            "jquery-easypiechart": ['jquery'],
+                            "jquery.colorhelpers": ['jquery'],
+                            "input-mask": ['jquery'],
+                            "fileinput": ['jquery'],
+                            "auto-size": ['jquery']
+                        }
+                    });
+
+                    @Html(requireConfig.toString().replace("<script>","").replace("</script>",""))
+                }
+            };
+        </script>
+
+        @requirePath.map { p =>
+            <script data-main="@p" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+        }
+
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-        <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
+        <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/material/css/app.css")'>
+
+        <link href="@routes.Assets.versioned("vendors/fullcalendar/fullcalendar.css")" rel="stylesheet">
+        <link href="@routes.Assets.versioned("vendors/animate-css/animate.min.css")" rel="stylesheet">
+        <link href="@routes.Assets.versioned("vendors/sweet-alert/sweet-alert.min.css")" rel="stylesheet">
+
 
         @styles
 
     </head>
     <body>
 
-        @Play.current.configuration.getString("analytics.ua").map{ ua =>
+        @Play.current.configuration.getString("analytics.ua").map { ua =>
             <script>
                 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -31,39 +80,293 @@
             </script>
         }
 
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="/">LDVMi</a>
-                </div>
-                <div class="navbar-collapse collapse">
+        <header id="header">
+            <ul class="header-inner">
+                <li id="menu-trigger" data-trigger="#sidebar">
+                    <div class="line-wrap">
+                        <div class="line top"></div>
+                        <div class="line center"></div>
+                        <div class="line bottom"></div>
+                    </div>
+                </li>
 
-                    <ul class="nav navbar-nav">
-                        <li class=""><a href="/pipelines#/list">Pipelines</a></li>
-                        <li class=""><a href="/components">Components</a></li>
+                <li class="logo hidden-xs">
+                    <a href="/">LDVMi</a>
+                </li>
+
+                <li class="pull-right">
+                    <ul class="top-menu">
+                        <li id="toggle-width">
+                            <div class="toggle-switch">
+                                <input id="tw-switch" type="checkbox" hidden="hidden">
+                                <label for="tw-switch" class="ts-helper"></label>
+                            </div>
+                        </li>
+                        <li id="top-search">
+                            <a class="tm-search" href=""></a>
+                        </li>
+                            <!--<li class="dropdown">
+                            <a data-toggle="dropdown" class="tm-message" href=""><i class="tmn-counts">6</i></a>
+                            <div class="dropdown-menu dropdown-menu-lg pull-right">
+                                <div class="listview">
+                                    <div class="lv-header">
+                                        Messages
+                                    </div>
+                                    <div class="lv-body c-overflow">
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/1.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">David Belle</div>
+                                                    <small class="lv-small">Cum sociis natoque penatibus et magnis dis parturient montes</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/2.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">Jonathan Morris</div>
+                                                    <small class="lv-small">Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/3.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">Fredric Mitchell Jr.</div>
+                                                    <small class="lv-small">Phasellus a ante et est ornare accumsan at vel magnauis blandit turpis at augue ultricies</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/4.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">Glenn Jecobs</div>
+                                                    <small class="lv-small">Ut vitae lacus sem ellentesque maximus, nunc sit amet varius dignissim, dui est consectetur neque</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/4.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">Bill Phillips</div>
+                                                    <small class="lv-small">Proin laoreet commodo eros id faucibus. Donec ligula quam, imperdiet vel ante placerat</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <a class="lv-footer" href="">View All</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="tm-notification" href=""><i class="tmn-counts">9</i></a>
+                            <div class="dropdown-menu dropdown-menu-lg pull-right">
+                                <div class="listview" id="notifications">
+                                    <div class="lv-header">
+                                        Notification
+
+                                        <ul class="actions">
+                                            <li class="dropdown">
+                                                <a href="" data-clear="notification">
+                                                    <i class="md md-done-all"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="lv-body c-overflow">
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/1.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">David Belle</div>
+                                                    <small class="lv-small">Cum sociis natoque penatibus et magnis dis parturient montes</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/2.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">Jonathan Morris</div>
+                                                    <small class="lv-small">Nunc quis diam diamurabitur at dolor elementum, dictum turpis vel</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/3.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">Fredric Mitchell Jr.</div>
+                                                    <small class="lv-small">Phasellus a ante et est ornare accumsan at vel magnauis blandit turpis at augue ultricies</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/4.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">Glenn Jecobs</div>
+                                                    <small class="lv-small">Ut vitae lacus sem ellentesque maximus, nunc sit amet varius dignissim, dui est consectetur neque</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="lv-item" href="">
+                                            <div class="media">
+                                                <div class="pull-left">
+                                                    <img class="lv-img-sm" src="img/profile-pics/4.jpg" alt="">
+                                                </div>
+                                                <div class="media-body">
+                                                    <div class="lv-title">Bill Phillips</div>
+                                                    <small class="lv-small">Proin laoreet commodo eros id faucibus. Donec ligula quam, imperdiet vel ante placerat</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <a class="lv-footer" href="">View Previous</a>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li class="dropdown hidden-xs">
+                            <a data-toggle="dropdown" class="tm-task" href=""><i class="tmn-counts">2</i></a>
+                            <div class="dropdown-menu pull-right dropdown-menu-lg">
+                                <div class="listview">
+                                    <div class="lv-header">
+                                        Currently running
+                                    </div>
+                                    <div class="lv-body">
+                                        <div class="lv-item">
+                                            <div class="lv-title m-b-5">Pipeline X</div>
+
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" style="width: 95%">
+                                                    <span class="sr-only">95% Complete (success)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="lv-item">
+                                            <div class="lv-title m-b-5">Discovery 123</div>
+
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                                    <span class="sr-only">80% Complete (success)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <a class="lv-footer" href="">View All</a>
+                                </div>
+                            </div>
+                        </li>-->
+                        <li class="dropdown">
+                            <a data-toggle="dropdown" class="tm-settings" href=""></a>
+                            <ul class="dropdown-menu dm-icon pull-right">
+                                <li>
+                                    <a data-action="fullscreen" href=""><i class="md md-fullscreen"></i>
+                                        Toggle Fullscreen</a>
+                                </li>
+                                <li>
+                                    <a data-action="clear-localstorage" href=""><i class="md md-delete"></i>
+                                        Clear Local Storage</a>
+                                </li>
+                                <li>
+                                    <a href=""><i class="md md-person"></i> Privacy Settings</a>
+                                </li>
+                                <li>
+                                    <a href=""><i class="md md-settings"></i> Other Settings</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="hidden-xs" id="chat-trigger" data-trigger="#chat">
+                            <a class="tm-chat" href=""></a>
+                        </li>
                     </ul>
-<!--
-                    <form class="navbar-form navbar-right" role="form">
-                        <div class="form-group">
-                            <input type="text" placeholder="Email" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" placeholder="Password" class="form-control">
-                        </div>
-                        <button type="submit" class="btn btn-success">Sign in</button>
-                    </form>-->
-                </div><!--/.navbar-collapse -->
+                </li>
+            </ul>
+
+                <!-- Top Search Content -->
+            <div id="top-search-wrap">
+                <input type="text">
+                <i id="top-search-close">&times;</i>
             </div>
-        </div>
+        </header>
 
-        @content
+        <section id="main">
+            <aside id="sidebar">
+                <div class="sidebar-inner">
+                    <div class="si-inner">
+                        <div class="profile-menu">
+                            <a href="">
+                                <div class="profile-pic">
+                                    <img src="img/profile-pics/1.jpg" alt="">
+                                </div>
 
+                                <div class="profile-info">
+                                    LDVM user
+
+                                    <i class="md md-arrow-drop-down"></i>
+                                </div>
+                            </a>
+
+                            <ul class="main-menu">
+                                <li>
+                                    <a href=""><i class="md md-person"></i> View Profile</a>
+                                </li>
+                                <li>
+                                    <a href=""><i class="md md-settings-input-antenna"></i> Privacy Settings</a>
+                                </li>
+                                <li>
+                                    <a href=""><i class="md md-settings"></i> Settings</a>
+                                </li>
+                                <li>
+                                    <a href=""><i class="md md-history"></i> Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <ul class="main-menu">
+                            <li class="active"><a href="/"><i class="md md-home"></i> Home</a></li>
+                            <li>
+                                <a href="/pipelines#/list"><i class="md md-settings-input-component"></i> Pipelines</a>
+                            </li>
+                            <li>
+                                <a href="/components#/"><i class="md md-now-widgets"></i> Components</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+
+
+            <section id="content">
+            @content
+            </section>
+        </section>
 
         @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
     </body>

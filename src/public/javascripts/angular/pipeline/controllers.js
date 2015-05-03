@@ -1,4 +1,4 @@
-define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
+define(['angular', 'underscorejs', "d3js", 'material'], function (ng, _, d3, material) {
     'use strict';
 
     ng.module('pipeline.controllers', ['pipeline.model', 'websocket']).
@@ -6,33 +6,34 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
         ['$scope', 'Pipelines', '$routeParams', 'ngTableParams',
             function ($scope, pipelines, $routeParams, ngTableParams) {
 
-                var page = $routeParams.page || 1;
-                var count = $routeParams.count || 50;
+                $scope.page = $routeParams.page || 1;
+                $scope.count = $routeParams.count || 50;
+                $scope.filter = {
+                    discoveryId: $routeParams.discoveryId,
+                    visualizerId: $routeParams.visualizerId
+                };
+                $scope.total = 0;
 
+                $scope.pages = function () {
+                    var num = Math.ceil($scope.total / $scope.count);
+                    return Array.apply(null, Array(num)).map(function (_, i) {
+                        return i;
+                    });
+                };
 
                 var showPagination = !($routeParams.discoveryId || $routeParams.visualizerId);
 
-                $scope.tableParams = new ngTableParams({
-                    page: page,            // show first page
-                    count: count,           // count per page,
-                    filter: {
-                        discoveryId: $routeParams.discoveryId,
-                        visualizerId: $routeParams.visualizerId
-                    },
-                    sorting: {
-                        //name: 'asc'
-                    }
-                }, {
-                    total: 0, // length of data
-                    getData: function ($defer, params) {
-                        var promise = pipelines.findPaginated(params.page(), params.count(), params.filter());
-                        promise.then(function (data) {
-                            params.total(showPagination ? data.count : data.data.length);
-                            $defer.resolve(data.data);
-                        });
+                $scope.pipelines = [];
 
-                    }
-                });
+                var getPipelines = function () {
+                    var promise = pipelines.findPaginated($scope.page, $scope.count, $scope.filter);
+                    promise.then(function (data) {
+                        $scope.total = (showPagination ? data.count : data.data.length);
+                        $scope.pipelines = data.data;
+                    });
+                };
+
+                $scope.$watch('page', getPipelines);
 
                 $scope.time = function (a, b) {
                     return a || b;
@@ -46,7 +47,8 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                 $scope.info = [];
                 $scope.descriptorsCompatibility = [];
 
-                var pipelineId = $routeParams.id; var l = window.location;
+                var pipelineId = $routeParams.id;
+                var l = window.location;
                 var url = "ws://" + l.host + "/api/v1/compatibility/check/" + pipelineId;
 
                 var connection = $connection(url);
@@ -54,9 +56,9 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                     return true;
                 }, function (data) {
                     $scope.$apply(function () {
-                        if("isCompatible" in data){
+                        if ("isCompatible" in data) {
                             $scope.descriptorsCompatibility.push(data);
-                        }else{
+                        } else {
                             $scope.info.unshift(data);
                         }
 
@@ -66,22 +68,26 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
 
 
             }])
-        .controller('Index', function ($scope) {
+        .controller('Index', ['$scope', 'Components', function ($scope, components) {
             $scope.visualize = function () {
-                var uri = "/discover/";
-                if ($scope.endpointUrl) {
-                    uri += "?endpointUrl=" + $scope.endpointUrl;
-                    if ($scope.showMore && $scope.graphUris) {
-                        uri += "&graphUris=" + $scope.graphUris;
-                    }
-                    if ($scope.showMore && $scope.combine) {
-                        uri += "&combine=1";
-                    }
-                }
-                window.location.href = uri;
 
+                var data = {
+                    endpointUrl: $scope.endpointUrl,
+                    graphUris: ($scope.graphUris||"").split("\n")
+                };
+
+                var promise = components.createDatasource(data);
+                promise.then(function(id){
+                    var uri = "/discover/?dataSourceTemplateId=" + id.id;
+                    if ($scope.showMore && $scope.combine) {
+                        uri += "&combine=true";
+                    }
+                    window.location.href = uri;
+                });
             };
-        })
+
+            material.initForms();
+        }])
         .controller('Compatibility', [
             '$scope', '$routeParams', 'Compatibility', 'VisualizationService',
             function ($scope, $routeParams, Compatibility, VisualizationService) {
@@ -140,43 +146,22 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
             function ($scope, $routeParams, pipelines, $connection) {
 
                 $scope.info = [];
+                $scope.checks = [];
+                $scope.portChecks = [];
+
                 $scope.isFinished = false;
                 $scope.lastPerformedIteration = 0;
                 $scope.pipelinesDiscoveredCount = 0;
                 $scope.duration = 0;
 
-                $scope.chartData = {
-                    options: {
-                        chart: {
-                            type: 'line',
-                            height: 200,
-                            width: 300
-                        }
-                    },
-                    series: [{name: "Pipelines count", data: []}],
-                    title: {
-                        text: 'Progress'
-                    },
-                    yAxis: {
-                        title: {
-                            text: ""
-                        }
-                    },
-                    loading: false
-                };
+                $scope.data = [];
 
                 var l = window.location;
                 var uri = "ws://" + l.host + "/api/v1/pipelines/discover";
-                if ("endpointUrl" in $routeParams && $routeParams.endpointUrl) {
-                    uri += "?endpointUrl=" + $routeParams.endpointUrl;
-                    if ("graphUris" in $routeParams && $routeParams.graphUris) {
-                        uri += "&graphUris=" + $routeParams.graphUris;
-                    }
+                if ("dataSourceTemplateId" in $routeParams && $routeParams.dataSourceTemplateId) {
+                    uri += "?dataSourceTemplateId=" + $routeParams.dataSourceTemplateId;
                     if ($routeParams.combine && $routeParams.combine > 0) {
                         uri += "&combine=true";
-                    }
-                    if ($routeParams.name && $routeParams.name.length > 0) {
-                        uri += "&name=" + $routeParams.name;
                     }
                 }
                 var connection = $connection(uri);
@@ -197,12 +182,20 @@ define(['angular', 'underscorejs', "d3js"], function (ng, _, d3) {
                             }
 
                             if ("pipelinesDiscoveredCount" in data) {
-                                $scope.chartData.series[0].data.push(data.pipelinesDiscoveredCount);
+                                $scope.data.push(data.pipelinesDiscoveredCount);
                             }
 
                             if (data.isFinished && data.isSuccess) {
                                 //window.location.href = "/pipelines#/list?discoveryId="+data.id;
                             }
+                        }
+
+                        if("descriptor" in data){
+                            $scope.checks.unshift(data);
+                        }
+
+                        if("portOwnerComponentUri" in data){
+                            $scope.portChecks.unshift(data);
                         }
 
                         $scope.info.splice(100);
