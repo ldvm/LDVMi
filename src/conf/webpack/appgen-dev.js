@@ -1,5 +1,5 @@
 module.exports = {
-    entry: __dirname + '/../../app/assets_webpack/javascripts/appgen/main.jsx',
+    entry: __dirname + '/../../app/assets_webpack/appgen/javascripts/main.jsx',
     devtool: 'source-map',
     cache: true,
     module: {
