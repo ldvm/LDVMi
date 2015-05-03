@@ -9,4 +9,6 @@ class ControllerModule extends Module {
   binding to new PipelineController
   binding to new ComponentTemplateController
   binding to new VisualizationController
+
+  binding to new appgen.ApplicationController
 }
