@@ -1,3 +1,5 @@
+import styles from '../stylesheets/main.less'
+
 import React from 'react'
 import Router from 'react-router'
 import routes from './routes.jsx'
