@@ -53,7 +53,7 @@ export default class Form extends React.Component {
 
         // Use the scheme to generate empty state skelet.
         Object.getOwnPropertyNames(this.getValidationScheme().properties).forEach(
-            (name) => state[name] = null);
+            (name) => state[name] = '');
 
         // Load default values (if any)
         if (props.defaults) {
