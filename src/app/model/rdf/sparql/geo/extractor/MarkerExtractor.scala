@@ -15,8 +15,8 @@ class MarkerExtractor(queryData: MapQueryData) extends QueryExecutionResultExtra
       Marker(
         querySolution.getResource("s").getURI,
         Coordinates(
-          querySolution.getLiteral("lat").getFloat,
-          querySolution.getLiteral("lng").getFloat
+          querySolution.getLiteral("lat").getString.toFloat,
+          querySolution.getLiteral("lng").getString.toFloat
         ),
         label(querySolution)
       )
