@@ -16,15 +16,20 @@ define(['angular', 'jquery', 'jquery-sparkline'], function (ng, $) {
 
                     var color = d3.scale.category20();
 
-                    scope.$watch('data', function (links) {
+                    scope.$watch('data', function (givenLinks) {
                         element.html("");
-                        if (links) {
+                        if (givenLinks) {
                             var nodes = {};
+                            var links = [];
 
-// Compute the distinct nodes from the links.
-                            links.forEach(function (link) {
-                                link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
-                                link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+                            // Compute the distinct nodes from the links.
+                            ng.forEach(givenLinks, function (givenLink) {
+                                if(givenLink.source){
+                                    var link = {};
+                                    link.source = nodes[givenLink.source] || (nodes[givenLink.source] = {name: givenLink.source});
+                                    link.target = nodes[givenLink.target] || (nodes[givenLink.target] = {name: givenLink.target});
+                                    links.push(link);
+                                }
                             });
 
                             var width = $(element[0].parentElement).width(),

@@ -1,7 +1,8 @@
 define([
         'angular',
         "codemirror-sparql",
-        './controllers',
+        './controllers/controllers',
+        './controllers/layoutController',
         './directives',
         './filters',
         './services',

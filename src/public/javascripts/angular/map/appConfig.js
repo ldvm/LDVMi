@@ -2,9 +2,9 @@ define(['./app'], function (app) {
     'use strict';
 
     app.config(['$routeProvider', '$locationProvider', function ($routeProvider) {
-        $routeProvider.when('/id/:id', {templateUrl: '/assets/javascripts/angular/maps/partials/map.html', controller: 'Polygons', reloadOnSearch: false});
-        $routeProvider.when('/markers/:id', {templateUrl: '/assets/javascripts/angular/maps/partials/map.html', controller: 'Markers', reloadOnSearch: false});
-        $routeProvider.when('/404', {templateUrl: '/assets/javascripts/angular/maps/partials/404.html', controller: '404', reloadOnSearch: false});
+        $routeProvider.when('/id/:id', {templateUrl: '/assets/javascripts/angular/map/partials/map.html', controller: 'Polygons', reloadOnSearch: false});
+        $routeProvider.when('/markers/:id', {templateUrl: '/assets/javascripts/angular/map/partials/map.html', controller: 'Markers', reloadOnSearch: false});
+        $routeProvider.when('/404', {templateUrl: '/assets/javascripts/angular/map/partials/404.html', controller: '404', reloadOnSearch: false});
         $routeProvider.otherwise({redirectTo: '/404'});
     }])
         .config(function ($provide) {

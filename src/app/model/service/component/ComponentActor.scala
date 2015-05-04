@@ -12,7 +12,7 @@ case class RequestBindingCommand(remoteActor: ActorRef, bindingMessage: Bind)
 
 case class Bind(portUri: String)
 
-case class DataReference(portUri: String, endpointUri: String, graphUri: Option[String])
+case class DataReference(portUri: String, endpointUri: String, graphUris: Seq[String])
 
 case class Failure(reason: String)
 

@@ -31,15 +31,19 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
     }
   }
 
-  def values(id: Long) = parsingFuture(id) { (evaluation, uris: List[String], _) =>
-    val futures = dataCubeService.getValues(evaluation, uris).flatMap { case (key, maybeEnumerator) =>
-      maybeEnumerator.map { enumerator =>
-        enumeratorToSeq(enumerator).transform(values => key -> values, t => t)
+  def values(id: Long) = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
+    val json: JsValue = rs.request.body
+    val urisValidation = (json \ "uris").validate[List[String]]
+
+    urisValidation match {
+      case v: JsSuccess[List[String]] => withEvaluation(id) { evaluation =>
+        val values = dataCubeService.getValues(evaluation, v.get)
+        Ok(Json.toJson(values))
       }
+      case e: JsError => BadRequest
     }
 
-    Future.sequence(futures).transform(s => Ok(Json.toJson(s.toMap)), t => t)
-  } { json => (json \ "uris").validate[List[String]]}
+  }
 
   def sliceCube(id: Long) = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
     val json: JsValue = rs.request.body

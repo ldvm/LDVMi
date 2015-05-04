@@ -15,7 +15,7 @@ class DataCubeValuesQuery(val uri: String) extends SparqlQuery {
       |
       |     OPTIONAL { ?o skos:prefLabel ?spl . }
       |     OPTIONAL { ?o rdfs:label ?l . }
-      |     OPTIONAL { ?o skos:notion ?sn . }
+      |     OPTIONAL { ?o skos:notation ?sn . }
       | }
     """.stripMargin.replaceAll("[\n\r]", "").replace("@s", uri)
 

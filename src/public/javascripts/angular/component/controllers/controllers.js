@@ -1,7 +1,7 @@
-define(['angular', 'underscorejs'], function (ng, _) {
+define(['angular', 'underscorejs', '../controllers'], function (ng, _) {
     'use strict';
 
-    ng.module('component.controllers', []).
+    ng.module('component.controllers').
         controller('List',
         ['$scope', '$location', 'ComponentsService', '$routeParams', 'ngTableParams',
             function ($scope, $location, ComponentsService, $routeParams, ngTableParams) {

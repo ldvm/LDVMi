@@ -51,8 +51,4 @@
         </style>
     }
 
-@main("LDVMi", scripts, styles, Some(routes.Assets.versioned("javascripts/angular/pipeline/main.js").url), requireConfig) {
-
-    <div ng-view></div>
-
-}
+@ngLayout("pipeline" ,"LDVMi", scripts, styles, requireConfig)

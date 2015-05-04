@@ -1,0 +1,6 @@
+@(ngAppName: String)
+
+require(['angular', 'material', 'requirejs-domready!', './appBootstrap'], function(ng, material) {
+    ng.bootstrap(document.getElementById("app"), ["@ngAppName"]);
+    material.init();
+});

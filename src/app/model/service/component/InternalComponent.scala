@@ -23,12 +23,12 @@ import scala.concurrent.{Future, Promise}
 
 
 object EndpointConfig {
-  def apply(ttl: Option[String]): Option[(String, Option[String])] = {
+  def apply(ttl: Option[String]): Option[(String, Seq[String])] = {
     Graph(ttl).flatMap { g =>
       val maybeEndpointUrl = GenericSparqlEndpoint.getEndpointUrl(Seq(Some(g)))
-      val maybeGraphUri = GenericSparqlEndpoint.getNamedGraphs(Seq(Some(g)))
+      val graphUris = GenericSparqlEndpoint.getNamedGraphs(Seq(Some(g)))
 
-      maybeEndpointUrl.map(e => (e, maybeGraphUri.headOption))
+      maybeEndpointUrl.map(e => (e, graphUris))
     }
   }
 }
@@ -40,7 +40,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
   val props = ComponentActor.props(this, reporterProps)
   val actor = Akka.system.actorOf(props)
 
-  def evaluate(dataReferences: Seq[DataReference]): Future[(String, Option[String])] = {
+  def evaluate(dataReferences: Seq[DataReference]): Future[(String, Seq[String])] = {
     plugin.map{ p =>
       p.run(dataReferences, reporterProps)
     }.getOrElse {
@@ -61,7 +61,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
   }
 
 
-  def dataSourceConfiguration: Option[(String, Option[String])] = {
+  def dataSourceConfiguration: Option[(String, Seq[String])] = {
     withSession { implicit session =>
       lazy val instanceConfig = componentInstance.configuration
       lazy val templateConfig = componentInstance.componentTemplate.defaultConfiguration

@@ -25,10 +25,4 @@
         </style>
     }
 
-@main("LDVM components", scripts, styles, Some(routes.Assets.versioned("javascripts/angular/component/main.js").url), requireConfig) {
-
-    <div class="container">
-        <div ng-view></div>
-    </div> <!-- /container -->
-
-}
+@ngLayout("component", "LDVM components", scripts, styles, requireConfig)

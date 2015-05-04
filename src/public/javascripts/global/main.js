@@ -1,3 +1,3 @@
-require(['material'], function(material){
+require(['material'], function (material) {
     material.init();
 });

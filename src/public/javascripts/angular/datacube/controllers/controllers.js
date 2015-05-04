@@ -372,8 +372,8 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     if (label && label.variants) {
                         if (label.variants[$scope.language]) {
                             return label.variants[$scope.language];
-                        } else if (label.variants[""]) {
-                            return label.variants[""];
+                        } else if (label.variants["nolang"]) {
+                            return label.variants["nolang"];
                         }
                     }
                     return undefined;

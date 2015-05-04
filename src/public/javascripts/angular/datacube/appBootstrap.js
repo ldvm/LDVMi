@@ -9,9 +9,4 @@ define([
     'appConfig'
 ], function (require, ng, material) {
     'use strict';
-
-    require(['requirejs-domready!'], function (document) {
-        ng.bootstrap(document, ['dataCube']);
-        material.init();
-    });
 });

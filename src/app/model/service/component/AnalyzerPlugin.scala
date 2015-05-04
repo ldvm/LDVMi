@@ -43,6 +43,6 @@ trait AnalyzerPlugin extends SessionScoped {
     }
   }
 
-  def run(inputs: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])]
+  def run(inputs: Seq[DataReference], reporterProps: Props): Future[(String, Seq[String])]
 
 }

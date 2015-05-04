@@ -65,8 +65,6 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     action(new RandomGraph)
   }
 
-
-
   private def config(endpointUrl: String, graphUris: Seq[String]) : Model = {
     val model = ModelFactory.createDefaultModel()
 

@@ -16,11 +16,4 @@
         <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
     }
 
-@main("DataCube", scripts, styles, Some(routes.Assets.versioned("javascripts/angular/datacube/main.js").url), requireConfig) {
-
-    <div class="container-fluid">
-
-        <div ng-view></div>
-    </div> <!-- /container -->
-
-}
+@ngLayout("dataCube", "DataCube", scripts, styles, requireConfig)

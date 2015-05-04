@@ -1,0 +1,70 @@
+<aside id="chat">
+    <div>
+        <div>
+            <div ng-repeat="property in properties">
+                <ul class="list-group">
+                    <li class="list-group-item active">http://...{{property.uri | limitTo: -20}}
+                    <li class="list-group-item" ng-repeat="value in values[property.uri]">
+                        <input type="checkbox" ng-model="value.isActive"/>
+                        <span ng-if="property.uri == mainProperty.uri" ng-style="value.colorStyle"
+                              style="display: inline-block; min-width: 30px; min-height: 15px;"></span>
+                        {{value.label.variants[""] || value.uri}}
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div ng-if="queryingDataset">
+            <div>
+                <p>
+                    <strong>Querying the dataset.</strong>
+                    Right now, we are querying the dataset for {{queryingDataset}}. It may take a few minutes based on
+                    the
+                    size of the result and/or size of the graph the query is running against.
+                </p>
+                <br/><br/>
+
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        <span class="sr-only">Almost complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="!queryingDataset">
+            <div ng-class="{'alert-danger': lastError, 'alert-info': !lastError}">
+                <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh
+                </button>
+                <div ng-show="lastError">
+                    The last query has failed. Probably a Virtuoso timeout.
+                </div>
+            </div>
+            <div class="alert alert-warning" ng-show="!entities && !markers">
+                Change your filter settings and press refresh to see data on a map!
+            </div>
+        </div>
+
+    </div>
+</aside>
+
+<osm ng-if="entities" entities="entities" colors="colors" style="width: 100%; height: 800px;"></osm>
+<gmaps ng-if="!entities" fit-bounds="true" markers="markers" zoom="zoom" center="center"
+       style="width: 100%; height: 100vh;"></gmaps>
+
+<div ng-show="!(queryingDataset || properties.length) && (!markers) && (!entities)"
+     style="width: 100%; height: 100vh; position: absolute; left: 0; top: 0; background: rgba(0,0,0,0.6)">
+    <div class="alert alert-danger">
+        No filtering properties discovered. Press Refresh button to visualize
+        all unfiltered data. It may take a while...
+    </div>
+    <div class="alert" ng-class="{'alert-danger': lastError, 'alert-info': !lastError}">
+        <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh
+        </button>
+        <div ng-show="lastError">
+            The last query has failed. Probably a Virtuoso timeout.
+        </div>
+    </div>
+</div>

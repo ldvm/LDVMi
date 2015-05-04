@@ -12,7 +12,7 @@ trait DataCubeService {
 
   def getDataStructureComponents(evaluation: PipelineEvaluation, uri: String): Seq[DataCubeComponent]
 
-  def getValues(evaluation: PipelineEvaluation, uris: List[String]): Map[String, Option[Enumerator[Option[DataCubeComponentValue]]]]
+  def getValues(evaluation: PipelineEvaluation, uris: List[String]): Map[String, Option[Seq[DataCubeComponentValue]]]
 
   def sliceCubeAndPersist(evaluation: PipelineEvaluation, queryData: DataCubeQueryData, queryDataJson: JsValue)
     (implicit rs: play.api.db.slick.Config.driver.simple.Session): DataCubeQueryResult

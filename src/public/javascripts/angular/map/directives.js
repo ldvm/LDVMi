@@ -116,7 +116,7 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                     };
 
                     $scope.updateZoom = function () {
-                        $scope.map.setZoom($scope.zoom || 0);
+                        $scope.map.setZoom($scope.zoom || 10);
                     };
 
                     $scope.updateCenter = function () {
@@ -143,7 +143,7 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
 
                     $scope.map = new google.maps.Map($elm[0], {
                         center: new google.maps.LatLng(center.lat, center.lng),
-                        zoom: parseInt($scope.zoom) || 0,
+                        zoom: parseInt($scope.zoom) || 1,
                         mapTypeId: $scope.mapType || google.maps.MapTypeId.ROADMAP
                     });
 
@@ -162,7 +162,7 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                     $scope.infowindow = new google.maps.InfoWindow();
                 },
                 restrict: 'E',
-                template: '<div class="gmaps"></div>',
+                template: '<div class="gmaps" style="margin-top: -30px;"></div>',
                 replace: true
             }
         }])

@@ -127,10 +127,7 @@ define(['angular', 'underscorejs', "d3js", 'material'], function (ng, _, d3, mat
 
                 $scope.pipelineId = $routeParams.id;
 
-                $scope.data = {
-                    "nodes": [],
-                    "links": []
-                };
+                $scope.data = [];
 
                 pipelines.visualization($routeParams.id).then(function (data) {
                     $scope.data = data;
@@ -186,7 +183,7 @@ define(['angular', 'underscorejs', "d3js", 'material'], function (ng, _, d3, mat
                             }
 
                             if (data.isFinished && data.isSuccess) {
-                                //window.location.href = "/pipelines#/list?discoveryId="+data.id;
+                                window.location.href = "/pipelines#/list?discoveryId="+data.id;
                             }
                         }
 

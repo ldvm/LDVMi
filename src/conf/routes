@@ -12,6 +12,10 @@ GET         /visualize/:id                                  @controllers.Visuali
 GET         /pipelines                                      @controllers.PipelineController.index
 GET         /components                                     @controllers.ComponentTemplateController.index
 
+GET         /assets/javascripts/angular/:ngAppName/main.js                                      @controllers.util.AngularController.requireMain(ngAppName: String)
+GET         /assets/javascripts/angular/:ngAppName/controllers/layoutController.js              @controllers.util.AngularController.layoutController(ngAppName: String)
+GET         /assets/javascripts/angular/:ngAppName/controllers.js                               @controllers.util.AngularController.controllersModule(ngAppName: String)
+
 POST        /ttlupload                                      @controllers.VisualizationController.fromFiles()
 POST        /ttldl                                          @controllers.VisualizationController.fromUris()
 GET         /ttlds                                          @controllers.VisualizationController.dataSource()

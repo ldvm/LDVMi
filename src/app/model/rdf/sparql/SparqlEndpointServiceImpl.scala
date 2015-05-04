@@ -14,8 +14,6 @@ class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointSe
       extractor.extract(execution(sparqlEndpoint, query))
     } catch {
       case qEx : QueryExceptionHTTP => {
-        println(query.get)
-        println(qEx.getResponseMessage)
         throw qEx
       }
     }

@@ -646,7 +646,7 @@ a.fc-more:hover {
 }
 
 .fc-view, /* scope positioning and z-index's for everything within the view */
-.fc-view > table { /* so dragged elements can be above the view's main element */
+.fc-view > table { /* so dragged elements can be above the view's require element */
 	position: relative;
 	z-index: 1;
 }

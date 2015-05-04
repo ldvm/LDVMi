@@ -26,11 +26,4 @@
         <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
     }
 
-@main("Map", scripts, styles, requirePath = Some(routes.Assets.versioned("javascripts/angular/maps/main.js").url), requireConfig = requireConfig) {
-
-    <div class="container-fluid" style="padding-top : 60px;">
-
-        <div ng-view></div>
-    </div> <!-- /container -->
-
-}
+@ngLayout("map", "Map visualization", scripts, styles, requireConfig)

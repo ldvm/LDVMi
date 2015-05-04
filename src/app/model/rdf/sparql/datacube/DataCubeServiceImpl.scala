@@ -22,7 +22,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
   private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation): GenericSparqlEndpoint = {
     withSession { implicit session =>
       val evaluationResults = evaluation.results
-      evaluationResults.map { result => new GenericSparqlEndpoint(result.endpointUrl, List(), result.graphUri.toSeq)}.head
+      evaluationResults.map { result => new GenericSparqlEndpoint(result.endpointUrl, List(), result.graphUri.map(_.split("\n")).toSeq.flatten)}.head
     }
   }
 
@@ -36,8 +36,8 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     }.toList.flatten
   }
 
-  def getValues(evaluation: PipelineEvaluation, uris: List[String]): Map[String, Option[Enumerator[Option[DataCubeComponentValue]]]] = {
-    uris.reverseMap { uri =>
+  def getValues(evaluation: PipelineEvaluation, uris: List[String]): Map[String, Option[Seq[DataCubeComponentValue]]] = {
+    uris.map { uri =>
       uri -> sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new DataCubeValuesQuery(uri), new DataCubeValuesExtractor)
     }.toMap
   }

@@ -15,7 +15,7 @@ import scala.concurrent.Future
 import play.api.Play.current
 
 class SparqlPlugin(internalComponent: InternalComponent, graphStore: GraphStoreProtocol) extends AnalyzerPlugin {
-  override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
+  override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Seq[String])] = {
     val resultGraph = "urn:" + UUID.randomUUID().toString
 
     val reporter = Akka.system.actorOf(reporterProps)
@@ -25,10 +25,10 @@ class SparqlPlugin(internalComponent: InternalComponent, graphStore: GraphStoreP
         val query = sparqlQuery(internalComponent.componentInstance.configuration).get
 
         val dataRef = dataReferences.head
-        val graphUris = dataRef.graphUri.map { u => Seq(u)}.getOrElse {List()}
+        val graphUris = dataRef.graphUris
         val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri, List(), graphUris)
 
-        reporter ! "Querying <"+dataRef.endpointUri+"> (graph: "+dataRef.graphUri.map("<"+_+">").toString+")"
+        reporter ! "Querying <"+dataRef.endpointUri+"> (graph: "+dataRef.graphUris.map("<"+_+">").toString+")"
         val model = endpoint.queryExecutionFactory()(query).execConstruct()
 
         graphStore.pushToTripleStore(model, resultGraph)(reporterProps)
@@ -36,7 +36,7 @@ class SparqlPlugin(internalComponent: InternalComponent, graphStore: GraphStoreP
         case e: Throwable => println(e)
       }
 
-      (graphStore.internalEndpointUrl, Some(resultGraph))
+      (graphStore.internalEndpointUrl, Seq(resultGraph))
     }
   }
 
