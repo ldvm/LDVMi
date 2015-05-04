@@ -17,10 +17,10 @@ define([
         'use strict';
 
         return ng.module('datacube', [
-            'dataCube.services',
-            'dataCube.controllers',
-            'dataCube.filters',
-            'dataCube.directives',
+            'datacube.services',
+            'datacube.controllers',
+            'datacube.filters',
+            'datacube.directives',
             'ngRoute',
             'ngResource',
             'ui.bootstrap',
