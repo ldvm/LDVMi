@@ -1,7 +1,7 @@
 define(['angular', 'underscorejs'], function (ng, _) {
     'use strict';
 
-    ng.module('dataCube.controllers', []).
+    ng.module('datacube.controllers', []).
         controller('DataCube',
         ['$scope', 'DataCubeService', '$q', '$location', '$routeParams', '$timeout',
             function ($scope, DataCubeService, $q, $location, $routeParams, $timeout) {

@@ -1,7 +1,7 @@
 define(['angular'], function (ng) {
     'use strict';
 
-    ng.module('dataCube.directives', [])
+    ng.module('datacube.directives', [])
         .directive('czRegionMap', [function () {
 
             function link(scope, element, attr) {

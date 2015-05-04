@@ -16,7 +16,7 @@ define([
     function (ng) {
         'use strict';
 
-        return ng.module('dataCube', [
+        return ng.module('datacube', [
             'dataCube.services',
             'dataCube.controllers',
             'dataCube.filters',
