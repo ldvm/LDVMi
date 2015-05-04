@@ -92,11 +92,11 @@
 
         <ul class="pagination lv-pagination">
             <li>
-                <a aria-label="Previous" ng-click="$scope.page = $scope.page-1" ng-show="$scope.page > 1">
+                <a aria-label="Previous" ng-click="page = page-1" ng-show="page > 1">
                     <i class="md md-chevron-left"></i>
                 </a>
             </li>
-            <li ng-repeat="p in pages()" ng-class="{'active': 'p == page'}"><a href="" ng-bind="p+1"></a></li>
+            <li ng-repeat="p in pages()" ng-class="{'active': p == page}"><a href="#/{{p+1}}" ng-bind="p+1"></a></li>
             <li>
                 <a href="$scope.page = $scope.page+1" aria-label="Next"  ng-show="$scope.page < total">
                     <i class="md md-chevron-right"></i>
