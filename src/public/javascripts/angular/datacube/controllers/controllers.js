@@ -38,9 +38,11 @@ define(['angular', 'underscorejs'], function (ng, _) {
                             height: 650
                         }
                     },
-                    series: [
-                    ],
+                    series: [],
                     title: {
+                        text: 'DataCube'
+                    },
+                    subtitle: {
                         text: 'DataCube'
                     },
                     yAxis: {
@@ -113,15 +115,15 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                  });*/
 
-                $scope.loadByPermanentToken = function(){
+                $scope.loadByPermanentToken = function () {
                     $scope.queryingDataset = "chart data";
-                    var promise = DataCubeService.getQuery({ visualizationId: $id, permalinkToken: $permanentToken});
+                    var promise = DataCubeService.getQuery({visualizationId: $id, permalinkToken: $permanentToken});
                     DataCubeService.getCached({visualizationId: $id, token: $permanentToken}, function (response) {
                         var callback;
                         if (response.error) {
                             callback = $scope.refresh;
                         } else {
-                            callback = function(){
+                            callback = function () {
                                 queryResultsLoaded(response, $location.search());
                             };
                         }
@@ -136,7 +138,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
                 $scope.queryingDataset = "QB datastructure definitions";
-                DataCubeService.getDataStructures({ visualizationId: $id }, function (data) {
+                DataCubeService.getDataStructures({visualizationId: $id}, function (data) {
                     $scope.queryingDataset = null;
                     $scope.dataStructures = data;
 
@@ -163,6 +165,21 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     dsd.isActive = true;
                     $scope.activeDSD = dsd;
                     $scope.loadDSDDetails(dsd, function () {
+                        var dsdLabel = dsd.label;
+                        var activeMeasureLabels = [];
+                        $scope.activeDSD.components.forEach(function (c) {
+                            if ("measure" in c) {
+                                activeMeasureLabels.push(c.label);
+                            }
+                        });
+                        $scope.highcharts.title.text = $scope.label(dsdLabel);
+                        $scope.highcharts.subtitle.text = "";
+                        ng.forEach(activeMeasureLabels, function (l) {
+                            if ($scope.highcharts.subtitle.text !== "") {
+                                $scope.highcharts.subtitle.text += ", ";
+                            }
+                            $scope.highcharts.subtitle.text += $scope.label(l);
+                        });
                         $scope.loadComponentsValues(callback);
                     });
                 };
@@ -205,7 +222,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     });
 
                     $scope.queryingDataset = "distinct values of all QB components";
-                    DataCubeService.getValues({ visualizationId: $id}, {uris: uris }, function (data) {
+                    DataCubeService.getValues({visualizationId: $id}, {uris: uris}, function (data) {
                         $scope.queryingDataset = null;
                         $scope.values = data;
                         fillLabelsRegistry();
@@ -445,7 +462,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                                     if (v.uri) {
                                         r.uri = v.uri;
                                     } else {
-                                        r.label = ((v.label || {})[$scope.language])||((v.label || {})[""]);
+                                        r.label = ((v.label || {})[$scope.language]) || ((v.label || {})[""]);
                                     }
                                     r.isActive = v.isActive;
                                     return r;

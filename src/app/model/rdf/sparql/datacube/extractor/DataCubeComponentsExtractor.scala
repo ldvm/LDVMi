@@ -1,7 +1,5 @@
 package model.rdf.sparql.datacube.extractor
 
-import java.util.UUID
-
 import com.hp.hpl.jena.query.QueryExecution
 import com.hp.hpl.jena.rdf.model.{Property, Resource, Statement}
 import com.hp.hpl.jena.shared.PropertyNotFoundException
@@ -29,7 +27,7 @@ class DataCubeComponentsExtractor extends QueryExecutionResultExtractor[DataCube
       val descriptions = ExtractorHelpers.extractDescriptions(component)
 
       new DataCubeComponent(
-        Option(component.getURI).getOrElse(UUID.randomUUID().toString),
+        component.getURI,
         getDimension(component),
         getMeasure(component),
         getAttribute(component),
