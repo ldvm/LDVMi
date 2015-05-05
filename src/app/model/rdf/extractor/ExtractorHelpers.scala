@@ -30,7 +30,7 @@ object ExtractorHelpers {
     }else{
       val l = new LocalizedValue
       list.foreach{ n =>
-        l.put(n.getLanguage, n.getString)
+        l.put(Option(n.getLanguage).filter(_.trim.nonEmpty).getOrElse("nolang"), n.getString)
       }
       Some(l)
     }
