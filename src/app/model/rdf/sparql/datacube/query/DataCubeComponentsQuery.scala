@@ -29,7 +29,7 @@ class DataCubeComponentsQuery(dataStructureUri: String, componentType: String = 
                       |    OPTIONAL { ?c qb:order ?order . }
                       |    OPTIONAL { ?c skos:prefLabel ?spl . }
                       |    OPTIONAL { ?c rdfs:label ?l . }
-                      |    OPTIONAL { ?c skos:notion ?sn . }
+                      |    OPTIONAL { ?c skos:notation ?sn . }
                       |  }
                     """.stripMargin
     .replaceAll("@s", dataStructureUri)
