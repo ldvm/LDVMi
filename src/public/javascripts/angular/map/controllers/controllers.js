@@ -90,38 +90,42 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     return;
                 }
 
-                $scope.queryingDataset = "properties of geolocated entities";
+                if(!"autoLoad" in $routeParams) {
 
-                MapService.properties({evaluationId: $id}, function (properties) {
-                    $scope.properties = properties;
+                    $scope.queryingDataset = "properties of geolocated entities";
 
-                    $scope.mainProperty = properties[0] || null;
+                    MapService.properties({evaluationId: $id}, function (properties) {
+                        $scope.properties = properties;
 
-                    var uris = properties.map(function (p) {
-                        return p.uri;
-                    });
+                        $scope.mainProperty = properties[0] || null;
 
-                    $scope.queryingDataset = "values of properties";
-                    DataCubeService.getValues({visualizationId: $id}, {uris: uris}, function (propertiesValuesMap) {
-                        $scope.queryingDataset = null;
-                        $scope.values = propertiesValuesMap;
-                        $scope.colors = {};
-
-                        angular.forEach($scope.values, function(values, k){
-                            angular.forEach(values, function(v){
-                                v.isActive = true;
-                            });
+                        var uris = properties.map(function (p) {
+                            return p.uri;
                         });
 
-                        if ($scope.mainProperty) {
-                            angular.forEach($scope.values[$scope.mainProperty.uri], function (v) {
-                                var key = v.uri || v.label.variants[$scope.currentLanguage];
-                                $scope.colors[key] = "rgba(" + random() + ", " + random() + ", " + random() + ", 0.7)";
-                                v.colorStyle = {"background-color": $scope.colors[key]};
+                        $scope.queryingDataset = "values of properties";
+                        DataCubeService.getValues({visualizationId: $id}, {uris: uris}, function (propertiesValuesMap) {
+                            $scope.queryingDataset = null;
+                            $scope.values = propertiesValuesMap;
+                            $scope.colors = {};
+
+                            angular.forEach($scope.values, function (values, k) {
+                                angular.forEach(values, function (v) {
+                                    v.isActive = true;
+                                });
                             });
-                        }
+
+                            if ($scope.mainProperty) {
+                                angular.forEach($scope.values[$scope.mainProperty.uri], function (v) {
+                                    var key = v.uri || v.label.variants[$scope.currentLanguage];
+                                    $scope.colors[key] = "rgba(" + random() + ", " + random() + ", " + random() + ", 0.7)";
+                                    v.colorStyle = {"background-color": $scope.colors[key]};
+                                });
+                            }
+                        });
                     });
-                });
+
+                }
 
 
 
@@ -157,6 +161,10 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                     $scope.center = {lat: 49, lng: 15};
                 };
+
+                if("autoLoad" in $routeParams) {
+                    $scope.refresh();
+                }
 
             }]);
 });
