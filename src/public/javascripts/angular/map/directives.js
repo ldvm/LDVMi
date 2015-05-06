@@ -34,20 +34,17 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                     };
 
                     $scope.zoomChanged = function (zoomLevel) {
-                        $scope.zoomChangedListener = $scope.zoomChangedListener || function () {
-                        };
+                        $scope.zoomChangedListener = $scope.zoomChangedListener || ng.noop;
                         $scope.zoomChangedListener({zoom: zoomLevel});
                     };
 
                     $scope.centerChanged = function (center) {
-                        $scope.centerChangedListener = $scope.centerChangedListener || function () {
-                        };
+                        $scope.centerChangedListener = $scope.centerChangedListener || ng.noop;
                         $scope.centerChangedListener({center: {lat: center.lat(), lng: center.lng()}});
                     };
 
                     $scope.boundsChanged = function (bounds) {
-                        $scope.boundsChangedListener = $scope.boundsChangedListener || function () {
-                        };
+                        $scope.boundsChangedListener = $scope.boundsChangedListener || ng.noop;
                         var ne = bounds.getNorthEast();
                         var sw = bounds.getSouthWest();
                         $scope.boundsChangedListener({
@@ -59,6 +56,10 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                     };
 
                     $scope.updateMarkers = function () {
+
+                        if (!$scope.markerData) {
+                            return;
+                        }
 
                         var newMarkersMap = {};
                         var newMarkers = [];
@@ -88,7 +89,7 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                             $scope.bounds.extend(marker.position);
 
                             // INFO WINDOW
-                            var contentString = '<p>' + ((item.description)||"").replace(/\n/g, "<br />") + '</p>';
+                            var contentString = '<p>' + ((item.description) || "").replace(/\n/g, "<br />") + '</p>';
 
                             google.maps.event.addListener(marker, 'click', function (content) {
                                 return function () {
@@ -115,21 +116,21 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                         $scope.boundsChanged($scope.bounds);
                     };
 
-                    $scope.updateZoom = function () {
-                        $scope.map.setZoom($scope.zoom || 10);
+                    $scope.updateZoom = function (newZoom) {
+                        $scope.map.setZoom(newZoom || $scope.zoom || 5);
                     };
 
                     $scope.updateCenter = function () {
-                        var center = $scope.center || {lat: 0, lng: 0};
-                        $scope.map.setCenter(new google.maps.LatLng(center.lat || 0, center.lng || 0));
+                        var center = $scope.center || {lat: 49, lng: 15};
+                        $scope.map.setCenter(new google.maps.LatLng(center.lat || 49, center.lng || 15));
                     };
 
                     $scope.$watch('markerData', function () {
                         $scope.updateMarkers();
                     });
 
-                    $scope.$watch('zoom', function () {
-                        $scope.updateZoom();
+                    $scope.$watch('zoom', function (newZoom) {
+                        $scope.updateZoom(newZoom);
                     });
 
                     $scope.$watch('center', function () {
@@ -139,27 +140,27 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                 },
                 link: function ($scope, $elm, $attrs) {
 
-                    var center = $scope.center || {lat: 0, lng: 0};
+                    var center = $scope.center || {lat: 49, lng: 15};
 
                     $scope.map = new google.maps.Map($elm[0], {
                         center: new google.maps.LatLng(center.lat, center.lng),
                         zoom: parseInt($scope.zoom) || 1,
                         mapTypeId: $scope.mapType || google.maps.MapTypeId.ROADMAP
                     });
+                    /*
+                     google.maps.event.addListener($scope.map, 'zoom_changed', function () {
+                     $scope.zoomChanged($scope.map.getZoom());
+                     });
 
-                    google.maps.event.addListener($scope.map, 'zoom_changed', function () {
-                        $scope.zoomChanged($scope.map.getZoom());
-                    });
+                     google.maps.event.addListener($scope.map, 'center_changed', function () {
+                     $scope.centerChanged($scope.map.getCenter());
+                     });
 
-                    google.maps.event.addListener($scope.map, 'center_changed', function () {
-                        $scope.centerChanged($scope.map.getCenter());
-                    });
+                     google.maps.event.addListener($scope.map, 'bounds_changed', function () {
+                     $scope.boundsChanged($scope.map.getBounds());
+                     });
 
-                    google.maps.event.addListener($scope.map, 'bounds_changed', function () {
-                        $scope.boundsChanged($scope.map.getBounds());
-                    });
-
-                    $scope.infowindow = new google.maps.InfoWindow();
+                     $scope.infowindow = new google.maps.InfoWindow();*/
                 },
                 restrict: 'E',
                 template: '<div class="gmaps" style="margin-top: -30px;"></div>',

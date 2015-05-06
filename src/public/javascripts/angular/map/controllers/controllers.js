@@ -155,8 +155,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         $scope.queryingDataset = null;
                     });
 
-                    $scope.zoom = 3;
-                    $scope.fitBounds = true;
                     $scope.center = {lat: 49, lng: 15};
                 };
 

@@ -51,20 +51,48 @@
 </aside>
 
 <osm ng-if="entities" entities="entities" colors="colors" style="width: 100%; height: 800px;"></osm>
-<gmaps ng-if="!entities" fit-bounds="true" markers="markers" zoom="zoom" center="center"
+<gmaps ng-if="!entities" fit-bounds="true" markers="markers" center="center"
        style="width: 100%; height: 100vh;"></gmaps>
 
-<div ng-show="!(queryingDataset || properties.length) && (!markers) && (!entities)"
-     style="width: 100%; height: 100vh; position: absolute; left: 0; top: 0; background: rgba(0,0,0,0.6)">
-    <div class="alert alert-danger">
-        No filtering properties discovered. Press Refresh button to visualize
-        all unfiltered data. It may take a while...
-    </div>
-    <div class="alert" ng-class="{'alert-danger': lastError, 'alert-info': !lastError}">
-        <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh
-        </button>
-        <div ng-show="lastError">
-            The last query has failed. Probably a Virtuoso timeout.
+<div ng-show="!(properties.length) && (!markers) && (!entities)" style="width: 100%; height: 100vh; position: absolute; left: 0; top: 0; background: rgba(0,0,0,0.6)">
+    <div class="container" style="margin-top: 30px; ">
+        <div ng-show="!queryingDataset">
+            <div class="card">
+                <div class="card-header bgm-red">
+                    <h2>No filtering properties discovered <small>We are not able to provide facets for this visualization.</small></h2>
+                </div>
+
+                <div class="card-body card-padding">
+                    Press the 'Refresh' button to visualize all unfiltered data. It may take a while. If the dataset is really large,
+                    the visualization will probably slow down your browser.
+                </div>
+            </div>
+
+            <div class="card" ng-show="last-error">
+                <div class="card-header bgm-red">
+                    <h2>Error</h2>
+                    <small>We are having troubles while querying the dataset.</small>
+                </div>
+
+                <div ng-show="lastError">
+                    The last query has failed. Probably a Virtuoso timeout.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body card-padding text-center">
+                    <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="queryingDataset">
+            <div class="card">
+                <div class="card-body card-padding text-center">
+                    We are loading the data necessary for the selected visualization. Please wait a moment...
+                </div>
+            </div>
         </div>
     </div>
 </div>
