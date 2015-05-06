@@ -8,6 +8,7 @@ import model.rdf.sparql.datacube._
 import model.rdf.sparql.geo._
 import model.rdf.sparql.visualization.HierarchyNode
 import model.rdf.{LocalizedValue, Property}
+import model.service.component.DataReference
 import play.api.db
 import play.api.db.slick._
 import play.api.libs.functional.syntax._
@@ -59,6 +60,7 @@ package object api {
     implicit val featureWrites = Json.writes[Feature]
     implicit val portWrites = Json.writes[DataPortTemplate]
     implicit val compatibilityResponseWrites = Json.writes[CheckCompatibilityResponse]
+    implicit val dataReferenceWrites = Json.writes[DataReference]
 
     implicit val localizedLiteralWrites = Json.writes[LocalizedValue]
     implicit val dataCubeDatasetWrites = Json.writes[DataCubeDataset]

@@ -1,0 +1,34 @@
+<div class="container">
+    <div class="block-header">
+        <h2>Evaluation result</h2>
+    </div>
+
+    <div class="card">
+        <div class="listview lv-bordered lv-lg">
+            <div class="lv-header-alt">
+                <h2 class="lvh-label hidden-xs">Evaluation data references</h2>
+            </div>
+
+            <div class="lv-body">
+                <div class="lv-item media" ng-repeat="reference in results">
+                    <div class="media-body">
+                        <div>
+                            <p>
+                                Port <strong ng-bind="reference.portUri"></strong>
+                                receives data from endpoint <strong ng-bind="reference.endpointUri"></strong>.
+                            </p>
+
+                            <p ng-show="reference.graphUris.length">
+                                Data are stored in these graphs:
+                                <ul>
+                                    <li ng-repeat="g in reference.graphUris" ng-bind="g"></li>
+                                </ul>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

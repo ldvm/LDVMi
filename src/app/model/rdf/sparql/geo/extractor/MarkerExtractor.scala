@@ -2,8 +2,8 @@ package model.rdf.sparql.geo.extractor
 
 import com.hp.hpl.jena.query.{QueryExecution, QuerySolution}
 import model.rdf.extractor.QueryExecutionResultExtractor
+import model.rdf.sparql.geo.query.MarkerQuery
 import model.rdf.sparql.geo.{Coordinates, MapQueryData, Marker}
-import model.rdf.sparql.geo.query.{MarkerQuery, GeoPropertiesQuery}
 
 import scala.collection.JavaConversions._
 
@@ -18,15 +18,24 @@ class MarkerExtractor(queryData: MapQueryData) extends QueryExecutionResultExtra
           querySolution.getLiteral("lat").getString.toFloat,
           querySolution.getLiteral("lng").getString.toFloat
         ),
-        label(querySolution)
+        label(querySolution),
+        description(querySolution)
       )
     }
 
     Some(markerIterator.toSeq)
   }
 
-  def label(querySolution: QuerySolution) : Option[String] = {
-    GeoPropertiesQuery.LabelVariables.values.collectFirst{
+  def label(querySolution: QuerySolution): Option[String] = {
+    literal(querySolution, MarkerQuery.LabelVariables)
+  }
+
+  def description(querySolution: QuerySolution): Option[String] = {
+    literal(querySolution, MarkerQuery.DescriptionVariables)
+  }
+
+  private def literal(querySolution: QuerySolution, variableNames: Enumeration): Option[String] = {
+    variableNames.values.collectFirst {
       case varName if querySolution.contains(varName.toString) => querySolution.getLiteral(varName.toString).getString
     }
   }

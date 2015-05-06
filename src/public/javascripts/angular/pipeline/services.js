@@ -29,6 +29,11 @@ define(['angular'], function (ng) {
             return $resource(null, null, {
                 createDatasource: {url: '/api/v1/datasources/add', method: 'POST', isArray: false}
             });
+        }])
+        .factory('EvaluationApi', ['$resource', function ($resource) {
+            return $resource(null, null, {
+                result: {url: '/api/v1/evaluation/result/:id', method: 'GET', isArray: true}
+            });
         }]);
 
     ng.module('payola.utils', [])
@@ -67,6 +72,13 @@ define(['angular'], function (ng) {
                 };
             }
         ])
+        .service('Evaluation', ['EvaluationApi', function (evaluationApi) {
+            return {
+                result: function (id) {
+                    return evaluationApi.result({id: id}).$promise;
+                }
+            };
+        }])
         .service('Components', [
             'ComponentsApi',
             function (componentsApi) {

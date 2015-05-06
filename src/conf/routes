@@ -33,6 +33,7 @@ GET         /api/v1/pipelines/evaluations/:id               @controllers.api.Pip
 GET         /api/v1/pipelines/visualization/:id             @controllers.api.PipelineApiController.visualizationById(id: Long)
 GET         /api/v1/pipelines/:id                           @controllers.api.PipelineApiController.findById(id: Long)
 GET         /api/v1/evaluation/:id/tree.json                @controllers.api.VisualizationApiController.tree(id: Long)
+GET         /api/v1/evaluation/result/:id                   @controllers.api.VisualizationApiController.dataReferences(id: Long)
 
 GET         /api/v1/component/list                          @controllers.api.ComponentTemplateApiController.list(skip: Int ?= 0, pageSize: Int ?= 50)
 GET         /api/v1/component/:id                           @controllers.api.ComponentTemplateApiController.findById(id: Long)

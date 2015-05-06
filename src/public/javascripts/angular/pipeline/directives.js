@@ -1,4 +1,4 @@
-define(['angular', 'jquery', 'jquery-sparkline'], function (ng, $) {
+define(['angular', 'jquery', 'jquery-sparkline', 'd3js'], function (ng, $, spark, d3) {
     'use strict';
 
     ng.module('pipeline.directives', []).

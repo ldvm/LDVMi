@@ -22,15 +22,16 @@
                     </ul>
                 </div>
 
-                <div class="card-body card-padding">
-                    <table class="table table-striped">
+                <div class="card-body m-t-0">
+                    <table class="table table-inner table-vmiddle">
                         <tr>
                             <th>ID</th>
                             <th>Execution start</th>
                             <th>Finished</th>
                             <th>Success</th>
                             <th>Duration</th>
-                            <th>Viz</th>
+                            <th></th>
+                            <th></th>
                         </tr>
                         <tr ng-repeat="e in evaluations | orderBy: '-createdUtc'">
                             <td>{{e.id}}</td>
@@ -47,7 +48,24 @@
                                 <span ng-show="e.modifiedUtc">{{(e.modifiedUtc-e.createdUtc)/1000}} s</span>
                                 <span ng-hide="e.modifiedUtc">starting</span>
                             </td>
-                            <td><a href="/visualize/{{e.id}}" class="btn btn-primary" ng-show="e.isSuccess">Visualization</a></td>
+                            <td>
+                                <a href="/visualize/{{e.id}}" ng-show="e.isSuccess">Visualization</a>
+                            </td>
+                            <td>
+                                <ul class="actions">
+                                    <li class="dropdown action-show">
+                                        <a href="" data-toggle="dropdown">
+                                            <i class="md md-more-vert"></i>
+                                        </a>
+
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li>
+                                                <a href="#/result/{{e.id}}">Evaluation result</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </td>
                         </tr>
                         <tr ng-show="evaluations.length == 0">
                             <td colspan="6">You need to run the pipeline first to be able to visualize its results.</td>
@@ -71,8 +89,8 @@
                     </ul>
                 </div>
 
-                <div class="card-body card-padding">
-                    <table class="table table-striped">
+                <div class="card-body m-t-0">
+                    <table class="table table-inner table-vmiddle">
                         <tr>
                             <th>ID</th>
                             <th>Check start</th>

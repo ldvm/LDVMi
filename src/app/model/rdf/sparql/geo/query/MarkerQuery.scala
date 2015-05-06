@@ -20,14 +20,16 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
 
     val q = prefixes +
       """
-        | SELECT ?s ?lat ?lng ?spl ?l ?sn %v WHERE {
+        | SELECT ?s ?lat ?lng ?spl ?l ?sn ?st ?sd %v WHERE {
         |   ?s s:geo ?g .
         |   ?g s:latitude ?lat ;
         |      s:longitude ?lng .
         |
         |   OPTIONAL { ?s skos:prefLabel ?spl . }
         |   OPTIONAL { ?s rdfs:label ?l . }
-        |   OPTIONAL { ?s skos:notion ?sn . }
+        |   OPTIONAL { ?s skos:notation ?sn . }
+        |   OPTIONAL { ?s s:title ?st . }
+        |   OPTIONAL { ?s s:description ?sd . }
         |
         |   %r
         | }
@@ -95,7 +97,18 @@ object MarkerQuery {
     val geolocatedEntity = Value("s")
     val lat = Value("lat")
     val lng = Value("lng")
-    val title = Value("l")
+  }
+
+  object LabelVariables extends Enumeration {
+    type LabelVariables = Value
+    val schemaTitle = Value("st")
+    val label = Value("l")
+    val prefLabel = Value("spl")
+    val notation = Value("sn")
+  }
+
+  object DescriptionVariables extends Enumeration {
+    val description = Value("sd")
   }
 
 }
