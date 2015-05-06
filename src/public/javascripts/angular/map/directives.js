@@ -147,7 +147,7 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                         zoom: parseInt($scope.zoom) || 1,
                         mapTypeId: $scope.mapType || google.maps.MapTypeId.ROADMAP
                     });
-                    /*
+
                      google.maps.event.addListener($scope.map, 'zoom_changed', function () {
                      $scope.zoomChanged($scope.map.getZoom());
                      });
@@ -160,7 +160,7 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                      $scope.boundsChanged($scope.map.getBounds());
                      });
 
-                     $scope.infowindow = new google.maps.InfoWindow();*/
+                     $scope.infowindow = new google.maps.InfoWindow();
                 },
                 restrict: 'E',
                 template: '<div class="gmaps" style="margin-top: -30px;"></div>',
