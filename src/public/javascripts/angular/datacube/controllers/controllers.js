@@ -45,6 +45,13 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     subtitle: {
                         text: 'DataCube'
                     },
+                    xAxis: {
+                        title: {
+                            enabled: true,
+                            text: ""
+                        },
+                        categories: []
+                    },
                     yAxis: {
                         title: {
                             text: ""
@@ -117,7 +124,10 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.loadByPermanentToken = function () {
                     $scope.queryingDataset = "chart data";
-                    var promise = DataCubeService.getQuery({visualizationId: $id, permalinkToken: $permanentToken});
+                    var promise = DataCubeService.getQuery({
+                        visualizationId: $id,
+                        permalinkToken: $permanentToken
+                    }).$promise;
                     DataCubeService.getCached({visualizationId: $id, token: $permanentToken}, function (response) {
                         var callback;
                         if (response.error) {
@@ -128,7 +138,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                             };
                         }
 
-                        promise.$promise.then(function (data) {
+                        promise.then(function (data) {
                             $scope.queryingDataset = null;
                             applyFilters(data, callback);
                         });
@@ -165,22 +175,51 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     dsd.isActive = true;
                     $scope.activeDSD = dsd;
                     $scope.loadDSDDetails(dsd, function () {
-                        var dsdLabel = dsd.label;
-                        var activeMeasureLabels = [];
-                        $scope.activeDSD.components.forEach(function (c) {
-                            if ("measure" in c) {
-                                activeMeasureLabels.push(c.label);
-                            }
-                        });
-                        $scope.highcharts.title.text = $scope.label(dsdLabel);
-                        $scope.highcharts.subtitle.text = "";
-                        ng.forEach(activeMeasureLabels, function (l) {
-                            if ($scope.highcharts.subtitle.text !== "") {
-                                $scope.highcharts.subtitle.text += ", ";
-                            }
-                            $scope.highcharts.subtitle.text += $scope.label(l);
-                        });
                         $scope.loadComponentsValues(callback);
+                    });
+                };
+
+                $scope.updateChartDescription = function () {
+                    var activeMeasures = $scope.activeMeasures();
+                    $scope.highcharts.title.text = $scope.title();
+                    $scope.highcharts.subtitle.text = $scope.subtitle(activeMeasures);
+                    $scope.highcharts.yAxis.title.text = $scope.yAxisTitle(activeMeasures);
+                    $scope.highcharts.xAxis.title.text = $scope.xAxisTitle(activeMeasures);
+                };
+
+                $scope.title = function () {
+                    var dsdLabel = $scope.activeDSD.label;
+                    return $scope.label(dsdLabel);
+                };
+
+                $scope.subtitle = function (activeMeasures) {
+                    if (activeMeasures.length == 1) {
+                        return "";
+                    }
+
+                    return "";
+                };
+
+                $scope.yAxisTitle = function (activeMeasures) {
+                    if (activeMeasures.length == 1) {
+                        return $scope.label(activeMeasures[0].label);
+                    }
+                    return "";
+                };
+
+                $scope.xAxisTitle = function (activeMeasures) {
+                    var xAxisComponent = _.chain($scope.activeDSD.components)
+                        .filter(function(c){ return c.dimension; })
+                        .sortBy(function(c){ return -c.order; })
+                        .find(function(c){ return $scope.dimensionValuesActiveCount[c.dimension.uri] > 1; })
+                        .value();
+
+                    return $scope.label(xAxisComponent.label);
+                };
+
+                $scope.dimension = function (uri) {
+                    return _.find($scope.activeDSD.components, function (c) {
+                        return c.dimension && c.dimension.uri == uri
                     });
                 };
 
@@ -241,7 +280,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 function newChart() {
                     $scope.highcharts.series = [];
-                    $scope.highcharts.xAxis = {categories: []};
+                    $scope.highcharts.xAxis.categories = [];
                     $scope._series = [];
                     $scope._categories = {};
                 }
@@ -269,7 +308,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                         ng.forEach(series.data, function (value, key) {
                             var categoryLabel = labelOrUri(key);
-                            console.log(key, categoryLabel);
                             formattedData[$scope._categories[categoryLabel]] = value;
                         });
 
@@ -325,22 +363,26 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         }
                     }
 
+                    $scope.updateChartDescription();
+
                     pushDataToChart();
                 }
 
                 $scope.toggleMeasure = function (measureComponent) {
 
                     measureComponent.isActive = !(measureComponent.isActive || false);
-
-                    var count = 0;
-                    if ($scope.activeDSD) {
-                        var activeMeasures = _.filter($scope.activeDSD.components, function (c) {
-                            return c.measure && c.isActive;
-                        });
-                        count = activeMeasures.length;
-                    }
-                    $scope.measuresSelectedCount = count;
+                    $scope.measuresSelectedCount = $scope.activeMeasures().length;
                     computeSlicing();
+                };
+
+                $scope.activeMeasures = function () {
+                    if (!$scope.activeDSD) {
+                        return [];
+                    }
+
+                    return _.filter($scope.activeDSD.components, function (c) {
+                        return c.measure && c.isActive;
+                    });
                 };
 
                 $scope.toggleDimensionValue = function (value, override) {
