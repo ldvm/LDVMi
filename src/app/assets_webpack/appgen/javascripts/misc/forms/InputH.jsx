@@ -1,5 +1,5 @@
 import React from 'react'
-import Input from './Input.jsx'
+import {Input} from 'react-bootstrap'
 
 /**
  * Horizontal Input. Automatically adds Bootstrap wrappers and labels around the
@@ -7,18 +7,15 @@ import Input from './Input.jsx'
  *
  * @property {number} labelWidth size of the label column (1-12)
  */
-export default React.createClass({
-    propTypes: {
-        labelWidth: React.PropTypes.number
-    },
+export default class InputH extends React.Component {
 
-    render: function () {
-        var labelWidth = this.props.labelWidth || 2;
-        var wrapperWidth = 12 - labelWidth;
-        var props = this.props;
+    render() {
+        const props = this.props;
+        const labelWidth = props.labelWidth || 2;
+        const wrapperWidth = 12 - labelWidth;
 
-        var labelClassName = "col-md-" + labelWidth;
-        var wrapperClassName = "col-md-" + wrapperWidth;
+        let labelClassName = "col-md-" + labelWidth;
+        let wrapperClassName = "col-md-" + wrapperWidth;
 
         if (props.type === "submit") {
             labelClassName = "";
@@ -27,4 +24,8 @@ export default React.createClass({
 
         return <Input {...this.props} labelClassName={labelClassName} wrapperClassName={wrapperClassName} />
     }
-});
+};
+
+InputH.propTypes = {
+    labelWidth: React.PropTypes.number
+};

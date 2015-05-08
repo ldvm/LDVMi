@@ -6,8 +6,8 @@ const dispatcher = new Dispatcher;
 
 export default {
     register: (callback) => dispatcher.register(callback),
-    dispatch: (action, data) => {
+    dispatch: (action, payload) => {
         debug('Dispatching action ' + (action.name || action));
-        dispatcher.dispatch({action, data})
+        dispatcher.dispatch({action, payload})
     }
 };

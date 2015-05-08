@@ -21,9 +21,9 @@ class State {
         return (update) => {
             if (update) {
                 this.state = this.state.updateIn(path, update);
-            } else {
-                return this.state.getIn(path);
             }
+
+            return this.state.getIn(path);
         }
     }
 }

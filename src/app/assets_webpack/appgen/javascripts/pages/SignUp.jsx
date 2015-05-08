@@ -10,17 +10,17 @@ import AuthStore from '../modules/auth/AuthStore.jsx'
 
 class SignUp extends React.Component
 {
-    signUp(form) {
-        AuthService.signUp(form);
+    signUp(data) {
+        console.log(data);
+        AuthService.signUp(data);
     }
 
     render() {
-        console.log('Sign up rerender!');
         return (
             <Grid>
                 <Card title="Sign up to Payola!" subtitle="Please fill out the form">
                     {AuthStore.inProgress ? 'Loading...' : ''}
-                    <SignUpForm onSubmit={this.signUp}/>
+                    <SignUpForm onSubmit={this.signUp} disabled={AuthStore.inProgress}/>
                 </Card>
             </Grid>
         )

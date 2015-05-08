@@ -3,34 +3,96 @@ import reactMixin from 'react-mixin'
 import _ from 'lodash'
 import revalidator from 'revalidator'
 import invariant from 'invariant'
+import Immutable from 'immutable'
+import deepEqual from 'deep-equal'
 
-/**
- * Component mixin that adds simple form validation using revalidator plugin.
- *
- * @property {boolean} valid - Is the data in the form valid
- * @property {Object[]} errors - List of errors in the form
- * @property {string[]} dirty - List of dirty form fields
- */
+import FormStore from './FormStore.jsx'
+import FormActions from './FormActions.jsx'
+
 export default class Form extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = this.getStateFromProps(props);
-        this.reset();
+        this._onPropsChange(props);
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.reset();
-        this.setState(this.getStateFromProps(nextProps));
+    componentWillReceiveProps(props) {
+        if (!deepEqual(this.props.defaults, props.defaults)) {
+            // Let's make the update asynchronous to avoid breaking Flux cycle (in case we
+            // are currently inside an action dispatch)
+            setTimeout(() => this._onPropsChange(props), 0);
+        }
     }
 
     componentDidMount() {
-        this.reset();
+        FormStore.addChangeListener(this._handleStoresChanged.bind(this));
     }
 
-    componentWillUpdate(nextProps, nextState) {
-        this.updateDirty(nextState);
-        this.validate(nextState);
+    componentWillUnmount() {
+        FormStore.removeChangeListener(this._handleStoresChanged.bind(this));
+    }
+
+    _handleStoresChanged() {
+        this.forceUpdate();
+    }
+
+    _onPropsChange(props) {
+        let data = {};
+
+        // Use the scheme to generate empty values.
+        Object.getOwnPropertyNames(this.getValidationScheme().properties).forEach(
+            (name) => data[name] = '');
+
+        // Load default values (if any)
+        if (props.defaults) {
+            Object.assign(data, props.defaults);
+        }
+
+        const defaultState = FormStore.getEmptyFormState()
+            .set('data', Immutable.fromJS(data))
+            .update(state => state.set('validation', this._validate(data)));
+        FormActions.FORM_SET_DEFAULT(this.getName(), defaultState);
+    }
+
+    _onChange({target: {name, value}}) {
+        const newState = this.getFormState()
+            .setIn(['data', name], value)
+            .setIn(['dirty', name], true)
+            .update(state => state.set('validation', this._validate(state.get('data').toJS())));
+        FormActions.FORM_UPDATE(this.getName(), newState);
+    }
+
+    _validate(data) {
+        return revalidator.validate(data, this.getValidationScheme());
+    }
+
+    connect(name) {
+        return {
+            name: name,
+            onChange: this._onChange.bind(this),
+            bsStyle: this.showErrors() ? (this.getError(name) ? 'error' : 'success') : null,
+            help: this.showErrors() && this.getError(name) && this.getError(name).message || null,
+            value: this.getValue(name)
+        };
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+
+        if (this.isValid()) {
+            if (!this.props.onSubmit) {
+                console.log('No onSubmit handler set! Printing values.');
+                console.log(this.getFormState().get('data').toJS());
+            } else {
+                this.props.onSubmit(this.getFormState().get('data').toJS());
+            }
+        } else {
+            FormActions.FORM_SHOW_ERRORS(this.getName());
+        }
+    }
+
+    getName() {
+        return this.props.name || this.constructor.name;
     }
 
     getValidationScheme() {
@@ -38,133 +100,34 @@ export default class Form extends React.Component {
         return this.constructor.validationScheme;
     }
 
-    /**
-     * Reset form state.
-     */
-    reset() {
-        this.valid = false;
-        this.errors = [];
-        this.dirty = [];
-        this.validate(this.state);
+    getFormState() {
+        return FormStore.getFormState(this.getName());
     }
 
-    getStateFromProps(props) {
-        let state = {};
-
-        // Use the scheme to generate empty state skelet.
-        Object.getOwnPropertyNames(this.getValidationScheme().properties).forEach(
-            (name) => state[name] = '');
-
-        // Load default values (if any)
-        if (props.defaults) {
-            Object.assign(state, props.defaults);
-        }
-
-        return state;
+    isDirty(name) {
+        return this.getFormState().get('dirty').get(name);
     }
 
-    /**
-     * Update the list of dirty inputs.
-     * @param {object} nextState
-     */
-    updateDirty(nextState) {
-        for (var key in nextState) {
-            if (nextState.hasOwnProperty(key) && this.state.hasOwnProperty(key)) {
-                if (nextState[key] != this.state[key]) {
-                    if (!_.contains(this.dirty, key)) {
-                        this.dirty.push(key);
-                    }
-                }
-            }
-        }
+    isValid() {
+        return this.getFormState().get('validation').valid;
     }
 
-    /**
-     * Perform validation of the current component state.
-     * @param {object} state
-     */
-    validate(state) {
-        var validation = revalidator.validate(state, this.getValidationScheme());
-        this.valid = validation.valid;
-        this.errors = validation.errors;
+    showErrors() {
+        return this.getFormState().get('showErrors');
     }
 
-    /**
-     * Return object of connecting functions for given input. The connecting
-     * functions will link input to the form and will affect input's visual
-     * appearance depending on the validation state.
-     * @param {string} name of input
-     * @returns {{linkState: (*|ReactLink), bsStyle: Function, help: Function}}
-     */
-    connect(name) {
-        var form = this;
-
-        return {
-            valueLink: form.linkState(name),
-
-            /**
-             * Bootstrap style class depending on validation state.
-             * @returns {string}  (error|success|null)
-             */
-            bsStyle: function () {
-                if (!form.isDirty(name)) {
-                    return null;
-                }
-                var error = form.getError(name);
-                return error ? 'error' : 'success';
-            },
-
-            /**
-             * Validation message as Bootstrap's help text.
-             * @returns {string} message or null
-             */
-            help: function () {
-                if (!form.isDirty(name)) {
-                    return null;
-                }
-                var error = form.getError(name);
-                return error ? error.message : null;
-            }
-        };
-    }
-
-    /**
-     * Return error object for given input or null if there is no error.
-     * @param {string} name of the input
-     * @returns {object|null}
-     */
     getError(name) {
-        var errors = _.where(this.errors, {property: name});
+        var errors = this.getFormState().get('validation').errors.filter(e => e.property == name);
         return errors.length === 0 ? null : errors[0];
     }
 
-    /**
-     * Return if given input is dirty.
-     * @param {string} name
-     * @returns {boolean}
-     */
-    isDirty(name) {
-        return _.contains(this.dirty, name);
-    }
-
-    handleSubmit(e) {
-        e.preventDefault();
-
-        if (!this.props.onSubmit) {
-            console.log('Submitting form: ');
-            console.log(this.state);
-        } else {
-            this.props.onSubmit(this.state);
-        }
+    getValue(name) {
+        return this.getFormState().get('data').get(name);
     }
 };
-
-let PropTypes = React.PropTypes;
 
 Form.propTypes = {
-    defaults: PropTypes.object,
-    onSubmit: PropTypes.func
+    defaults: React.PropTypes.object,
+    onSubmit: React.PropTypes.func,
+    disabled: React.PropTypes.bool
 };
-
-
-reactMixin(Form.prototype, React.addons.LinkedStateMixin);

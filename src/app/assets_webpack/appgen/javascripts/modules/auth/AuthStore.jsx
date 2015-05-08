@@ -1,6 +1,6 @@
 import BaseStore from '../../libs/BaseStore.jsx'
 import state from '../../libs/state.jsx'
-import actions from './authActions.jsx'
+import actions from './AuthActions.jsx'
 
 class AuthStore extends BaseStore {
     constructor(state) {
@@ -13,10 +13,10 @@ class AuthStore extends BaseStore {
         this.user = state.cursor([AuthStore.name, 'user'], {});
     }
 
-    _handleAction({action, data}) {
+    _handleAction({action, payload}) {
         switch(action) {
             case actions.AUTH_IN_PROGRESS:
-                this.store(store => store.set('inProgress', data.inProgress));
+                this.store(store => store.set('inProgress', payload.inProgress));
                 this.emitChange();
                 break;
         }

@@ -7,12 +7,13 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>React</title>
-	<script src="http://localhost:9090/webpack-dev-server.js"></script>
-	<script src="http://localhost:9090/build/main.js"></script>
 	<link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
 	</head>
 	<body>
 		<div id="approot"></div>
 		@Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
+
+		<script src="http://localhost:9090/webpack-dev-server.js"></script>
+		<script src="http://localhost:9090/build/main.js"></script>
 	</body>
 </html>

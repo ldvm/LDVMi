@@ -1,4 +1,4 @@
-import actions from './authActions.jsx'
+import actions from './AuthActions.jsx'
 
 class AuthService {
 
