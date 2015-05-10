@@ -2,6 +2,7 @@ import java.util.concurrent.TimeUnit
 
 import controllers.ControllerModule
 import controllers.api.ApiModule
+import model.appgen.repository.AppgenRepositoryModule
 import play.api._
 import play.api.libs.concurrent.Akka
 import play.api.mvc.WithFilters
@@ -20,7 +21,8 @@ object Global extends WithFilters(
     )
   )
 ) with ScaldiSupport with GlobalSettings {
-  def applicationModule = new RepositoryModule :: new ServiceModule :: new RdfModule :: new ControllerModule :: new ApiModule
+  def applicationModule = new RepositoryModule :: new ServiceModule :: new RdfModule ::
+    new ControllerModule :: new ApiModule :: new AppgenRepositoryModule
 
   override def onStart(app: Application) = {
     super.onStart(app)

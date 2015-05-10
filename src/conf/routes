@@ -57,6 +57,7 @@ GET         /api/visualization/cached/:id/:token            @controllers.api.Vis
 #GET         /api/visualization/add                          @controllers.api.VisualizationApiController.addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String])
 #GET         /api/visualization/:id                          @controllers.api.VisualizationApiController.get(id: Long)
 
+POST        /appgen/api/auth/signup                         @controllers.appgen.api.AuthApiController.signUp
 GET         /appgen$any<.*>                                 @controllers.appgen.ApplicationController.index(any)
 
 # Map static resources from the /public folder to the /assets URL path
