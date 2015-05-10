@@ -2,7 +2,7 @@ define(['angular', 'material', './controllers'], function (ng, material) {
     'use strict';
 
     return ng.module('pipeline.controllers')
-        .controller('Index', ['$scope', 'Components', function ($scope, components) {
+        .controller('Index', ['$scope', 'Components', 'Pipelines', function ($scope, components, pipelines) {
             $scope.visualize = function () {
 
                 var data = {
@@ -19,6 +19,12 @@ define(['angular', 'material', './controllers'], function (ng, material) {
                     window.location.href = uri;
                 });
             };
+
+            $scope.pipelines = [];
+            var promise = pipelines.findPaginated(1, 10);
+            promise.then(function (data) {
+                $scope.pipelines = data.data;
+            });
 
             material.initForms();
         }]);

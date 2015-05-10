@@ -553,7 +553,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                                 if (values) {
                                     values.forEach(function (fValue) {
                                         if (fValue.isActive) {
-
                                             var cValue = _.find($scope.values[c.componentUri], function (cv) {
                                                 if (typeof (cv.uri) !== "undefined") {
                                                     return cv.uri == fValue.uri;

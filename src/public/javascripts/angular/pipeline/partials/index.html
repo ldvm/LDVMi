@@ -149,11 +149,11 @@
 
                     <div class="card-body">
                         <div class="listview">
-                            <a class="lv-item" href="/pipelines/#/id/{{pipeline.id}}" ng-repeat="pipeline in recentPipelines">
+                            <a class="lv-item" href="/pipelines/#/detail/{{pipeline.id}}" ng-repeat="pipeline in pipelines">
                                 <div class="media">
-                                    <div class="pull-left">
+                                    <!--<div class="pull-left">
                                         <img class="lv-img-sm" src="img/profile-pics/1.jpg" alt="">
-                                    </div>
+                                    </div>-->
                                     <div class="media-body">
                                         <div class="lv-title" ng-bind="pipeline.title"></div>
                                         <small class="lv-small" ng-bind="pipeline.descriptions"></small>

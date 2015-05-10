@@ -56,6 +56,8 @@ define(['angular'], function (ng) {
                       paginationUtils) {
                 return {
                     findPaginated: function (page, pageSize, filters) {
+                        filters = filters || {};
+
                         var query = paginationUtils.buildQuery(page, pageSize);
                         ng.extend(query, filters);
                         return pipelineApi.query(query).$promise;

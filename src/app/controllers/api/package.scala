@@ -74,6 +74,10 @@ package object api {
     implicit val dataCubeCellWrites = Json.writes[DataCubeCell]
     implicit val dataCubeWrites = Json.writes[model.rdf.sparql.datacube.DataCube]
     implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
+    implicit val valueFilterWrites = Json.writes[ValueFilter]
+    implicit val dataCubeQueryComponentFilterWrites = Json.writes[DataCubeQueryComponentFilter]
+    implicit val dataCubeQueryFilterWrites = Json.writes[DataCubeQueryFilter]
+    implicit val dataCubeQueryDataWrites = Json.writes[DataCubeQueryData]
 
     implicit val pipelinesWrites = Json.writes[Pipeline]
     implicit val pipelineEvaluationWrites = Json.writes[PipelineEvaluation]
