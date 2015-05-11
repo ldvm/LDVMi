@@ -1,15 +1,5 @@
 <div>
-
-
     <aside id="chat">
-        <p class="text-center">
-            <button class="btn btn-primary btn-block" ng-click="refresh()"><i
-                    class="glyphicon glyphicon-refresh"></i> Refresh
-            </button>
-
-            <input type="text" ng-model="permalink" class="form-control" readonly
-                   ng-if="permalink"/>
-        </p>
 
         <!--<div class="panel panel-default">
             <div class="panel-heading">
@@ -22,22 +12,35 @@
         </div>
         -->
 
-        <p ng-show="dataStructures.length == 0">No data structures found in the supplied datasource.</p>
-        <ul class="list-group" ng-show="dataStructures.length > 0">
-            <li class="list-group-item active">Available data structures</li>
-            <li ng-repeat="ds in dataStructures" class="list-group-item">
-                <table>
-                    <tr>
-                        <td style="border-right: 1px solid #ddd; padding-right: 10px;">
+        <div class="listview lv-bordered lv-lg">
+            <div class="lv-header-alt">
+                <h2 class="lvh-label">Available data structures</h2>
+<!--
+                <ul class="lv-actions actions">
+                    <li>
+                        <a href="">
+                            <i class="md md-info"></i>
+                        </a>
+                    </li>
+                </ul>-->
+            </div>
+
+            <div class="lv-body">
+                <div class="lv-item media" ng-repeat="ds in dataStructures">
+                    <div class="checkbox pull-left">
+                        <label>
                             <input type="checkbox" ng-model="ds.isActive" ng-change="switchDSD(ds)"/>
-                        </td>
-                        <td style="padding-left: 10px;">
-                            {{ds.label.variants[language] || "Unlabeled DSD"}}
-                        </td>
-                    </tr>
-                </table>
-            </li>
-        </ul>
+                            <i class="input-helper"></i>
+                        </label>
+                    </div>
+                    <div class="media-body">
+                        <div>{{ds.label.variants[language] || "Unlabeled DSD"}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p ng-show="dataStructures.length == 0">No data structures found in the supplied datasource.</p>
 
         <div class="panel panel-default" ng-show="datasets.length > 0">
             <div class="panel-heading">
@@ -55,49 +58,54 @@
         </div>
 
         <div ng-repeat="type in componentTypes">
-            <ul class="list-group">
-                <li class="list-group-item active">{{type.plural}} settings</li>
-                <li ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component[type.key]"
-                    class="list-group-item"
-                    ng-class="{'list-group-item-danger': values[component[type.key].uri].length == 0}">
-                    <table>
-                        <tr>
-                            <td style="border-right: 1px solid #ddd; padding-right: 10px; text-align: center">
-                                <i class="glyphicon glyphicon-chevron-up" ng-if="type.key == 'dimension'"
-                                   ng-click="reorderComponents($index, component, -1)" ng-if="component.order > 1"></i>
-                                <br/>
-                                <i class="glyphicon glyphicon-cog"
-                                   ng-click="toggleDimensionSettings(component[type.key].uri)"
-                                   ng-if="type.key != 'measure'" style="cursor: pointer;"></i>
-                                <input type="checkbox" ng-click="toggleMeasure(component)" ng-if="type.key == 'measure'"
-                                       ng-checked="component.isActive"/>
-                                <br/>
-                                <span ng-if="type.key == 'dimension'"> ({{dimensionValuesActiveCount[component[type.key].uri] || 0}})</span>
-                                <br/>
-                                <i class="glyphicon glyphicon-chevron-down" ng-if="type.key == 'dimension'"
-                                   ng-click="reorderComponents($index, component, 1)"></i>
-                            </td>
-                            <td style="padding-left: 10px;">
-                                    <span ng-if="component.order"
-                                          ng-if="type.key == 'dimension'">{{component.order}}.</span>
+            <div class="listview lv-bordered lv-lg">
+                <div class="lv-header-alt">
+                    <h2 class="lvh-label">{{type.plural}} settings</h2>
+                    <!--
+                                    <ul class="lv-actions actions">
+                                        <li>
+                                            <a href="">
+                                                <i class="md md-info"></i>
+                                            </a>
+                                        </li>
+                                    </ul>-->
+                </div>
+
+                <div class="lv-body">
+                    <div class="lv-item media"
+                         ng-repeat="component in activeDSD.components | orderBy:'order'"
+                         ng-if="component[type.key]"
+                         ng-class="{'lv-item-danger': values[component[type.key].uri].length == 0}"
+                        >
+                        <div class="pull-left">
+                            <i class="glyphicon glyphicon-chevron-up" ng-if="type.key == 'dimension'"
+                               ng-click="reorderComponents($index, component, -1)" ng-if="component.order > 1"></i>
+                            <br/>
+                            <i class="glyphicon glyphicon-cog"
+                               ng-click="toggleDimensionSettings(component[type.key].uri)"
+                               ng-if="type.key != 'measure'" style="cursor: pointer;"></i>
+                            <br/>
+                            <span ng-if="type.key == 'dimension'"> ({{dimensionValuesActiveCount[component[type.key].uri] || 0}})</span>
+                            <br/>
+                            <i class="glyphicon glyphicon-chevron-down" ng-if="type.key == 'dimension'"
+                               ng-click="reorderComponents($index, component, 1)"></i>
+                        </div>
+                        <div class="pull-left checkbox" ng-if="type.key == 'measure'">
+                            <label>
+                                <input type="checkbox" ng-click="toggleMeasure(component)" ng-checked="component.isActive"/>
+                                <i class="input-helper"></i>
+                            </label>
+                        </div>
+                        <div class="media-body">
+                            <div>
+                                <span ng-if="component.order && type.key == 'dimension'">{{component.order}}.</span>
                                 {{component.label.variants[language] || component.label.variants["en"] ||
                                 component.label.variants["nolang"] || component[type.key].uri}}
-                            </td>
-                        </tr>
-                    </table>
-
-                    <p ng-show="values[component[type.key].uri].length == 0"><br/>This {{type.key}} has no values.</p>
-                </li>
-            </ul>
-        </div>
-
-        <div class="well well-sm">
-            Labels:
-            <ul class="list-unstyled" style="margin-bottom: 0px; display: inline-block;">
-                <li ng-repeat="l in availableLanguages" style="display: inline; margin-right: 3px;"><span
-                        ng-click="setLang(l)" class="flag-icon flag-icon-{{l}}"></span></li>
-                <li><span ng-click="setLang('nolang')">[x]</span></li>
-            </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </aside>
 
@@ -111,7 +119,7 @@
                 </div>
 
                 <div class="card-body card-padding">
-                    Right now, we are querying the dataset for {{queryingDataset}}. It may take a few minutes
+                    Right now, we are querying the dataset for <strong>{{queryingDataset}}</strong>. It may take a few minutes
                     based on the size of the result and/or size of the graph the query is running against.
                     <br/><br/>
 
@@ -130,16 +138,18 @@
                 <div class="container">
                     <div class="card">
 
-                        <div ng-repeat="component in activeDSD.components | orderBy:'order'"
-                             ng-if="component['dimension']">
+                        <div ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component['dimension']">
 
-                            <div class="listview lv-bordered lv-lg"
-                                 ng-show="settingsVisible == component.dimension.uri">
+                            <div class="listview lv-bordered lv-lg" ng-show="settingsVisible == component.dimension.uri">
                                 <div class="lv-header-alt">
-                                    <h2 class="lvh-label hidden-xs">Values settings for
-                                        <{{component.dimension.uri}}></h2>
+                                    <h2 class="lvh-label hidden-xs">Values settings for <{{component.dimension.uri}}></h2>
 
                                     <ul class="lv-actions actions">
+                                        <li>
+                                            <a href="" ng-click="toggleDimensionSettings(component.dimension.uri)">
+                                                <i class="md md-close"></i>
+                                            </a>
+                                        </li>
                                         <li class="dropdown">
                                             <a href="" data-toggle="dropdown" aria-expanded="true">
                                                 <i class="md md-more-vert"></i>
@@ -194,24 +204,37 @@
                         <div class="container">
                             <div class="card">
                                 <div class="card-body card-padding">
-                                    <p>
-                                        <highchart id="chart1" config="highcharts" class="cubechart"></highchart>
-                                    </p>
+                                    <highchart id="chart1" config="highcharts" class="cubechart"></highchart>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body card-padding">
                                     <div class="legend">
-                                        <strong>Values fixed in this visualization:</strong>
+                                        <strong>DataCube values fixed to get this chart:</strong>
                                         <ul ng-repeat="(uri, count) in dimensionValuesActiveCount" ng-if="count == 1">
-                                           <li>
-                                               <span ng-bind="label(dimension(uri).label) || uri"></span>
-                                               <ul>
-                                                   <li ng-repeat="v in values[uri]" ng-if="v.isActive" ng-bind="label(v.label) || v.uri"></li>
-                                               </ul>
-                                           </li>
+                                            <li>
+                                                <span ng-bind="label(dimension(uri).label) || uri"></span>
+                                                <ul>
+                                                    <li ng-repeat="v in values[uri]" ng-if="v.isActive" ng-bind="label(v.label) || v.uri"></li>
+                                                </ul>
+                                            </li>
                                         </ul>
                                     </div>
-                                    <br/><br/>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header bgm-bluegray">
+                                    <h2>Display options <small>Want to change the type of the chart?</small></h2>
+                                </div>
+                                <div class="card-body card-padding">
                                     <div class="row">
                                         <div class="col-lg-12 text-center">
                                             <div class="btn-toolbar" style="height: 35px">
+                                                <div class="btn-group" style="float: none">
+                                                    <button class="btn btn-primary" ng-click="refresh()"><i
+                                                            class="glyphicon glyphicon-refresh"></i> Refresh
+                                                    </button>
+                                                </div>
                                                 <div class="btn-group" style="float: none">
                                                     <button class="btn btn-default"
                                                             ng-click="switchChart('line', true)"
@@ -255,6 +278,28 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-lg-1">
+                                            Permalink:
+                                        </div>
+                                        <div class="col-lg-11 text-center">
+                                            <div class="form-group">
+                                                <div class="fg-line">
+                                                    <input type="text" class="form-control" style="padding-left: 5px;" ng-model="permalink" readonly ng-if="permalink" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-1">Language:</div>
+                                        <div class="col-lg-11">
+                                            <ul class="list-unstyled" style="margin-bottom: 0px; display: inline-block;">
+                                                <li ng-repeat="l in availableLanguages" style="display: inline; margin-right: 3px;"><span
+                                                        ng-click="setLang(l)" class="flag-icon flag-icon-{{l}}"></span></li>
+                                                <li style="margin-bottom: 0px; display: inline-block;"><i ng-click="setLang('nolang')" class="md-highlight-remove"></i></li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -271,8 +316,7 @@
                             <div class="card-body card-padding">
                                 To make slices, you have to select exactly one value on each dimension.
                                 If you choose to display just one measure, you are able to select more values on up to 2
-                                dimensions.
-                                With more measures, you are able to select more values just on one dimension.
+                                dimensions. With more measures, you are able to select more values just on one dimension.
                             </div>
                         </div>
 
@@ -297,8 +341,7 @@
 
                         <div class="card-body card-padding">
                             Please open the right menu. There are a few options that are needed to be checked in order
-                            to
-                            show you some data.
+                            to see some data.
                         </div>
                     </div>
                 </div>

@@ -162,9 +162,13 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 });
 
                 $scope.loadDSDDetails = function (dsd, callback) {
+                    $scope.queryingDataset = "QB dimensions";
                     DataCubeService.getComponents({id: $id, uri: dsd.uri}, function (data) {
+                        $scope.queryingDataset = null;
                         dsd.components = data.components;
                         callback();
+                    }, function(){
+                        $scope.queryingDataset = null;
                     });
                 };
 
