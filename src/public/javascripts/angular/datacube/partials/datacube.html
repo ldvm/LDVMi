@@ -47,7 +47,7 @@
                 <p ng-show="datasets.length == 0">No named datasets found.</p>
                 <ul class="list-unstyled" ng-show="datasets.length > 0">
                     <li ng-repeat="ds in datasets"><input type="checkbox" ng-model="ds.active"
-                                                          ng-change="changeDataset($index)"/>&nbsp;{{ds.label.variants[language]}}
+                        ng-change="changeDataset($index)"/>&nbsp;{{ds.label.variants[language]}}
                     </li>
                 </ul>
             </div>
@@ -146,16 +146,16 @@
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li>
-                                                    <a href=""
-                                                       ng-click="toggleValues(component.dimension.uri)">Toggle</a>
+                                                    <a href="" ng-click="toggleValues(component.dimension.uri)">Toggle</a>
                                                 </li>
                                                 <li>
-                                                    <a href="" ng-click="selectAllValues(component.dimension.uri)">Select
-                                                        all</a>
+                                                    <a href="" ng-click="selectAllValues(component.dimension.uri)">Select all</a>
                                                 </li>
                                                 <li>
-                                                    <a href="" ng-click="deselectAllValues(component.dimension.uri)">Deselect
-                                                        all</a>
+                                                    <a href="" ng-click="deselectAllValues(component.dimension.uri)">Deselect all</a>
+                                                </li>
+                                                <li>
+                                                    <a href="" ng-click="displayUris=!displayUris">Display URIs</a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -166,14 +166,14 @@
                                     <div class="lv-item media" ng-repeat="v in values[component.dimension.uri]">
                                         <div class="checkbox pull-left">
                                             <label>
-                                                <input type="checkbox" ng-click="toggleDimensionValue(v)"
-                                                       ng-checked="v.isActive">
+                                                <input type="checkbox" ng-click="toggleDimensionValue(v)" ng-checked="v.isActive" />
                                                 <i class="input-helper"></i>
                                             </label>
                                         </div>
                                         <div class="media-body">
                                             <div class="lv-title">
-                                                {{label(v.label) || v.uri}}
+                                                <span ng-bind="label(v.label) || v.uri" ng-hide="displayUris"></span>
+                                                <span ng-bind="v.uri" ng-show="displayUris"></span>
                                             </div>
                                         </div>
                                     </div>
