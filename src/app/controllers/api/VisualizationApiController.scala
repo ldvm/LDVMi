@@ -1,15 +1,13 @@
 package controllers.api
 
 import controllers.api.JsonImplicits._
-import model.entity.PipelineEvaluationQuery
-import model.rdf.sparql.datacube.DataCubeQueryData
+import model.entity.PipelineEvaluationId
 import play.api.Play.current
 import play.api.cache.Cache
 import play.api.db.slick.{DBAction, _}
 import play.api.libs.json._
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
-import utils.MD5
 
 class VisualizationApiController(implicit inj: Injector) extends ApiController with Injectable {
 
@@ -38,39 +36,18 @@ class VisualizationApiController(implicit inj: Injector) extends ApiController w
   }
 
   def customCube(id: Long, permalinkToken: String, dimensionUri: String, valueUri: String) = DBAction { implicit rs =>
-    withEvaluation(id) { evaluation =>
-      val query = pipelineService.findQueryByIdAndToken(evaluation.id.get, permalinkToken)
-      query.map { q =>
-        val json = Json.parse(q.storedData)
-        val result = json.validate[DataCubeQueryData]
 
-        result match {
-          case s: JsSuccess[DataCubeQueryData] => {
+    pipelineService.modifyEvaluationQuery(PipelineEvaluationId(id), permalinkToken, dimensionUri, valueUri)
+      .map { token =>
+      val filteredParams = rs.request
+        .queryString.-("token", "dimensionUri", "valueUri")
+        .flatMap { case (k, values) =>
+        values.map { v => k + "=" + v }
+      }.mkString("&")
 
-            val data = s.get
-
-            val dataCopy = data.copy(data.filters.copy(components = data.filters.components.map { c =>
-              if (c.componentUri != dimensionUri) {
-                c
-              } else {
-                c.copy(values = c.values.map { v =>
-                  v.copy(isActive = v.uri.map(_ == valueUri))
-                })
-              }
-            }))
-
-            val json = Json.toJson(dataCopy)
-            val jsonString = json.toString()
-
-            val token = MD5.hash(jsonString)
-            val copy = q.copy(id = None, token = token, storedData = jsonString)
-            qr.save(copy)
-
-            Redirect("/visualize/datacube#/id/"+id+"/?p="+token)
-          }
-          case e: JsError => NotFound
-        }
-      }.getOrElse(NotFound)
+      Redirect("/visualize/datacube#/id/" + id + "/?p=" + token + "&" + filteredParams)
+    }.getOrElse {
+      NotFound
     }
   }
 

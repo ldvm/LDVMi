@@ -1,12 +1,16 @@
 package model.service.impl.pipeline
 
 import akka.actor.{ActorRef, Props}
-import controllers.api.ProgressReporter
+import controllers.api.{JsonImplicits, ProgressReporter}
 import model.entity._
+import model.rdf.sparql.datacube.DataCubeQueryData
 import model.repository._
 import model.service._
 import play.api.db.slick.Session
+import play.api.libs.json.{JsSuccess, Json}
 import scaldi.{Injectable, Injector}
+import utils.MD5
+import JsonImplicits._
 
 import scala.slick.lifted.Ordered
 
@@ -43,9 +47,9 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       bindingSetId._1,
       pipeline.uri.getOrElse("Unlabeled pipeline"),
       pipeline.title.getOrElse("Unlabeled pipeline"),
-      None,
-      false,
-      None
+      description = None,
+      isTemporary = false,
+      pipelineDiscovery = None
     ))
   }
 
@@ -66,8 +70,33 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     pipelineEvaluationQueryRepository.save(query)
   }
 
-  def findQueryByIdAndToken(id: PipelineEvaluationId, token: String)(implicit session: Session) : Option[PipelineEvaluationQuery] = {
+  def findQueryByIdAndToken(id: PipelineEvaluationId, token: String)(implicit session: Session): Option[PipelineEvaluationQuery] = {
     pipelineEvaluationQueryRepository.findByToken(token)
+  }
+
+  def modifyEvaluationQuery(id: PipelineEvaluationId, token: String, dimensionUri: String, valueUri: String)(implicit session: Session): Option[String] = {
+    findQueryByIdAndToken(id, token).flatMap { query =>
+
+      getCubeQuery(query.storedData).map { originalQuery =>
+        val modifiedQuery = originalQuery.modify(dimensionUri, valueUri)
+        val modifiedString = Json.toJson(modifiedQuery).toString()
+        val token = MD5.hash(modifiedString)
+        val newQuery = query.copy(id = None, token = token, storedData = modifiedString)
+        setEvaluationQuery(token, newQuery)
+
+        token
+      }
+    }
+  }
+
+  private def getCubeQuery(json: String): Option[DataCubeQueryData] = {
+    val parsedJson = Json.parse(json)
+    val result = parsedJson.validate[DataCubeQueryData]
+
+    result match {
+      case s: JsSuccess[DataCubeQueryData] => Some(s.get)
+      case _ => None
+    }
   }
 
   def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef) = {
@@ -86,7 +115,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
 
         val dsNames = "(" + instances.filter(_.componentTemplate.inputTemplates.size == 0).map(_.title).mkString(", ") + ")"
         val vizName = "(" + instances.filter(_.componentTemplate.outputTemplate.isEmpty).map(_.title).mkString(", ") + ")"
-        val name = dsNames+" -> ("+(instances.size-2)+") -> "+vizName
+        val name = dsNames + " -> (" + (instances.size - 2) + ") -> " + vizName
         pipelinesRepository.save(Pipeline(None, bindingSetId, "", name, None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
 
         pipeline.portMappings.map { mapping =>
@@ -125,7 +154,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   }
 
   def findPaginatedFiltered[T <% Ordered](skip: Int = 0, take: Int = 50, pipelineDiscoveryId: Option[PipelineDiscoveryId] = None, visualizerId: Option[ComponentTemplateId] = None)
-    (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc)})
+    (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
     (implicit session: Session): Seq[Pipeline] = {
 
     repository.findPaginatedFilteredOrdered(skip, take)(pipelineDiscoveryId, visualizerId)(ordering)
@@ -135,7 +164,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     val allComponentsByType = componentService.getAllForDiscovery(dataSourceTemplateId, combine)
     new PipelineDiscoveryAlgorithm(allComponentsByType._1, reporterProps, allComponentsByType._2)
       .discoverPipelines(
-        allComponentsByType._1(ComponentType.DataSource).collect { case d: DataSourceTemplate => d}
+        allComponentsByType._1(ComponentType.DataSource).collect { case d: DataSourceTemplate => d }
       )
   }
 

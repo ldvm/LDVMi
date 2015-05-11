@@ -1,6 +1,6 @@
 package controllers.api
 
-import model.entity.{PipelineEvaluation, PipelineEvaluationId}
+import model.entity.{PipelineEvaluationQuery, PipelineEvaluation, PipelineEvaluationId}
 import model.rdf.sparql.datacube.DataCubeService
 import model.rdf.sparql.geo.GeoService
 import model.rdf.sparql.visualization.VisualizationService
@@ -24,8 +24,6 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
   val dataSourceService = inject[DataSourceService]
   val visualizationService = inject[VisualizationService]
   val geoService = inject[GeoService]
-
-  val qr = inject[PipelineEvaluationQueryRepository]
 
   protected def simpleParsingFuture[E, JsonType](id: Long)
     (enumeratorGetter: (PipelineEvaluation, JsonType, JsValue) => Option[Enumerator[Option[E]]])
