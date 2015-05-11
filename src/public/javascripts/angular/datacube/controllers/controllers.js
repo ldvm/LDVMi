@@ -343,8 +343,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         }, function () {
                             $scope.queryingDataset = null;
                         });
-                    } else {
-                        alert("Not supported.");
                     }
                 };
 
