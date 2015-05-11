@@ -12342,6 +12342,7 @@ input:focus {
   z-index: 5;
   opacity: 0;
   filter: alpha(opacity=0);
+  overflow-y: scroll;
 }
 #chat.toggled {
   -webkit-transform: translate3d(calc(100vw - 360px), 0, 0);
