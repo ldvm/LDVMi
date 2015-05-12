@@ -4,10 +4,7 @@ import model.entity.PipelineEvaluationId
 
 object VisualizerRoute {
 
-  def route(visualizerTemplateUri: String, evaluationId: PipelineEvaluationId) : String = {
-
-
-    println(visualizerTemplateUri)
+  def route(visualizerTemplateUri: String, evaluationId: PipelineEvaluationId): String = {
 
     val pattern = visualizerTemplateUri match {
       case "http://linked.opendata.cz/resource/ldvm/visualizer/treemap/TreemapVisualizerTemplate" => "/visualize/treemap/%ei"
@@ -21,5 +18,4 @@ object VisualizerRoute {
     pattern.replace("%ei", evaluationId.id.toString)
 
   }
-  
 }

@@ -2,10 +2,10 @@ package model.service.impl
 
 import java.util.UUID
 
-import com.hp.hpl.jena.rdf.model.{ModelFactory, Model}
+import com.hp.hpl.jena.rdf.model.{Model, ModelFactory}
 import com.hp.hpl.jena.vocabulary.RDF
 import model.entity.{DataSourceTemplate, DataSourceTemplateId}
-import model.rdf.vocabulary.{SD, DSPARQL}
+import model.rdf.vocabulary.{DSPARQL, SD}
 import model.repository.{ComponentTemplateRepository, DataSourceTemplateRepository}
 import model.service.{ComponentTemplateService, DataSourceService, GraphStoreProtocol}
 import play.api.Play.current
@@ -65,7 +65,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     action(new RandomGraph)
   }
 
-  private def config(endpointUrl: String, graphUris: Seq[String]) : Model = {
+  private def config(endpointUrl: String, graphUris: Seq[String]): Model = {
     val model = ModelFactory.createDefaultModel()
 
     val configResource = model.createResource()
@@ -92,7 +92,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
   def createDataSourceFromUris(endpointUrl: String, graphUris: Seq[String])(implicit session: Session): Option[DataSourceTemplateId] = {
 
     val resourceUri = endpointUrl
-    val dataPortTemplate = model.dto.DataPortTemplate(resourceUri+"/output",None,None)
+    val dataPortTemplate = model.dto.DataPortTemplate(resourceUri + "/output", None, None)
     val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
 
     val componentTemplate = model.dto.ComponentTemplate(
@@ -116,7 +116,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
 
     val resourceUri = "urn:datasources/" + randomGraph.uuid.toString
 
-    val dataPortTemplate = model.dto.DataPortTemplate(resourceUri+"/output",None,None)
+    val dataPortTemplate = model.dto.DataPortTemplate(resourceUri + "/output", None, None)
     val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
 
     val componentTemplate = model.dto.ComponentTemplate(
@@ -141,5 +141,5 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
 class RandomGraph {
   val uuid = UUID.randomUUID()
 
-  def graphUri = "urn:" + uuid.toString
+  def graphUri: String = "urn:" + uuid.toString
 }

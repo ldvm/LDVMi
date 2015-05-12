@@ -76,9 +76,9 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
       dataSourceTemplateRepository.findById(DataSourceTemplateId(i))
     }
 
-    val datasources = if(combine) {
+    val datasources = if (combine) {
       maybeDsTemplate.toSeq ++ dataSourceTemplateRepository.findPermanent
-    } else if(maybeDsTemplate.isDefined){
+    } else if (maybeDsTemplate.isDefined) {
       maybeDsTemplate.toSeq
     } else {
       dataSourceTemplateRepository.findPermanent

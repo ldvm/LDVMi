@@ -11,6 +11,7 @@ import play.api.libs.json._
 import play.api.mvc.{WebSocket, Controller}
 import scaldi.{Injectable, Injector}
 import play.api.Play.current
+import utils.PaginationInfo
 
 class PipelineApiController(implicit inj: Injector) extends Controller with Injectable {
 
@@ -37,7 +38,7 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     val pipelineId = PipelineId(id)
 
     val result = JsObject(Seq(
-      "data" -> Json.toJson(pipelineService.lastEvaluations(pipelineId, skip, take))
+      "data" -> Json.toJson(pipelineService.lastEvaluations(pipelineId, PaginationInfo(skip, take)))
     ))
 
     Ok(result)
@@ -49,7 +50,7 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     val visualizerTemplateId = visualizerId.map(ComponentTemplateId.apply)
 
     val result = JsObject(Seq(
-      "data" -> Json.toJson(pipelineService.findPaginatedFiltered(skip, take, pipelineDiscoveryId, visualizerTemplateId)()),
+      "data" -> Json.toJson(pipelineService.findPaginatedFiltered(PaginationInfo(skip, take), pipelineDiscoveryId, visualizerTemplateId)()),
       "count" -> JsNumber(pipelineService.countAll)
     ))
 

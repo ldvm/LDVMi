@@ -3,11 +3,11 @@ package model.service.impl.pipeline
 import akka.actor.Props
 import model.entity._
 import model.service.SessionScoped
-import model.service.component.{ResultRequest, ControlActor, InternalComponent, Run}
+import model.service.component.{ControlActor, InternalComponent, ResultRequest, Run}
 import play.api.Play.current
 import play.api.db.slick._
 import play.api.libs.concurrent.Akka
-import scaldi.{Injector, Injectable}
+import scaldi.{Injectable, Injector}
 
 
 class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps: Props)
@@ -34,7 +34,7 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
       }
     }
 
-    val visualizer = instancesById.find{ case (_, (c, hasOutput, _)) => !hasOutput }.get
+    val visualizer = instancesById.find { case (_, (c, hasOutput, _)) => !hasOutput }.get
     val visualizerInstance = visualizer._2._1.componentInstance
     val controlActor = Akka.system.actorOf(Props(new ControlActor(evaluation, reporterProps, visualizerInstance)))
 
@@ -49,7 +49,11 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
     }
   }
 
-  private def recursivePipeline(bindingSet: DataPortBindingSet, level: Integer): (Seq[DataPortBinding], Seq[(ComponentInstanceId, (InternalComponent, Boolean, Boolean))]) = {
+  private def recursivePipeline(
+    bindingSet: DataPortBindingSet,
+    level: Integer): (Seq[DataPortBinding],
+    Seq[(ComponentInstanceId, (InternalComponent, Boolean, Boolean))]
+    ) = {
 
     if (level > 100) {
       (Seq(), Seq())
@@ -104,5 +108,4 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
         )
     }
   }
-
 }

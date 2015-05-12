@@ -1,7 +1,8 @@
 package model.service.impl.pipeline
 
 import akka.actor.{ActorRef, Props}
-import controllers.api.{JsonImplicits, ProgressReporter}
+import controllers.api.JsonImplicits._
+import controllers.api.ProgressReporter
 import model.entity._
 import model.rdf.sparql.datacube.DataCubeQueryData
 import model.repository._
@@ -9,8 +10,7 @@ import model.service._
 import play.api.db.slick.Session
 import play.api.libs.json.{JsSuccess, Json}
 import scaldi.{Injectable, Injector}
-import utils.MD5
-import JsonImplicits._
+import utils.{MD5, PaginationInfo}
 
 import scala.slick.lifted.Ordered
 
@@ -57,15 +57,15 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     pipelineDiscoveryRepository.findById(pipelineDiscoveryId)
   }
 
-  def lastEvaluations(pipelineId: PipelineId, skip: Int = 0, take: Int = 10)(implicit session: Session): Seq[PipelineEvaluation] = {
-    pipelineEvaluationRepository.lastEvaluationsOf(pipelineId, skip, take)
+  def lastEvaluations(pipelineId: PipelineId, paginationInfo: PaginationInfo)(implicit session: Session): Seq[PipelineEvaluation] = {
+    pipelineEvaluationRepository.lastEvaluationsOf(pipelineId, paginationInfo)
   }
 
   def findEvaluationById(evaluationId: PipelineEvaluationId)(implicit session: Session): Option[PipelineEvaluation] = {
     pipelineEvaluationRepository.findById(evaluationId)
   }
 
-  def setEvaluationQuery(token: String, query: PipelineEvaluationQuery)(implicit session: Session) = {
+  def setEvaluationQuery(token: String, query: PipelineEvaluationQuery)(implicit session: Session): PipelineEvaluationQueryId = {
     pipelineEvaluationQueryRepository.findByToken(token).map(q => pipelineEvaluationQueryRepository.remove(q))
     pipelineEvaluationQueryRepository.save(query)
   }
@@ -99,7 +99,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     }
   }
 
-  def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef) = {
+  def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef): Unit = {
     withSession { implicit session =>
       pipelines.map { pipeline =>
 
@@ -130,7 +130,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     }
   }
 
-  private def createInstance(componentInstance: ComponentInstance)(implicit session: Session): (ComponentInstanceId, Map[String, DataPortInstanceId], Option[DataPortInstanceId]) = {
+  private def createInstance(componentInstance: ComponentInstance)(implicit session: Session)
+  : (ComponentInstanceId, Map[String, DataPortInstanceId], Option[DataPortInstanceId]) = {
     val componentInstanceId = componentInstancesRepository.save(componentInstance)
     val inputPortIdsByUri = componentInstance.componentTemplate.inputTemplates.map { it =>
       val portTemplate = it.dataPortTemplate
@@ -153,11 +154,15 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     (componentInstanceId, inputPortIdsByUri, maybeOutputId)
   }
 
-  def findPaginatedFiltered[T <% Ordered](skip: Int = 0, take: Int = 50, pipelineDiscoveryId: Option[PipelineDiscoveryId] = None, visualizerId: Option[ComponentTemplateId] = None)
+  def findPaginatedFiltered[T <% Ordered](
+    paginationInfo: PaginationInfo,
+    pipelineDiscoveryId: Option[PipelineDiscoveryId] = None,
+    visualizerId: Option[ComponentTemplateId] = None
+    )
     (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
     (implicit session: Session): Seq[Pipeline] = {
 
-    repository.findPaginatedFilteredOrdered(skip, take)(pipelineDiscoveryId, visualizerId)(ordering)
+    repository.findPaginatedFilteredOrdered(paginationInfo)(pipelineDiscoveryId, visualizerId)(ordering)
   }
 
   def discover(reporterProps: Props, dataSourceTemplateId: Option[Long], combine: Boolean = false)(implicit session: Session): PipelineDiscoveryId = {
@@ -176,5 +181,4 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       id
     }
   }
-
 }
