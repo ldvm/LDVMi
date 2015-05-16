@@ -34,11 +34,7 @@ class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, S
 
       Option(broader).map{ b => broaderMap.put(b.getURI, broaderMap.getOrElse(b.getURI, Seq()) ++ Seq(nodeResource.getURI)) }
 
-      if(broader == null){
-        Some(nodeResource.getURI)
-      }else{
-        None
-      }
+      Option(broader).flatMap(x => None).getOrElse(Some(nodeResource.getURI))
 
     }
 
@@ -61,5 +57,4 @@ class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, S
     }
 
   }
-
 }

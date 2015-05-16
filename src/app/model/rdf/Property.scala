@@ -1,3 +1,3 @@
 package model.rdf
 
-case class Property(label: Option[LocalizedValue], uri: Option[String])
+case class Property(label: Option[LocalizedValue], uri: Option[String], schemeUri: Option[String])
