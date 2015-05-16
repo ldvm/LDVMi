@@ -31,7 +31,7 @@ class CompatibilityServiceImpl(implicit inj: Injector) extends CompatibilityServ
 
     componentInstances.foreach { componentInstance =>
       InternalComponent(componentInstance, ProgressReporter.props)
-        .check(BindingContext(bindingSet), reporterProps)
+        .check(BindingContext(bindingSet))
     }
 
     dpbsCompatibilityCheckId

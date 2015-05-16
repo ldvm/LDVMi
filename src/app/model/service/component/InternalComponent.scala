@@ -75,11 +75,9 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
     }
   }
 
-  def check(context: BindingContext, reporterProps: Props)(implicit session: Session) = {
+  def check(context: BindingContext)(implicit session: Session) = {
     val features = componentInstance.componentTemplate.features
     val featuresWithDescriptors = features.map { f => (f, f.descriptors)}
-
-    val reporter = Akka.system.actorOf(reporterProps)
 
     val eventualComponentInstanceCompatibility = featuresWithDescriptors.map {
       case (feature, descriptors) => {
@@ -91,18 +89,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
 
           val maybeComponentForDescriptor = inputInstanceUri.flatMap(context(_))
           maybeComponentForDescriptor.map { componentForDescriptor =>
-
-            val eventualDescriptorCompatibility = componentForDescriptor.checkIsCompatibleWith(descriptor, reporterProps)
-
-            eventualDescriptorCompatibility.onSuccess {
-              case r => reporter ! r
-            }
-
-            eventualDescriptorCompatibility.onFailure {
-              case e => reporter ! e.getMessage
-            }
-
-            eventualDescriptorCompatibility
+            componentForDescriptor.checkIsCompatibleWith(descriptor, reporterProps)
           }
         }
 
@@ -132,7 +119,12 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
       }
     }.get
 
-    (checker ask CheckCompatibilityRequest(descriptor)).mapTo[CheckCompatibilityResponse]
+    val future = (checker ask CheckCompatibilityRequest(descriptor)).mapTo[CheckCompatibilityResponse]
+    future.onSuccess{
+      case r: CheckCompatibilityResponse => reporter ! r
+    }
+
+    future
   }
 
   def checkCouldBeBoundWithComponentViaPort(componentToAsk: Component, portUri: String, reporterProps: Props)(implicit session: Session): Future[Boolean] = {

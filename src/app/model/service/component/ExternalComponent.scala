@@ -11,7 +11,7 @@ class ExternalComponent extends Component {
 
   override def componentInstance : ComponentInstance = ???
 
-  override def check(context: BindingContext, reporterProps: Props)(implicit session: Session): Unit = ???
+  override def check(context: BindingContext)(implicit session: Session): Unit = ???
 
   override def checkCouldBeBoundWithComponentViaPort(component: Component, portUri: String, reporterProps: Props)(implicit session: Session): Future[Boolean] = ???
 

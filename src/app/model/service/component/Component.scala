@@ -11,7 +11,7 @@ trait Component {
 
   def componentInstance: ComponentInstance
 
-  def check(context: BindingContext, reporterProps: Props)(implicit session: Session)
+  def check(context: BindingContext)(implicit session: Session)
 
   def checkIsCompatibleWith(descriptor: Descriptor, reporterProps: Props)(implicit session: Session) : Future[CheckCompatibilityResponse]
 
