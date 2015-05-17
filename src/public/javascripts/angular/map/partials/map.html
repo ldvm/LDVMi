@@ -6,9 +6,9 @@
                     <li class="list-group-item active">http://...{{property.uri | limitTo: -20}}
                     <li class="list-group-item" ng-repeat="value in values[property.uri]">
                         <input type="checkbox" ng-model="value.isActive"/>
-                        <span ng-if="property.uri == mainProperty.uri" ng-style="value.colorStyle"
-                              style="display: inline-block; min-width: 30px; min-height: 15px;"></span>
-                        {{value.label.variants[""] || value.uri}}
+                        <!--<span ng-if="property.uri == mainProperty.uri" ng-style="value.colorStyle"
+                              style="display: inline-block; min-width: 30px; min-height: 15px;"></span>-->
+                        {{label(value.label) || value.uri}}
                     </li>
                 </ul>
             </div>

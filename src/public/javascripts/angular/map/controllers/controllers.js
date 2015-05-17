@@ -90,10 +90,22 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     return;
                 }
 
-                if(!"autoLoad" in $routeParams) {
+                $scope.language = "cs";
+
+                $scope.label = function (label) {
+                    if (label && label.variants) {
+                        if (label.variants[$scope.language]) {
+                            return label.variants[$scope.language];
+                        } else if (label.variants["nolang"]) {
+                            return label.variants["nolang"];
+                        }
+                    }
+                    return undefined;
+                };
+
+                if(!("autoLoad" in $routeParams)) {
 
                     $scope.queryingDataset = "properties of geolocated entities";
-
                     MapService.properties({evaluationId: $id}, function (properties) {
                         $scope.properties = properties;
 

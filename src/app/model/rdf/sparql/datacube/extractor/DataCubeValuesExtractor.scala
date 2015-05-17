@@ -35,7 +35,7 @@ class DataCubeValuesExtractor extends QueryExecutionResultExtractor[DataCubeValu
 
   private def collectLabels(labelsList: List[(Option[String], Option[Literal], Option[Literal], Option[Literal])]): Option[LocalizedValue] = {
     val variants = labelsList.flatMap { case (_, l, spl, sn) =>
-      Seq(l, spl, sn).collect {
+      Seq(sn, l, spl).collect {
         case Some(lp) => Option(lp.getLanguage).filter(_.trim.nonEmpty).getOrElse("nolang") -> lp.getString
       }
     }.toMap
