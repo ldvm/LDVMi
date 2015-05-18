@@ -123,7 +123,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                             angular.forEach($scope.values, function (values, k) {
                                 angular.forEach(values, function (v) {
-                                    v.isActive = true;
+                                    v.isActive = false;
                                 });
                             });
 
