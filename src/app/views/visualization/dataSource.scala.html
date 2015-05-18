@@ -65,12 +65,19 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary waves-effect">Use</button>
+                            <button type="submit" id="use" class="btn btn-primary waves-effect">Use</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <script>
+            jQuery("#use").click(function(){
+                jQuery("#use").attr("disabled", "disabled");
+                jQuery("#use").html("Uploading...");
+            });
+        </script>
 
     </div> <!-- /container -->
 }
