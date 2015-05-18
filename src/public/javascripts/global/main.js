@@ -1,10 +1,11 @@
 require(['material', 'jquery'], function (material, $) {
     material.init();
 
+   console.log($("form#ttldl"));
 
-    $("#use").parent(.click(function(){
+    $("form#ttldl").submit(function(){
+        console.log("dfg");
         $("#use").attr("disabled", "disabled");
         $("#use").html("Uploading...");
-        $("#use").parents("form").submit();
     });
 });
