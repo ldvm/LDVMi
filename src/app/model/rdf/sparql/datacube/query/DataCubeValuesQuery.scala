@@ -11,7 +11,7 @@ class DataCubeValuesQuery(val uri: String) extends SparqlQuery {
       | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       | PREFIX schema: <http://schema.org/>
       |
-      | SELECT DISTINCT ?o ?l ?spl ?sn WHERE {
+      | SELECT DISTINCT ?o ?l ?spl ?sn ?sna ?st WHERE {
       |     [] <@s> ?o .
       |
       |     OPTIONAL { ?o skos:prefLabel ?spl . }
