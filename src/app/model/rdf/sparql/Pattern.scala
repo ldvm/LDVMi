@@ -2,6 +2,8 @@ package model.rdf.sparql
 
 trait Pattern {
 
-  def getSPARQLPattern: String
+  def getWherePattern: String
+  
+  def getConstructPattern: String
 
 }
