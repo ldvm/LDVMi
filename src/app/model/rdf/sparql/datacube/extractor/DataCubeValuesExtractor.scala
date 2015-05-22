@@ -23,8 +23,10 @@ class DataCubeValuesExtractor extends QueryExecutionResultExtractor[DataCubeValu
       val l = Option(qs.get("l")).map(_.asLiteral())
       val spl = Option(qs.get("spl")).map(_.asLiteral())
       val sn = Option(qs.get("sn")).map(_.asLiteral())
+      val sna = Option(qs.get("sna")).map(_.asLiteral())
+      val st = Option(qs.get("st")).map(_.asLiteral())
 
-      (uri, l, spl, sn)
+      (uri, l, spl, sn, sna, st)
     }.groupBy(_._1)
 
     Some(map.map { case (maybeUri, labelsList) =>
@@ -33,9 +35,9 @@ class DataCubeValuesExtractor extends QueryExecutionResultExtractor[DataCubeValu
     }.toSeq)
   }
 
-  private def collectLabels(labelsList: List[(Option[String], Option[Literal], Option[Literal], Option[Literal])]): Option[LocalizedValue] = {
-    val variants = labelsList.flatMap { case (_, l, spl, sn) =>
-      Seq(sn, l, spl).collect {
+  private def collectLabels(labelsList: List[(Option[String], Option[Literal], Option[Literal], Option[Literal], Option[Literal], Option[Literal])]): Option[LocalizedValue] = {
+    val variants = labelsList.flatMap { case (_, l, spl, sn, sna, st) =>
+      Seq(sn, l, spl, sna, st).collect {
         case Some(lp) => Option(lp.getLanguage).filter(_.trim.nonEmpty).getOrElse("nolang") -> lp.getString
       }
     }.toMap
