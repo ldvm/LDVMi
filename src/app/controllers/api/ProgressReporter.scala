@@ -39,7 +39,6 @@ class ProgressReporter(jsLogger: ActorRef) extends Actor {
     case checkResponse: PortCheckResult => {
       jsLogger ! Json.toJson(checkResponse)
     }
-    case r : CheckCompatibilityResponse => jsLogger ! Json.toJson(r)
     case j : JsValue => jsLogger ! j
     case msg: String => jsLogger ! JsObject(Seq(("message", JsString(msg))))
   }

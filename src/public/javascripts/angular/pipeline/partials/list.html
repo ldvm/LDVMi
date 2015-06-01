@@ -43,6 +43,9 @@
             </div>
 
             <div class="lv-body">
+                <div class="lv-item media" ng-hide="pipelines.length">
+                    No pipelines discovered.
+                </div>
                 <div class="lv-item media" ng-repeat="pipeline in pipelines">
                     <div class="checkbox pull-left">
                         <label>
@@ -61,10 +64,10 @@
                                 </span>
                             </li>
                             <li ng-show="pipeline.isTemporary" class="warning">Temporary</li>
-                            <li ng-class="{'danger': 'pipeline.isCompatible'}">
+                            <li>
                                 Compatibility:
-                                <span ng-show="pipeline.isCompatible">OK</span>
-                                <span ng-hide="pipeline.isCompatible">Error</span>
+                                <span ng-hide="pipeline.isCompatible">OK</span>
+                                <span ng-show="pipeline.isCompatible">Error</span>
                             </li>
                         </ul>
 
