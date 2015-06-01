@@ -9,11 +9,13 @@
             requirejs.config({
                 shim: {
                     openlayers: {
-                        exports: "ol"
+                        exports: "ol",
+                        //deps: ['proj4js']
                     }
                 },
                 paths: {
-                    openlayers: "@routes.WebJarAssets.at(WebJarAssets.locate("ol.js")).url.replaceAll(".js", "")"
+                    proj4js: "@routes.WebJarAssets.at(WebJarAssets.locate("proj4.js")).url.replaceAll("\\.js", "")",
+                    //openlayers: "https://cdnjs.cloudflare.com/ajax/libs/ol3/3.5.0/ol-debug"//"@routes.WebJarAssets.at(WebJarAssets.locate("ol-debug.js")).url.replaceAll("\\.js", "")"
                 }
             });
         </script>

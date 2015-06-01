@@ -19,7 +19,7 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
         |   ?g <http://www.opengis.net/ont/geosparql#asWKT> ?p .
         |
         |   %r
-        | }
+        | } LIMIT 1
       """
         .replaceAll(
           "%r", getRestrictions(queryData.filters))
