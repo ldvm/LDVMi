@@ -16,9 +16,9 @@ class VisualizationApiController(implicit inj: Injector) extends ApiController w
     Ok(mayBeResult.getOrElse(JsObject(Seq(("error", JsString("notfound"))))))
   }
 
-  def tree(id: Long) = DBAction { implicit rs =>
+  def tree(id: Long, schemeUri: String) = DBAction { implicit rs =>
     withEvaluation(id) { evaluation =>
-      Ok(Json.toJson(visualizationService.hierarchy(evaluation)))
+      Ok(Json.toJson(visualizationService.hierarchy(evaluation, schemeUri)))
     }
   }
 

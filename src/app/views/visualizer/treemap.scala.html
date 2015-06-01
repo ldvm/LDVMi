@@ -8,39 +8,43 @@
         callback: function() {
             // default requirejs configs
             @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
-                requirejs.config(@Html(webJarJson.toString));
-            }
+                requirejs.config(@Html(webJarJson.toString)
+
+                );
+                            }
         }
     };
     </script>
     <script src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     <script>
         require(["d3js", "jquery"], function(d3, $){
+            $.ajax({
+                type: "GET",
+                url: "/api/skos/schemes/@evaluationId.id",
+                success: function(data){
+                    var list = document.getElementById("list");
+                    list.innerHTML = "";
 
-            d3.json("/api/v1/evaluation/@evaluationId.id/tree.json", function(roots) {
-                var list = document.getElementById("list");
-                list.innerHTML = "";
-
-                var cnt = 0;
-                for (var r in roots){
-                    var root = roots[r];
-                    var item = document.createElement("li");
-                    item.appendChild(document.createTextNode("Hierarchy " + (++cnt) ));
-                    list.appendChild(item);
-                    item.onclick = function(){
-                        (function(root){
-                            document.getElementById("body").innerHTML = "";
-                            onListItemClick($.extend({}, roots[0]));
-                        })(root);
+                    for (var i in data){
+                        var scheme = data[i];
+                        var item = document.createElement("li");
+                        item.appendChild(document.createTextNode(scheme.label.variants["nolang"]));
+                        list.appendChild(item);
+                        item.onclick = function(){
+                            (function(s){
+                                document.getElementById("body").innerHTML = "";
+                                onListItemClick($.extend({}, s));
+                            })(scheme);
+                        }
                     }
-                }
-
-                if(roots.length === 1){
-                    onListItemClick($.extend({}, roots[0]));
                 }
             });
 
-            var onListItemClick = function(root){
+            var uri = "/api/v1/evaluation/@evaluationId.id/tree.json";
+
+            function onListItemClick(scheme){
+                d3.json(uri + "?schemeUri=" + scheme.uri, function(root) {
+
                 var w = 1220,
                     h = 600,
                     x = d3.scale.linear().range([0, w]),
@@ -106,8 +110,8 @@
                 function transform(d) {
                     return "translate(8," + d.dx * ky / 2 + ")";
                 }
-            };
-
+            });
+            }
         });
     </script>
 }
@@ -115,25 +119,25 @@
 @styles = {
     <style>
     .chart {
-    display: block;
-    margin: auto;
-    margin-top: 60px;
-    font-size: 11px;
+    display : block ;
+    margin : auto ;
+    margin-top : 60 px ;
+    font-size : 11 px ;
     }
 
     rect {
-    stroke: #eee;
-    fill: #aaa;
-    fill-opacity: .8;
+    stroke : #eee ;
+    fill : #aaa ;
+    fill-opacity :.8 ;
     }
 
     rect.parent {
-    cursor: pointer;
-    fill: steelblue;
+    cursor : pointer ;
+    fill : steelblue ;
     }
 
     text {
-    pointer-events: none;
+    pointer-events : none ;
     }
     </style>
 
@@ -141,7 +145,7 @@
 
 @layout("Treemap visualization", scripts, styles) {
 
-    <div style="padding-top: 60px;">
+    <div style="padding-top : 60 px ;">
         <ul id="list"></ul>
         <div id="body"></div>
     </div>

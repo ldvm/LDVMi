@@ -10,6 +10,12 @@ import JsonImplicits._
 
 class SkosApiController(implicit inj: Injector) extends ApiController {
 
+  def schemes(id: Long) = DBAction { implicit rs =>
+    withEvaluation(id) { evaluation =>
+      Ok(Json.toJson(visualizationService.skosSchemes(evaluation)))
+    }
+  }
+
   def concepts(id: Long): Action[JsValue] = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
     val json: JsValue = rs.request.body
 

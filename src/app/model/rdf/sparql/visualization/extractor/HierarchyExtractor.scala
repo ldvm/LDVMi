@@ -9,9 +9,9 @@ import model.rdf.vocabulary.SKOS
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
-class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, Seq[HierarchyNode]] {
+class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, HierarchyNode] {
 
-  def extract(input: QueryExecution): Option[Seq[HierarchyNode]] = {
+  def extract(input: QueryExecution): Option[HierarchyNode] = {
 
     val model = input.execConstruct()
 
@@ -38,7 +38,7 @@ class HierarchyExtractor extends QueryExecutionResultExtractor[HierarchyQuery, S
 
     }
 
-    Some(roots.flatMap(u => tree(u, broaderMap, nodesMap)))
+    roots.flatMap(u => tree(u, broaderMap, nodesMap)).headOption
   }
 
   def tree(rootUri: String, broaderMap: mutable.HashMap[String, Seq[String]], nodesMap: mutable.HashMap[String, HierarchyNode])

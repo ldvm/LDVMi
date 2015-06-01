@@ -11,5 +11,6 @@ object SKOS extends Vocabulary {
   lazy val broader: Property = m.createProperty(PREFIX_URL, "broader")
   lazy val narrower: Property = m.createProperty(PREFIX_URL, "narrower")
   lazy val Concept: Resource = m.createResource(PREFIX_URL + "Concept")
+  lazy val ConceptScheme: Resource = m.createResource(PREFIX_URL + "ConceptScheme")
 
 }

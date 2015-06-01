@@ -32,7 +32,7 @@ GET         /api/v1/pipelines/evaluations/:id                                   
 #GET         /api/v1/pipelines/discovery/:id                @controllers.api.PipelineApiController.discoveryState(id: Long)
 GET         /api/v1/pipelines/visualization/:id                                           @controllers.api.PipelineApiController.visualizationById(id: Long)
 GET         /api/v1/pipelines/:id                                                         @controllers.api.PipelineApiController.findById(id: Long)
-GET         /api/v1/evaluation/:id/tree.json                                              @controllers.api.VisualizationApiController.tree(id: Long)
+GET         /api/v1/evaluation/:id/tree.json                                              @controllers.api.VisualizationApiController.tree(id: Long, schemeUri: String)
 GET         /api/v1/evaluation/result/:id                                                 @controllers.api.VisualizationApiController.dataReferences(id: Long)
 GET         /api/v1/datacube/custom/:id/:permalinkToken                                   @controllers.api.VisualizationApiController.customCube(id: Long, permalinkToken: String, dimensionUri: String, valueUri: String)
 
@@ -48,7 +48,9 @@ POST        /api/map/polygon-entities/:id                                       
 GET         /api/map/polygon-entities-properties/:id                                      @controllers.api.MapApiController.polygonEntitiesProperties(id: Long)
 GET         /api/map/properties/:id                                                       @controllers.api.MapApiController.properties(id: Long)
 POST        /api/map/markers/:id                                                          @controllers.api.MapApiController.markers(id: Long)
+
 POST        /api/skos/concepts/:id                                                        @controllers.api.SkosApiController.concepts(id: Long)
+GET         /api/skos/schemes/:id                                                         @controllers.api.SkosApiController.schemes(id: Long)
 
 GET         /api/datacube/datasets/:id                                                    @controllers.api.DataCubeApiController.datasets(id: Long)
 GET         /api/datacube/datastructures/:id                                              @controllers.api.DataCubeApiController.dataStructures(id: Long)

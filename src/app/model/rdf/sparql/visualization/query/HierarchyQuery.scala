@@ -2,7 +2,7 @@ package model.rdf.sparql.visualization.query
 
 import model.rdf.sparql.query.SparqlQuery
 
-class HierarchyQuery extends SparqlQuery {
+class HierarchyQuery(schemeUri: String) extends SparqlQuery {
 
   def get: String =
     """
@@ -11,25 +11,29 @@ class HierarchyQuery extends SparqlQuery {
       | PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       |
       | construct {
-      |   ?ca a skos:Concept;
-      |      skos:prefLabel ?name;
-      |      rdf:value ?size;
-      |      skos:broader ?broader.
+      |   ?ca a skos:Concept ;
+      |      skos:prefLabel ?name ;
+      |      rdf:value ?size ;
+      |      skos:inScheme <%u> ;
+      |      skos:broader ?broader .
       |
-      |   ?broader a skos:Concept;
-      |      skos:prefLabel ?bname.
+      |   ?broader a skos:Concept ;
+      |      skos:prefLabel ?bname .
       | }
       | where
       | {
-      |   ?ca a skos:Concept;
-      |      skos:prefLabel ?name;
+      |   ?ca a skos:Concept ;
+      |      skos:prefLabel ?name ;
+      |      skos:inScheme <%u> ;
       |      skos:broader ?broader.
       |
-      |   ?broader a skos:Concept;
-      |      skos:prefLabel ?bname.
+      |   ?broader a skos:Concept ;
+      |      skos:prefLabel ?bname .
       |
       |      OPTIONAL { ?ca rdf:value ?size. }
       | }
-    """.stripMargin
+    """
+      .replaceAll("%u", schemeUri)
+      .stripMargin
 
 }
