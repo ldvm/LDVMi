@@ -1,4 +1,4 @@
-define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
+define(['angular', 'jquery', 'bootstrap'], function (ng, $) {
     'use strict';
 
     Array.prototype.diff = function (a) {
@@ -188,9 +188,12 @@ define(['angular', 'openlayers', 'jquery', 'bootstrap'], function (ng, ol, $) {
                     $scope.updateMap = function (entities) {
                         var format = new ol.format.WKT();
                         var features = [];
+
                         ng.forEach(entities, function (e) {
                             var feature = format.readFeature(e.wkt);
-                            feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
+
+                            var prj = new ol.proj.Projection({code:'EPSG:4258', axisOrientation: 'neu'});
+                            feature.getGeometry().transform(prj, 'EPSG:3857');
                             feature.color = color(e.groupPropertyValue);
 
                             if (e.title) {

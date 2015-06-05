@@ -3,13 +3,15 @@ package model.rdf.sparql.visualization
 import model.entity.PipelineEvaluation
 import model.service.component.DataReference
 import play.api.db.slick._
-import play.api.libs.iteratee.Enumerator
-import play.api.libs.json.JsValue
 
 trait VisualizationService {
 
-  def hierarchy(evaluation: PipelineEvaluation): Option[Seq[HierarchyNode]]
+  def skosScheme(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode]
 
   def dataReferences(evaluation: PipelineEvaluation)(implicit session: Session): Seq[DataReference]
+
+  def skosSchemes(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Scheme]]
+
+  def skosConcepts(evaluation: PipelineEvaluation, uris: Seq[String])(implicit session: Session): Map[String, Option[Seq[Concept]]]
 
 }

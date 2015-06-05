@@ -7,38 +7,40 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
     ng.module('map.controllers', []).
         controller('Polygons',
-        ['$scope', 'MapService', 'DataCubeService', '$q', '$location', '$routeParams', '$timeout',
-            function ($scope, MapService, DataCubeService, $q, $location, $routeParams, $timeout) {
+        ['$scope', 'MapService', '$q', '$location', '$routeParams',
+            function ($scope, mapsApi, $q, $location, $routeParams) {
 
                 var $id = $routeParams.id;
-                var $permaToken = $routeParams.p;
 
                 if (!$id) {
                     return;
                 }
 
                 $scope.init = true;
-                $scope.currentLanguage = "";
                 $scope.mainProperty = null;
+                $scope.osm = true;
+                $scope.language = "en";
 
                 $scope.queryingDataset = "properties of geolocated entities";
-                MapService.polygonEntitiesProperties({visualizationId: $id}, function (properties) {
+
+                mapsApi.polygonEntitiesProperties({evaluationId: $id}).$promise.then(function (properties) {
                     $scope.properties = properties;
 
                     $scope.mainProperty = properties[0] || null;
 
                     var uris = properties.map(function (p) {
-                        return p.uri;
+                        return p.schemeUri;
                     });
 
                     $scope.queryingDataset = "values of properties";
-                    DataCubeService.getValues({visualizationId: $id}, {uris: uris}, function (propertiesValuesMap) {
+
+                    mapsApi.getSkosConcepts({evaluationId: $id}, {conceptUris: uris}).$promise.then(function (propertiesValuesMap) {
                         $scope.queryingDataset = null;
                         $scope.values = propertiesValuesMap;
                         $scope.colors = {};
 
                         if ($scope.mainProperty) {
-                            angular.forEach($scope.values[$scope.mainProperty.uri], function (v) {
+                            angular.forEach($scope.values[$scope.mainProperty.schemeUri], function (v) {
                                 var key = v.uri || v.label.variants[$scope.currentLanguage];
                                 $scope.colors[key] = "rgba(" + random() + ", " + random() + ", " + random() + ", 0.7)";
                                 v.colorStyle = {"background-color": $scope.colors[key]};
@@ -46,6 +48,18 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         }
                     });
                 });
+
+
+                $scope.label = function (label) {
+                    if (label && label.variants) {
+                        if (label.variants[$scope.language]) {
+                            return label.variants[$scope.language];
+                        } else if (label.variants["nolang"]) {
+                            return label.variants["nolang"];
+                        }
+                    }
+                    return undefined;
+                };
 
                 $scope.refresh = function () {
                     $scope.queryingDataset = "geolocated entities";
@@ -56,8 +70,17 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         if (k.substr(0, 1) != "$") {
                             angular.forEach(array, function (v, key) {
                                 if (parseInt(key) > -1) {
-                                    filters[k] = filters[k] || [];
-                                    filters[k].push({
+
+                                    var trueKey = k;
+                                    var matchingObjects = _.where($scope.properties, {schemeUri: k});
+                                    if(matchingObjects.length){
+                                        trueKey = matchingObjects[0].uri;
+                                    }
+
+                                    console.log(trueKey);
+
+                                    filters[trueKey] = filters[trueKey] || [];
+                                    filters[trueKey].push({
                                         label: v.label.variants[$scope.currentLanguage],
                                         uri: v.uri,
                                         isActive: v.isActive || false
@@ -67,7 +90,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         }
                     });
 
-                    MapService.polygonEntities({visualizationId: $id}, {filters: filters}, function (data) {
+                    mapsApi.polygonEntities({evaluationId: $id}, {filters: filters}, function (data) {
                         $scope.queryingDataset = null;
                         $scope.entities = data;
                     });
@@ -116,7 +139,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         });
 
                         $scope.queryingDataset = "values of properties";
-                        DataCubeService.getValues({visualizationId: $id}, {uris: uris}, function (propertiesValuesMap) {
+                        DataCubeService.getValues({evaluationId: $id}, {uris: uris}, function (propertiesValuesMap) {
                             $scope.queryingDataset = null;
                             $scope.values = propertiesValuesMap;
                             $scope.colors = {};

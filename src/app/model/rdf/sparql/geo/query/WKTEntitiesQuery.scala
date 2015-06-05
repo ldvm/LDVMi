@@ -15,26 +15,29 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
       """
         | SELECT ?s ?l ?p %v WHERE {
         |   ?s <http://www.opengis.net/ont/geosparql#hasGeometry> ?g ;
-        |      skos:prefLabel ?l .
+        |      rdfs:label ?l .
         |   ?g <http://www.opengis.net/ont/geosparql#asWKT> ?p .
         |
         |   %r
-        | }
+        | } LIMIT 1
       """
         .replaceAll(
           "%r", getRestrictions(queryData.filters))
         .replaceAll("%v", if (queryData.filters.nonEmpty) { "?v1" } else {"" })
         .stripMargin
+    println(q)
     q
   }
 
   private def prefixes =
     """
       | PREFIX skos: <%skos>
+      | PREFIX rdfs: <%rdfs>
       |
 
     """
       .replaceAll("%skos", SKOS.PREFIX_URL)
+      .replaceAll("%rdfs", "http://www.w3.org/2000/01/rdf-schema#")
       .stripMargin
 
   private def getRestrictions(rule: Map[String, Seq[ValueFilter]]): String = {

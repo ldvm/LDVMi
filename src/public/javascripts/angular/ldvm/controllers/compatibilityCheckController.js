@@ -1,7 +1,7 @@
 define(['angular', './controllers'], function (ng) {
     'use strict';
 
-    return ng.module('pipeline.controllers')
+    return ng.module('ldvm.controllers')
         .controller('CompatibilityCheck', [
             '$scope', '$routeParams', '$connection',
             function ($scope, $routeParams, $connection) {

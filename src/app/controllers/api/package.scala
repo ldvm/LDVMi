@@ -6,7 +6,7 @@ import model.entity._
 import model.rdf.sparql.ValueFilter
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.geo._
-import model.rdf.sparql.visualization.HierarchyNode
+import model.rdf.sparql.visualization.{Scheme, Concept, HierarchyNode}
 import model.rdf.{LocalizedValue, Property}
 import model.service.component.DataReference
 import play.api.db
@@ -63,6 +63,10 @@ package object api {
     implicit val dataReferenceWrites = Json.writes[DataReference]
 
     implicit val localizedLiteralWrites = Json.writes[LocalizedValue]
+
+    implicit val skosConceptWrites = Json.writes[Concept]
+    implicit val skosSchemeWrites = Json.writes[Scheme]
+
     implicit val dataCubeDatasetWrites = Json.writes[DataCubeDataset]
     implicit val dataCubeDimensionPropertyWrites = Json.writes[DataCubeDimensionProperty]
     implicit val dataCubeMeasurePropertyWrites = Json.writes[DataCubeMeasureProperty]

@@ -1,113 +1,51 @@
 @import model.entity.PipelineEvaluationId
 
 @(evaluationId: PipelineEvaluationId)
-
+@***
 @scripts = {
     <script>
     var require = {
         callback: function() {
             // default requirejs configs
             @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
-                requirejs.config(@Html(webJarJson.toString));
+                requirejs.config(@Html(webJarJson.toString)
+
+                );
             }
         }
     };
     </script>
     <script src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     <script>
-        require(["d3js", "jquery"], function(d3, $){
+        require(["d3js", "jquery", "material"], function(d3, $, material){
 
-            d3.json("/api/v1/evaluation/@evaluationId.id/tree.json", function(roots) {
-                var list = document.getElementById("list");
-                list.innerHTML = "";
+            $.ajax({
+                type: "GET",
+                url: "/api/skos/schemes/@evaluationId.id",
+                success: function(data){
+                    var list = document.getElementById("list");
+                    list.innerHTML = "";
 
-                var cnt = 0;
-                for (var r in roots){
-                    var root = roots[r];
-                    var item = document.createElement("li");
-                    item.appendChild(document.createTextNode("Hierarchy " + (++cnt) ));
-                    list.appendChild(item);
-                    item.onclick = function(){
-                        (function(root){
-                            document.getElementById("body").innerHTML = "";
-                            onListItemClick($.extend({}, roots[0]));
-                        })(root);
+                    for (var i in data){
+                        var scheme = data[i];
+                        var item = document.createElement("li");
+                        item.appendChild(document.createTextNode(scheme.label.variants["nolang"]));
+                        list.appendChild(item);
+                        item.onclick = function(){
+                            (function(s){
+                                document.getElementById("body").innerHTML = "";
+                                onListItemClick($.extend({}, s));
+                            })(scheme);
+                        }
                     }
-                }
-
-                if(roots.length === 1){
-                    onListItemClick($.extend({}, roots[0]));
                 }
             });
 
-            var onListItemClick = function(root){
-                var w = 1220,
-                    h = 600,
-                    x = d3.scale.linear().range([0, w]),
-                    y = d3.scale.linear().range([0, h]);
+            var uri = "/api/v1/evaluation/@evaluationId.id/tree.json";
 
-                var vis = d3.select("#body").append("div")
-                    .attr("class", "chart")
-                    .style("width", w + "px")
-                    .style("height", h + "px")
-                    .append("svg:svg")
-                    .attr("width", w)
-                    .attr("height", h);
+            function onListItemClick(scheme){
 
-                var partition = d3.layout.partition()
-                    .value(function(d) { return d.size; });
-
-                var g = vis.selectAll("g")
-                    .data(partition.nodes(root))
-                    .enter().append("svg:g")
-                    .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
-                    .on("click", click);
-
-                var kx = w / root.dx,
-                    ky = h / 1;
-
-                g.append("svg:rect")
-                    .attr("width", root.dy * kx)
-                    .attr("height", function(d) { return d.dx * ky; })
-                    .attr("class", function(d) { return d.children ? "parent" : "child"; });
-
-                g.append("svg:text")
-                    .attr("transform", transform)
-                    .attr("dy", ".35em")
-                    .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; })
-                    .text(function(d) { return d.name; });
-
-                d3.select(window)
-                    .on("click", function() { click(root); });
-
-                function click(d) {
-                    if (!d.children) return;
-
-                    kx = (d.y ? w - 40 : w) / (1 - d.y);
-                    ky = h / d.dx;
-                    x.domain([d.y, 1]).range([d.y ? 40 : 0, w]);
-                    y.domain([d.x, d.x + d.dx]);
-
-                    var t = g.transition()
-                    .duration(d3.event.altKey ? 7500 : 750)
-                    .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; });
-
-                    t.select("rect")
-                    .attr("width", d.dy * kx)
-                    .attr("height", function(d) { return d.dx * ky; });
-
-                    t.select("text")
-                    .attr("transform", transform)
-                    .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; });
-
-                    d3.event.stopPropagation();
-                }
-
-                function transform(d) {
-                    return "translate(8," + d.dx * ky / 2 + ")";
-                }
-            };
-
+            }
         });
     </script>
 }
@@ -115,34 +53,38 @@
 @styles = {
     <style>
     .chart {
-    display: block;
-    margin: auto;
-    margin-top: 60px;
-    font-size: 11px;
+    display : block ;
+    margin : auto ;
+    margin-top : 60 px ;
+    font-size : 11 px ;
     }
 
     rect {
-    stroke: #eee;
-    fill: #aaa;
-    fill-opacity: .8;
+    stroke : #eee ;
+    fill : #aaa ;
+    fill-opacity :.8 ;
     }
 
     rect.parent {
-    cursor: pointer;
-    fill: steelblue;
+    cursor : pointer ;
+    fill : steelblue ;
     }
 
     text {
-    pointer-events: none;
+    pointer-events : none ;
     }
     </style>
 
 }
 
-@layout("Treemap visualization", scripts, styles) {
+***@
 
-    <div style="padding-top: 60px;">
-        <ul id="list"></ul>
+@layout("Treemap visualization") {
+
+    <div style="padding-top : 60 px ;">
+        <aside id="chat">
+            <ul id="list"></ul>
+        </aside>
         <div id="body"></div>
     </div>
 

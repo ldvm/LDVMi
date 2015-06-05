@@ -3,7 +3,7 @@ define(['./app'], function (app) {
 
     app.config(['$routeProvider', '$locationProvider', function ($routeProvider) {
 
-        var partialsPath = '/assets/javascripts/angular/pipeline/partials/';
+        var partialsPath = '/assets/javascripts/angular/ldvm/partials/';
 
         $routeProvider.when('/list', {templateUrl: partialsPath + 'list.html', controller: 'List', reloadOnSearch: false});
         $routeProvider.when('/discover', {templateUrl: partialsPath + 'discover.html', controller: 'Discover', reloadOnSearch: false});
@@ -14,6 +14,7 @@ define(['./app'], function (app) {
         $routeProvider.when('/compatibility/:id', {templateUrl: partialsPath + 'compatibility.html', controller: 'Compatibility', reloadOnSearch: false});
         $routeProvider.when('/detail/:id', {templateUrl: partialsPath + 'detail.html', controller: 'Detail', reloadOnSearch: false });
         $routeProvider.when('/result/:id', {templateUrl: partialsPath + 'result.html', controller: 'Result', reloadOnSearch: false });
+        $routeProvider.when('/treemap/:id', {templateUrl: partialsPath + 'visualizer/treemap.html', controller: 'Treemap', reloadOnSearch: false });
         $routeProvider.otherwise({redirectTo: '/'});
     }])
         .config(function ($provide) {

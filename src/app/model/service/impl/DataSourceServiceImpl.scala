@@ -75,14 +75,16 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     val endpointResource = model.createResource(endpointUrl)
     serviceResource.addProperty(SD.endpoint, endpointResource)
 
-    val dataSetResource = model.createResource()
-    serviceResource.addProperty(SD.defaultDataset, dataSetResource)
+    if (graphUris.nonEmpty) {
+      val dataSetResource = model.createResource()
+      serviceResource.addProperty(SD.defaultDataset, dataSetResource)
 
-    graphUris.foreach { graphUri =>
-      val graphResource = model.createResource(graphUri)
-      val namedGraphResource = model.createResource()
-      namedGraphResource.addProperty(SD.name, graphResource)
-      dataSetResource.addProperty(SD.namedGraph, namedGraphResource)
+      graphUris.foreach { graphUri =>
+        val graphResource = model.createResource(graphUri)
+        val namedGraphResource = model.createResource()
+        namedGraphResource.addProperty(SD.name, graphResource)
+        dataSetResource.addProperty(SD.namedGraph, namedGraphResource)
+      }
     }
     configResource.addProperty(DSPARQL.service, serviceResource)
 
@@ -99,7 +101,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
       resourceUri,
       Some(endpointUrl),
       None,
-      Some(config(endpointUrl, graphUris)),
+      Some(config(endpointUrl, graphUris.filter(_.trim.nonEmpty))),
       Seq(),
       Some(outputTemplate),
       Seq(),

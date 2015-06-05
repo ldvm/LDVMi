@@ -3,8 +3,10 @@
         <div>
             <div ng-repeat="property in properties">
                 <ul class="list-group">
-                    <li class="list-group-item active">http://...{{property.uri | limitTo: -20}}
-                    <li class="list-group-item" ng-repeat="value in values[property.uri]">
+                    <li class="list-group-item active">
+                        {{label(property.label) || property.uri}}
+                    </li>
+                    <li class="list-group-item" ng-repeat="value in (values[property.uri] || values[property.schemeUri])">
                         <input type="checkbox" ng-model="value.isActive"/>
                         <!--<span ng-if="property.uri == mainProperty.uri" ng-style="value.colorStyle"
                               style="display: inline-block; min-width: 30px; min-height: 15px;"></span>-->
@@ -27,8 +29,8 @@
     </div>
 </aside>
 
-<osm ng-if="entities" entities="entities" colors="colors" style="width: 100%; height: 800px;"></osm>
-<gmaps ng-if="!entities" fit-bounds="true" markers="markers" center="center"
+<osm ng-if="osm" entities="entities" colors="colors" style="width: 100%; height: 100vh; margin-top: -30px;"></osm>
+<gmaps ng-if="!osm" fit-bounds="true" markers="markers" center="center"
        style="width: 100%; height: 100vh;"></gmaps>
 
 <div ng-show="queryingDataset || !(properties.length) && (!markers) && (!entities)" style="width: 100%; height: 100vh; position: absolute; left: 0; top: 0; background: rgba(0,0,0,0.6)">

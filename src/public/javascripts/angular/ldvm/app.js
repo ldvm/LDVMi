@@ -8,10 +8,19 @@ define([
         './controllers/indexController',
         './controllers/listController',
         './controllers/resultController',
+        './controllers/treemapController',
         './controllers/layoutController',
-        './directives',
-        './filters',
-        './services',
+        './directives/dynamicChart',
+        './directives/forceLayout',
+        './directives/sparkLine',
+        './directives/treemap',
+        './websocket',
+        './utils',
+        './filters/labelFilter',
+        './models/componentModel',
+        './models/evaluationModel',
+        './models/visualizationModel',
+        './models/pipelineModel',
         'angular-resource',
         'angular-route',
         'angular-ui',
@@ -25,10 +34,10 @@ define([
     function (ng) {
         'use strict';
 
-        return ng.module('pipeline', [
-            'pipeline.controllers',
-            'pipeline.filters',
-            'pipeline.directives',
+        return ng.module('ldvm', [
+            'ldvm.controllers',
+            'ldvm.directives',
+            'ldvm.filters',
             'ngRoute',
             'ngResource',
             'ngTable',

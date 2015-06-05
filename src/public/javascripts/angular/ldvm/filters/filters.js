@@ -1,5 +1,5 @@
 define(['angular'], function (ng) {
     'use strict';
 
-    ng.module('pipeline.filters', []);
+    return ng.module('ldvm.filters', []);
 });
