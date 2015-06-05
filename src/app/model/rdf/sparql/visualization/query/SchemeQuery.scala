@@ -2,7 +2,7 @@ package model.rdf.sparql.visualization.query
 
 import model.rdf.sparql.query.SparqlQuery
 
-class HierarchyQuery(schemeUri: String) extends SparqlQuery {
+class SchemeQuery(schemeUri: String) extends SparqlQuery {
 
   def get: String =
     """
@@ -10,7 +10,7 @@ class HierarchyQuery(schemeUri: String) extends SparqlQuery {
       | PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       | PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       |
-      | construct {
+      | CONSTRUCT {
       |   ?ca a skos:Concept ;
       |      skos:prefLabel ?name ;
       |      rdf:value ?size ;
@@ -20,7 +20,7 @@ class HierarchyQuery(schemeUri: String) extends SparqlQuery {
       |   ?broader a skos:Concept ;
       |      skos:prefLabel ?bname .
       | }
-      | where
+      | WHERE
       | {
       |   ?ca a skos:Concept ;
       |      skos:prefLabel ?name ;

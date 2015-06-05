@@ -3,8 +3,8 @@ package model.rdf.sparql.visualization
 import _root_.model.service.SessionScoped
 import model.entity.PipelineEvaluation
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
-import model.rdf.sparql.visualization.extractor.{SchemesExtractor, ConceptsExtractor, HierarchyExtractor}
-import model.rdf.sparql.visualization.query.{SchemesQuery, ConceptsQuery, HierarchyQuery}
+import model.rdf.sparql.visualization.extractor.{SchemesExtractor, ConceptsExtractor, SchemeExtractor}
+import model.rdf.sparql.visualization.query.{SchemesQuery, ConceptsQuery, SchemeQuery}
 import model.service.component.DataReference
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
@@ -13,8 +13,8 @@ class VisualizationServiceImpl(implicit val inj: Injector) extends Visualization
 
   var sparqlEndpointService = inject[SparqlEndpointService]
 
-  def hierarchy(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode] = {
-    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new HierarchyQuery(schemeUri), new HierarchyExtractor)
+  def skosScheme(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode] = {
+    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new SchemeQuery(schemeUri), new SchemeExtractor)
   }
 
   def dataReferences(evaluation: PipelineEvaluation)(implicit session: Session): Seq[DataReference] = {

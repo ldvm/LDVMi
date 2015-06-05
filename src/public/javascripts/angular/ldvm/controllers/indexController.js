@@ -1,7 +1,7 @@
 define(['angular', 'material', './controllers'], function (ng, material) {
     'use strict';
 
-    return ng.module('pipeline.controllers')
+    return ng.module('ldvm.controllers')
         .controller('Index', ['$scope', 'Components', 'Pipelines', function ($scope, components, pipelines) {
             $scope.visualize = function () {
 

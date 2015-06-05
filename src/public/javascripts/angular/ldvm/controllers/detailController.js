@@ -1,7 +1,7 @@
 define(['angular', './controllers'], function (ng) {
     'use strict';
 
-    return ng.module('pipeline.controllers')
+    return ng.module('ldvm.controllers')
         .controller('Detail', [
             '$scope', '$routeParams', 'Pipelines',
             function ($scope, $routeParams, pipelines) {

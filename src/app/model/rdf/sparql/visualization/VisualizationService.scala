@@ -6,7 +6,7 @@ import play.api.db.slick._
 
 trait VisualizationService {
 
-  def hierarchy(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode]
+  def skosScheme(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode]
 
   def dataReferences(evaluation: PipelineEvaluation)(implicit session: Session): Seq[DataReference]
 

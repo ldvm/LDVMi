@@ -14,8 +14,12 @@ class SchemesQuery extends SparqlQuery {
       | }
       | WHERE
       | {
-      |   ?s a skos:ConceptScheme ;
-      |      skos:prefLabel ?l .
+      |    ?ca a skos:Concept;
+      |        skos:inScheme ?s ;
+      |        skos:broader ?broader.
+      |
+      |   ?s skos:prefLabel ?l;
+      |      a skos:ConceptScheme .
       | }
     """
       .stripMargin
