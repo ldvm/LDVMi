@@ -1,4 +1,6 @@
 <div>
+
+
     <style>
         .chart {
             display : block ;
@@ -18,7 +20,15 @@
             fill : steelblue ;
         }
 
+        path {
+            stroke: #000;
+            stroke-width: 1.5;
+            cursor: pointer;
+        }
+
         text {
+            font: 11px sans-serif;
+            cursor: pointer;
             pointer-events : none ;
         }
     </style>
@@ -82,7 +92,14 @@
         <div class="container-fluid" ng-if="!queryingDataset">
             <div class="card" ng-show="scheme">
                 <div class="card-body card-padding">
-                    <treemap scheme="scheme"></treemap>
+
+                    <button class="btn btn-default" ng-click="visType = 'sunburst'">Sunburst</button>
+                    <button class="btn btn-default" ng-click="visType = 'treemap'">Treemap</button>
+
+                    <div>
+                        <treemap scheme="scheme" ng-show="visType == 'treemap'"></treemap>
+                        <sunburst scheme="scheme" ng-show="visType == 'sunburst'"></sunburst>
+                    </div>
                 </div>
             </div>
         </div>

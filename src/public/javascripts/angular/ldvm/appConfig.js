@@ -14,7 +14,7 @@ define(['./app'], function (app) {
         $routeProvider.when('/compatibility/:id', {templateUrl: partialsPath + 'compatibility.html', controller: 'Compatibility', reloadOnSearch: false});
         $routeProvider.when('/detail/:id', {templateUrl: partialsPath + 'detail.html', controller: 'Detail', reloadOnSearch: false });
         $routeProvider.when('/result/:id', {templateUrl: partialsPath + 'result.html', controller: 'Result', reloadOnSearch: false });
-        $routeProvider.when('/treemap/:id', {templateUrl: partialsPath + 'visualizer/treemap.html', controller: 'Treemap', reloadOnSearch: false });
+        $routeProvider.when('/hierarchy/:type/:id', {templateUrl: partialsPath + 'visualizer/hierarchy.html', controller: 'Hierarchy', reloadOnSearch: false });
         $routeProvider.otherwise({redirectTo: '/'});
     }])
         .config(function ($provide) {

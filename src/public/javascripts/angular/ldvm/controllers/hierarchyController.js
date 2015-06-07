@@ -2,7 +2,7 @@ define(['angular', './controllers'], function (ng) {
     'use strict';
 
     return ng.module('ldvm.controllers')
-        .controller('Treemap',
+        .controller('Hierarchy',
         [
             '$scope',
             '$routeParams',
@@ -17,6 +17,8 @@ define(['angular', './controllers'], function (ng) {
                 if(!id){
                     return;
                 }
+
+                $scope.visType = $routeParams.type;
 
                 $scope.schemes = [];
                 $scope.scheme = null;
