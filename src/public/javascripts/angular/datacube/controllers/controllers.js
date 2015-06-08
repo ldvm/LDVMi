@@ -10,8 +10,8 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 var $permanentToken = $routeParams.p;
                 var $view = $routeParams.view;
                 var $chartType = $routeParams.chartType;
-                var $isPolar = $routeParams.isPolar === true;
-                var $disableTitle = $routeParams.disableTitle === true;
+                var $isPolar = $routeParams.isPolar === "true";
+                var $disableTitle = $routeParams.disableTitle === "true";
 
                 if (!$id) {
                     return;
