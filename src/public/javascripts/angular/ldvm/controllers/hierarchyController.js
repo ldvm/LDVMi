@@ -13,7 +13,7 @@ define(['angular', './controllers'], function (ng) {
                 visualization
             ) {
 
-                var id = $routeParams.id;
+                var id = $scope.id = $routeParams.id;
                 if(!id){
                     return;
                 }
@@ -31,14 +31,18 @@ define(['angular', './controllers'], function (ng) {
                     $scope.queryingDataset = false;
                 });
 
-                $scope.loadScheme = function(scheme){
+                $scope.loadScheme = function(schemeUri){
                     $scope.queryingDataset = true;
-                    var schemePromise = visualization.skosScheme(id, scheme.uri);
+                    var schemePromise = visualization.skosScheme(id, schemeUri);
                     schemePromise.then(function(scheme){
                         $scope.queryingDataset = false;
                         $scope.scheme = scheme;
                     });
                 };
+
+                if($routeParams.uri){
+                    $scope.loadScheme($routeParams.uri);
+                }
 
             }]);
 });

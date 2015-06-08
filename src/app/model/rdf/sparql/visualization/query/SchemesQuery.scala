@@ -12,7 +12,7 @@ class SchemesQuery extends SparqlQuery {
       |   ?s a skos:ConceptScheme ;
       |      skos:prefLabel ?l .
       | }
-      | WHERE
+      | WHERE {
       | {
       |    ?ca a skos:Concept;
       |        skos:inScheme ?s ;
@@ -20,7 +20,15 @@ class SchemesQuery extends SparqlQuery {
       |
       |   ?s skos:prefLabel ?l;
       |      a skos:ConceptScheme .
-      | }
+      | } UNION
+      | {
+      |    ?ca a skos:Concept;
+      |        skos:inScheme ?s ;
+      |        skos:broaderTransitive ?broader.
+      |
+      |   ?s skos:prefLabel ?l;
+      |      a skos:ConceptScheme .
+      | }}
     """
       .stripMargin
 }

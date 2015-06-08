@@ -21,7 +21,7 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       |      skos:prefLabel ?bname .
       | }
       | WHERE
-      | {
+      | {{
       |   ?ca a skos:Concept ;
       |      skos:prefLabel ?name ;
       |      skos:inScheme <%u> ;
@@ -31,7 +31,18 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       |      skos:prefLabel ?bname .
       |
       |      OPTIONAL { ?ca rdf:value ?size. }
-      | }
+      | } UNION
+      | {
+      |   ?ca a skos:Concept ;
+      |      skos:prefLabel ?name ;
+      |      skos:inScheme <%u> ;
+      |      skos:broaderTransitive ?broader.
+      |
+      |   ?broader a skos:Concept ;
+      |      skos:prefLabel ?bname .
+      |
+      |      OPTIONAL { ?ca rdf:value ?size. }
+      | }}
     """
       .replaceAll("%u", schemeUri)
       .stripMargin

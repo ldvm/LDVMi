@@ -15,6 +15,7 @@ define([
         './directives/sparkLine',
         './directives/treemap',
         './directives/sunburst',
+        './directives/packLayout',
         './websocket',
         './utils',
         './filters/labelFilter',

@@ -2,35 +2,86 @@
 
 
     <style>
-        .chart {
-            display : block ;
-            margin : auto ;
-            margin-top : 60 px ;
-            font-size : 11 px ;
+
+        .pl .chart {
+            display: block;
+            margin: auto;
+            margin-top: 60px;
+            font-size: 11px;
         }
 
-        rect {
-            stroke : #eee ;
-            fill : #aaa ;
-            fill-opacity :.8 ;
+        .pl rect {
+            stroke: #eee;
+            fill: #aaa;
+            fill-opacity: .8;
         }
 
-        rect.parent {
-            cursor : pointer ;
-            fill : steelblue ;
+        .pl rect.parent {
+            cursor: pointer;
+            fill: steelblue;
         }
 
-        path {
+        .pl text {
+            pointer-events: none;
+        }
+
+        .sb path {
             stroke: #000;
             stroke-width: 1.5;
             cursor: pointer;
         }
 
-        text {
+        .sb text {
             font: 11px sans-serif;
             cursor: pointer;
-            pointer-events : none ;
         }
+
+        .sb body {
+            width: 880px;
+            margin: 0 auto;
+        }
+
+        .sb h1 {
+            text-align: center;
+            margin: .5em 0;
+        }
+
+        .sb p#intro {
+            text-align: center;
+            margin: 1em 0;
+        }
+
+
+        .pl text {
+            font-size: 11px;
+            pointer-events: none;
+        }
+
+        .pl text.parent {
+            fill: #1f77b4;
+        }
+
+        .pl circle {
+            fill: #ccc;
+            stroke: #999;
+            pointer-events: all;
+        }
+
+        .pl circle.parent {
+            fill: #1f77b4;
+            fill-opacity: .1;
+            stroke: steelblue;
+        }
+
+        .pl circle.parent:hover {
+            stroke: #ff7f0e;
+            stroke-width: .5px;
+        }
+
+        .pl circle.child {
+            pointer-events: none;
+        }
+
     </style>
 
     <aside id="chat">
@@ -43,7 +94,7 @@
                 <div class="lv-item media" ng-repeat="scheme in schemes">
                     <div class="media-body">
                         <div class="lv-title">
-                            <a href="" ng-click="loadScheme(scheme)">
+                            <a ng-href="#/hierarchy/{{visType}}/{{id}}/?uri={{scheme.uri}}" ng-click="loadScheme(scheme)">
                                 {{ scheme | label }}
                             </a>
                         </div>
@@ -95,10 +146,18 @@
 
                     <button class="btn btn-default" ng-click="visType = 'sunburst'">Sunburst</button>
                     <button class="btn btn-default" ng-click="visType = 'treemap'">Treemap</button>
+                    <button class="btn btn-default" ng-click="visType = 'packLayout'">Pack Layout</button>
 
                     <div>
-                        <treemap scheme="scheme" ng-show="visType == 'treemap'"></treemap>
-                        <sunburst scheme="scheme" ng-show="visType == 'sunburst'"></sunburst>
+                        <div class="pl">
+                            <treemap scheme="scheme" ng-show="visType == 'treemap'"></treemap>
+                        </div>
+                        <div class="sb">
+                            <sunburst scheme="scheme" ng-show="visType == 'sunburst'"></sunburst>
+                        </div>
+                        <div class="pl">
+                            <pack-layout scheme="scheme" ng-show="visType == 'packLayout'"></pack-layout>
+                        </div>
                     </div>
                 </div>
             </div>

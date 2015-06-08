@@ -32,102 +32,84 @@ define(['angular', 'd3js', 'jquery'], function (ng, d3, $) {
 
                         var partition = d3.layout.partition()
                             .sort(null)
-                            .value(function (d) {
-                                return 5.8 - d.depth;
-                            });
+                            .value(function(d) { return 5.8 - d.depth; });
 
                         var arc = d3.svg.arc()
-                            .startAngle(function (d) {
-                                return Math.max(0, Math.min(2 * Math.PI, x(d.x)));
-                            })
-                            .endAngle(function (d) {
-                                return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx)));
-                            })
-                            .innerRadius(function (d) {
-                                return Math.max(0, d.y ? y(d.y) : d.y);
-                            })
-                            .outerRadius(function (d) {
-                                return Math.max(0, y(d.y + d.dy));
-                            });
+                            .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
+                            .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
+                            .innerRadius(function(d) { return Math.max(0, d.y ? y(d.y) : d.y); })
+                            .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
 
-                        var nodes = partition.nodes({children: $scope.scheme});
-                        console.log(nodes);
 
-                        var path = vis.selectAll("path").data(nodes);
-                        path.enter().append("path")
-                            .attr("id", function (d, i) {
-                                return "path-" + i;
-                            })
-                            .attr("d", arc)
-                            .attr("fill-rule", "evenodd")
-                            .style("fill", colour)
-                            .on("click", click);
+                            var nodes = partition.nodes({children: $scope.scheme});
 
-                        var text = vis.selectAll("text").data(nodes);
-                        var textEnter = text.enter().append("text")
-                            .style("fill-opacity", 1)
-                            .style("fill", function (d) {
-                                return brightness(d3.rgb(colour(d))) < 125 ? "#eee" : "#000";
-                            })
-                            .attr("text-anchor", function (d) {
-                                return x(d.x + d.dx / 2) > Math.PI ? "end" : "start";
-                            })
-                            .attr("dy", ".2em")
-                            .attr("transform", function (d) {
-                                var multiline = (d.name || "").split(" ").length > 1,
-                                    angle = x(d.x + d.dx / 2) * 180 / Math.PI - 90,
-                                    rotate = angle + (multiline ? -.5 : 0);
-                                return "rotate(" + rotate + ")translate(" + (y(d.y) + padding) + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
-                            })
-                            .on("click", click);
-                        textEnter.append("tspan")
-                            .attr("x", 0)
-                            .text(function (d) {
-                                return d.depth ? d.name.split(" ")[0] : "";
-                            });
-                        textEnter.append("tspan")
-                            .attr("x", 0)
-                            .attr("dy", "1em")
-                            .text(function (d) {
-                                return d.depth ? d.name.split(" ")[1] || "" : "";
-                            });
+                            var path = vis.selectAll("path").data(nodes);
+                            path.enter().append("path")
+                                .attr("id", function(d, i) { return "path-" + i; })
+                                .attr("d", arc)
+                                .attr("fill-rule", "evenodd")
+                                .style("fill", colour)
+                                .on("click", click);
 
-                        function click(d) {
-                            path.transition()
-                                .duration(duration)
-                                .attrTween("d", arcTween(d));
-
-                            // Somewhat of a hack as we rely on arcTween updating the scales.
-                            text.style("visibility", function (e) {
-                                return isParentOf(d, e) ? null : d3.select(this).style("visibility");
-                            })
-                                .transition()
-                                .duration(duration)
-                                .attrTween("text-anchor", function (d) {
-                                    return function () {
-                                        return x(d.x + d.dx / 2) > Math.PI ? "end" : "start";
-                                    };
+                            var text = vis.selectAll("text").data(nodes);
+                            var textEnter = text.enter().append("text")
+                                .style("fill-opacity", 1)
+                                .style("fill", function(d) {
+                                    return brightness(d3.rgb(colour(d))) < 125 ? "#eee" : "#000";
                                 })
-                                .attrTween("transform", function (d) {
-                                    var multiline = (d.name || "").split(" ").length > 1;
-                                    return function () {
-                                        var angle = x(d.x + d.dx / 2) * 180 / Math.PI - 90,
-                                            rotate = angle + (multiline ? -.5 : 0);
-                                        return "rotate(" + rotate + ")translate(" + (y(d.y) + padding) + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
-                                    };
+                                .attr("text-anchor", function(d) {
+                                    return x(d.x + d.dx / 2) > Math.PI ? "end" : "start";
                                 })
-                                .style("fill-opacity", function (e) {
-                                    return isParentOf(d, e) ? 1 : 1e-6;
+                                .attr("dy", ".2em")
+                                .attr("transform", function(d) {
+                                    var multiline = (d.name || "").split(" ").length > 1,
+                                        angle = x(d.x + d.dx / 2) * 180 / Math.PI - 90,
+                                        rotate = angle + (multiline ? -.5 : 0);
+                                    return "rotate(" + rotate + ")translate(" + (y(d.y) + padding) + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
                                 })
-                                .each("end", function (e) {
-                                    d3.select(this).style("visibility", isParentOf(d, e) ? null : "hidden");
-                                });
-                        }
+                                .on("click", click);
+                            textEnter.append("tspan")
+                                .attr("x", 0)
+                                .text(function(d) { return d.depth ? d.name.split(" ")[0] : ""; });
+                            textEnter.append("tspan")
+                                .attr("x", 0)
+                                .attr("dy", "1em")
+                                .text(function(d) { return d.depth ? d.name.split(" ")[1] || "" : ""; });
+
+                            function click(d) {
+                                path.transition()
+                                    .duration(duration)
+                                    .attrTween("d", arcTween(d));
+
+                                // Somewhat of a hack as we rely on arcTween updating the scales.
+                                text.style("visibility", function(e) {
+                                    return isParentOf(d, e) ? null : d3.select(this).style("visibility");
+                                })
+                                    .transition()
+                                    .duration(duration)
+                                    .attrTween("text-anchor", function(d) {
+                                        return function() {
+                                            return x(d.x + d.dx / 2) > Math.PI ? "end" : "start";
+                                        };
+                                    })
+                                    .attrTween("transform", function(d) {
+                                        var multiline = (d.name || "").split(" ").length > 1;
+                                        return function() {
+                                            var angle = x(d.x + d.dx / 2) * 180 / Math.PI - 90,
+                                                rotate = angle + (multiline ? -.5 : 0);
+                                            return "rotate(" + rotate + ")translate(" + (y(d.y) + padding) + ")rotate(" + (angle > 90 ? -180 : 0) + ")";
+                                        };
+                                    })
+                                    .style("fill-opacity", function(e) { return isParentOf(d, e) ? 1 : 1e-6; })
+                                    .each("end", function(e) {
+                                        d3.select(this).style("visibility", isParentOf(d, e) ? null : "hidden");
+                                    });
+                            }
 
                         function isParentOf(p, c) {
                             if (p === c) return true;
                             if (p.children) {
-                                return p.children.some(function (d) {
+                                return p.children.some(function(d) {
                                     return isParentOf(d, c);
                                 });
                             }
@@ -152,12 +134,8 @@ define(['angular', 'd3js', 'jquery'], function (ng, d3, $) {
                                 xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
                                 yd = d3.interpolate(y.domain(), [d.y, my]),
                                 yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
-                            return function (d) {
-                                return function (t) {
-                                    x.domain(xd(t));
-                                    y.domain(yd(t)).range(yr(t));
-                                    return arc(d);
-                                };
+                            return function(d) {
+                                return function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
                             };
                         }
 
