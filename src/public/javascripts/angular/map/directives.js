@@ -1,4 +1,4 @@
-define(['angular', 'jquery', 'bootstrap'], function (ng, $) {
+define(['angular', 'jquery', 'bootstrap'], function (ng, $, proj4) {
     'use strict';
 
     Array.prototype.diff = function (a) {
@@ -189,11 +189,27 @@ define(['angular', 'jquery', 'bootstrap'], function (ng, $) {
                         var format = new ol.format.WKT();
                         var features = [];
 
+                        var swap = function(coords) {
+                            if (coords && typeof(coords[0]) == 'number') {
+                                var x = coords[0];
+                                var y = coords[1];
+                                coords[0] = y;
+                                coords[1] = x;
+                            } else if (coords){
+                                coords.forEach(swap);
+                            }
+                            return coords;
+                        };
+
                         ng.forEach(entities, function (e) {
                             var feature = format.readFeature(e.wkt);
 
-                            var prj = new ol.proj.Projection({code:'EPSG:4258', axisOrientation: 'neu'});
-                            feature.getGeometry().transform(prj, 'EPSG:3857');
+                            var prj = new ol.proj.Projection({code:'EPSG:4326'});
+                            var geom = feature.getGeometry();
+                            geom.transform(prj, 'EPSG:3857');
+                            var coordinates = geom.getCoordinates();
+                            coordinates = swap(coordinates);
+                            geom.setCoordinates(coordinates);
                             feature.color = color(e.groupPropertyValue);
 
                             if (e.title) {

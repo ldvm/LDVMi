@@ -11,6 +11,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 var $view = $routeParams.view;
                 var $chartType = $routeParams.chartType;
                 var $isPolar = $routeParams.isPolar === true;
+                var $disableTitle = $routeParams.disableTitle === true;
 
                 if (!$id) {
                     return;
@@ -185,7 +186,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.updateChartDescription = function () {
                     var activeMeasures = $scope.activeMeasures();
-                    $scope.highcharts.title.text = $scope.title();
+                    $scope.highcharts.title.text = $disableTitle ? "" : $scope.title();
                     $scope.highcharts.subtitle.text = $scope.subtitle(activeMeasures);
                     $scope.highcharts.yAxis.title.text = $scope.yAxisTitle(activeMeasures);
                     $scope.highcharts.xAxis.title.text = $scope.xAxisTitle(activeMeasures);

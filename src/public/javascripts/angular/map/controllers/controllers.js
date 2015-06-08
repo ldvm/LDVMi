@@ -77,8 +77,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                                         trueKey = matchingObjects[0].uri;
                                     }
 
-                                    console.log(trueKey);
-
                                     filters[trueKey] = filters[trueKey] || [];
                                     filters[trueKey].push({
                                         label: v.label.variants[$scope.currentLanguage],

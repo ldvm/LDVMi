@@ -8,7 +8,7 @@ define(['angular'], function (ng) {
             return $resource('', null, {
                 polygonEntities: {url: '/api/map/polygon-entities/:evaluationId', method: 'POST', isArray: true},
                 polygonEntitiesProperties: {url: '/api/map/polygon-entities-properties/:evaluationId', isArray: true},
-                getSkosConcepts: {url: '/api/skos/concepts/:evaluationId', method: 'POST'},
+                getSkosConcepts: {url: '/api/v1/skos/concepts/:evaluationId', method: 'POST'},
                 properties: {url: '/api/map/properties/:evaluationId', isArray: true},
                 markers: {url: '/api/map/markers/:evaluationId', isArray: true, method: 'POST'}
             });
