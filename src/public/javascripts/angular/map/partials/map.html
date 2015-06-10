@@ -29,6 +29,12 @@
                     </div>
                 </div>
             </div>
+
+            <div style="text-align: center; padding: 20px;" ng-show="properties.length == 0">
+                <p>
+                No filters available.
+                </p>
+            </div>
         </div>
 
         <div ng-if="!queryingDataset" class="text-center">

@@ -11,6 +11,7 @@ class WKTEntitiesExtractor(data: MapQueryData) extends SimpleQueryExecutionResul
 
   private lazy val groupByProperty = data.filters.headOption.map(_._1)
   val titleVariableName = WKTEntitiesQuery.NodeVariables.title.toString
+  val nameVariableName = WKTEntitiesQuery.NodeVariables.name.toString
 
   override def getPropertyVariableName: String = WKTEntitiesQuery.NodeVariables.geolocatedEntity.toString
 
@@ -24,6 +25,9 @@ class WKTEntitiesExtractor(data: MapQueryData) extends SimpleQueryExecutionResul
 
       val label = if (qs.contains(titleVariableName)) {
         val literal = qs.get(titleVariableName).asLiteral()
+        Some(LocalizedValue(Seq(literal.getLanguage -> literal.toString).toMap))
+      } else if (qs.contains(nameVariableName)) {
+        val literal = qs.get(nameVariableName).asLiteral()
         Some(LocalizedValue(Seq(literal.getLanguage -> literal.toString).toMap))
       } else {
         None

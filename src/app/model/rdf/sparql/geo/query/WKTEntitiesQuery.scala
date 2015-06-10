@@ -3,7 +3,7 @@ package model.rdf.sparql.geo.query
 import model.rdf.sparql.geo.MapQueryData
 import model.rdf.sparql.query.SparqlQuery
 import model.rdf.sparql.{ValueFilter, VariableGenerator}
-import model.rdf.vocabulary.SKOS
+import model.rdf.vocabulary.{SCHEMA, SKOS}
 
 
 class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
@@ -17,9 +17,10 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
 
     prefixes +
       s"""
-        | SELECT ?s ?l ?p $valueVariable WHERE {
-        |   ?s <http://www.opengis.net/ont/geosparql#hasGeometry> ?g ;
-        |      rdfs:label ?l .
+        | SELECT ?s ?l ?n ?p $valueVariable WHERE {
+        |   ?s <http://www.opengis.net/ont/geosparql#hasGeometry> ?g .
+        |      OPTIONAL { ?s rdfs:label ?l }
+        |      OPTIONAL { ?s schema:name ?n }
         |   ?g <http://www.opengis.net/ont/geosparql#asWKT> ?p .
         |
         |   $restrictions
@@ -30,11 +31,13 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
   private def prefixes = {
 
     val skosPrefix = SKOS.PREFIX_URL
+    val schemaPrefix = SCHEMA.PREFIX_URL
     val rdfsPrefix = "http://www.w3.org/2000/01/rdf-schema#"
 
     s"""
       | PREFIX skos: <$skosPrefix>
       | PREFIX rdfs: <$rdfsPrefix>
+      | PREFIX schema: <$schemaPrefix>
       |
 
     """
@@ -84,6 +87,7 @@ object WKTEntitiesQuery {
     val geolocatedEntity = Value("s")
     val wkt = Value("p")
     val title = Value("l")
+    val name = Value("n")
   }
 
 }
