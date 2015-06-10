@@ -82,6 +82,17 @@
             pointer-events: none;
         }
 
+        .bl circle,
+        .bl path {
+            cursor: pointer;
+        }
+
+        .bl circle {
+            fill: none;
+            pointer-events: all;
+        }
+
+
     </style>
 
     <aside id="chat">
@@ -146,6 +157,7 @@
 
                     <button class="btn btn-default" ng-click="visType = 'sunburst'">Sunburst</button>
                     <button class="btn btn-default" ng-click="visType = 'treemap'">Treemap</button>
+                    <button class="btn btn-default" ng-click="visType = 'bilevel'">BiLevel</button>
                     <button class="btn btn-default" ng-click="visType = 'packLayout'">Pack Layout</button>
 
                     <div>
@@ -157,6 +169,9 @@
                         </div>
                         <div class="pl">
                             <pack-layout scheme="scheme" ng-show="visType == 'packLayout'"></pack-layout>
+                        </div>
+                        <div class="bl">
+                            <bilevel scheme="scheme" ng-show="visType == 'bilevel'"></bilevel>
                         </div>
                     </div>
                 </div>
