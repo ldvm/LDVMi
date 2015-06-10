@@ -3,8 +3,8 @@ package model.rdf.sparql.visualization
 import _root_.model.service.SessionScoped
 import model.entity.PipelineEvaluation
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
-import model.rdf.sparql.visualization.extractor.{SchemesExtractor, ConceptsExtractor, SchemeExtractor}
-import model.rdf.sparql.visualization.query.{SchemesQuery, ConceptsQuery, SchemeQuery}
+import model.rdf.sparql.visualization.extractor.{ConceptCountExtractor, SchemesExtractor, ConceptsExtractor, SchemeExtractor}
+import model.rdf.sparql.visualization.query.{ConceptCountQuery, SchemesQuery, ConceptsQuery, SchemeQuery}
 import model.service.component.DataReference
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
@@ -32,6 +32,13 @@ class VisualizationServiceImpl(implicit val inj: Injector) extends Visualization
     uris.map { u =>
       u -> sparqlEndpointService
         .getResult(evaluationToSparqlEndpoint(evaluation), new ConceptsQuery(u), new ConceptsExtractor)
+    }.toMap
+  }
+
+  def skosConceptsCounts(evaluation: PipelineEvaluation, propertyUri: String, values: Seq[String])(implicit session: Session): Map[String, Option[Int]] = {
+    values.map { u =>
+      u -> sparqlEndpointService
+        .getResult(evaluationToSparqlEndpoint(evaluation), new ConceptCountQuery(propertyUri, u), new ConceptCountExtractor)
     }.toMap
   }
 

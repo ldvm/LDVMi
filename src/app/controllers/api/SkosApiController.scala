@@ -30,6 +30,18 @@ class SkosApiController(implicit inj: Injector) extends ApiController {
     }
   }
 
+  def conceptsCounts(id: Long): Action[JsValue] = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
+    val json: JsValue = rs.request.body
+
+    withEvaluation(id) { evaluation =>
+      Ok(Json.toJson(visualizationService.skosConceptsCounts(
+        evaluation,
+        (json \ "propertyUri").as[String],
+        (json \ "conceptUris").as[Seq[String]])
+      ))
+    }
+  }
+
   private def withEvaluation(id: Long, json: JsValue)
     (func: (PipelineEvaluation, Seq[String]) => Result)
     (implicit rs: Session): Result = {

@@ -2,17 +2,32 @@
     <div>
         <div>
             <div ng-repeat="property in properties">
-                <ul class="list-group">
-                    <li class="list-group-item active">
-                        {{label(property.label) || property.uri}}
-                    </li>
-                    <li class="list-group-item" ng-repeat="value in (values[property.uri] || values[property.schemeUri])">
-                        <input type="checkbox" ng-model="value.isActive"/>
-                        <!--<span ng-if="property.uri == mainProperty.uri" ng-style="value.colorStyle"
-                              style="display: inline-block; min-width: 30px; min-height: 15px;"></span>-->
-                        {{label(value.label) || value.uri}}
-                    </li>
-                </ul>
+
+                <div class="listview lv-bordered lv-lg">
+                    <div class="lv-header-alt">
+                        <h2 class="lvh-label hidden-xs">{{label(property.label) || property.uri}}</h2>
+                    </div>
+
+                    <div class="lv-body">
+                        <div class="lv-item media"
+                             ng-repeat="value in (values[property.uri] || values[property.schemeUri])">
+                            <div class="checkbox pull-left">
+                                <label>
+                                    <input type="checkbox" ng-model="value.isActive">
+                                    <i class="input-helper"></i>
+                                </label>
+                            </div>
+                            <div class="media-body">
+                                <div class="lv-title">
+                                    {{label(value.label) || value.uri}}
+                                    <div class="pull-right">
+                                        ({{counts[value.uri]}})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -21,6 +36,7 @@
                 <i class="glyphicon glyphicon-refresh"></i> Refresh
             </button>
             <br/><br/>
+
             <p ng-show="!entities && !markers" class="text-center">
                 Change your filter settings and press refresh to see some data on the map!
             </p>
@@ -29,20 +45,25 @@
     </div>
 </aside>
 
-<open-layers ng-if="osm" entities="entities" colors="colors" style="width: 100%; height: 100vh; margin-top: -30px;"></open-layers>
+<open-layers ng-if="osm" entities="entities" colors="colors"
+             style="width: 100%; height: 100vh; margin-top: -30px;"></open-layers>
 <google-maps ng-if="!osm" fit-bounds="true" markers="markers" center="center"
-       style="width: 100%; height: 100vh;"></google-maps>
+             style="width: 100%; height: 100vh;"></google-maps>
 
-<div ng-show="queryingDataset || !(properties.length) && (!markers) && (!entities)" style="width: 100%; height: 100vh; position: absolute; left: 0; top: 0; background: rgba(0,0,0,0.6)">
+<div ng-show="queryingDataset || !(properties.length) && (!markers) && (!entities)"
+     style="width: 100%; height: 100vh; position: absolute; left: 0; top: 0; background: rgba(0,0,0,0.6)">
     <div class="container" style="margin-top: 30px; ">
         <div ng-show="!queryingDataset">
             <div class="card">
-                <div class="card-header bgm-red">
-                    <h2>No filtering properties discovered <small>We are not able to provide facets for this visualization.</small></h2>
+                <div class="card-header bgm-orange">
+                    <h2>No filtering properties discovered
+                        <small>We are not able to provide facets for this visualization.</small>
+                    </h2>
                 </div>
 
                 <div class="card-body card-padding">
-                    Press the 'Refresh' button to visualize all unfiltered data. It may take a while. If the dataset is really large,
+                    Press the 'Refresh' button to visualize all unfiltered data. It may take a while. If the dataset is
+                    really large,
                     the visualization will probably slow down your browser.
                 </div>
             </div>
@@ -60,7 +81,8 @@
 
             <div class="card">
                 <div class="card-body card-padding text-center">
-                    <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i> Refresh
+                    <button class="btn btn-primary" ng-click="refresh()"><i class="glyphicon glyphicon-refresh"></i>
+                        Refresh
                     </button>
                 </div>
             </div>
@@ -70,11 +92,14 @@
 
             <div class="card">
                 <div class="card-header bgm-bluegray">
-                    <h2>Querying the dataset <small>Right now, we are querying the dataset for {{queryingDataset}}.</small></h2>
+                    <h2>Querying the dataset
+                        <small>Right now, we are querying the dataset for {{queryingDataset}}.</small>
+                    </h2>
                 </div>
 
                 <div class="card-body card-padding">
-                    It may take a few minutes based on the size of the result and/or size of the graph the query is running against.
+                    It may take a few minutes based on the size of the result and/or size of the graph the query is
+                    running against.
                     <br/><br/>
 
                     <div class="progress">
@@ -84,6 +109,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div ng-show="!queryingDataset && (properties.length) && (!markers) && (!entities)"
+     style="width: 100%; height: 100vh; position: absolute; left: 0; top: 0; background: rgba(0,0,0,0.6)">
+    <div class="container" style="margin-top: 30px; ">
+        <div class="card">
+            <div class="card-header bgm-blue">
+                <h2>Filtering available
+                    <small>Use filters to specify, what should be on the map.</small></small>
+                </h2>
+            </div>
+
+            <div class="card-body card-padding">
+                Open the right menu, select some filters and press the 'Refresh' button to visualize filtered data. It may take a while.
+                If the selected dataset is really large, the visualization will probably slow down your browser.
             </div>
         </div>
     </div>

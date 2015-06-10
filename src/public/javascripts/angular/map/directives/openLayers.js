@@ -96,7 +96,7 @@ define(['angular', 'jquery', './directives'], function (ng, $) {
                             //feature.color = color(e.groupPropertyValue);
 
                             if (e.title) {
-                                feature.set('name', e.title.variants['sl']);
+                                feature.set('name', e.title.variants['sk']);
                             }
                             features.push(feature);
                         };

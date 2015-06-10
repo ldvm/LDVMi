@@ -51,6 +51,7 @@ GET         /api/map/properties/:id                                             
 POST        /api/map/markers/:id                                                          @controllers.api.MapApiController.markers(id: Long)
 
 POST        /api/v1/skos/concepts/:id                                                     @controllers.api.SkosApiController.concepts(id: Long)
+POST        /api/v1/skos/concepts/counts/:id                                              @controllers.api.SkosApiController.conceptsCounts(id: Long)
 GET         /api/v1/skos/schemes/:id                                                      @controllers.api.SkosApiController.schemes(id: Long)
 GET         /api/v1/skos/scheme/:id                                                       @controllers.api.SkosApiController.scheme(id: Long, schemeUri: String)
 

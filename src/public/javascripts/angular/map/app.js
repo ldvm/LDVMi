@@ -1,7 +1,8 @@
 define([
         'angular',
-        './controllers/controllers',
         './controllers/layoutController',
+        './controllers/polygonsController',
+        './controllers/markersController',
         './directives/openLayers',
         './directives/googleMaps',
         './filters',

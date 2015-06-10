@@ -9,6 +9,7 @@ define(['angular'], function (ng) {
                 polygonEntities: {url: '/api/map/polygon-entities/:evaluationId', method: 'POST', isArray: true},
                 polygonEntitiesProperties: {url: '/api/map/polygon-entities-properties/:evaluationId', isArray: true},
                 getSkosConcepts: {url: '/api/v1/skos/concepts/:evaluationId', method: 'POST'},
+                conceptCounts: {url: '/api/v1/skos/concepts/counts/:evaluationId', method: 'POST'},
                 properties: {url: '/api/map/properties/:evaluationId', isArray: true},
                 markers: {url: '/api/map/markers/:evaluationId', isArray: true, method: 'POST'}
             });
