@@ -23,6 +23,12 @@ Implemented analyzers:
 
 It also provides a simple JSON API in order to allow creating datasources and visualizations automatically by 3rd party software.
 
+## Running the app
+- download Typesafe Activator at https://www.typesafe.com/get-started
+- clone the project
+- in the `src` folder execute `activator run` (you need to have activator in your PATH)
+- if you don't have any SPARQL endpoint running at `http://localhost:8890/sparql`, you may need to change the configuration in order to have everything running smoothly (e.g. pipeline execution, creating a datasource from TTL, ...)
+
 ## Authors & License
 
 © Copyright 2014 - 2015
