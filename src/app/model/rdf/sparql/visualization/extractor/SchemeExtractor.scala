@@ -1,6 +1,7 @@
 package model.rdf.sparql.visualization.extractor
 
 import com.hp.hpl.jena.query.QueryExecution
+import com.hp.hpl.jena.rdf.model.{Model, Resource}
 import com.hp.hpl.jena.vocabulary.RDF
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.visualization.HierarchyNode
@@ -11,37 +12,36 @@ import scala.collection.mutable
 
 class SchemeExtractor extends QueryExecutionResultExtractor[SchemeQuery, HierarchyNode] {
 
+  private val conceptsByUri = new mutable.HashMap[String, HierarchyNode]
+  private val hierarchyLinksByUri = new mutable.HashMap[String, Seq[String]]
+
   def extract(input: QueryExecution): Option[HierarchyNode] = {
-
     val model = input.execConstruct()
-
-    val nodes = model.listSubjectsWithProperty(RDF.`type`, SKOS.Concept).toList
-
-    val nodesMap = new mutable.HashMap[String, HierarchyNode]
-    val broaderMap = new mutable.HashMap[String, Seq[String]]
-
-    val roots = nodes.flatMap { n =>
-
-      val nodeResource = n.asResource()
-
-      val name = model.getProperty(nodeResource, SKOS.prefLabel).getString
-      val value = model.getProperty(nodeResource, RDF.value)
-      val intValue = Option(value).map(_.getInt)
-      val broader = nodeResource.getPropertyResourceValue(SKOS.broader)
-
-      val node = HierarchyNode(name, if(intValue.isDefined){intValue}else{Some(1)})
-      nodesMap.put(nodeResource.getURI, node)
-
-      Option(broader).map{ b => broaderMap.put(b.getURI, broaderMap.getOrElse(b.getURI, Seq()) ++ Seq(nodeResource.getURI)) }
-
-      Option(broader).flatMap(x => None).getOrElse(Some(nodeResource.getURI))
-
-    }
-
-    roots.flatMap(u => tree(u, broaderMap, nodesMap)).headOption
+    val concepts = model.listSubjectsWithProperty(RDF.`type`, SKOS.Concept).toList
+    Some(buildHierarchy(concepts, model))
   }
 
-  def tree(rootUri: String, broaderMap: mutable.HashMap[String, Seq[String]], nodesMap: mutable.HashMap[String, HierarchyNode])
+  private def buildHierarchy(concepts: Seq[Resource], model: Model) : HierarchyNode = {
+
+    val roots = concepts.flatMap { n =>
+      val nodeResource = n.asResource()
+      conceptsByUri.put(nodeResource.getURI, getNode(model, nodeResource))
+      val broaderNodeResource = nodeResource.getPropertyResourceValue(SKOS.broader)
+      Option(broaderNodeResource).map{ b => hierarchyLinksByUri.put(b.getURI, hierarchyLinksByUri.getOrElse(b.getURI, Seq()) ++ Seq(nodeResource.getURI)) }
+      Option(broaderNodeResource).flatMap(x => None).getOrElse(Some(nodeResource.getURI))
+    }
+
+    HierarchyNode("Scheme", Some(1), Some(roots.flatMap(u => tree(u, hierarchyLinksByUri, conceptsByUri))))
+  }
+
+  private def getNode(model: Model, nodeResource: Resource) : HierarchyNode = {
+    val name = model.getProperty(nodeResource, SKOS.prefLabel).getString
+    val value = model.getProperty(nodeResource, RDF.value)
+    val intValue = Option(value).map(_.getInt)
+    HierarchyNode(name, if(intValue.isDefined){intValue}else{Some(1)})
+  }
+
+  private def tree(rootUri: String, broaderMap: mutable.HashMap[String, Seq[String]], nodesMap: mutable.HashMap[String, HierarchyNode])
   : Option[HierarchyNode] = {
 
     nodesMap.get(rootUri).map { n =>

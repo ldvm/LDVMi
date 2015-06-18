@@ -4,8 +4,10 @@ import model.rdf.sparql.query.SparqlQuery
 
 class SchemeQuery(schemeUri: String) extends SparqlQuery {
 
+  println(schemeUri)
+
   def get: String =
-    """
+    s"""
       | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       | PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       | PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -14,7 +16,7 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       |   ?ca a skos:Concept ;
       |      skos:prefLabel ?name ;
       |      rdf:value ?size ;
-      |      skos:inScheme <%u> ;
+      |      skos:inScheme <$schemeUri> ;
       |      skos:broader ?broader .
       |
       |   ?broader a skos:Concept ;
@@ -24,27 +26,32 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       | {{
       |   ?ca a skos:Concept ;
       |      skos:prefLabel ?name ;
-      |      skos:inScheme <%u> ;
+      |      skos:inScheme <$schemeUri> ;
       |      skos:broader ?broader.
       |
-      |   ?broader a skos:Concept ;
-      |      skos:prefLabel ?bname .
+      |   OPTIONAL {
+      |     ?broader a skos:Concept ;
+      |        skos:prefLabel ?bname .
+      |   }
       |
-      |      OPTIONAL { ?ca rdf:value ?size. }
+      |   OPTIONAL { ?ca rdf:value ?size. }
+      |
       | } UNION
       | {
       |   ?ca a skos:Concept ;
       |      skos:prefLabel ?name ;
-      |      skos:inScheme <%u> ;
+      |      skos:inScheme <$schemeUri> ;
       |      skos:broaderTransitive ?broader.
       |
-      |   ?broader a skos:Concept ;
-      |      skos:prefLabel ?bname .
+      |   OPTIONAL {
+      |     ?broader a skos:Concept ;
+      |        skos:prefLabel ?bname .
+      |   }
       |
-      |      OPTIONAL { ?ca rdf:value ?size. }
+      |   OPTIONAL { ?ca rdf:value ?size. }
+      |
       | }}
     """
-      .replaceAll("%u", schemeUri)
       .stripMargin
 
 }

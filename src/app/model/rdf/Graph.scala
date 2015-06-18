@@ -4,14 +4,11 @@ import java.io._
 import java.net.URL
 import java.util.UUID
 
-import akka.actor.Props
-import com.hp.hpl.jena.rdf.model.{Model, ModelFactory}
-import model.rdf.Graph
+import com.hp.hpl.jena.rdf.model.{ModelFactory}
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.DefaultHttpClient
-import play.api.libs.concurrent.Akka
 
 case class Graph(jenaModel: com.hp.hpl.jena.rdf.model.Model) {
 
