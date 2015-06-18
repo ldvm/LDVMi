@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/payola/LDVMi.svg?branch=master)](https://travis-ci.org/payola/LDVMi)
+[![Build Status](https://travis-ci.org/ldvm/LDVMi.svg?branch=master)](https://travis-ci.org/ldvm/LDVMi)
 
 LDVMi
 ==========
