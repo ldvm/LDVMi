@@ -1,5 +1,7 @@
 package model.rdf.sparql.visualization.extractor
 
+import java.io.StringWriter
+
 import com.hp.hpl.jena.query.QueryExecution
 import com.hp.hpl.jena.rdf.model.{Model, Resource}
 import com.hp.hpl.jena.vocabulary.RDF
@@ -22,38 +24,48 @@ class SchemeExtractor extends QueryExecutionResultExtractor[SchemeQuery, Hierarc
   }
 
   private def buildHierarchy(concepts: Seq[Resource], model: Model) : HierarchyNode = {
-
-    val roots = concepts.flatMap { n =>
+    val rootUris = concepts.flatMap { n =>
       val nodeResource = n.asResource()
       conceptsByUri.put(nodeResource.getURI, getNode(model, nodeResource))
+
       val broaderNodeResource = nodeResource.getPropertyResourceValue(SKOS.broader)
-      Option(broaderNodeResource).map{ b => hierarchyLinksByUri.put(b.getURI, hierarchyLinksByUri.getOrElse(b.getURI, Seq()) ++ Seq(nodeResource.getURI)) }
-      Option(broaderNodeResource).flatMap(x => None).getOrElse(Some(nodeResource.getURI))
+      val maybeBroader = Option(broaderNodeResource)
+
+      maybeBroader.foreach { b =>
+        hierarchyLinksByUri.put(b.getURI, hierarchyLinksByUri.getOrElse(b.getURI, Seq()) ++ Seq(nodeResource.getURI))
+      }
+
+      val hasBroader = maybeBroader.isDefined
+      if(hasBroader) {
+        None
+      }else{
+        Some(nodeResource.getURI) // URI of root
+      }
     }
 
-    HierarchyNode("Scheme", Some(1), Some(roots.flatMap(u => tree(u, hierarchyLinksByUri, conceptsByUri))))
+    val roots = rootUris.flatMap(buildSubtree)
+    HierarchyNode("Scheme", Some(1), Some(roots))
   }
 
   private def getNode(model: Model, nodeResource: Resource) : HierarchyNode = {
     val name = model.getProperty(nodeResource, SKOS.prefLabel).getString
     val value = model.getProperty(nodeResource, RDF.value)
     val intValue = Option(value).map(_.getInt)
-    HierarchyNode(name, if(intValue.isDefined){intValue}else{Some(1)})
+    HierarchyNode(name, if(intValue.isDefined){ intValue } else { Some(1) })
   }
 
-  private def tree(rootUri: String, broaderMap: mutable.HashMap[String, Seq[String]], nodesMap: mutable.HashMap[String, HierarchyNode])
-  : Option[HierarchyNode] = {
+  private def buildSubtree(rootUri: String): Option[HierarchyNode] = {
 
-    nodesMap.get(rootUri).map { n =>
+    val maybeConceptNode = conceptsByUri.get(rootUri)
+    maybeConceptNode.map { n =>
 
-      val maybeChildrenList = broaderMap.get(rootUri)
-      val children = maybeChildrenList.map { childrenList =>
-        childrenList.map { child =>
-          tree(child, broaderMap, nodesMap)
-        }.collect { case Some(t) => t }
+      val maybeChildrenList = hierarchyLinksByUri.get(rootUri)
+      val maybeChildren = maybeChildrenList.map { childrenList =>
+        childrenList.map(buildSubtree).collect { case Some(t) => t }
       }
 
-      HierarchyNode(n.name, if(children.isEmpty) { Some(1) }else{ None }, children)
+      val size = if(maybeChildren.isEmpty) { Some(1) } else { None }
+      HierarchyNode(n.name, size, maybeChildren)
     }
 
   }

@@ -47,7 +47,8 @@ package object api {
     implicit lazy val hierarchyWrites: Writes[HierarchyNode] = (
       (__ \ "name").write[String] and
         (__ \ "size").writeNullable[Int] and
-        (__ \ "children").lazyWriteNullable(Writes.seq[HierarchyNode](hierarchyWrites))
+        (__ \ "children").lazyWriteNullable(Writes.seq[HierarchyNode](hierarchyWrites)) and
+        (__ \ "hasParent").write[Boolean]
       )(unlift(HierarchyNode.unapply))
 
     implicit val pipelineDiscoveryWrites = Json.writes[PipelineDiscovery]
