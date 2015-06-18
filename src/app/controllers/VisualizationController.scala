@@ -86,9 +86,9 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
 
   }
 
-  def treemap(pipelineEvaluationId: Long) = DBAction { implicit rws =>
+  def treemap(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
     withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.treemap(e.id.get))
+      Ok(views.html.visualizer.hierarchy.treemap(e.id.get, schemeUri))
     }
   }
 
