@@ -86,9 +86,55 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
 
   }
 
+  trait HierarchyVisualisationTemplate {
+    def apply(evaluationId: PipelineEvaluationId, schemeUri: String):play.twirl.api.HtmlFormat.Appendable
+  }
+
   def treemap(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
     withEvaluation(pipelineEvaluationId) { e =>
       Ok(views.html.visualizer.hierarchy.treemap(e.id.get, schemeUri))
+    }
+  }
+
+  def sunburst(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
+    withEvaluation(pipelineEvaluationId) { e =>
+      Ok(views.html.visualizer.hierarchy.sunburst(e.id.get, schemeUri))
+    }
+  }
+
+  def packLayout(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
+    withEvaluation(pipelineEvaluationId) { e =>
+      Ok(views.html.visualizer.hierarchy.packLayout(e.id.get, schemeUri))
+    }
+  }
+
+  def bilevel(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
+    withEvaluation(pipelineEvaluationId) { e =>
+      Ok(views.html.visualizer.hierarchy.bilevel(e.id.get, schemeUri))
+    }
+  }
+
+  def partition(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
+    withEvaluation(pipelineEvaluationId) { e =>
+      Ok(views.html.visualizer.hierarchy.partition(e.id.get, schemeUri))
+    }
+  }
+
+  def force(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
+    withEvaluation(pipelineEvaluationId) { e =>
+      Ok(views.html.visualizer.hierarchy.force(e.id.get, schemeUri))
+    }
+  }
+
+  def tree(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
+    withEvaluation(pipelineEvaluationId) { e =>
+      Ok(views.html.visualizer.hierarchy.tree(e.id.get, schemeUri))
+    }
+  }
+
+  def cluster(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
+    withEvaluation(pipelineEvaluationId) { e =>
+      Ok(views.html.visualizer.hierarchy.cluster(e.id.get, schemeUri))
     }
   }
 

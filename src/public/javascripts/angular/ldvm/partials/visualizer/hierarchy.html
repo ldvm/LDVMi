@@ -92,8 +92,8 @@
             pointer-events: all;
         }
 
-
     </style>
+
 
     <aside id="chat">
         <div class="listview lv-bordered lv-lg">
@@ -155,12 +155,29 @@
             <div class="card" ng-show="scheme">
                 <div class="card-body card-padding">
 
-                    <button class="btn btn-default" ng-click="visType = 'sunburst'">Sunburst</button>
-                    <button class="btn btn-default" ng-click="visType = 'treemap'">Treemap</button>
-                    <button class="btn btn-default" ng-click="visType = 'bilevel'">BiLevel</button>
-                    <button class="btn btn-default" ng-click="visType = 'packLayout'">Pack Layout</button>
+                    <div class="btn-group">
+                        <button class="btn btn-default" ng-click="visType = 'sunburst'" ng-class="{'btn-primary': visType == 'sunburst'}">Sunburst</button>
+                        <button class="btn btn-default" ng-click="visType = 'treemap'" ng-class="{'btn-primary': visType == 'treemap'}">Treemap</button>
+                        <button class="btn btn-default" ng-click="visType = 'bilevel'" ng-class="{'btn-primary': visType == 'bilevel'}">BiLevel</button>
+                        <button class="btn btn-default" ng-click="visType = 'packLayout'" ng-class="{'btn-primary': visType == 'packLayout'}">Pack Layout</button>
 
-                    <div>
+                        <button class="btn btn-default" ng-click="visType = 'force'" ng-class="{'btn-primary': visType == 'force'}">Force Layout</button>
+                        <button class="btn btn-default" ng-click="visType = 'cluster'" ng-class="{'btn-primary': visType == 'cluster'}">Rotating Cluster</button>
+                        <button class="btn btn-default" ng-click="visType = 'partition'" ng-class="{'btn-primary': visType == 'partition'}">Partition Layout</button>
+                        <button class="btn btn-default" ng-click="visType = 'tree'" ng-class="{'btn-primary': visType == 'tree'}">Tree</button>
+                    </div>
+
+
+                    <iframe width="100%" height="800" ng-src="{{embedUrl('sunburst')}}" ng-show="visType == 'sunburst'" frameborder="0"></iframe>
+                    <iframe width="100%" height="800" ng-src="{{embedUrl('treemap')}}" ng-show="visType == 'treemap'" frameborder="0"></iframe>
+                    <iframe width="100%" height="800" ng-src="{{embedUrl('bilevel')}}" ng-show="visType == 'bilevel'" frameborder="0"></iframe>
+                    <iframe width="100%" height="800" ng-src="{{embedUrl('packLayout')}}" ng-show="visType == 'packLayout'" frameborder="0"></iframe>
+                    <iframe width="100%" height="800" ng-src="{{embedUrl('force')}}" ng-show="visType == 'force'" frameborder="0"></iframe>
+                    <iframe width="100%" height="800" ng-src="{{embedUrl('cluster')}}" ng-show="visType == 'cluster'" frameborder="0"></iframe>
+                    <iframe width="100%" height="800" ng-src="{{embedUrl('partition')}}" ng-show="visType == 'partition'" frameborder="0"></iframe>
+                    <iframe width="100%" height="800" ng-src="{{embedUrl('tree')}}" ng-show="visType == 'tree'" frameborder="0"></iframe>
+
+                    <!--<div>
                         <div class="pl">
                             <treemap scheme="scheme" ng-show="visType == 'treemap'"></treemap>
                         </div>
@@ -173,7 +190,7 @@
                         <div class="bl">
                             <bilevel scheme="scheme" ng-show="visType == 'bilevel'"></bilevel>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>

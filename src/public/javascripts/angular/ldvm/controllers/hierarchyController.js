@@ -35,6 +35,10 @@ define(['angular', './controllers'], function (ng) {
                     return "#/hierarchy/" + $scope.visType + "/" + $scope.id + "/?uri=" + encodeURIComponent(scheme.uri);
                 };
 
+                $scope.embedUrl = function(visType){
+                    return "/visualize/embed/" + visType + "/" + $scope.id + "?schemeUri=" + encodeURIComponent($routeParams.uri);
+                };
+
                 $scope.loadScheme = function(schemeUri){
                     $scope.queryingDataset = true;
                     var schemePromise = visualization.skosScheme(id, schemeUri);

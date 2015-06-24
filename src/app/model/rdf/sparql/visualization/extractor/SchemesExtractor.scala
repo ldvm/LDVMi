@@ -20,7 +20,10 @@ class SchemesExtractor extends QueryExecutionResultExtractor[SchemesQuery, Seq[S
 
       Some(schemeStatements.map { s =>
         val schemeResource = s.asResource()
-        val label = schemeResource.getProperty(SKOS.prefLabel).getObject.asLiteral().getString
+
+        val labelLiteral = schemeResource.getProperty(SKOS.prefLabel)
+
+        val label = Option(labelLiteral).map(l => l.getObject.asLiteral().getString).getOrElse(schemeResource.getURI)
 
         Scheme(schemeResource.getURI, Some(LocalizedValue(Seq(("nolang", label)).toMap)), None)
       })

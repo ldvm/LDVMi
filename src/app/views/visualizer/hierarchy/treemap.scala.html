@@ -3,12 +3,36 @@
 @(evaluationId: PipelineEvaluationId, schemeUri: String)
 
 @scripts = {
-
     <script src="@routes.WebJarAssets.at(WebJarAssets.locate("d3.js"))"></script>
-    <script>
+}
 
-window.setTimeout(function(){
-        var uri = "/api/v1/skos/scheme/@evaluationId.id?schemeUri=@schemeUri";
+@styles = {
+
+    <style type="text/css">
+        .chart {
+            display : block ;
+            margin : auto ;
+            margin-top : 40px ;
+        }
+
+        text {
+            font-size : 11px ;
+        }
+
+        rect {
+            fill : none ;
+        }
+    </style>
+}
+
+@emptyLayout("Treemap visualization", scripts, styles) {
+
+    <div style="padding-top: 60px;">
+        <div id="body"></div>
+    </div>
+
+    <script>
+        var uri = "/api/v1/skos/scheme/@evaluationId.id?schemeUri=" + encodeURIComponent('@schemeUri');
 
         var w = 1280 - 80,
             h = 800 - 180,
@@ -99,36 +123,8 @@ window.setTimeout(function(){
           node = d;
           d3.event.stopPropagation();
         }
-    }, 2000);
 
     </script>
-
-}
-
-@styles = {
-
-    <style type="text/css">
-        .chart {
-            display : block ;
-            margin : auto ;
-            margin-top : 40px ;
-        }
-
-        text {
-            font-size : 11px ;
-        }
-
-        rect {
-            fill : none ;
-        }
-    </style>
-}
-
-@layout("Treemap visualization", scripts, styles) {
-
-    <div style="padding-top: 60px;">
-        <div id="body"></div>
-    </div>
 
 }
 

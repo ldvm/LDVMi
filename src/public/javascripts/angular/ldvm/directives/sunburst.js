@@ -41,7 +41,7 @@ define(['angular', 'd3js', 'jquery'], function (ng, d3, $) {
                             .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
 
 
-                            var nodes = partition.nodes({children: $scope.scheme});
+                            var nodes = partition.nodes({children: $scope.scheme.children || []});
 
                             var path = vis.selectAll("path").data(nodes);
                             path.enter().append("path")

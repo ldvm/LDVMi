@@ -48,7 +48,8 @@ class SchemeExtractor extends QueryExecutionResultExtractor[SchemeQuery, Hierarc
   }
 
   private def getNode(model: Model, nodeResource: Resource) : HierarchyNode = {
-    val name = model.getProperty(nodeResource, SKOS.prefLabel).getString
+    val maybeNameNode = Option(model.getProperty(nodeResource, SKOS.prefLabel))
+    val name = maybeNameNode.map{n => n.getString}.getOrElse(nodeResource.getURI)
     val value = model.getProperty(nodeResource, RDF.value)
     val intValue = Option(value).map(_.getInt)
     HierarchyNode(name, if(intValue.isDefined){ intValue } else { Some(1) })
