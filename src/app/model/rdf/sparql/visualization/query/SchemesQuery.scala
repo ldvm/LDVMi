@@ -13,22 +13,14 @@ class SchemesQuery extends SparqlQuery {
       |      skos:prefLabel ?l .
       | }
       | WHERE {
-      | {
       |    ?ca a skos:Concept;
-      |        skos:inScheme ?s ;
-      |        skos:broader ?broader.
+      |        skos:inScheme ?s .
       |
-      |   ?s skos:prefLabel ?l;
-      |      a skos:ConceptScheme .
-      | } UNION
-      | {
-      |    ?ca a skos:Concept;
-      |        skos:inScheme ?s ;
-      |        skos:broaderTransitive ?broader.
+      |   ?s a skos:ConceptScheme .
       |
-      |   ?s skos:prefLabel ?l;
-      |      a skos:ConceptScheme .
-      | }}
-    """
-      .stripMargin
+      |   OPTIONAL {
+      |     ?s skos:prefLabel ?l .
+      |   }
+      | }
+    """.stripMargin
 }

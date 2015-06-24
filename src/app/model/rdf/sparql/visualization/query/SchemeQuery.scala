@@ -4,9 +4,13 @@ import model.rdf.sparql.query.SparqlQuery
 
 class SchemeQuery(schemeUri: String) extends SparqlQuery {
 
-  println(schemeUri)
+  def get: String = {
 
-  def get: String =
+    val broader = broaderPattern("skos:broader")
+    val broaderTransitive = broaderPattern("skos:broaderTransitive")
+    val narrower = broaderPattern("skos:narrower")
+    val narrowerTransitive = broaderPattern("skos:narrowerTransitive")
+
     s"""
       | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       | PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -23,35 +27,42 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       |      skos:prefLabel ?bname .
       | }
       | WHERE
-      | {{
-      |   ?ca a skos:Concept ;
-      |      skos:prefLabel ?name ;
-      |      skos:inScheme <$schemeUri> ;
-      |      skos:broader ?broader.
-      |
-      |   OPTIONAL {
-      |     ?broader a skos:Concept ;
-      |        skos:prefLabel ?bname .
-      |   }
-      |
-      |   OPTIONAL { ?ca rdf:value ?size. }
-      |
-      | } UNION
       | {
+      |  $broader UNION $broaderTransitive UNION $narrower UNION $narrowerTransitive
+      | }
+    """.stripMargin
+  }
+
+  private def pattern(triple: String) : String = {
+    s"""{
       |   ?ca a skos:Concept ;
-      |      skos:prefLabel ?name ;
-      |      skos:inScheme <$schemeUri> ;
-      |      skos:broaderTransitive ?broader.
+      |      skos:inScheme <$schemeUri> .
       |
       |   OPTIONAL {
-      |     ?broader a skos:Concept ;
-      |        skos:prefLabel ?bname .
+      |      ?ca skos:prefLabel ?name .
+      |   }
+      |
+      |   OPTIONAL {
+      |     $triple
+      |     ?broader a skos:Concept .
+      |
+      |     OPTIONAL {
+      |        ?broader skos:prefLabel ?bname .
+      |     }
+      |
       |   }
       |
       |   OPTIONAL { ?ca rdf:value ?size. }
       |
-      | }}
-    """
-      .stripMargin
+      | }"""
+  }
+
+  private def broaderPattern(property: String): String = {
+    pattern(s"?ca $property ?broader .")
+  }
+
+  private def narrowerPattern(property: String): String = {
+    pattern(s"?broader $property ?ca .")
+  }
 
 }

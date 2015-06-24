@@ -105,7 +105,7 @@
                 <div class="lv-item media" ng-repeat="scheme in schemes">
                     <div class="media-body">
                         <div class="lv-title">
-                            <a ng-href="#/hierarchy/{{visType}}/{{id}}/?uri={{scheme.uri}}" ng-click="loadScheme(scheme)">
+                            <a href="{{uri(scheme)}}" ng-click="loadScheme(scheme)">
                                 {{ scheme | label }}
                             </a>
                         </div>

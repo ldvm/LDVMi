@@ -39,8 +39,6 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
         .replaceAll("%v", if (effectiveFilter.nonEmpty) { "?v1" } else {"" })
         .stripMargin
 
-    println(q)
-
     q
   }
 

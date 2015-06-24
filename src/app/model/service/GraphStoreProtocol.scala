@@ -19,8 +19,6 @@ class GraphStoreProtocol {
   def pushToTripleStore(file: File, graphUri: String, contentType: Option[String]) = {
     val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl.replace("/sparql",""), graphUri)
 
-    println(requestUri)
-
     val credentials = new UsernamePasswordCredentials("dba", "dba")
     val httpClient = new DefaultHttpClient()
     val post = new HttpPost(requestUri)

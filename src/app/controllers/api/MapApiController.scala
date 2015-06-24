@@ -56,7 +56,6 @@ class MapApiController(implicit inj: Injector) extends ApiController {
         }
 
       case e: JsError => {
-        println(e)
         UnprocessableEntity
       }
     }
