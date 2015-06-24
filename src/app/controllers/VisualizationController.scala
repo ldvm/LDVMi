@@ -90,51 +90,26 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     def apply(evaluationId: PipelineEvaluationId, schemeUri: String):play.twirl.api.HtmlFormat.Appendable
   }
 
-  def treemap(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
-    withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.hierarchy.treemap(e.id.get, schemeUri))
-    }
-  }
+  def cluster = skosVisualisation(views.html.visualizer.hierarchy.cluster.apply) _
 
-  def sunburst(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
-    withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.hierarchy.sunburst(e.id.get, schemeUri))
-    }
-  }
+  def tree = skosVisualisation(views.html.visualizer.hierarchy.tree.apply) _
 
-  def packLayout(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
-    withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.hierarchy.packLayout(e.id.get, schemeUri))
-    }
-  }
+  def force = skosVisualisation(views.html.visualizer.hierarchy.force.apply) _
 
-  def bilevel(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
-    withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.hierarchy.bilevel(e.id.get, schemeUri))
-    }
-  }
+  def partition = skosVisualisation(views.html.visualizer.hierarchy.partition.apply) _
 
-  def partition(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
-    withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.hierarchy.partition(e.id.get, schemeUri))
-    }
-  }
+  def bilevel = skosVisualisation(views.html.visualizer.hierarchy.bilevel.apply) _
 
-  def force(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
-    withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.hierarchy.force(e.id.get, schemeUri))
-    }
-  }
+  def packLayout = skosVisualisation(views.html.visualizer.hierarchy.packLayout.apply) _
 
-  def tree(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
-    withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.hierarchy.tree(e.id.get, schemeUri))
-    }
-  }
+  def sunburst = skosVisualisation(views.html.visualizer.hierarchy.sunburst.apply) _
 
-  def cluster(pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
+  def treemap = skosVisualisation(views.html.visualizer.hierarchy.treemap.apply) _
+
+  private def skosVisualisation(template: (PipelineEvaluationId, String) => play.twirl.api.HtmlFormat.Appendable)
+    (pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
     withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.hierarchy.cluster(e.id.get, schemeUri))
+      Ok(template(e.id.get, schemeUri))
     }
   }
 
