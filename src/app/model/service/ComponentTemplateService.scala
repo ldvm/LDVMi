@@ -35,4 +35,6 @@ trait ComponentTemplateService extends CrudService[ComponentTemplateId, Componen
 
   def findSpecificIn(componentIds: Seq[ComponentTemplateId])(implicit session: Session) : Seq[SpecificComponentTemplate]
 
+  def findVisualizerByUri(uri: String)(implicit session: Session): Option[VisualizerTemplate]
+
 }

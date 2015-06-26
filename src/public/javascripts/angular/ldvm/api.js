@@ -36,7 +36,9 @@ define(['angular'], function (ng) {
         .factory('VisualizationApi', ['$resource', function ($resource) {
             return $resource(null, null, {
                 skosSchemes: {url: '/api/v1/skos/schemes/:id', method: 'GET', isArray: true},
-                skosScheme: {url: '/api/v1/skos/scheme/:id', method: 'GET', isArray: false}
+                skosScheme: {url: '/api/v1/skos/scheme/:id', method: 'GET', isArray: false},
+                skosConcepts: {url: '/api/v1/skos/concepts/:id', method: 'GET', isArray: true},
+                createSkos: {url: '/api/v1/skos/create/:id', method: 'GET', isArray: false}
             });
         }]);
 });

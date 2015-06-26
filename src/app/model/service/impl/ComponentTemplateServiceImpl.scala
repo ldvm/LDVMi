@@ -431,6 +431,10 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     visualizerTemplateRepository.save(visualizer)
   }
 
+  def findVisualizerByUri(uri: String)(implicit session: Session): Option[VisualizerTemplate] = {
+    visualizerTemplateRepository.findByUri(uri)
+  }
+
   def saveTransformer(transformer: TransformerTemplate)(implicit session: Session): TransformerTemplateId = {
     transformerTemplateRepository.save(transformer)
   }

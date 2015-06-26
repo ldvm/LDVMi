@@ -2,7 +2,7 @@ package model.rdf.sparql.visualization.query
 
 import model.rdf.sparql.query.SparqlQuery
 
-class ConceptsQuery(schemeUri: String) extends SparqlQuery {
+class ConceptsQuery extends SparqlQuery {
 
   def get: String =
     """
@@ -10,16 +10,41 @@ class ConceptsQuery(schemeUri: String) extends SparqlQuery {
       |
       | CONSTRUCT {
       |   ?c a skos:Concept ;
-      |      skos:inScheme <%u> ;
-      |      skos:prefLabel ?l .
+      |      skos:inScheme ?s ;
+      |      skos:prefLabel ?l ;
+      |      skos:broader ?b ;
+      |      skos:broaderTransitive ?bt ;
+      |      skos:narrower ?n ;
+      |      skos:narrowerTransitive ?nt .
       | }
       | WHERE
       | {
-      |   ?c a skos:Concept ;
-      |      skos:inScheme <%u> ;
-      |      skos:prefLabel ?l .
+      |   ?c a skos:Concept .
+      |
+      |   OPTIONAL {
+      |     ?c skos:inScheme ?s .
+      |   }
+      |
+      |   OPTIONAL {
+      |     ?c skos:prefLabel ?l .
+      |   }
+      |
+      |   OPTIONAL {
+      |     ?c skos:broader ?b .
+      |   }
+      |
+      |   OPTIONAL {
+      |     ?c skos:broaderTransitive ?bt .
+      |   }
+      |
+      |   OPTIONAL {
+      |     ?c skos:narrower ?n .
+      |   }
+      |
+      |   OPTIONAL {
+      |     ?c skos:narrowerTransitive ?nt .
+      |   }
       | }
     """
       .stripMargin
-      .replaceAll("%u", schemeUri)
 }

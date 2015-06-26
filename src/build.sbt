@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "jquery" % "2.1.1",
   "org.webjars" % "angular-moment" % "0.8.2",
   "org.webjars" % "momentjs" % "2.8.3",
-  "org.webjars" % "nervgh-angular-file-upload" % "1.1.5",
+  "org.webjars" % "nervgh-angular-file-upload" % "1.1.5-1",
   "org.webjars" % "d3js" % "3.5.2",
   "org.webjars" % "angular-nvd3" % "0.0.9",
   "org.webjars" % "nvd3" % "8415ee55d3",

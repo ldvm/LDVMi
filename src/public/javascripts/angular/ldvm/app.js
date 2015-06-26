@@ -1,6 +1,8 @@
 define([
         'angular',
         './controllers/compatibilityCheckController',
+        './controllers/validator/skosValidatorController',
+        './controllers/validator/validatorListController',
         './controllers/compatibilityController',
         './controllers/detailController',
         './controllers/discoveryController',
@@ -28,6 +30,7 @@ define([
         'angular-route',
         'angular-ui',
         'angular-loading-bar',
+        'angular-file-upload',
         'ng-table',
         "bootstrap",
         "angular-moment",
@@ -46,6 +49,7 @@ define([
             'ngTable',
             'angular-loading-bar',
             'angularMoment',
-            'highcharts-ng'
+            'highcharts-ng',
+            'angularFileUpload'
         ]);
     });

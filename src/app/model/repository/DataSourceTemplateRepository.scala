@@ -20,4 +20,11 @@ class DataSourceTemplateRepository extends CrudRepository[DataSourceTemplateId, 
       s <- query if s.componentTemplateId inSetBind ids
     } yield s).list
   }
+
+  def findByUri(uri: String)(implicit session: Session): Option[DataSourceTemplate] = {
+    (for {
+      t <- query
+      c <- t.componentTemplate if c.uri === uri
+    } yield t).firstOption
+  }
 }

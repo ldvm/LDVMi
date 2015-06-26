@@ -4,6 +4,7 @@
 
     @requireConfig = {
         <script>
+            requirejs.config({ paths: { "angular-file-upload": "/webjars/nervgh-angular-file-upload/1.1.5-1/angular-file-upload" } });
             requirejs.config({ paths: { "highcharts-all": "/webjars/highcharts/4.0.3/highcharts-all" } });
             requirejs.config({ paths:{"highcharts-ng":["/webjars/highcharts-ng/0.0.6/highcharts-ng","highcharts-ng"]},"shim":{"highcharts-ng":["angular","highcharts-all"]}});
         </script>

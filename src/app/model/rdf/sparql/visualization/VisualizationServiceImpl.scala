@@ -2,9 +2,9 @@ package model.rdf.sparql.visualization
 
 import _root_.model.service.SessionScoped
 import model.entity.PipelineEvaluation
+import model.rdf.sparql.visualization.extractor.{ConceptCountExtractor, ConceptsExtractor, SchemeExtractor, SchemesExtractor}
+import model.rdf.sparql.visualization.query._
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
-import model.rdf.sparql.visualization.extractor.{ConceptCountExtractor, SchemesExtractor, ConceptsExtractor, SchemeExtractor}
-import model.rdf.sparql.visualization.query.{ConceptCountQuery, SchemesQuery, ConceptsQuery, SchemeQuery}
 import model.service.component.DataReference
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
@@ -24,14 +24,25 @@ class VisualizationServiceImpl(implicit val inj: Injector) extends Visualization
     }
   }
 
-  def skosSchemes(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Scheme]] = {
-    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new SchemesQuery, new SchemesExtractor)
+  def skosSchemes(evaluation: PipelineEvaluation, tolerant: Boolean)(implicit session: Session): Option[Seq[Scheme]] = {
+
+    val query = if (tolerant) {
+      new SchemesTolerantQuery
+    } else {
+      new SchemesQuery
+    }
+
+    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), query, new SchemesExtractor)
+  }
+
+  def skosConcepts(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Concept]] = {
+    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new ConceptsQuery, new ConceptsExtractor)
   }
 
   def skosConcepts(evaluation: PipelineEvaluation, uris: Seq[String])(implicit session: Session): Map[String, Option[Seq[Concept]]] = {
     uris.map { u =>
       u -> sparqlEndpointService
-        .getResult(evaluationToSparqlEndpoint(evaluation), new ConceptsQuery(u), new ConceptsExtractor)
+        .getResult(evaluationToSparqlEndpoint(evaluation), new ConceptsBySchemaQuery(u), new ConceptsExtractor)
     }.toMap
   }
 

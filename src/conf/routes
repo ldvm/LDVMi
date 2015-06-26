@@ -31,6 +31,7 @@ POST        /ttldl                                                              
 GET         /ttlds                                                                        @controllers.VisualizationController.dataSource()
 GET         /discover/                                                                    @controllers.VisualizationController.discover(dataSourceTemplateId : Option[Long], combine: Boolean ?= false)
 
+POST        /api/v1/ttl/upload                                                            @controllers.api.DataSourceApiController.fromFile
 POST        /api/v1/components/add/ttl                                                    @controllers.api.LdvmApiController.ttl
 POST        /api/v1/datasources/add                                                       @controllers.api.ComponentTemplateApiController.addDatasource
 GET         /api/v1/components/delete/:id                                                 @controllers.api.ComponentTemplateApiController.delete(id: Long)
@@ -39,7 +40,6 @@ GET         /api/v1/pipelines/evaluate/:pipelineId                              
 GET         /api/v1/pipelines                                                             @controllers.api.PipelineApiController.list(skip: Int ?= 0, take: Int ?= 50, discoveryId: Option[Long] ?= None, visualizerId: Option[Long] ?= None)
 GET         /api/v1/pipelines/discover                                                    @controllers.api.PipelineApiController.discover(dataSourceTemplateId: Option[Long], combine: Boolean ?= false)
 GET         /api/v1/pipelines/evaluations/:id                                             @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
-#GET         /api/v1/pipelines/discovery/:id                @controllers.api.PipelineApiController.discoveryState(id: Long)
 GET         /api/v1/pipelines/visualization/:id                                           @controllers.api.PipelineApiController.visualizationById(id: Long)
 GET         /api/v1/pipelines/:id                                                         @controllers.api.PipelineApiController.findById(id: Long)
 GET         /api/v1/evaluation/result/:id                                                 @controllers.api.VisualizationApiController.dataReferences(id: Long)
@@ -60,8 +60,10 @@ POST        /api/map/markers/:id                                                
 
 POST        /api/v1/skos/concepts/:id                                                     @controllers.api.SkosApiController.concepts(id: Long)
 POST        /api/v1/skos/concepts/counts/:id                                              @controllers.api.SkosApiController.conceptsCounts(id: Long)
-GET         /api/v1/skos/schemes/:id                                                      @controllers.api.SkosApiController.schemes(id: Long)
+GET         /api/v1/skos/schemes/:id                                                      @controllers.api.SkosApiController.schemes(id: Long, tolerant: Boolean)
 GET         /api/v1/skos/scheme/:id                                                       @controllers.api.SkosApiController.scheme(id: Long, schemeUri: String)
+GET         /api/v1/skos/concepts/:id                                                     @controllers.api.SkosApiController.conceptsTolerant(id: Long)
+GET         /api/v1/skos/create/:dataSourceTemplateId                                     @controllers.api.SkosApiController.createVisualisation(dataSourceTemplateId: Long)
 
 GET         /api/datacube/datasets/:id                                                    @controllers.api.DataCubeApiController.datasets(id: Long)
 GET         /api/datacube/datastructures/:id                                              @controllers.api.DataCubeApiController.dataStructures(id: Long)

@@ -5,7 +5,7 @@ import com.hp.hpl.jena.vocabulary.RDF
 import model.rdf.LocalizedValue
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.visualization.Concept
-import model.rdf.sparql.visualization.query.{ConceptCountQuery, ConceptsQuery}
+import model.rdf.sparql.visualization.query.{ConceptCountQuery, ConceptsBySchemaQuery}
 import model.rdf.vocabulary.SKOS
 
 import scala.collection.JavaConversions._

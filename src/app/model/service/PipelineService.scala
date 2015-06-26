@@ -16,6 +16,8 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
     pipelines.map(save)
   }
 
+  def evaluateSimplePipeline(componentTemplates: (DataSourceTemplate, VisualizerTemplate))(implicit session: Session): Option[PipelineEvaluationId]
+
   def findPaginatedFiltered[T <% Ordered](
     paginationInfo: PaginationInfo,
     pipelineDiscoveryId: Option[PipelineDiscoveryId] = None,
@@ -36,7 +38,7 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
 
   def findEvaluationById(evaluationId: PipelineEvaluationId)(implicit session: Session): Option[PipelineEvaluation]
 
-  def setEvaluationQuery(token: String, query: PipelineEvaluationQuery)(implicit session: Session) : PipelineEvaluationQueryId
+  def setEvaluationQuery(token: String, query: PipelineEvaluationQuery)(implicit session: Session): PipelineEvaluationQueryId
 
   def findQueryByIdAndToken(id: PipelineEvaluationId, token: String)(implicit session: Session): Option[PipelineEvaluationQuery]
 

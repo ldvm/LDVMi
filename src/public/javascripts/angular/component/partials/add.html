@@ -8,7 +8,15 @@
                         <h2>Select files <small>Upload your TTL definitions.</small></h2>
                     </div>
                     <div class="card-body card-padding">
-                        <input type="file" nv-file-select="" uploader="uploader" multiple/>
+                        <input type="file" nv-file-select uploader="uploader" multiple/>
+                    </div>
+                </div>
+
+                <div class="card" ng-show="uploader.isHTML5" nv-file-drop uploader="uploader">
+                    <div>
+                        <div class="well my-drop-zone" nv-file-over uploader="uploader">
+                            Drop your files here
+                        </div>
                     </div>
                 </div>
             </div>

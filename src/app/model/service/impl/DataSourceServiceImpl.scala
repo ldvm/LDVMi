@@ -6,7 +6,7 @@ import com.hp.hpl.jena.rdf.model.{Model, ModelFactory}
 import com.hp.hpl.jena.vocabulary.RDF
 import model.entity.{DataSourceTemplate, DataSourceTemplateId}
 import model.rdf.vocabulary.{DSPARQL, SD}
-import model.repository.{ComponentTemplateRepository, DataSourceTemplateRepository}
+import model.repository.{PipelineRepository, ComponentTemplateRepository, DataSourceTemplateRepository}
 import model.service.{ComponentTemplateService, DataSourceService, GraphStoreProtocol}
 import play.api.Play.current
 import play.api.db.slick.Session
@@ -17,6 +17,8 @@ import scaldi.{Injectable, Injector}
 import scala.io.Source
 
 class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService with Injectable {
+
+  val repository = inject[DataSourceTemplateRepository]
 
   val graphStore = inject[GraphStoreProtocol]
   val internalEndpoint = play.api.Play.configuration.getString("ldvmi.triplestore.push").getOrElse("")
@@ -45,11 +47,14 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
   }
 
 
-  def createDataSourceFromFiles(files: Seq[MultipartFormData.FilePart[Files.TemporaryFile]])(implicit session: Session): Option[DataSourceTemplateId] = {
+  def createDataSourceFromFiles(files: Seq[MultipartFormData.FilePart[Files.TemporaryFile]], maybeUrn: Option[UUID] = None)(implicit session: Session): Option[DataSourceTemplateId] = {
     files match {
-      case f if f.nonEmpty => withRandomGraphUri { r =>
+      case f if f.nonEmpty => withRandomGraphUri(maybeUrn) { r =>
         val dataSourceName = f.map(_.filename).mkString(", ")
-        val dataSourceId = createDataSource(dataSourceName, r)
+
+        val dataSourceId = findDataSourceByGraph(r)
+          .flatMap(_.id)
+          .getOrElse(createDataSource(dataSourceName, r))
 
         f.foreach { file =>
           graphStore.pushToTripleStore(file.ref.file, r.graphUri, file.contentType)
@@ -61,8 +66,16 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     }
   }
 
-  private def withRandomGraphUri[R](action: RandomGraph => R) = {
-    action(new RandomGraph)
+  def findDataSourceByGraph(graph: PersistentGraph)(implicit session: Session): Option[DataSourceTemplate] = {
+    dataSourceTemplateRepository.findByUri(graph.datasourceUri)
+  }
+
+  private def withRandomGraphUri[R](maybeUrn: Option[UUID] = None)(action: PersistentGraph => R): R = {
+    action(new PersistentGraph(maybeUrn))
+  }
+
+  private def withRandomGraphUri[R](action: PersistentGraph => R): R = {
+    withRandomGraphUri(None)(action)
   }
 
   private def config(endpointUrl: String, graphUris: Seq[String]): Model = {
@@ -114,18 +127,16 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     Some(dataSourceTemplateRepository.save(DataSourceTemplate(None, savedId)))
   }
 
-  private def createDataSource(name: String, randomGraph: RandomGraph)(implicit session: Session): DataSourceTemplateId = {
+  private def createDataSource(name: String, graph: PersistentGraph)(implicit session: Session): DataSourceTemplateId = {
 
-    val resourceUri = "urn:datasources/" + randomGraph.uuid.toString
-
-    val dataPortTemplate = model.dto.DataPortTemplate(resourceUri + "/output", None, None)
+    val dataPortTemplate = model.dto.DataPortTemplate(graph.datasourceUri + "/output", None, None)
     val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
 
     val componentTemplate = model.dto.ComponentTemplate(
-      resourceUri,
+      graph.datasourceUri,
       Some(name),
       None,
-      Some(config(internalEndpoint, Seq(randomGraph.graphUri))),
+      Some(config(internalEndpoint, Seq(graph.graphUri))),
       Seq(),
       Some(outputTemplate),
       Seq(),
@@ -140,8 +151,10 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
 
 }
 
-class RandomGraph {
-  val uuid = UUID.randomUUID()
+class PersistentGraph(maybeUrn: Option[UUID] = None) {
+  val uuid = maybeUrn.getOrElse(UUID.randomUUID())
 
   def graphUri: String = "urn:" + uuid.toString
+
+  def datasourceUri: String = "urn:datasources/" + uuid.toString
 }

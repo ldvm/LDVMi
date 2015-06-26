@@ -1,9 +1,13 @@
 package model.service.impl.pipeline
 
+import java.util.UUID
+
 import akka.actor.{ActorRef, Props}
 import controllers.api.JsonImplicits._
 import controllers.api.ProgressReporter
 import model.entity._
+import model.rdf.Graph
+import model.rdf.sparql.GenericSparqlEndpoint
 import model.rdf.sparql.datacube.DataCubeQueryData
 import model.repository._
 import model.service._
@@ -38,6 +42,11 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   private val componentInstanceService = inject[ComponentTemplateService]
   private val compatibilityService = inject[CompatibilityService]
 
+  private val dataSourceInstancesRepository = inject[DataSourceInstanceRepository]
+  private val visualizerInstancesRepository = inject[VisualizerInstanceRepository]
+
+  private val pipelineEvaluationResultsRepository = inject[PipelineEvaluationResultRepository]
+
   def save(pipeline: model.dto.BoundComponentInstances)(implicit session: Session): PipelineId = {
 
     val bindingSetId = componentInstanceService.saveMembers(pipeline)
@@ -51,6 +60,65 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       isTemporary = false,
       pipelineDiscovery = None
     ))
+  }
+  
+  def evaluateSimplePipeline(componentTemplates: (DataSourceTemplate, VisualizerTemplate))(implicit session: Session): Option[PipelineEvaluationId] = {
+    val set = DataPortBindingSet(None)
+    val setId = dataPortBindingSetsRepository.save(set)
+
+    val dataSourceTemplate = componentTemplates._1
+    val visualizerTemplate = componentTemplates._2
+
+    val dataSourceInstanceUri = dataSourceTemplate.componentTemplate.uri + "#instance"
+    val visualizerInstanceUri = visualizerTemplate.componentTemplate.uri + "#instance"
+
+    val dataSourceComponent = ComponentInstance(None, dataSourceInstanceUri, dataSourceTemplate.componentTemplate.title, None, dataSourceTemplate.componentTemplateId)
+    val visualizerComponent = ComponentInstance(None, visualizerInstanceUri, visualizerTemplate.componentTemplate.title, None, visualizerTemplate.componentTemplateId)
+
+    val dataSourceComponentId = componentInstancesRepository.save(dataSourceComponent)
+    val visualizerComponentId = componentInstancesRepository.save(visualizerComponent)
+
+    val dataSourceInstance = DataSourceInstance(None, dataSourceComponentId, dataSourceTemplate.id.get)
+    val visualizerInstance = VisualizerInstance(None, visualizerComponentId, visualizerTemplate.id.get)
+
+    dataSourceInstancesRepository.save(dataSourceInstance)
+    visualizerInstancesRepository.save(visualizerInstance)
+
+    componentInstanceMembershipRepository.save(ComponentInstanceMembership(None, setId, dataSourceComponentId))
+    componentInstanceMembershipRepository.save(ComponentInstanceMembership(None, setId, visualizerComponentId))
+
+    val outputPort = DataPortInstance(None, "urn:p1", "DS output", None, dataSourceComponentId, dataSourceTemplate.componentTemplate.outputTemplate.get.dataPortTemplate.id.get)
+    val inputPort = DataPortInstance(None, "urn:p1", "DS output", None, dataSourceComponentId, visualizerTemplate.componentTemplate.inputTemplates.head.dataPortTemplate.id.get)
+
+    val outputPortId = dataPortInstancesRepository.save(outputPort)
+    val inputPortId = dataPortInstancesRepository.save(inputPort)
+
+    val dataSourceOutput = OutputInstance(None, outputPortId, dataSourceTemplate.componentTemplate.outputTemplate.get.id.get, dataSourceComponentId)
+    val visualizerInput = InputInstance(None, inputPortId, visualizerTemplate.componentTemplate.inputTemplates.head.id.get, visualizerComponentId)
+
+    outputInstancesRepository.save(dataSourceOutput)
+    inputInstancesRepository.save(visualizerInput)
+
+    val binding = DataPortBinding(None, setId, outputPortId, inputPortId)
+    dataPortBindingsRepository.save(binding)
+
+    val pipeline = Pipeline(None, setId, "urn:"+UUID.randomUUID().toString(),
+      "Validator: (" + dataSourceTemplate.componentTemplate.title + " -> " + visualizerTemplate.componentTemplate.title + " )",
+      None
+    )
+
+    val pipelineId = pipelinesRepository.save(pipeline)
+
+    val evaluation = PipelineEvaluation(None, pipelineId, true, Some(true))
+    val evaluationId = pipelineEvaluationRepository.save(evaluation)
+
+    val endpoint = GenericSparqlEndpoint(None, Graph(dataSourceTemplate.componentTemplate.defaultConfiguration))
+
+    endpoint.map { e =>
+      val r = PipelineEvaluationResult(None, evaluationId, visualizerTemplate.componentTemplateId, visualizerTemplate.componentTemplate.inputTemplates.head.dataPortTemplate.id.get, e.endpointURL, e.namedGraphs.headOption)
+      pipelineEvaluationResultsRepository.save(r)
+      evaluationId
+    }
   }
 
   def discoveryState(pipelineDiscoveryId: PipelineDiscoveryId)(implicit session: Session): Option[PipelineDiscovery] = {

@@ -3,16 +3,16 @@ package controllers.api
 import model.entity.PipelineEvaluation
 import play.api.db.slick.DBAction
 import play.api.db.slick._
-import play.api.libs.json.{JsError, JsSuccess, Json, JsValue}
+import play.api.libs.json._
 import play.api.mvc.{Action, Result}
 import scaldi.Injector
 import JsonImplicits._
 
 class SkosApiController(implicit inj: Injector) extends ApiController {
 
-  def schemes(id: Long) = DBAction { implicit rs =>
+  def schemes(id: Long, tolerant: Boolean = false) = DBAction { implicit rs =>
     withEvaluation(id) { evaluation =>
-      Ok(Json.toJson(visualizationService.skosSchemes(evaluation)))
+      Ok(Json.toJson(visualizationService.skosSchemes(evaluation, tolerant)))
     }
   }
 
@@ -24,9 +24,28 @@ class SkosApiController(implicit inj: Injector) extends ApiController {
     }
   }
 
+  def conceptsTolerant(id: Long) = DBAction { implicit rs =>
+    withEvaluation(id) { evaluation =>
+      Ok(Json.toJson(visualizationService.skosConcepts(evaluation)))
+    }
+  }
+
   def scheme(id: Long, schemeUri: String) = DBAction { implicit rs =>
     withEvaluation(id) { evaluation =>
       Ok(Json.toJson(visualizationService.skosScheme(evaluation, schemeUri)))
+    }
+  }
+
+  def createVisualisation(dataSourceTemplateId: Long) = DBAction { implicit rs =>
+    withDataSourceTemplate(dataSourceTemplateId) { d =>
+      val skosVisualizerUri = "http://linked.opendata.cz/resource/ldvm/visualizer/concept/ConceptVisualizerTemplate"
+      val visualizer = componentTemplateService.findVisualizerByUri(skosVisualizerUri)
+      visualizer.map { v =>
+        val evaluationId = pipelineService.evaluateSimplePipeline((d, v))
+        Ok(JsObject(Seq(("id", JsNumber(evaluationId.get.id)))))
+      }.getOrElse {
+        NotFound
+      }
     }
   }
 

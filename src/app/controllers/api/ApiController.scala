@@ -1,6 +1,6 @@
 package controllers.api
 
-import model.entity.{PipelineEvaluationQuery, PipelineEvaluation, PipelineEvaluationId}
+import model.entity._
 import model.rdf.sparql.datacube.DataCubeService
 import model.rdf.sparql.geo.GeoService
 import model.rdf.sparql.visualization.VisualizationService
@@ -97,6 +97,10 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
 
   protected def withEvaluation(id: Long)(func: PipelineEvaluation => Result)(implicit session: Session): Result = {
     pipelineService.findEvaluationById(PipelineEvaluationId(id)).map(func).getOrElse(NotFound)
+  }
+
+  protected def withDataSourceTemplate(id: Long)(func: DataSourceTemplate => Result)(implicit session: Session): Result = {
+    dataSourceService.findById(DataSourceTemplateId(id)).map(func).getOrElse(NotFound)
   }
 
 }

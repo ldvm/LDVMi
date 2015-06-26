@@ -1,10 +1,8 @@
 package model.rdf.sparql.visualization.query
 
-import model.rdf.sparql.query.SparqlQuery
+class SchemesTolerantQuery extends SchemesQuery {
 
-class SchemesQuery extends SparqlQuery {
-
-  def get: String =
+  override def get: String =
     """
       | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       |
@@ -13,9 +11,6 @@ class SchemesQuery extends SparqlQuery {
       |      skos:prefLabel ?l .
       | }
       | WHERE {
-      |   ?ca a skos:Concept;
-      |        skos:inScheme ?s .
-      |
       |   ?s a skos:ConceptScheme .
       |
       |   OPTIONAL {
