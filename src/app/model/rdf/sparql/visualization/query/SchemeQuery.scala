@@ -8,8 +8,8 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
 
     val broader = broaderPattern("skos:broader")
     val broaderTransitive = broaderPattern("skos:broaderTransitive")
-    val narrower = broaderPattern("skos:narrower")
-    val narrowerTransitive = broaderPattern("skos:narrowerTransitive")
+    val narrower = narrowerPattern("skos:narrower")
+    val narrowerTransitive = narrowerPattern("skos:narrowerTransitive")
 
     s"""
       | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -25,6 +25,10 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       |
       |   ?broader a skos:Concept ;
       |      skos:prefLabel ?bname .
+      |
+      |   ?narrower a skos:Concept ;
+      |      skos:prefLabel ?name ;
+      |      skos:broader ?ca .
       | }
       | WHERE
       | {
@@ -33,7 +37,32 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
     """.stripMargin
   }
 
-  private def pattern(triple: String) : String = {
+  private def broaderPattern(property: String): String = {
+    s"""{
+       |   ?ca a skos:Concept ;
+       |      skos:inScheme <$schemeUri> .
+       |
+       |   OPTIONAL {
+       |      ?ca skos:prefLabel ?name .
+       |   }
+       |
+       |   OPTIONAL {
+       |     ?ca $property ?broader .
+       |     ?broader a skos:Concept .
+       |
+       |     OPTIONAL {
+       |        ?broader skos:prefLabel ?bname .
+       |     }
+       |
+       |   }
+       |
+       |   OPTIONAL { ?ca rdf:value ?size. }
+       |
+       | }
+    """.stripMargin
+  }
+
+  private def narrowerPattern(property: String): String = {
     s"""{
       |   ?ca a skos:Concept ;
       |      skos:inScheme <$schemeUri> .
@@ -43,26 +72,19 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       |   }
       |
       |   OPTIONAL {
-      |     $triple
-      |     ?broader a skos:Concept .
+      |     ?ca $property ?narrower .
+      |     ?narrower a skos:Concept .
       |
       |     OPTIONAL {
-      |        ?broader skos:prefLabel ?bname .
+      |        ?narrower skos:prefLabel ?bname .
       |     }
       |
       |   }
       |
       |   OPTIONAL { ?ca rdf:value ?size. }
       |
-      | }"""
-  }
-
-  private def broaderPattern(property: String): String = {
-    pattern(s"?ca $property ?broader .")
-  }
-
-  private def narrowerPattern(property: String): String = {
-    pattern(s"?broader $property ?ca .")
+      | }
+    """.stripMargin
   }
 
 }
