@@ -68,7 +68,7 @@ d3.json(uri, function(root) {
       .on("click", click);
 
   var kx = w / root.dx,
-      ky = h / 1;
+      ky = h;
 
   g.append("svg:rect")
       .attr("width", root.dy * kx)
@@ -79,10 +79,13 @@ d3.json(uri, function(root) {
       .attr("transform", transform)
       .attr("dy", ".35em")
       .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; })
-      .text(function(d) { return d.name; })
+      .text(function(d) { return d.name; });
+
+  g.append("svg:title")
+      .text(function(d, i) { return d.uri; });
 
   d3.select(window)
-      .on("click", function() { click(root); })
+      .on("click", function() { click(root); });
 
   function click(d) {
     if (!d.children) return;

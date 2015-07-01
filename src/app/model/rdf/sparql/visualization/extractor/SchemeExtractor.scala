@@ -12,7 +12,7 @@ import model.rdf.vocabulary.SKOS
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
-class SchemeExtractor extends QueryExecutionResultExtractor[SchemeQuery, HierarchyNode] {
+class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[SchemeQuery, HierarchyNode] {
 
   private val conceptsByUri = new mutable.HashMap[String, HierarchyNode]
   private val hierarchyLinksByUri = new mutable.HashMap[String, Seq[String]]
@@ -20,10 +20,11 @@ class SchemeExtractor extends QueryExecutionResultExtractor[SchemeQuery, Hierarc
   def extract(input: QueryExecution): Option[HierarchyNode] = {
     val model = input.execConstruct()
     val concepts = model.listSubjectsWithProperty(RDF.`type`, SKOS.Concept).toList
-    Some(buildHierarchy(concepts, model))
+    val schemeResource = model.getResource(schemeUri)
+    Some(buildHierarchy(schemeResource, concepts, model))
   }
 
-  private def buildHierarchy(concepts: Seq[Resource], model: Model) : HierarchyNode = {
+  private def buildHierarchy(schemeResource: Resource, concepts: Seq[Resource], model: Model) : HierarchyNode = {
     val rootUris = concepts.flatMap { n =>
       val nodeResource = n.asResource()
       conceptsByUri.put(nodeResource.getURI, getNode(model, nodeResource))
@@ -44,7 +45,10 @@ class SchemeExtractor extends QueryExecutionResultExtractor[SchemeQuery, Hierarc
     }
 
     val roots = rootUris.flatMap(buildSubtree)
-    HierarchyNode("Scheme", Some(1), Some(roots))
+    val schemeLabel = Option(schemeResource)
+      .flatMap(r => Option(r.getProperty(SKOS.prefLabel)).map(_.getString))
+      .getOrElse(schemeUri.split("[/#]").lastOption.getOrElse(schemeUri))
+    HierarchyNode(schemeLabel, schemeUri, Some(1), Some(roots))
   }
 
   private def getNode(model: Model, nodeResource: Resource) : HierarchyNode = {
@@ -52,7 +56,7 @@ class SchemeExtractor extends QueryExecutionResultExtractor[SchemeQuery, Hierarc
     val name = maybeNameNode.map{n => n.getString}.getOrElse(nodeResource.getURI)
     val value = model.getProperty(nodeResource, RDF.value)
     val intValue = Option(value).map(_.getInt)
-    HierarchyNode(name, if(intValue.isDefined){ intValue } else { Some(1) })
+    HierarchyNode(name, nodeResource.getURI, if(intValue.isDefined){ intValue } else { Some(1) })
   }
 
   private def buildSubtree(rootUri: String): Option[HierarchyNode] = {
@@ -66,7 +70,7 @@ class SchemeExtractor extends QueryExecutionResultExtractor[SchemeQuery, Hierarc
       }
 
       val size = if(maybeChildren.isEmpty) { Some(1) } else { None }
-      HierarchyNode(n.name, size, maybeChildren)
+      HierarchyNode(n.name, n.uri, size, maybeChildren)
     }
 
   }

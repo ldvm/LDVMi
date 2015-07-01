@@ -14,7 +14,7 @@ class VisualizationServiceImpl(implicit val inj: Injector) extends Visualization
   var sparqlEndpointService = inject[SparqlEndpointService]
 
   def skosScheme(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode] = {
-    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new SchemeQuery(schemeUri), new SchemeExtractor)
+    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new SchemeQuery(schemeUri), new SchemeExtractor(schemeUri))
   }
 
   def dataReferences(evaluation: PipelineEvaluation)(implicit session: Session): Seq[DataReference] = {

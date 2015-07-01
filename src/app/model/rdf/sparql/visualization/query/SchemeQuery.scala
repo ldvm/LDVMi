@@ -17,6 +17,9 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       | PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       |
       | CONSTRUCT {
+      |
+      |   <$schemeUri> skos:prefLabel ?label .
+      |
       |   ?ca a skos:Concept ;
       |      skos:prefLabel ?name ;
       |      rdf:value ?size ;
@@ -27,12 +30,12 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       |      skos:prefLabel ?bname .
       |
       |   ?narrower a skos:Concept ;
-      |      skos:prefLabel ?name ;
+      |      skos:prefLabel ?nname ;
       |      skos:broader ?ca .
       | }
       | WHERE
       | {
-      |  $broader UNION $broaderTransitive UNION $narrower UNION $narrowerTransitive
+      |  { <$schemeUri> skos:prefLabel ?label . } UNION $broader UNION $broaderTransitive UNION $narrower UNION $narrowerTransitive
       | }
     """.stripMargin
   }
@@ -76,7 +79,7 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       |     ?narrower a skos:Concept .
       |
       |     OPTIONAL {
-      |        ?narrower skos:prefLabel ?bname .
+      |        ?narrower skos:prefLabel ?nname .
       |     }
       |
       |   }
