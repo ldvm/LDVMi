@@ -69,6 +69,7 @@
                         <button class="btn btn-default" ng-click="visType = 'cluster'" ng-class="{'btn-primary': visType == 'cluster'}">Rotating Cluster</button>
                         <button class="btn btn-default" ng-click="visType = 'partition'" ng-class="{'btn-primary': visType == 'partition'}">Partition Layout</button>
                         <button class="btn btn-default" ng-click="visType = 'tree'" ng-class="{'btn-primary': visType == 'tree'}">Tree</button>
+                        <button class="btn btn-default" ng-click="visType = 'radialTree'" ng-class="{'btn-primary': visType == 'radialTree'}">Radial tree</button>
                     </div>
 
 
@@ -80,6 +81,7 @@
                     <iframe width="100%" height="800" ng-src="{{embedUrl('cluster')}}" ng-show="visType == 'cluster'" frameborder="0"></iframe>
                     <iframe width="100%" height="800" ng-src="{{embedUrl('partition')}}" ng-show="visType == 'partition'" frameborder="0"></iframe>
                     <iframe width="100%" height="800" ng-src="{{embedUrl('tree')}}" ng-show="visType == 'tree'" frameborder="0"></iframe>
+                    <iframe width="100%" height="800" ng-src="{{embedUrl('radialTree')}}" ng-show="visType == 'radialTree'" frameborder="0"></iframe>
 
                 </div>
             </div>

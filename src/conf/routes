@@ -19,6 +19,7 @@ GET         /visualize/embed/partition/:id                                      
 GET         /visualize/embed/force/:id                                                    @controllers.VisualizationController.force(id: Long, schemeUri: String)
 GET         /visualize/embed/tree/:id                                                     @controllers.VisualizationController.tree(id: Long, schemeUri: String)
 GET         /visualize/embed/cluster/:id                                                  @controllers.VisualizationController.cluster(id: Long, schemeUri: String)
+GET         /visualize/embed/radialTree/:id                                               @controllers.VisualizationController.radialTree(id: Long, schemeUri: String)
 
 GET         /components                                                                   @controllers.ComponentTemplateController.index
 

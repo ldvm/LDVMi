@@ -106,6 +106,8 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
 
   def treemap = skosVisualisation(views.html.visualizer.hierarchy.treemap.apply) _
 
+  def radialTree = skosVisualisation(views.html.visualizer.hierarchy.radialTree.apply) _
+
   private def skosVisualisation(template: (PipelineEvaluationId, String) => play.twirl.api.HtmlFormat.Appendable)
     (pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
     withEvaluation(pipelineEvaluationId) { e =>
