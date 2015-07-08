@@ -7,6 +7,7 @@ This project is developed as a replacement for visualization parts in Payola pro
 
 Based on LDVM principles, it enables a user to visualize data in their dataset while it automatically offers list of suitable visualizers.
 
+About page: http://ldvm.net
 Live DEMO could be found at http://ldvm.opendata.cz
 
 Right now, it provides those visualization techniques:
