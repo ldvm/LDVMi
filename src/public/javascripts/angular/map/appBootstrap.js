@@ -6,7 +6,7 @@ define([
     'angular',
     'app',
     'appConfig'
-], function (require, ng) {
+], function () {
     'use strict';
 
 });
