@@ -22,10 +22,20 @@ If the data you uploaded are OK, you can visualise it with no further obstructio
 List of supported validation features:
 
 - No DSD present
-- DSD has no label `<example.com> a qb:DataStructureDefinition .` (should have `rdfs:label` property)
+- DSD has no label `<example.com> a qb:DataStructureDefinition .` (could have `rdfs:label` property)
 - DSD is a blank node (should be a resource with URI)
 - DSD has no components (should have at least one dimension and one measure)
+- Component type is unspecified (should be either attribute, dimension or measure).
+- Component does not have a label.
+- Components are not ordered (could be).
 
+TODO:
+- No measures.
+- Components linked to non-existing DSD.
+- Components of unknown type.
+- No datasets.
+- No observations.
+- Incomplete observation (some dimension/measure not specified).
 
 ### SKOS
 
