@@ -1,6 +1,6 @@
 # User guide
 
-If you want to learn, how to use LDVMi, please, follow this document, which describes the features.
+If you want to learn, how to use LDVMi, please, follow this document, which describes its features.
 
 ## Validators
 LDVMi offers some validators for you to be able to learn why your data could not be visualized and or confirm that you followed a vocabulary in a way you were expected to.
