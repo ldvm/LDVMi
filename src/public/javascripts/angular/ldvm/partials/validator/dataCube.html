@@ -1,0 +1,85 @@
+<div>
+
+    <aside id="chat">
+    </aside>
+
+    <section id="content">
+        <div class="container">
+
+            <uploader on-upload-completed="onUploadCompleted" ng-hide="id"></uploader>
+
+            <div class="row" ng-show="id">
+                <div class="col-sm-12">
+
+                    <div class="card">
+                        <div class="card-body card-padding" ng-class="{'bgm-red': !dataStructures.length}">
+                            <div class="listview">
+                                <div class="lv-header">
+                                    <span ng-show="dataStructures.length">
+                                        DataCube data structures found in your data
+                                    </span>
+                                    <span ng-hide="dataStructures.length" class="c-white">
+                                        No data structure definition found in your file(s)!
+                                    </span>
+                                </div>
+                                <div class="lv-body">
+                                    <span class="lv-item" ng-repeat="structure in dataStructures">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <div class="lv-title" ng-bind="structure.uri"></div>
+                                                <small class="lv-small" ng-bind="structure | label : lang"></small>
+                                                <strong><a href="#/hierarchy/tree/{{id}}?uri={{uri(structure.uri)}}">Visualize</a></strong>
+                                                <strong><a href="" ng-click="setDsd(structure)" ng-show="structure.uri && dataStructures.length > 1">Validate details</a></strong>
+                                                <ul class="lv-attrs">
+                                                    <li class="warning" ng-if="!structure.label">No label</li>
+                                                    <li class="danger" ng-if="!structure.uri">No URI</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" ng-show="dsd">
+                        <div class="card-body card-padding" ng-class="{'bgm-red': !components.length}">
+                            <div class="listview lv-bordered">
+                                <div class="lv-header">
+                                    <span ng-show="components.length">
+                                        Components found in your data
+                                    </span>
+                                    <span ng-hide="components.length" class="c-white">
+                                        The DSD `{{(dsd | label) || dsd.uri}}` does not contain any components!
+                                    </span>
+                                </div>
+                                <div class="lv-body" ng-show="components.length">
+                                    <span class="lv-item media" ng-repeat="component in components">
+                                        <div class="">
+                                            <div class="media-body">
+                                                <div class="lv-title" ng-bind="component | label"></div>
+                                                <small class="lv-small">URI: {{component.uri}}</small>
+                                                <ul class="lv-attrs">
+                                                    <li class="info" ng-if="component.dimension">Dimension</li>
+                                                    <li class="info" ng-if="component.attribute">Attribute</li>
+                                                    <li class="info" ng-if="component.measure">Measure</li>
+                                                    <li class="danger" ng-if="!component.measure && !component.dimension && !component.measure">Unknown component type</li>
+                                                    <li class="warning" ng-if="!component.label">No label</li>
+                                                    <li class="warning" ng-if="!component.uri">No URI</li>
+                                                    <li class="warning" ng-if="!component.order">No order specified</li>
+                                                    <li class="info" ng-if="component.order">Order: {{component.order}}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+</div>

@@ -2,10 +2,11 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# Webapp
 GET         /                                                                             @controllers.ApplicationController.index
 GET         /pipelines                                                                    @controllers.ApplicationController.index
 
+# Visualisation containers
 GET         /visualize/datacube                                                           @controllers.DataCubeController.visualize
 GET         /visualize/map                                                                @controllers.MapController.visualize
 GET         /visualize/openlayers                                                         @controllers.MapController.visualizeOL
@@ -23,6 +24,7 @@ GET         /visualize/embed/radialTree/:id                                     
 
 GET         /components                                                                   @controllers.ComponentTemplateController.index
 
+# Angular support
 GET         /assets/javascripts/angular/:ngAppName/main.js                                @controllers.util.AngularController.requireMain(ngAppName: String)
 GET         /assets/javascripts/angular/:ngAppName/controllers/layoutController.js        @controllers.util.AngularController.layoutController(ngAppName: String)
 GET         /assets/javascripts/angular/:ngAppName/controllers.js                         @controllers.util.AngularController.controllersModule(ngAppName: String)
@@ -32,20 +34,15 @@ POST        /ttldl                                                              
 GET         /ttlds                                                                        @controllers.VisualizationController.dataSource()
 GET         /discover/                                                                    @controllers.VisualizationController.discover(dataSourceTemplateId : Option[Long], combine: Boolean ?= false)
 
-POST        /api/v1/ttl/upload                                                            @controllers.api.DataSourceApiController.fromFile
-POST        /api/v1/components/add/ttl                                                    @controllers.api.LdvmApiController.ttl
-POST        /api/v1/datasources/add                                                       @controllers.api.ComponentTemplateApiController.addDatasource
-GET         /api/v1/components/delete/:id                                                 @controllers.api.ComponentTemplateApiController.delete(id: Long)
-GET         /api/v1/compatibility/check/:pipelineId                                       @controllers.api.CompatibilityApiController.check(pipelineId: Long)
-GET         /api/v1/pipelines/evaluate/:pipelineId                                        @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
-GET         /api/v1/pipelines                                                             @controllers.api.PipelineApiController.list(skip: Int ?= 0, take: Int ?= 50, discoveryId: Option[Long] ?= None, visualizerId: Option[Long] ?= None)
-GET         /api/v1/pipelines/discover                                                    @controllers.api.PipelineApiController.discover(dataSourceTemplateId: Option[Long], combine: Boolean ?= false)
-GET         /api/v1/pipelines/evaluations/:id                                             @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
-GET         /api/v1/pipelines/visualization/:id                                           @controllers.api.PipelineApiController.visualizationById(id: Long)
-GET         /api/v1/pipelines/:id                                                         @controllers.api.PipelineApiController.findById(id: Long)
-GET         /api/v1/evaluation/result/:id                                                 @controllers.api.VisualizationApiController.dataReferences(id: Long)
-GET         /api/v1/datacube/custom/:id/:permalinkToken                                   @controllers.api.VisualizationApiController.customCube(id: Long, permalinkToken: String, dimensionUri: String, valueUri: String)
 
+# API v1
+# Data upload
+POST        /api/v1/ttl/upload                                                            @controllers.api.DataSourceApiController.fromFile
+POST        /api/v1/datasources/add                                                       @controllers.api.ComponentTemplateApiController.addDatasource
+
+# LDVM components
+POST        /api/v1/components/add/ttl                                                    @controllers.api.LdvmApiController.ttl
+GET         /api/v1/components/delete/:id                                                 @controllers.api.ComponentTemplateApiController.delete(id: Long)
 GET         /api/v1/component/list                                                        @controllers.api.ComponentTemplateApiController.list(skip: Int ?= 0, pageSize: Int ?= 50)
 GET         /api/v1/component/:id                                                         @controllers.api.ComponentTemplateApiController.findById(id: Long)
 GET         /api/v1/component/:id/features                                                @controllers.api.ComponentTemplateApiController.featuresById(id: Long)
@@ -53,12 +50,30 @@ GET         /api/v1/component/:id/inputs                                        
 GET         /api/v1/component/:id/output                                                  @controllers.api.ComponentTemplateApiController.outputById(id: Long)
 GET         /api/v1/component/:id/descriptors                                             @controllers.api.ComponentTemplateApiController.descriptorsById(id: Long)
 
+# LDVM pipelines
+GET         /api/v1/pipelines/evaluate/:pipelineId                                        @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
+GET         /api/v1/pipelines                                                             @controllers.api.PipelineApiController.list(skip: Int ?= 0, take: Int ?= 50, discoveryId: Option[Long] ?= None, visualizerId: Option[Long] ?= None)
+GET         /api/v1/pipelines/discover                                                    @controllers.api.PipelineApiController.discover(dataSourceTemplateId: Option[Long], combine: Boolean ?= false)
+GET         /api/v1/pipelines/evaluations/:id                                             @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
+GET         /api/v1/pipelines/visualization/:id                                           @controllers.api.PipelineApiController.visualizationById(id: Long)
+GET         /api/v1/pipelines/:id                                                         @controllers.api.PipelineApiController.findById(id: Long)
 
-POST        /api/map/polygon-entities/:id                                                 @controllers.api.MapApiController.polygonEntities(id: Long)
-GET         /api/map/polygon-entities-properties/:id                                      @controllers.api.MapApiController.polygonEntitiesProperties(id: Long)
-GET         /api/map/properties/:id                                                       @controllers.api.MapApiController.properties(id: Long)
-POST        /api/map/markers/:id                                                          @controllers.api.MapApiController.markers(id: Long)
+# LDVM compatibility
+GET         /api/v1/compatibility/check/:pipelineId                                       @controllers.api.CompatibilityApiController.check(pipelineId: Long)
 
+# Visualization
+GET         /api/v1/evaluation/result/:id                                                 @controllers.api.VisualizationApiController.dataReferences(id: Long)
+GET         /api/v1/visualization/queries/:id                                             @controllers.api.VisualizationApiController.queries(id: Long, permalinkToken: String)
+GET         /api/v1/visualization/cached/:id/:token                                       @controllers.api.VisualizationApiController.getCachedResult(id: Long, token: String)
+
+# Visualizers support
+# GEO
+POST        /api/v1/map/polygon-entities/:id                                              @controllers.api.MapApiController.polygonEntities(id: Long)
+GET         /api/v1/map/polygon-entities-properties/:id                                   @controllers.api.MapApiController.polygonEntitiesProperties(id: Long)
+GET         /api/v1/map/properties/:id                                                    @controllers.api.MapApiController.properties(id: Long)
+POST        /api/v1/map/markers/:id                                                       @controllers.api.MapApiController.markers(id: Long)
+
+# SKOS
 POST        /api/v1/skos/concepts/:id                                                     @controllers.api.SkosApiController.concepts(id: Long)
 POST        /api/v1/skos/concepts/counts/:id                                              @controllers.api.SkosApiController.conceptsCounts(id: Long)
 GET         /api/v1/skos/schemes/:id                                                      @controllers.api.SkosApiController.schemes(id: Long, tolerant: Boolean)
@@ -66,20 +81,14 @@ GET         /api/v1/skos/scheme/:id                                             
 GET         /api/v1/skos/concepts/:id                                                     @controllers.api.SkosApiController.conceptsTolerant(id: Long)
 GET         /api/v1/skos/create/:dataSourceTemplateId                                     @controllers.api.SkosApiController.createVisualisation(dataSourceTemplateId: Long)
 
-GET         /api/datacube/datasets/:id                                                    @controllers.api.DataCubeApiController.datasets(id: Long)
-GET         /api/datacube/datastructures/:id                                              @controllers.api.DataCubeApiController.dataStructures(id: Long)
-GET         /api/datacube/datastructure-components                                        @controllers.api.DataCubeApiController.dataStructureComponents(id: Long, uri: String)
-POST        /api/datacube/values/:id                                                      @controllers.api.DataCubeApiController.values(id: Long)
-POST        /api/datacube/slices/:id                                                      @controllers.api.DataCubeApiController.sliceCube(id: Long)
-
-#GET         /api/compatibility/check/:id                    @controllers.api.VisualizationApiController.checkCompatibility(id: Long)
-#GET         /api/compatibility/:id                          @controllers.api.VisualizationApiController.getCompatibilityForVisualization(id: Long)
-#GET         /api/visualization/list                         @controllers.api.VisualizationApiController.list(skip: Int, take: Int)
-GET         /api/visualization/queries/:id                                                @controllers.api.VisualizationApiController.queries(id: Long, permalinkToken: String)
-GET         /api/visualization/cached/:id/:token                                          @controllers.api.VisualizationApiController.getCachedResult(id: Long, token: String)
-#GET         /api/visualization/add-datasource               @controllers.api.VisualizationApiController.addDataSource(endpointUri: String, graphUri: Option[String])
-#GET         /api/visualization/add                          @controllers.api.VisualizationApiController.addVisualization(dataDataSource: Long, dsdDataSource: Long, name: Option[String])
-#GET         /api/visualization/:id                          @controllers.api.VisualizationApiController.get(id: Long)
+# DataCube
+GET         /api/v1/datacube/custom/:id/:permalinkToken                                   @controllers.api.DataCubeApiController.customCube(id: Long, permalinkToken: String, dimensionUri: String, valueUri: String)
+GET         /api/v1/datacube/create/:dataSourceTemplateId                                 @controllers.api.DataCubeApiController.createVisualisation(dataSourceTemplateId: Long)
+GET         /api/v1/datacube/datasets/:id                                                 @controllers.api.DataCubeApiController.datasets(id: Long)
+GET         /api/v1/datacube/datastructures/:id                                           @controllers.api.DataCubeApiController.dataStructures(id: Long)
+GET         /api/v1/datacube/datastructure-components                                     @controllers.api.DataCubeApiController.dataStructureComponents(id: Long, uri: String, isTolerant: Boolean ?= false)
+POST        /api/v1/datacube/values/:id                                                   @controllers.api.DataCubeApiController.values(id: Long)
+POST        /api/v1/datacube/slices/:id                                                   @controllers.api.DataCubeApiController.sliceCube(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /vassets/*file                                                                controllers.Assets.versioned(path="/public", file: Asset)

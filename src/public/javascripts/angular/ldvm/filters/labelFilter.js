@@ -2,21 +2,34 @@ define(['angular', './filters'], function (ng) {
     'use strict';
 
     ng.module('ldvm.filters')
-        .filter('label', [function(){
-            return function(resource, languageCode) {
+        .filter('label', [function () {
+            return function (resource, languageCode, disableUriFallback) {
 
-                languageCode = languageCode || "nolang";
+                if (!resource) {
+                    return "";
+                }
 
-                if(resource.label && resource.label.variants){
-                    if(languageCode in resource.label.variants){
-                        return resource.label.variants[languageCode];
-                    }
-                    if('nolang' in resource.label.variants){
-                        return resource.label.variants['nolang'];
+                var langCodes = ['nolang', 'cs', 'en'];
+                disableUriFallback = !!disableUriFallback;
+
+                if (languageCode) {
+                    langCodes.unshift(languageCode);
+                }
+
+                if (resource && 'label' in resource && 'variants' in resource.label) {
+                    for (var k in langCodes) {
+                        var langCode = langCodes[k];
+                        if (langCode in resource.label.variants) {
+                            return resource.label.variants[langCode];
+                        }
                     }
                 }
 
-                return resource.uri || "Not identified";
+                if (disableUriFallback) {
+                    return 'No label';
+                }
+
+                return resource.uri || 'Not identified';
             };
         }]);
 });

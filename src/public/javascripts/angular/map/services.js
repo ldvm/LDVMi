@@ -6,17 +6,17 @@ define(['angular'], function (ng) {
     ng.module('map.services', ['ngResource'])
         .factory('MapService', ['$resource', function ($resource) {
             return $resource('', null, {
-                polygonEntities: {url: '/api/map/polygon-entities/:evaluationId', method: 'POST', isArray: true},
-                polygonEntitiesProperties: {url: '/api/map/polygon-entities-properties/:evaluationId', isArray: true},
+                polygonEntities: {url: '/api/v1/map/polygon-entities/:evaluationId', method: 'POST', isArray: true},
+                polygonEntitiesProperties: {url: '/api/v1/map/polygon-entities-properties/:evaluationId', isArray: true},
                 getSkosConcepts: {url: '/api/v1/skos/concepts/:evaluationId', method: 'POST'},
                 conceptCounts: {url: '/api/v1/skos/concepts/counts/:evaluationId', method: 'POST'},
-                properties: {url: '/api/map/properties/:evaluationId', isArray: true},
-                markers: {url: '/api/map/markers/:evaluationId', isArray: true, method: 'POST'}
+                properties: {url: '/api/v1/map/properties/:evaluationId', isArray: true},
+                markers: {url: '/api/v1/map/markers/:evaluationId', isArray: true, method: 'POST'}
             });
         }])
         .factory('DataCubeService', ['$resource', function ($resource) {
             return $resource('', null, {
-                getValues: {url: '/api/datacube/values/:visualizationId', method: 'post'}
+                getValues: {url: '/api/v1/datacube/values/:visualizationId', method: 'post'}
             });
         }]);
 

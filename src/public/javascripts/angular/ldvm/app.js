@@ -2,6 +2,7 @@ define([
         'angular',
         './controllers/compatibilityCheckController',
         './controllers/validator/skosValidatorController',
+        './controllers/validator/dataCubeValidatorController',
         './controllers/validator/validatorListController',
         './controllers/compatibilityController',
         './controllers/detailController',

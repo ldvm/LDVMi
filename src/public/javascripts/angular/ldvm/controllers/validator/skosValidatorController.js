@@ -18,14 +18,14 @@ define(['angular', '../controllers'], function (ng) {
 
                 $scope.onUploadCompleted = function (lastId) {
                     if (lastId) {
-                        visualization.createSkos(lastId).then(function (visualisationId) {
+                        visualization.skos.create(lastId).then(function (visualisationId) {
                             $location.path('/validator/skos/' + visualisationId.id);
                         });
                     }
                 };
 
                 if ($scope.id) {
-                    var promise = visualization.skosSchemes($scope.id, true);
+                    var promise = visualization.skos.schemes($scope.id, true);
                     $scope.queryingDataset = true;
                     promise.then(function (schemes) {
                         $scope.schemes = schemes;
@@ -44,7 +44,7 @@ define(['angular', '../controllers'], function (ng) {
                         return encodeURIComponent(uri)
                     };
 
-                    var conceptsPromise = visualization.skosConcepts($scope.id, true);
+                    var conceptsPromise = visualization.skos.concepts($scope.id, true);
                     $scope.queryingDataset = true;
                     conceptsPromise.then(function (concepts) {
                         $scope.concepts = concepts;

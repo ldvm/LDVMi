@@ -35,7 +35,7 @@ body, html {
     position: relative;
 }
 
-.info {
+.info-box {
     position: absolute;
     height: 1px;
     width: 1px;

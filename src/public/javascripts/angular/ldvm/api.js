@@ -33,12 +33,19 @@ define(['angular'], function (ng) {
                 result: {url: '/api/v1/evaluation/result/:id', method: 'GET', isArray: true}
             });
         }])
-        .factory('VisualizationApi', ['$resource', function ($resource) {
+        .factory('SkosApi', ['$resource', function ($resource) {
             return $resource(null, null, {
-                skosSchemes: {url: '/api/v1/skos/schemes/:id', method: 'GET', isArray: true},
-                skosScheme: {url: '/api/v1/skos/scheme/:id', method: 'GET', isArray: false},
-                skosConcepts: {url: '/api/v1/skos/concepts/:id', method: 'GET', isArray: true},
-                createSkos: {url: '/api/v1/skos/create/:id', method: 'GET', isArray: false}
+                schemes: {url: '/api/v1/skos/schemes/:id', method: 'GET', isArray: true},
+                scheme: {url: '/api/v1/skos/scheme/:id', method: 'GET', isArray: false},
+                concepts: {url: '/api/v1/skos/concepts/:id', method: 'GET', isArray: true},
+                create: {url: '/api/v1/skos/create/:id', method: 'GET', isArray: false}
+            });
+        }])
+        .factory('DataCubeApi', ['$resource', function ($resource) {
+            return $resource(null, null, {
+                create: {url: '/api/v1/datacube/create/:id', method: 'GET', isArray: false},
+                dataStructures: {url: '/api/v1/datacube/datastructures/:id', method: 'GET', isArray: true},
+                dataStructureComponents: {url: '/api/v1/datacube/datastructure-components', method: 'GET', isArray: false}
             });
         }]);
 });

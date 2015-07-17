@@ -10,7 +10,7 @@ import play.api.Play.current
 import play.api.db.slick._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
-import play.api.libs.json.{JsError, JsResult, JsSuccess, JsValue}
+import play.api.libs.json._
 import play.api.mvc.{Action, Controller, Result, Results}
 import scaldi.{Injectable, Injector}
 
@@ -24,6 +24,18 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
   val dataSourceService = inject[DataSourceService]
   val visualizationService = inject[VisualizationService]
   val geoService = inject[GeoService]
+
+  protected def createVisualisation(dataSourceTemplateId: Long, visualizerUri: String) = DBAction { implicit rs =>
+    withDataSourceTemplate(dataSourceTemplateId) { d =>
+      val visualizer = componentTemplateService.findVisualizerByUri(visualizerUri)
+      visualizer.map { v =>
+        val evaluationId = pipelineService.evaluateSimplePipeline((d, v))
+        Ok(JsObject(Seq(("id", JsNumber(evaluationId.get.id)))))
+      }.getOrElse {
+        NotFound
+      }
+    }
+  }
 
   protected def simpleParsingFuture[E, JsonType](id: Long)
     (enumeratorGetter: (PipelineEvaluation, JsonType, JsValue) => Option[Enumerator[Option[E]]])

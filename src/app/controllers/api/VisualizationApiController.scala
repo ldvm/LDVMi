@@ -29,20 +29,4 @@ class VisualizationApiController(implicit inj: Injector) extends ApiController w
     }
   }
 
-  def customCube(id: Long, permalinkToken: String, dimensionUri: String, valueUri: String) = DBAction { implicit rs =>
-
-    pipelineService.modifyEvaluationQuery(PipelineEvaluationId(id), permalinkToken, dimensionUri, valueUri)
-      .map { token =>
-      val filteredParams = rs.request
-        .queryString.-("token", "dimensionUri", "valueUri")
-        .flatMap { case (k, values) =>
-        values.map { v => k + "=" + v }
-      }.mkString("&")
-
-      Redirect("/visualize/datacube#/id/" + id + "/?p=" + token + "&" + filteredParams)
-    }.getOrElse {
-      NotFound
-    }
-  }
-
 }

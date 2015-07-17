@@ -36,17 +36,9 @@ class SkosApiController(implicit inj: Injector) extends ApiController {
     }
   }
 
-  def createVisualisation(dataSourceTemplateId: Long) = DBAction { implicit rs =>
-    withDataSourceTemplate(dataSourceTemplateId) { d =>
-      val skosVisualizerUri = "http://linked.opendata.cz/resource/ldvm/visualizer/concept/ConceptVisualizerTemplate"
-      val visualizer = componentTemplateService.findVisualizerByUri(skosVisualizerUri)
-      visualizer.map { v =>
-        val evaluationId = pipelineService.evaluateSimplePipeline((d, v))
-        Ok(JsObject(Seq(("id", JsNumber(evaluationId.get.id)))))
-      }.getOrElse {
-        NotFound
-      }
-    }
+  def createVisualisation(dataSourceTemplateId: Long) = {
+    val visualizerUri = "http://linked.opendata.cz/resource/ldvm/visualizer/concept/ConceptVisualizerTemplate"
+    super.createVisualisation(dataSourceTemplateId, visualizerUri)
   }
 
   def conceptsCounts(id: Long): Action[JsValue] = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>

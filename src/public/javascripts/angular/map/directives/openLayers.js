@@ -178,7 +178,7 @@ define(['angular', 'jquery', './directives'], function (ng, $) {
                     create();
                 },
                 restrict: 'E',
-                template: '<div class="os-maps"><div class="info"></div></div>',
+                template: '<div class="os-maps"><div class="info-box"></div></div>',
                 replace: true
             }
         }]);

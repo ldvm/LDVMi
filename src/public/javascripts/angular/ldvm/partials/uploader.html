@@ -6,7 +6,16 @@
                 <h2>Select files <small>Upload your TTL files.</small></h2>
             </div>
             <div class="card-body card-padding">
-                <input type="file" nv-file-select uploader="uploader" multiple/>
+                <div class="fileinput fileinput-new" data-provides="fileinput">
+                    <span class="btn btn-primary btn-file m-r-10 waves-effect waves-button">
+                        <span class="fileinput-new">Select file</span>
+                        <span class="fileinput-exists">Change</span>
+                        <input type="file" nv-file-select uploader="uploader" multiple>
+                    </span>
+                    <span class="fileinput-filename"></span>
+                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput">×</a>
+                </div>
+
             </div>
         </div>
 
