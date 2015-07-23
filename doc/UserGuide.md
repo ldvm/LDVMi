@@ -43,6 +43,33 @@ TODO:
 
 ### Discovery
 
+On the main page of the application, upload your data in a form of a TTL file.
+Alternatively, you can just pass the endpoint URL and URI of the graph, if your data are publicly available.
+
+Pipeline discovery will take place, trying to assemble all meaningful pipelines based on installed LDVM components.
+You will be presented with a list of possible visualisation pipelines.
+
 ### Upload a custom component
 
-### Running a pre-defined pipeline
+### Creating a pre-defined pipeline
+
+You can define a pipeline using the LDVM vocabulary.
+Then, just upload your TTL and the system will create a pipeline based on the description you provided.
+
+### Running a pipeline
+
+When a pipeline is created (either manually by uploading its definition or automatically during pipeline discovery), it means, that the application knows how to process your data.
+In order to get a visualisation, you need to execute the pipeline.
+You can do that by clicking the Run button on its detail page.
+
+## Embedding
+
+LDVMi is a responsive web application which allows you to embed a visualisation into your website rather easily. The quality and granularity of what's possible depends on the capabilities of a given visualiser.
+
+If you want to embed a visualisation:
+
+1) you need to have a working LDVM pipeline (read more about pipelines in this guide)
+2) run the pipeline to have it's results (click the pipeline name in the list of available pipelines and then click run)
+3) visualize the results (click Visualize button on the detail of the pipeline)
+4) configure the visualization using the user interface of the visualizer
+5) if you are happy with what you see, just copy the URL, you can use it as a source of an iframe
