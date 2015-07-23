@@ -68,8 +68,8 @@ LDVMi is a responsive web application which allows you to embed a visualisation 
 
 If you want to embed a visualisation:
 
-1) you need to have a working LDVM pipeline (read more about pipelines in this guide)
-2) run the pipeline to have it's results (click the pipeline name in the list of available pipelines and then click run)
-3) visualize the results (click Visualize button on the detail of the pipeline)
-4) configure the visualization using the user interface of the visualizer
-5) if you are happy with what you see, just copy the URL, you can use it as a source of an iframe
+1. you need to have a working LDVM pipeline (read more about pipelines in this guide)
+2. run the pipeline to have it's results (click the pipeline name in the list of available pipelines and then click run)
+3. visualize the results (click Visualize button on the detail of the pipeline)
+4. configure the visualization using the user interface of the visualizer
+5. if you are happy with what you see, just copy the URL, you can use it as a source of an iframe
