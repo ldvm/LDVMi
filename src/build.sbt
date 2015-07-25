@@ -1,4 +1,12 @@
 import play.PlayScala
+import com.typesafe.sbt.SbtNativePackager._
+import NativePackagerKeys._
+
+maintainer in Linux := "First Lastname <first.last@example.com>"
+
+packageSummary in Linux := "My custom package summary"
+
+packageDescription := "My longer package description"
 
 name := """payola-viz"""
 
