@@ -1,16 +1,19 @@
 import play.PlayScala
 import com.typesafe.sbt.SbtNativePackager._
 import NativePackagerKeys._
+import com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV
 
-maintainer in Linux := "First Lastname <first.last@example.com>"
-
-packageSummary in Linux := "My custom package summary"
-
-packageDescription := "My longer package description"
-
-name := """payola-viz"""
+name := "LDVMi"
 
 version := "1.0-SNAPSHOT"
+
+maintainer in Linux := "Jiri Helmich <helmich@ksi.mff.cuni.cz>"
+
+packageSummary in Linux := "LDVMi - Linked Data visualizations"
+
+packageDescription := "LDVMi - Linked Data visualizations"
+
+serverLoading in Debian := SystemV
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
