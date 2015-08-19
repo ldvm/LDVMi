@@ -7,7 +7,7 @@ import scala.slick.lifted.TableQuery
 
 class VisualizerTemplateRepository extends CrudRepository[VisualizerTemplateId, VisualizerTemplate, VisualizerTemplateTable](TableQuery[VisualizerTemplateTable]){
 
-  def findAllWithMandatoryDescriptors(implicit session: Session): Seq[SpecificComponentTemplate] = {
+  def findAllWithMandatoryDescriptors(implicit session: Session): Seq[VisualizerTemplate] = {
     (for {
       sct <- query
       ctf <- componentFeaturesQuery if ctf.componentTemplateId === sct.componentTemplateId

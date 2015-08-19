@@ -7,7 +7,7 @@ import scala.slick.lifted.TableQuery
 
 class TransformerTemplateRepository extends CrudRepository[TransformerTemplateId, TransformerTemplate, TransformerTemplateTable](TableQuery[TransformerTemplateTable]){
 
-  def findAllWithMandatoryDescriptors(implicit session: Session): Seq[SpecificComponentTemplate] = {
+  def findAllWithMandatoryDescriptors(implicit session: Session): Seq[TransformerTemplate] = {
     (for {
       sct <- query
       ctf <- componentFeaturesQuery if ctf.componentTemplateId === sct.componentTemplateId
