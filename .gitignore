@@ -15,6 +15,7 @@ dist
 /.settings
 *.class
 *.log
+src/.idea
 
 # sbt specific
 .cache/
