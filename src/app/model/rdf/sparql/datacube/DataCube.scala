@@ -4,7 +4,7 @@ import model.rdf.sparql.ValueFilter
 
 case class DataCubeKey(dimensionUriKeys: Map[String, String], dimensionLiteralKeys: Map[String,String], dimensionLiteralTypes: Map[String,Option[String]], measureUris: Seq[String])
 
-case class DataCubeCell(key: DataCubeKey, measureValues: Map[String, Option[Float]])
+case class DataCubeCell(key: DataCubeKey, measureValues: Map[String, Option[Long]])
 
 case class DataCube(cells: Seq[DataCubeCell], slices: Option[SlicesByKey] = None)
 

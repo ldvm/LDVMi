@@ -16,7 +16,7 @@ class DataCubeCellExtractor(k: DataCubeKey) extends QueryExecutionResultExtracto
       val measureProperty = model.getProperty(uri)
       val measureNodes = model.listObjectsOfProperty(measureProperty).toList
       uri -> measureNodes.collectFirst {
-        case o if o.isLiteral => o.asLiteral().getFloat
+        case o if o.isLiteral => o.asLiteral().getLong()
       }
     }
     Some(new DataCubeCell(k, values.toMap))
