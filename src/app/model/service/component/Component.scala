@@ -16,4 +16,6 @@ trait Component {
   def checkIsCompatibleWith(descriptor: Descriptor, reporterProps: Props)(implicit session: Session) : Future[CheckCompatibilityResponse]
 
   def checkCouldBeBoundWithComponentViaPort(component: Component, portUri: String, reporterProps: Props)(implicit session: Session) : Future[Boolean]
+
+  def hasDifferentTemplate(componentInstance: ComponentInstance)(implicit session: Session): Boolean
 }

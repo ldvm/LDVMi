@@ -32,7 +32,7 @@ class GeocoderPlugin(internalComponent: InternalComponent, graphStore: GraphStor
 
         val geoQueryPattern =
           """
-            |prefix xsd:	<http://www.w3.org/2001/XMLSchema#>
+            |   prefix xsd:	<http://www.w3.org/2001/XMLSchema#>
             |		prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
             |		prefix skos:	<http://www.w3.org/2004/02/skos/core#>
             |		prefix s:	<http://schema.org/>

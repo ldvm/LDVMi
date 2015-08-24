@@ -5,19 +5,16 @@ import java.util.concurrent.TimeUnit
 import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
-import com.hp.hpl.jena.vocabulary.RDF
 import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCompatibilityChecker, SparqlEndpointCompatibilityChecker}
 import model.entity._
 import model.rdf.Graph
 import model.rdf.sparql.GenericSparqlEndpoint
-import model.rdf.vocabulary.{DSPARQL, SD}
 import model.service.{GraphStoreProtocol, SessionScoped}
 import play.api.Play.current
 import play.api.db
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
 
-import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 
@@ -41,7 +38,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
   val actor = Akka.system.actorOf(props)
 
   def evaluate(dataReferences: Seq[DataReference]): Future[(String, Seq[String])] = {
-    plugin.map{ p =>
+    plugin.map { p =>
       p.run(dataReferences, reporterProps)
     }.getOrElse {
       throw new NotImplementedError()
@@ -77,7 +74,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
 
   def check(context: BindingContext)(implicit session: Session) = {
     val features = componentInstance.componentTemplate.features
-    val featuresWithDescriptors = features.map { f => (f, f.descriptors)}
+    val featuresWithDescriptors = features.map { f => (f, f.descriptors) }
 
     val eventualComponentInstanceCompatibility = featuresWithDescriptors.map {
       case (feature, descriptors) => {
@@ -120,7 +117,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
     }.get
 
     val future = (checker ask CheckCompatibilityRequest(descriptor)).mapTo[CheckCompatibilityResponse]
-    future.onSuccess{
+    future.onSuccess {
       case r: CheckCompatibilityResponse => reporter ! r
     }
 
@@ -141,20 +138,24 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
         componentToAsk.checkIsCompatibleWith(descriptor, reporterProps)
       }
 
-      eventualResponses.foreach(_.onFailure { case e => p.tryFailure(e)})
+      eventualResponses.foreach(_.onFailure { case e => p.tryFailure(e) })
       Future.sequence(eventualResponses)
-        .map { x => x.forall(_.isCompatible.getOrElse(false))}
+        .map { x => x.forall(_.isCompatible.getOrElse(false)) }
         .foreach { x =>
         reporter ! "Port <" + portUri + "> compatibility with <" + componentToAsk.componentInstance.uri + "> result: " + x
         p.trySuccess(x)
       }
     }
 
-    if(maybeInputTemplate.isEmpty) {
+    if (maybeInputTemplate.isEmpty) {
       p.tryFailure(new UnsupportedOperationException)
     }
 
     p.future
+  }
+
+  def hasDifferentTemplate(otherInstance: ComponentInstance)(implicit session: Session): Boolean = {
+    otherInstance.hasDifferentTemplate(componentInstance)
   }
 
 }
@@ -164,7 +165,11 @@ object InternalComponent {
   val pluginFactory = new PluginFactory(new GraphStoreProtocol)
 
   def apply(componentInstance: ComponentInstance, reporterProps: Props): InternalComponent = {
-    new InternalComponent(componentInstance, pluginFactory, reporterProps)
+    if (componentInstance.isTransformer) {
+      new InternalTransformer(componentInstance, pluginFactory, reporterProps)
+    } else {
+      new InternalComponent(componentInstance, pluginFactory, reporterProps)
+    }
   }
 
   def apply(specificComponentTemplate: SpecificComponentTemplate, reporterProps: Props): InternalComponent = {

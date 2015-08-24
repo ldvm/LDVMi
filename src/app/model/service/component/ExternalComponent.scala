@@ -16,4 +16,6 @@ class ExternalComponent extends Component {
   override def checkCouldBeBoundWithComponentViaPort(component: Component, portUri: String, reporterProps: Props)(implicit session: Session): Future[Boolean] = ???
 
   override def checkIsCompatibleWith(descriptor: Descriptor, reporterProps: Props)(implicit session: Session): Future[CheckCompatibilityResponse] = ???
+
+  override def hasDifferentTemplate(componentInstance: ComponentInstance)(implicit session: Session): Boolean = ???
 }

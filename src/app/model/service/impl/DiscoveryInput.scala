@@ -1,6 +1,6 @@
 package model.service.impl
 
-import model.entity.{VisualizerTemplate, TransformerTemplate, AnalyzerTemplate, DataSourceTemplate}
+import model.entity._
 
 case class DiscoveryInput (
   dataSources: Seq[DataSourceTemplate],
@@ -8,4 +8,10 @@ case class DiscoveryInput (
   transformers: Seq[TransformerTemplate],
   visualizers: Seq[VisualizerTemplate],
   fixedDataSource: Option[DataSourceTemplate]
-)
+) {
+
+  def all : Seq[SpecificComponentTemplate] = dataSources ++ analyzers ++ transformers ++ visualizers
+
+  def withoutTransformers: Seq[SpecificComponentTemplate] = dataSources ++ analyzers ++ visualizers
+
+}

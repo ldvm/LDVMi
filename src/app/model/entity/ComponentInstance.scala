@@ -24,6 +24,12 @@ case class ComponentInstance(
   var modifiedUtc: Option[DateTime] = None
   ) extends UriIdentifiedEntity[ComponentInstanceId] {
 
+  def isTransformer = ???
+
+  def hasDifferentTemplate(other: ComponentInstance)(implicit session: Session) : Boolean = {
+    componentTemplate.uri != other.componentTemplate.uri
+  }
+
   def stringDescription: String = id.map(_.toString) + "<" + uri + ">"
 
   def hasOutput(implicit session: Session): Boolean = componentTemplate.outputTemplate.nonEmpty

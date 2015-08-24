@@ -234,11 +234,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   }
 
   def discover(reporterProps: Props, dataSourceTemplateId: Option[Long], combine: Boolean = false)(implicit session: Session): PipelineDiscoveryId = {
-    val availableComponents = componentService.getAllForDiscovery(dataSourceTemplateId, combine)
-    new PipelineDiscoveryAlgorithm(allComponentsByType._1, reporterProps, allComponentsByType._2)
-      .discoverPipelines(
-        allComponentsByType._1(ComponentType.DataSource).collect { case d: DataSourceTemplate => d }
-      )
+    val availableComponents = componentService.getForDiscovery(dataSourceTemplateId, combine)
+    new PipelineDiscoveryAlgorithm(availableComponents)(reporterProps).discoverPipelines()
   }
 
   def evaluate(pipelineId: PipelineId)(logger: Props)(implicit session: Session): Option[PipelineEvaluationId] = {

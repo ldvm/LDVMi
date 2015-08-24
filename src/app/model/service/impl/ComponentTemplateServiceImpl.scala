@@ -69,14 +69,14 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     analyzers ++ visualizers ++ transformers ++ dataSources
   }
 
-  def getAllForDiscovery(dataSourceTemplateId: Option[Long], combine: Boolean)
+  def getForDiscovery(dataSourceTemplateId: Option[Long], combine: Boolean)
     (implicit session: Session): DiscoveryInput = {
 
     val maybeDsTemplate = dataSourceTemplateId.flatMap { i =>
       dataSourceTemplateRepository.findById(DataSourceTemplateId(i))
     }
 
-    val datasources = if (combine) {
+    val dataSources = if (combine) {
       maybeDsTemplate.toSeq ++ dataSourceTemplateRepository.findPermanent
     } else if (maybeDsTemplate.isDefined) {
       maybeDsTemplate.toSeq
@@ -85,7 +85,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     }
 
     DiscoveryInput(
-      datasources,
+      dataSources,
       analyzerTemplateRepository.findAllWithMandatoryDescriptors,
       transformerTemplateRepository.findAllWithMandatoryDescriptors,
       visualizerTemplateRepository.findAllWithMandatoryDescriptors,
