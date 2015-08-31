@@ -20,7 +20,7 @@ libraryDependencies ++= Seq(
   ws,
   filters,
   "com.typesafe.slick" %% "slick" % "2.1.0",
-  "org.webjars" %% "webjars-play" % "2.3.0-2",
+  "org.webjars" %% "webjars-play" % "2.3.9",
   "org.webjars" % "angularjs" % "1.2.24",
   "org.webjars" % "bootstrap" % "3.2.0",
   "org.webjars" % "requirejs-domready" % "2.0.1-2",
