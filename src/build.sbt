@@ -5,7 +5,7 @@ import com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV
 
 name := "LDVMi"
 
-version := "1.0-SNAPSHOT"
+version := "1.1.0"
 
 /** Debian packaging **/
 maintainer in Linux := "Jiri Helmich <helmich@ksi.mff.cuni.cz>"
@@ -20,7 +20,7 @@ debianPackageDependencies ++= Seq("openjdk-7-jre-headless")
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 resolvers ++= Seq(
   Resolver.sonatypeRepo("releases"),
@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
   ws,
   filters,
   "com.typesafe.slick" %% "slick" % "2.1.0",
-  "org.webjars" %% "webjars-play" % "2.3.9",
+  "org.webjars" %% "webjars-play" % "2.3.0-3",
   "org.webjars" % "angularjs" % "1.2.24",
   "org.webjars" % "bootstrap" % "3.2.0",
   "org.webjars" % "requirejs-domready" % "2.0.1-2",
