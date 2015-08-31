@@ -1,0 +1,6 @@
+mkdir /var/lib/ldvmi
+chown ldvmi:ldvmi /var/lib/ldvmi
+usermod -d /var/lib/ldvmi ldvmi
+usermod -s /bin/sh ldvmi
+chown ldvmi:ldvmi /usr/share/ldvmi/
+/etc/init.d/ldvmi start
