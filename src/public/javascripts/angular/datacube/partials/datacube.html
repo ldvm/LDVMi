@@ -14,15 +14,33 @@
 
         <div class="listview lv-bordered lv-lg">
             <div class="lv-header-alt">
+                <h2 class="lvh-label">Languages</h2>
+            </div>
+
+            <div class="lv-body">
+                <div class="lv-item media">
+                    <div class="media-body">
+                        <ul class="list-unstyled" style="margin-bottom: 0px; display: inline-block;">
+                            <li ng-repeat="l in availableLanguages" style="display: inline; margin-right: 3px;"><span
+                                    ng-click="setLang(l)" class="flag-icon flag-icon-{{l}}"></span></li>
+                            <li style="margin-bottom: 0px; display: inline-block;"><i ng-click="setLang('nolang')" class="md-highlight-remove"></i></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="listview lv-bordered lv-lg">
+            <div class="lv-header-alt">
                 <h2 class="lvh-label">Available data structures</h2>
-<!--
-                <ul class="lv-actions actions">
-                    <li>
-                        <a href="">
-                            <i class="md md-info"></i>
-                        </a>
-                    </li>
-                </ul>-->
+                <!--
+                                <ul class="lv-actions actions">
+                                    <li>
+                                        <a href="">
+                                            <i class="md md-info"></i>
+                                        </a>
+                                    </li>
+                                </ul>-->
             </div>
 
             <div class="lv-body">
@@ -288,16 +306,6 @@
                                                     <input type="text" class="form-control" style="padding-left: 5px;" ng-model="permalink" readonly ng-if="permalink" />
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-1">Language:</div>
-                                        <div class="col-lg-11">
-                                            <ul class="list-unstyled" style="margin-bottom: 0px; display: inline-block;">
-                                                <li ng-repeat="l in availableLanguages" style="display: inline; margin-right: 3px;"><span
-                                                        ng-click="setLang(l)" class="flag-icon flag-icon-{{l}}"></span></li>
-                                                <li style="margin-bottom: 0px; display: inline-block;"><i ng-click="setLang('nolang')" class="md-highlight-remove"></i></li>
-                                            </ul>
                                         </div>
                                     </div>
                                 </div>
