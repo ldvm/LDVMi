@@ -5,7 +5,7 @@ import com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV
 
 name := "LDVMi"
 
-version := "1.1.0"
+version := "1.1.1"
 
 /** Debian packaging **/
 maintainer in Linux := "Jiri Helmich <helmich@ksi.mff.cuni.cz>"
