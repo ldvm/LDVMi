@@ -40,10 +40,37 @@ case class ComponentTemplate(
   def outputTemplate(implicit s: Session): Option[OutputTemplate] = (for {
     o <- outputTemplatesQuery if o.componentTemplateId === id
   } yield o).firstOption
-  
+
   def nestedBindingSet(implicit s: Session): Option[DataPortBindingSet] = (for {
     bs <- bindingSetsQuery if bs.id === nestedBindingSetId
   } yield bs).firstOption
+
+  def getType(implicit session: Session): ComponentType = {
+
+    lazy val isDataSource = (for {
+      q <- dataSourceTemplatesQuery if q.componentTemplateId === id
+    } yield q).firstOption.isDefined
+
+    lazy val isVisualizer = (for {
+      q <- visualizerTemplatesQuery if q.componentTemplateId === id
+    } yield q).firstOption.isDefined
+
+    lazy val isAnalyzer = (for {
+      q <- analyzerTemplatesQuery if q.componentTemplateId === id
+    } yield q).firstOption.isDefined
+
+    lazy val isTransformer = (for {
+      q <- transformerTemplatesQuery if q.componentTemplateId === id
+    } yield q).firstOption.isDefined
+
+    Seq(
+      (isDataSource, ComponentType.DataSource),
+      (isVisualizer, ComponentType.Visualizer),
+      (isAnalyzer, ComponentType.Analyzer),
+      (isTransformer, ComponentType.Transformer)
+    ).collectFirst{ case (is, cType) if is => cType }.get
+
+  }
 }
 
 object ComponentEntity {
@@ -75,7 +102,7 @@ class ComponentTemplateTable(tag: Tag) extends UriIdentifiedEntityTable[Componen
 
   def nestedBindingSetId = column[Option[DataPortBindingSetId]]("data_port_binding_set_id")
 
-  def * = (id.?, uri, title, description, nestedBindingSetId, isTemporary, defaultConfiguration, uuid, createdUtc, modifiedUtc) <> (ComponentTemplate.tupled, ComponentTemplate.unapply _)
+  def * = (id.?, uri, title, description, nestedBindingSetId, isTemporary, defaultConfiguration, uuid, createdUtc, modifiedUtc) <>(ComponentTemplate.tupled, ComponentTemplate.unapply _)
 
 }
 

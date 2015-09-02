@@ -12,6 +12,7 @@ define(['angular', './controllers'], function (ng) {
 
                 pipelines.visualization($routeParams.id).then(function (data) {
                     $scope.data = data;
+                    console.log(data);
                 });
 
                 pipelines.evaluations($routeParams.id).then(function (data) {

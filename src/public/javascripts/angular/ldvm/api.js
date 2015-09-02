@@ -7,7 +7,7 @@ define(['angular'], function (ng) {
                 query: {url: '/api/v1/pipelines', isArray: false},
                 get: {url: '/api/v1/pipelines/:id', isArray: false},
                 add: {url: '/api/v1/pipelines/ttl', isArray: false},
-                visualization: {url: '/api/v1/pipelines/visualization/:id', isArray: true},
+                visualization: {url: '/api/v1/pipelines/visualization/:id', isArray: false},
                 evaluations: {url: '/api/v1/pipelines/evaluations/:id', isArray: false},
                 discover: {url: '/api/v1/pipelines/discover', isArray: false}
             });

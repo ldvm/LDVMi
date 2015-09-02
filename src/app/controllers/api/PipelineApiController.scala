@@ -68,17 +68,46 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
   def pipelineToJson(pipeline: Pipeline)(implicit session: Session) = {
     val set = pipeline.bindingSet
 
-    val links = set.bindings.map { b =>
-      val source = b.source.componentInstance
-      val target = b.targetInputInstance.map(_.componentInstance)
+    val components = JsArray(pipeline.componentInstances.map { ci =>
+      JsObject(Seq(
+        "id" -> JsNumber(ci.id.get.id),
+        "uri" -> JsString(ci.uri),
+        "label" -> JsString(ci.title),
+        "htmlContent" -> JsString(ci.description.getOrElse("")),
+        "type" -> JsString(ci.getType.toString.toLowerCase),
+        "inputs" -> JsArray(ci.inputInstances.map{ ii =>
+          JsObject(Seq(
+            "id" -> JsNumber(ii.id.get.id),
+            "uri" -> JsString(ii.dataPortInstance.uri),
+            "label" -> JsString(ii.dataPortInstance.title)
+          ))
+        }),
+        "outputs" -> JsArray(ci.outputInstance.map { oi =>
+          JsObject(Seq(
+            "id" -> JsNumber(oi.id.get.id),
+            "uri" -> JsString(oi.dataPortInstance.uri),
+            "label" -> JsString(oi.dataPortInstance.title)
+          ))
+        }.toSeq)
+      ))
+    })
+
+    val links = JsArray(set.bindings.map { b =>
+      val source = b.source
+      val target = b.targetInputInstance.map(_.dataPortInstance).get
 
       JsObject(Seq(
-        "target" -> JsString(target.get.componentTemplate.title + " ["+target.get.id.map(_.id.toString).get+"]"),
-        "source" -> JsString(source.componentTemplate.title + " ["+source.id.map(_.id.toString).get+"]"),
+        "targetId" -> JsNumber(target.id.get.id),
+        "sourceId" -> JsNumber(source.id.get.id),
+        "targetUri" -> JsString(target.uri),
+        "sourceUri" -> JsString(source.uri),
         "type" -> JsString("resolved")
       ))
-    }
+    })
 
-    JsArray(links)
+    JsObject(Seq(
+      "components" -> components,
+      "bindings" -> links
+    ))
   }
 }

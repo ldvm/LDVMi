@@ -2,6 +2,7 @@ package model.entity
 
 import java.util.UUID
 
+import model.entity.ComponentType.ComponentType
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
@@ -52,6 +53,10 @@ case class ComponentInstance(
     (for {
       c <- componentTemplatesQuery if c.id === componentTemplateId
     } yield c).first
+  }
+
+  def getType(implicit session: Session): ComponentType = {
+    componentTemplate.getType
   }
 
   override def toString = uri

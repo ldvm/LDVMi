@@ -24,7 +24,7 @@ define(['angular', './controllers'], function (ng) {
                 $scope.scheme = null;
                 $scope.queryingDataset = null;
 
-                var promise = visualization.skosSchemes(id);
+                var promise = visualization.skos.schemes(id);
                 $scope.queryingDataset = true;
                 promise.then(function(schemes){
                     $scope.schemes = schemes;
@@ -41,7 +41,7 @@ define(['angular', './controllers'], function (ng) {
 
                 $scope.loadScheme = function(schemeUri){
                     $scope.queryingDataset = true;
-                    var schemePromise = visualization.skosScheme(id, schemeUri);
+                    var schemePromise = visualization.skos.scheme(id, schemeUri);
                     schemePromise.then(function(scheme){
                         $scope.queryingDataset = false;
                         $scope.scheme = scheme;

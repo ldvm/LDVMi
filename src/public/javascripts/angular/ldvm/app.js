@@ -15,6 +15,7 @@ define([
         './controllers/layoutController',
         './directives/directives',
         './directives/uploader',
+        './directives/pipeline',
         './websocket',
         './utils',
         './filters/labelFilter',

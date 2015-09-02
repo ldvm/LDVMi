@@ -30,8 +30,9 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
 
     urls match {
       case u if u.nonEmpty => withRandomGraphUri { r =>
-        val dataSourceName = u.mkString(", ")
-        val dataSourceId = createDataSource(dataSourceName, r)
+        val dataSourceName = "Downloaded TTLs"
+        val dataSourceDescription = u.mkString(", ")
+        val dataSourceId = createDataSource(dataSourceName, Some(dataSourceDescription), r)
 
         u.foreach { uri =>
           val source = Source.fromURL(uri)
@@ -54,7 +55,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
 
         val dataSourceId = findDataSourceByGraph(r)
           .flatMap(_.id)
-          .getOrElse(createDataSource(dataSourceName, r))
+          .getOrElse(createDataSource(dataSourceName, None, r))
 
         f.foreach { file =>
           graphStore.pushToTripleStore(file.ref.file, r.graphUri, file.contentType)
@@ -127,7 +128,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     Some(dataSourceTemplateRepository.save(DataSourceTemplate(None, savedId)))
   }
 
-  private def createDataSource(name: String, graph: PersistentGraph)(implicit session: Session): DataSourceTemplateId = {
+  private def createDataSource(name: String, maybeDescription: Option[String], graph: PersistentGraph)(implicit session: Session): DataSourceTemplateId = {
 
     val dataPortTemplate = model.dto.DataPortTemplate(graph.datasourceUri + "/output", None, None)
     val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
@@ -135,7 +136,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     val componentTemplate = model.dto.ComponentTemplate(
       graph.datasourceUri,
       Some(name),
-      None,
+      maybeDescription,
       Some(config(internalEndpoint, Seq(graph.graphUri))),
       Seq(),
       Some(outputTemplate),
