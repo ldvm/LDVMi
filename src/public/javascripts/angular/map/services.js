@@ -16,7 +16,7 @@ define(['angular'], function (ng) {
         }])
         .factory('DataCubeService', ['$resource', function ($resource) {
             return $resource('', null, {
-                getValues: {url: '/api/v1/datacube/values/:visualizationId', method: 'post'}
+                getValues: {url: '/api/v1/datacube/values/:evaluationId', method: 'post'}
             });
         }]);
 
