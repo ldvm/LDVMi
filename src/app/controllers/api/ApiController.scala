@@ -4,9 +4,9 @@ import model.entity._
 import model.rdf.sparql.datacube.DataCubeService
 import model.rdf.sparql.geo.GeoService
 import model.rdf.sparql.visualization.VisualizationService
-import model.repository.PipelineEvaluationQueryRepository
 import model.service.{DataSourceService, ComponentTemplateService, PipelineService}
 import play.api.Play.current
+import play.api.Routes
 import play.api.db.slick._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
@@ -24,6 +24,50 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
   val dataSourceService = inject[DataSourceService]
   val visualizationService = inject[VisualizationService]
   val geoService = inject[GeoService]
+
+  def javascriptRoutes = Action { implicit request =>
+    Ok(
+      Routes.javascriptRouter("jsRoutes")(
+        controllers.api.routes.javascript.LdvmApiController.ttl,
+        controllers.api.routes.javascript.MapApiController.polygonEntities,
+        controllers.api.routes.javascript.MapApiController.polygonEntitiesProperties,
+        controllers.api.routes.javascript.MapApiController.markers,
+        controllers.api.routes.javascript.MapApiController.properties,
+        controllers.api.routes.javascript.VisualizationApiController.getCachedResult,
+        controllers.api.routes.javascript.VisualizationApiController.dataReferences,
+        controllers.api.routes.javascript.VisualizationApiController.queries,
+        controllers.api.routes.javascript.SkosApiController.schemes,
+        controllers.api.routes.javascript.SkosApiController.concepts,
+        controllers.api.routes.javascript.SkosApiController.conceptsTolerant,
+        controllers.api.routes.javascript.SkosApiController.scheme,
+        controllers.api.routes.javascript.SkosApiController.createVisualisation,
+        controllers.api.routes.javascript.SkosApiController.conceptsCounts,
+        controllers.api.routes.javascript.PipelineApiController.findById,
+        controllers.api.routes.javascript.PipelineApiController.visualizationById,
+        controllers.api.routes.javascript.PipelineApiController.evaluations,
+        controllers.api.routes.javascript.PipelineApiController.list,
+        controllers.api.routes.javascript.PipelineApiController.discover,
+        controllers.api.routes.javascript.PipelineApiController.evaluate,
+        controllers.api.routes.javascript.DataSourceApiController.fromFile,
+        controllers.api.routes.javascript.DataCubeApiController.dataStructures,
+        controllers.api.routes.javascript.DataCubeApiController.createVisualisation,
+        controllers.api.routes.javascript.DataCubeApiController.dataStructureComponents,
+        controllers.api.routes.javascript.DataCubeApiController.values,
+        controllers.api.routes.javascript.DataCubeApiController.sliceCube,
+        controllers.api.routes.javascript.DataCubeApiController.datasets,
+        controllers.api.routes.javascript.DataCubeApiController.customCube,
+        controllers.api.routes.javascript.ComponentTemplateApiController.delete,
+        controllers.api.routes.javascript.ComponentTemplateApiController.list,
+        controllers.api.routes.javascript.ComponentTemplateApiController.findById,
+        controllers.api.routes.javascript.ComponentTemplateApiController.featuresById,
+        controllers.api.routes.javascript.ComponentTemplateApiController.inputsById,
+        controllers.api.routes.javascript.ComponentTemplateApiController.outputById,
+        controllers.api.routes.javascript.ComponentTemplateApiController.descriptorsById,
+        controllers.api.routes.javascript.ComponentTemplateApiController.addDatasource,
+        controllers.api.routes.javascript.CompatibilityApiController.check
+      )
+    ).as("text/javascript")
+  }
 
   protected def createVisualisation(dataSourceTemplateId: Long, visualizerUri: String) = DBAction { implicit rs =>
     withDataSourceTemplate(dataSourceTemplateId) { d =>

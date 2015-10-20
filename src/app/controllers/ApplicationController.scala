@@ -1,5 +1,6 @@
 package controllers
 
+import play.api.Routes
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
 

@@ -60,7 +60,7 @@ libraryDependencies ++= Seq(
   "org.apache.jena" % "jena-arq" % "2.13.0",
   "com.typesafe.play" %% "play-slick" % "0.8.0",
   "com.newrelic.agent.java" % "newrelic-api" % "3.8.1",
-  "joda-time" % "joda-time" % "2.4",
+  "joda-time" % "joda-time" % "2.8.1",
   "org.joda" % "joda-convert" % "1.6",
   "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",
   "com.vividsolutions" % "jts" % "1.8",
