@@ -18,7 +18,8 @@ define(['angular', 'bootstrap', 'markerclusterer', './directives'], function (ng
                     zoomChangedListener: '&zoomChanged',
                     centerChangedListener: '&centerChanged',
                     boundsChangedListener: '&boundsChanged',
-                    fitBounds: '='
+                    fitBounds: '=',
+                    clustering: '='
                 },
                 controller: function ($scope) {
 
@@ -83,7 +84,11 @@ define(['angular', 'bootstrap', 'markerclusterer', './directives'], function (ng
                                 });
                             }
 
-                            markersToShow.push(marker);
+                            if ($scope.clustering) {
+                                markersToShow.push(marker);
+                            } else {
+                                marker.setMap($scope.map);
+                            }
 
                             // BOUNDS, REMEMBERING MARKERS
                             newMarkersMap[coords.lat] = newMarkersMap[coords.lat] || {};
@@ -91,19 +96,29 @@ define(['angular', 'bootstrap', 'markerclusterer', './directives'], function (ng
                             newMarkers.push(marker);
                             $scope.bounds.extend(marker.position);
 
-                            // INFO WINDOW
-                            var contentString = '<p>' + ((item.description) || "").replace(/\n/g, "<br />") + '</p>';
+                            if (item.description && item.description.length) {
+                                // INFO WINDOW
+                                var contentString = '<p>' + ((item.description) || "").replace(/\n/g, "<br />") + '</p>';
 
-                            google.maps.event.addListener(marker, 'click', function (content) {
-                                return function () {
-                                    $scope.infowindow.setContent(content);//set the content
-                                    $scope.infowindow.open($scope.map, this);
-                                }
-                            }(contentString));
+                                google.maps.event.addListener(marker, 'click', function (content) {
+                                    return function () {
+                                        $scope.infowindow.setContent(content);//set the content
+                                        $scope.infowindow.open($scope.map, this);
+                                    }
+                                }(contentString));
+                            }
                         });
 
-                        $scope.clusterer.clearMarkers();
-                        $scope.clusterer.addMarkers(markersToShow);
+                        if ($scope.clustering) {
+                            $scope.clusterer.clearMarkers();
+                            $scope.clusterer.addMarkers(markersToShow);
+                        }else {
+                            markersToHide = $scope._gMarkers.diff(newMarkers);
+
+                            angular.forEach(markersToHide, function (m) {
+                                m.setMap(null);
+                            });
+                        }
 
                         $scope._gMarkers = newMarkers;
 

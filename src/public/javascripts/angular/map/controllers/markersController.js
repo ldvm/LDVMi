@@ -23,6 +23,7 @@ define(['angular', './controllers'], function (ng) {
                 }
 
                 $scope.language = "cs";
+                $scope.clustering = true;
 
                 $scope.label = function (label) {
                     if (label && label.variants) {
@@ -35,7 +36,7 @@ define(['angular', './controllers'], function (ng) {
                     return undefined;
                 };
 
-                if(!("autoLoad" in $routeParams)) {
+                if (!("autoLoad" in $routeParams)) {
 
                     $scope.queryingDataset = "properties of geolocated entities";
                     MapService.properties({evaluationId: $id}, function (properties) {
@@ -71,6 +72,9 @@ define(['angular', './controllers'], function (ng) {
 
                 }
 
+                if ('clustering' in $routeParams) {
+                    $scope.clustering = parseInt($routeParams.clustering.toLocaleLowerCase()) === 1;
+                }
 
 
                 $scope.refresh = function () {
@@ -98,7 +102,7 @@ define(['angular', './controllers'], function (ng) {
                         $scope.queryingDataset = null;
                         $scope.markers = data;
                         $scope.lastError = false;
-                    }, function(e){
+                    }, function (e) {
                         $scope.lastError = true;
                         $scope.queryingDataset = null;
                     });
@@ -106,7 +110,7 @@ define(['angular', './controllers'], function (ng) {
                     $scope.center = {lat: 49, lng: 15};
                 };
 
-                if("autoLoad" in $routeParams) {
+                if ("autoLoad" in $routeParams) {
                     $scope.refresh();
                 }
 
