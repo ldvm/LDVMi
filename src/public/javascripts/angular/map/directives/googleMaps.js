@@ -1,4 +1,4 @@
-define(['angular', 'bootstrap', './directives'], function (ng) {
+define(['angular', 'bootstrap', 'markerclusterer', './directives'], function (ng) {
     'use strict';
 
     Array.prototype.diff = function (a) {
@@ -149,7 +149,7 @@ define(['angular', 'bootstrap', './directives'], function (ng) {
                     $scope.map = new google.maps.Map($elm[0], options);
 
                     var clustererOptions = {gridSize: 50, maxZoom: 15};
-                    $scope.clusterer = new MarkerClusterer(map, [], clustererOptions);
+                    $scope.clusterer = new MarkerClusterer($scope.map, [], clustererOptions);
 
                     google.maps.event.addListener($scope.map, 'zoom_changed', function () {
                         $scope.zoomChanged($scope.map.getZoom());
