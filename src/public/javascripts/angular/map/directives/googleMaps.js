@@ -65,6 +65,9 @@ define(['angular', 'bootstrap', './directives'], function (ng) {
                         var newMarkers = [];
                         $scope.bounds = new google.maps.LatLngBounds();
 
+                        var markersToShow = [];
+                        var markersToHide = [];
+
                         angular.forEach($scope.markerData, function (item) {
 
                             var coords = item.coordinates;
@@ -73,16 +76,16 @@ define(['angular', 'bootstrap', './directives'], function (ng) {
                             // REUSE OR CREATE
                             if ($scope.markersMap[coords.lat] && $scope.markersMap[coords.lat][coords.lng]) {
                                 marker = $scope.markersMap[coords.lat][coords.lng];
-                                marker.setMap($scope.map);
                             } else {
                                 marker = new google.maps.Marker({
                                     position: new google.maps.LatLng(coords.lat, coords.lng),
-                                    map: $scope.map,
                                     title: $scope.getTitle(item)
                                 });
                             }
 
-                            // BOUNDS, REMEBERING MARKERS
+                            markersToShow.push(marker);
+
+                            // BOUNDS, REMEMBERING MARKERS
                             newMarkersMap[coords.lat] = newMarkersMap[coords.lat] || {};
                             newMarkersMap[coords.lat][coords.lng] = marker;
                             newMarkers.push(marker);
@@ -99,11 +102,8 @@ define(['angular', 'bootstrap', './directives'], function (ng) {
                             }(contentString));
                         });
 
-                        var hideMarkers = $scope._gMarkers.diff(newMarkers);
-
-                        angular.forEach(hideMarkers, function (m) {
-                            m.setMap(null);
-                        });
+                        $scope.clusterer.clearMarkers();
+                        $scope.clusterer.addMarkers(markersToShow);
 
                         $scope._gMarkers = newMarkers;
 
@@ -138,29 +138,32 @@ define(['angular', 'bootstrap', './directives'], function (ng) {
                     });
 
                 },
-                link: function ($scope, $elm, $attrs) {
+                link: function ($scope, $elm) {
 
                     var center = $scope.center || {lat: 49, lng: 15};
-
-                    $scope.map = new google.maps.Map($elm[0], {
+                    var options = {
                         center: new google.maps.LatLng(center.lat, center.lng),
                         zoom: parseInt($scope.zoom) || 1,
                         mapTypeId: $scope.mapType || google.maps.MapTypeId.ROADMAP
+                    };
+                    $scope.map = new google.maps.Map($elm[0], options);
+
+                    var clustererOptions = {gridSize: 50, maxZoom: 15};
+                    $scope.clusterer = new MarkerClusterer(map, [], clustererOptions);
+
+                    google.maps.event.addListener($scope.map, 'zoom_changed', function () {
+                        $scope.zoomChanged($scope.map.getZoom());
                     });
 
-                     google.maps.event.addListener($scope.map, 'zoom_changed', function () {
-                     $scope.zoomChanged($scope.map.getZoom());
-                     });
+                    google.maps.event.addListener($scope.map, 'center_changed', function () {
+                        $scope.centerChanged($scope.map.getCenter());
+                    });
 
-                     google.maps.event.addListener($scope.map, 'center_changed', function () {
-                     $scope.centerChanged($scope.map.getCenter());
-                     });
+                    google.maps.event.addListener($scope.map, 'bounds_changed', function () {
+                        $scope.boundsChanged($scope.map.getBounds());
+                    });
 
-                     google.maps.event.addListener($scope.map, 'bounds_changed', function () {
-                     $scope.boundsChanged($scope.map.getBounds());
-                     });
-
-                     $scope.infowindow = new google.maps.InfoWindow();
+                    $scope.infowindow = new google.maps.InfoWindow();
                 },
                 restrict: 'E',
                 template: '<div class="gmaps" style="margin-top: -30px;"></div>',
