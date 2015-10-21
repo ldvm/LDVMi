@@ -65,6 +65,12 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     pipelineService.evaluate(PipelineId(id))(logger)
   }
 
+  def makePermanent(id: Long) = DBAction { implicit rws =>
+    val pipelineId = PipelineId(id)
+    pipelineService.makePermanent(pipelineId)
+    Ok(JsObject(Seq()))
+  }
+
   def pipelineToJson(pipeline: Pipeline)(implicit session: Session) = {
     val set = pipeline.bindingSet
 

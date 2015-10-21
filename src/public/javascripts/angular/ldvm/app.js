@@ -41,6 +41,7 @@ define([
             'ldvm.controllers',
             'ldvm.directives',
             'ldvm.filters',
+            'ldvm.models',
             'ngRoute',
             'ngResource',
             'ngTable',

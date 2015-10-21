@@ -49,6 +49,7 @@ GET         /api/v1/component/:id/features                                      
 GET         /api/v1/component/:id/inputs                                                  @controllers.api.ComponentTemplateApiController.inputsById(id: Long)
 GET         /api/v1/component/:id/output                                                  @controllers.api.ComponentTemplateApiController.outputById(id: Long)
 GET         /api/v1/component/:id/descriptors                                             @controllers.api.ComponentTemplateApiController.descriptorsById(id: Long)
+GET         /api/v1/component/makePermanent/:id                                          @controllers.api.ComponentTemplateApiController.makePermanent(id: Long)
 
 # LDVM pipelines
 GET         /api/v1/pipelines/evaluate/:pipelineId                                        @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
@@ -56,6 +57,7 @@ GET         /api/v1/pipelines                                                   
 GET         /api/v1/pipelines/discover                                                    @controllers.api.PipelineApiController.discover(dataSourceTemplateIds: List[Long], combine: Boolean ?= false)
 GET         /api/v1/pipelines/evaluations/:id                                             @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
 GET         /api/v1/pipelines/visualization/:id                                           @controllers.api.PipelineApiController.visualizationById(id: Long)
+GET         /api/v1/pipelines/makePermanent/:id                                           @controllers.api.PipelineApiController.makePermanent(id: Long)
 GET         /api/v1/pipelines/:id                                                         @controllers.api.PipelineApiController.findById(id: Long)
 
 # LDVM compatibility

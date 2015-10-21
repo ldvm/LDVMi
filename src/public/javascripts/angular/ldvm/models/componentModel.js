@@ -8,6 +8,9 @@ define(['angular', './models'], function (ng) {
                 return {
                     createDatasource: function (data) {
                         return componentsApi.createDatasource(data).$promise;
+                    },
+                    makePermanent: function(id){
+                        return componentsApi.makePermanent({id: id}).$promise;
                     }
                 };
             }

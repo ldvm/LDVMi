@@ -9,6 +9,8 @@ import scaldi.{Injectable, Injector}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+import scala.util.parsing.json.JSONObject
+
 class ComponentTemplateApiController(implicit inj: Injector) extends ApiController with Injectable {
 
   def delete(componentTemplateId: Long) = DBAction { implicit rws =>
@@ -64,6 +66,13 @@ class ComponentTemplateApiController(implicit inj: Injector) extends ApiControll
   def descriptorsById(id: Long) = DBAction { implicit rws =>
     withComponentTemplate(id) { componentTemplate =>
       Ok(Json.toJson(componentTemplate.features.flatMap(_.descriptors)))
+    }
+  }
+
+  def makePermanent(id: Long) = DBAction { implicit rws =>
+    withComponentTemplate(id) { componentTemplate =>
+      componentTemplateService.save(componentTemplate.copy(isTemporary = false))
+      Ok(JsObject(Seq()))
     }
   }
 

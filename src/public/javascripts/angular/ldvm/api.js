@@ -9,7 +9,8 @@ define(['angular'], function (ng) {
                 add: {url: '/api/v1/pipelines/ttl', isArray: false},
                 visualization: {url: '/api/v1/pipelines/visualization/:id', isArray: false},
                 evaluations: {url: '/api/v1/pipelines/evaluations/:id', isArray: false},
-                discover: {url: '/api/v1/pipelines/discover', isArray: false}
+                discover: {url: '/api/v1/pipelines/discover', isArray: false},
+                makePermanent: {url: '/api/v1/pipelines/makePermanent/:id', isArray: false}
             });
         }])
         .factory('DatasourceApi', ['$resource', function ($resource) {
@@ -25,7 +26,8 @@ define(['angular'], function (ng) {
         }])
         .factory('ComponentsApi', ['$resource', function ($resource) {
             return $resource(null, null, {
-                createDatasource: {url: '/api/v1/datasources/add', method: 'POST', isArray: true}
+                createDatasource: {url: '/api/v1/datasources/add', method: 'POST', isArray: true},
+                makePermanent: {url: '/api/v1/component/makePermanent/:id', method: 'GET', isArray: false}
             });
         }])
         .factory('EvaluationApi', ['$resource', function ($resource) {
@@ -45,7 +47,11 @@ define(['angular'], function (ng) {
             return $resource(null, null, {
                 create: {url: '/api/v1/datacube/create/:id', method: 'GET', isArray: false},
                 dataStructures: {url: '/api/v1/datacube/datastructures/:id', method: 'GET', isArray: true},
-                dataStructureComponents: {url: '/api/v1/datacube/datastructure-components', method: 'GET', isArray: false}
+                dataStructureComponents: {
+                    url: '/api/v1/datacube/datastructure-components',
+                    method: 'GET',
+                    isArray: false
+                }
             });
         }]);
 });

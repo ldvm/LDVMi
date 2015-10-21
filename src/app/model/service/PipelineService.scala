@@ -44,4 +44,6 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
 
   def modifyEvaluationQuery(id: PipelineEvaluationId, token: String, dimensionUri: String, valueUri: String)(implicit session: Session): Option[String]
 
+  def makePermanent(pipelineId: PipelineId)(implicit session: Session)
+
 }

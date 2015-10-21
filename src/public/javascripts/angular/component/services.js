@@ -12,7 +12,8 @@ define(['angular'], function (ng) {
                 features: {url: '/api/v1/component/:id/features', method: 'GET', isArray: true},
                 inputs: {url: '/api/v1/component/:id/inputs', method: 'GET', isArray: true},
                 output: {url: '/api/v1/component/:id/output', method: 'GET', isArray: false},
-                descriptors: {url: '/api/v1/component/:id/descriptors', method: 'GET', isArray: true}
+                descriptors: {url: '/api/v1/component/:id/descriptors', method: 'GET', isArray: true},
+                makePermanent: {url: '/api/v1/component/makePermanent/:id', method: 'GET', isArray: false}
             });
         }]);
 });

@@ -249,4 +249,10 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       id
     }
   }
+
+  def makePermanent(pipelineId: PipelineId)(implicit session: Session) = {
+    findById(pipelineId).map { p =>
+      repository.save(p.copy(isTemporary = false))
+    }
+  }
 }

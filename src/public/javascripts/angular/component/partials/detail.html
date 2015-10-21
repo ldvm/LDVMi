@@ -24,6 +24,17 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body card-padding text-right">
+                    <div>
+                        <button ng-click="permanent(component.id)" ng-show="component.isTemporary" class="btn btn-default">Make permanent</button>
+                        <span class="badge badge-info" ng-show="!component.isTemporary">Permanent</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">

@@ -23,6 +23,12 @@ define(['angular', './models'], function (ng) {
                     },
                     discover: function () {
                         return pipelineApi.discover().$promise;
+                    },
+                    makePermanent: function (id) {
+                        return pipelineApi.makePermanent({id: id}).$promise;
+                    },
+                    get: function (id) {
+                        return pipelineApi.get({id: id}).$promise;
                     }
                 };
             }
