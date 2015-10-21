@@ -9,7 +9,7 @@ trait ComponentTemplateService extends CrudService[ComponentTemplateId, Componen
 
   def getAllByType(implicit session: Session): Map[ComponentType, Seq[SpecificComponentTemplate]]
 
-  def getAllForDiscovery(dataSourceTemplateId: Option[Long], combine: Boolean)(implicit session: Session): (Map[ComponentType, Seq[SpecificComponentTemplate]], Option[DataSourceTemplate])
+  def getAllForDiscovery(dataSourceTemplateIds: List[Long], combine: Boolean)(implicit session: Session): (Map[ComponentType, Seq[SpecificComponentTemplate]], Seq[DataSourceTemplate])
 
   def save(component: model.dto.ComponentTemplate)(implicit session: Session): ComponentTemplateId
 

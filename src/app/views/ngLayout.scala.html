@@ -41,7 +41,8 @@
                             "auto-size":  ['@routes.Assets.versioned("vendors/auto-size/jquery.autosize").url.replace(".js", "")'],
                             "sweet-alert":  ['@routes.Assets.versioned("vendors/sweet-alert/sweet-alert").url.replace(".js", "")'],
                             "pipeline-visualizer":  ['@routes.Assets.versioned("javascripts/lib/pipelineVisualizer").url.replace(".js", "")'],
-                            "markerclusterer":  ['@routes.Assets.versioned("javascripts/lib/gmaps-clusterer").url.replace(".js", "")']
+                            "markerclusterer":  ['@routes.Assets.versioned("javascripts/lib/gmaps-clusterer").url.replace(".js", "")'],
+                            "underscore.string": ['@routes.WebJarAssets.at(WebJarAssets.locate("underscore.string.min.js")).url.replace(".js", "")']
                         },
                         "shim":{
                             "nicescroll": ['jquery'],

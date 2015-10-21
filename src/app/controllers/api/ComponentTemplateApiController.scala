@@ -4,9 +4,10 @@ import controllers.api.JsonImplicits._
 import model.entity.{ComponentTemplate, ComponentTemplateId}
 import play.api.Play.current
 import play.api.db.slick.{DBAction, _}
-import play.api.libs.json._
 import play.api.mvc.Result
 import scaldi.{Injectable, Injector}
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 class ComponentTemplateApiController(implicit inj: Injector) extends ApiController with Injectable {
 
@@ -67,19 +68,27 @@ class ComponentTemplateApiController(implicit inj: Injector) extends ApiControll
   }
 
   def addDatasource = DBAction { implicit rws =>
-    rws.request.body.asJson.flatMap { json =>
-      val endpointUrl = (json \ "endpointUrl").as[String]
-      val graphUris = (json \ "graphUris").as[Seq[String]]
 
-      val maybeId = dataSourceService.createDataSourceFromUris(endpointUrl, graphUris)
-      maybeId.map { id =>
-        Ok(JsObject(Seq(
-          "id" -> JsNumber(id.id)
-        )))
+    case class Endpoint(url: String, graphUris: Option[Seq[String]])
+    implicit val endpointReads = (
+        (__ \ 'url).read[String] and
+        (__ \ 'graphUris).readNullable[Seq[String]]
+      )(Endpoint)
+
+    rws.request.body.asJson.map { json =>
+      val endpoints = json.as[Seq[Endpoint]]
+
+      val ids = endpoints.flatMap { e =>
+        dataSourceService.createDataSourceFromUris(e.url, e.graphUris)
       }
-    }.getOrElse{
-      BadRequest
-    }
+
+      ids.size match {
+        case 0 => BadRequest
+        case _ => Ok(JsArray(
+          ids.map(id => JsObject(Seq("id" -> JsNumber(id.id))))
+        ))
+      }
+    }.getOrElse(BadRequest)
   }
 
   private def withComponentTemplate(id: Long)(func: ComponentTemplate => Result)(implicit session: Session): Result = {

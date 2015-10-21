@@ -32,7 +32,7 @@ GET         /assets/javascripts/angular/:ngAppName/controllers.js               
 POST        /ttlupload                                                                    @controllers.VisualizationController.fromFiles()
 POST        /ttldl                                                                        @controllers.VisualizationController.fromUris()
 GET         /ttlds                                                                        @controllers.VisualizationController.dataSource()
-GET         /discover/                                                                    @controllers.VisualizationController.discover(dataSourceTemplateId : Option[Long], combine: Boolean ?= false)
+GET         /discover/                                                                    @controllers.VisualizationController.discover(dataSourceTemplateIds : List[Long], combine: Boolean ?= false)
 
 
 # API v1
@@ -53,7 +53,7 @@ GET         /api/v1/component/:id/descriptors                                   
 # LDVM pipelines
 GET         /api/v1/pipelines/evaluate/:pipelineId                                        @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
 GET         /api/v1/pipelines                                                             @controllers.api.PipelineApiController.list(skip: Int ?= 0, take: Int ?= 50, discoveryId: Option[Long] ?= None, visualizerId: Option[Long] ?= None)
-GET         /api/v1/pipelines/discover                                                    @controllers.api.PipelineApiController.discover(dataSourceTemplateId: Option[Long], combine: Boolean ?= false)
+GET         /api/v1/pipelines/discover                                                    @controllers.api.PipelineApiController.discover(dataSourceTemplateIds: List[Long], combine: Boolean ?= false)
 GET         /api/v1/pipelines/evaluations/:id                                             @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
 GET         /api/v1/pipelines/visualization/:id                                           @controllers.api.PipelineApiController.visualizationById(id: Long)
 GET         /api/v1/pipelines/:id                                                         @controllers.api.PipelineApiController.findById(id: Long)

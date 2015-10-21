@@ -79,7 +79,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     withRandomGraphUri(None)(action)
   }
 
-  private def config(endpointUrl: String, graphUris: Seq[String]): Model = {
+  private def config(endpointUrl: String, maybeGraphUris: Option[Seq[String]]): Model = {
     val model = ModelFactory.createDefaultModel()
 
     val configResource = model.createResource()
@@ -89,7 +89,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     val endpointResource = model.createResource(endpointUrl)
     serviceResource.addProperty(SD.endpoint, endpointResource)
 
-    if (graphUris.nonEmpty) {
+    maybeGraphUris.foreach { graphUris =>
       val dataSetResource = model.createResource()
       serviceResource.addProperty(SD.defaultDataset, dataSetResource)
 
@@ -100,12 +100,13 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
         dataSetResource.addProperty(SD.namedGraph, namedGraphResource)
       }
     }
+
     configResource.addProperty(DSPARQL.service, serviceResource)
 
     model
   }
 
-  def createDataSourceFromUris(endpointUrl: String, graphUris: Seq[String])(implicit session: Session): Option[DataSourceTemplateId] = {
+  def createDataSourceFromUris(endpointUrl: String, graphUris: Option[Seq[String]])(implicit session: Session): Option[DataSourceTemplateId] = {
 
     val resourceUri = endpointUrl
     val dataPortTemplate = model.dto.DataPortTemplate(resourceUri + "/output", None, None)
@@ -115,7 +116,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
       resourceUri,
       Some(endpointUrl),
       None,
-      Some(config(endpointUrl, graphUris.filter(_.trim.nonEmpty))),
+      Some(config(endpointUrl, graphUris.map(_.filter(_.trim.nonEmpty)))),
       Seq(),
       Some(outputTemplate),
       Seq(),
@@ -137,7 +138,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
       graph.datasourceUri,
       Some(name),
       maybeDescription,
-      Some(config(internalEndpoint, Seq(graph.graphUri))),
+      Some(config(internalEndpoint, Some(Seq(graph.graphUri)))),
       Seq(),
       Some(outputTemplate),
       Seq(),

@@ -25,7 +25,7 @@ define(['angular'], function (ng) {
         }])
         .factory('ComponentsApi', ['$resource', function ($resource) {
             return $resource(null, null, {
-                createDatasource: {url: '/api/v1/datasources/add', method: 'POST', isArray: false}
+                createDatasource: {url: '/api/v1/datasources/add', method: 'POST', isArray: true}
             });
         }])
         .factory('EvaluationApi', ['$resource', function ($resource) {

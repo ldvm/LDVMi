@@ -28,18 +28,19 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
 
         DB.withSession { implicit s =>
           val files = body.files.filter(_.key == "ttlfile")
-          val maybeDataSourceId = dataSourceService.createDataSourceFromFiles(files)
+          val dataSourceIds = dataSourceService.createDataSourceFromFiles(files).toSeq
 
-          maybeDataSourceId.map { i =>
-            val combine = body
-              .dataParts
-              .get("combine")
-              .flatMap(_.headOption.map(_ == "true"))
-              .getOrElse(false)
+          dataSourceIds.isEmpty match {
+            case true => Redirect(routes.ApplicationController.index()).flashing("error" -> "No data in files.")
+            case false => {
+              val combine = body
+                .dataParts
+                .get("combine")
+                .flatMap(_.headOption.map(_ == "true"))
+                .getOrElse(false)
 
-            Redirect(routes.VisualizationController.discover(maybeDataSourceId.map(_.id), combine))
-          }.getOrElse {
-            Redirect(routes.ApplicationController.index()).flashing("error" -> "No data in files.")
+              Redirect(routes.VisualizationController.discover(dataSourceIds.map(_.id).toList, combine))
+            }
           }
         }
 
@@ -53,7 +54,7 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
         request.body.get("ttlurl").map { urls =>
 
           val sanitizedList = urls.flatMap(_.split("\n")).map(_.trim).filter(_.nonEmpty)
-          val maybeDataSourceId = dataSourceService.createDataSourceFromRemoteTtl(sanitizedList)
+          val dataSourceIds = dataSourceService.createDataSourceFromRemoteTtl(sanitizedList).toSeq
 
           val combine = request
             .body
@@ -61,7 +62,7 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
             .flatMap(_.headOption.map(_ == "true"))
             .getOrElse(false)
 
-          Redirect(routes.VisualizationController.discover(maybeDataSourceId.map(_.id), combine))
+          Redirect(routes.VisualizationController.discover(dataSourceIds.map(_.id).toList, combine))
 
         }.getOrElse {
           Redirect(routes.ApplicationController.index()).flashing(
@@ -119,12 +120,12 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     pipelineService.findEvaluationById(PipelineEvaluationId(id)).map(func).getOrElse(NotFound)
   }
 
-  def discover(dataSourceTemplateId: Option[Long], combine: Boolean = false) = DBAction { rws =>
+  def discover(dataSourceTemplateIds: List[Long], combine: Boolean = false) = DBAction { rws =>
 
     val n = if (combine) {1} else {0}
 
     val url: String = "/pipelines#/discover?" +
-      "dataSourceTemplateId=" + dataSourceTemplateId.orNull +
+      dataSourceTemplateIds.map(i => "dataSourceTemplateIds=" + i).mkString("&") +
       "&combine=" + n.toString
 
     TemporaryRedirect(url)

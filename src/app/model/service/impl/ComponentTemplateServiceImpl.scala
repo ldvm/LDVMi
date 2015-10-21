@@ -69,17 +69,17 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     analyzers ++ visualizers ++ transformers ++ dataSources
   }
 
-  def getAllForDiscovery(dataSourceTemplateId: Option[Long], combine: Boolean)
-    (implicit session: Session): (Map[ComponentType, Seq[SpecificComponentTemplate]], Option[DataSourceTemplate]) = {
+  def getAllForDiscovery(dataSourceTemplateIds: List[Long], combine: Boolean)
+    (implicit session: Session): (Map[ComponentType, Seq[SpecificComponentTemplate]], Seq[DataSourceTemplate]) = {
 
-    val maybeDsTemplate = dataSourceTemplateId.flatMap { i =>
+    val dsTemplates = dataSourceTemplateIds.map { i =>
       dataSourceTemplateRepository.findById(DataSourceTemplateId(i))
-    }
+    }.filter(_.isDefined).map(_.get)
 
     val datasources = if (combine) {
-      maybeDsTemplate.toSeq ++ dataSourceTemplateRepository.findPermanent
-    } else if (maybeDsTemplate.isDefined) {
-      maybeDsTemplate.toSeq
+      dsTemplates ++ dataSourceTemplateRepository.findPermanent
+    } else if (dsTemplates.nonEmpty) {
+      dsTemplates
     } else {
       dataSourceTemplateRepository.findPermanent
     }
@@ -90,7 +90,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
       (ComponentType.Transformer, transformerTemplateRepository.findAllWithMandatoryDescriptors),
       (ComponentType.Visualizer, visualizerTemplateRepository.findAllWithMandatoryDescriptors)
     ).toMap,
-      maybeDsTemplate)
+      dsTemplates)
   }
 
   def save(componentTemplate: model.dto.ComponentTemplate)(implicit session: Session): ComponentTemplateId = {

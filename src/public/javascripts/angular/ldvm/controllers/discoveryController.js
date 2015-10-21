@@ -18,9 +18,16 @@ define(['angular', './controllers'], function (ng) {
                 $scope.data = [];
 
                 var l = window.location;
+
                 var uri = "ws://" + l.host + "/api/v1/pipelines/discover";
-                if ("dataSourceTemplateId" in $routeParams && $routeParams.dataSourceTemplateId) {
-                    uri += "?dataSourceTemplateId=" + $routeParams.dataSourceTemplateId;
+                if ("dataSourceTemplateId" in $routeParams && $routeParams.dataSourceTemplateIds) {
+
+                    var params = $routeParams.dataSourceTemplateIds.map(function(p){
+                        return "dataSourceTemplateIds=" + p;
+                    });
+
+                    uri += "?" + params.join("&");
+
                     if ($routeParams.combine && $routeParams.combine > 0) {
                         uri += "&combine=true";
                     }
