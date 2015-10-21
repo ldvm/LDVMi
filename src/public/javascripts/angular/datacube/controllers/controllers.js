@@ -20,7 +20,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 $scope.dataStructures = [];
                 $scope.datasets = [];
                 $scope.activeDSD = null;
-                $scope.language = "cs";
+                $scope.language = $routeParams.language || "cs";
                 $scope.measuresSelectedCount = 0;
                 $scope.chartVisible = true;
                 $scope.init = true;
