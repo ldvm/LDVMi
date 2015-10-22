@@ -32,8 +32,6 @@ define(['./app'], function (app) {
         .factory('errorHttpInterceptor', ['$q', function ($q, $modal) {
             return {
                 responseError: function responseError(rejection) {
-
-                    //alert("Communication with server failed.");
                     return $q.reject(rejection);
                 }
             };
