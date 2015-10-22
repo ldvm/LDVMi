@@ -89,8 +89,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
       (ComponentType.Analyzer, analyzerTemplateRepository.findAllWithMandatoryDescriptors),
       (ComponentType.Transformer, transformerTemplateRepository.findAllWithMandatoryDescriptors),
       (ComponentType.Visualizer, visualizerTemplateRepository.findAllWithMandatoryDescriptors)
-    ).toMap,
-      dsTemplates)
+    ).toMap, dsTemplates)
   }
 
   def save(componentTemplate: model.dto.ComponentTemplate)(implicit session: Session): ComponentTemplateId = {

@@ -8,5 +8,9 @@ define(['angular', './controllers'], function (ng) {
             evaluation.result($routeParams.id).then(function (data) {
                 $scope.results = data;
             });
+
+            evaluation.get($routeParams.id).then(function(evaluation){
+                $scope.evaluation = evaluation;
+            });
         }]);
 });

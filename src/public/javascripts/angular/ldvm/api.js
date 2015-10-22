@@ -32,7 +32,8 @@ define(['angular'], function (ng) {
         }])
         .factory('EvaluationApi', ['$resource', function ($resource) {
             return $resource(null, null, {
-                result: {url: '/api/v1/evaluation/result/:id', method: 'GET', isArray: true}
+                result: {url: '/api/v1/evaluation/result/:id', method: 'GET', isArray: true},
+                get: {url: '/api/v1/evaluation/:id', method: 'GET', isArray: false}
             });
         }])
         .factory('SkosApi', ['$resource', function ($resource) {

@@ -64,6 +64,7 @@ GET         /api/v1/pipelines/:id                                               
 GET         /api/v1/compatibility/check/:pipelineId                                       @controllers.api.CompatibilityApiController.check(pipelineId: Long)
 
 # Visualization
+GET         /api/v1/evaluation/:id                                                        @controllers.api.VisualizationApiController.findById(id: Long)
 GET         /api/v1/evaluation/result/:id                                                 @controllers.api.VisualizationApiController.dataReferences(id: Long)
 GET         /api/v1/visualization/queries/:id                                             @controllers.api.VisualizationApiController.queries(id: Long, permalinkToken: String)
 GET         /api/v1/visualization/cached/:id/:token                                       @controllers.api.VisualizationApiController.getCachedResult(id: Long, token: String)

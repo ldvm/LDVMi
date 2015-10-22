@@ -6,6 +6,9 @@ define(['angular', './models'], function (ng) {
             return {
                 result: function (id) {
                     return evaluationApi.result({id: id}).$promise;
+                },
+                get: function (id) {
+                    return evaluationApi.get({id: id}).$promise;
                 }
             };
         }]);

@@ -12,6 +12,10 @@
             <div class="lv-body">
                 <div class="lv-item media" ng-repeat="reference in results">
                     <div class="media-body">
+                        <p>
+                            Created as a result of pipeline <a ng-href="#/detail/{{evaluation.pipelineId}}">#{{evaluation.pipelineId}}</a> evaluation.
+                        </p>
+
                         <div>
                             <p>
                                 Port <strong ng-bind="reference.portUri"></strong>
