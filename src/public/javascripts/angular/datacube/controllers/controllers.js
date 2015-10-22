@@ -119,9 +119,9 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.availableLanguages = ["cs", "en"];
 
-                /*DataCubeService.getDatasets({ visualizationId: $id }, function () {
-
-                 });*/
+                DataCubeService.getDatasets({ visualizationId: $id }, function (datasets) {
+                    $scope.datasets = datasets;
+                });
 
                 $scope.loadByPermanentToken = function () {
                     $scope.queryingDataset = "chart data";

@@ -1,17 +1,6 @@
 <div>
     <aside id="chat">
 
-        <!--<div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Data source</h3>
-            </div>
-            <div class="panel-body">
-                <p>Using a fixed dataset, which is a result of a Payola analyzer.</p>
-            </div>
-            <div class="panel-footer"></div>
-        </div>
-        -->
-
         <div class="listview lv-bordered lv-lg">
             <div class="lv-header-alt">
                 <h2 class="lvh-label">Languages</h2>
@@ -33,14 +22,6 @@
         <div class="listview lv-bordered lv-lg">
             <div class="lv-header-alt">
                 <h2 class="lvh-label">Available data structures</h2>
-                <!--
-                                <ul class="lv-actions actions">
-                                    <li>
-                                        <a href="">
-                                            <i class="md md-info"></i>
-                                        </a>
-                                    </li>
-                                </ul>-->
             </div>
 
             <div class="lv-body">
@@ -60,33 +41,31 @@
 
         <p ng-show="dataStructures.length == 0">No data structures found in the supplied datasource.</p>
 
-        <div class="panel panel-default" ng-show="datasets.length > 0">
-            <div class="panel-heading">
-                <h3 class="panel-title">Available datasets</h3>
+        <div class="listview lv-bordered lv-lg">
+            <div class="lv-header-alt">
+                <h2 class="lvh-label">Available datasets</h2>
             </div>
-            <div class="panel-body">
-                <p ng-show="datasets.length == 0">No named datasets found.</p>
-                <ul class="list-unstyled" ng-show="datasets.length > 0">
-                    <li ng-repeat="ds in datasets"><input type="checkbox" ng-model="ds.active"
-                        ng-change="changeDataset($index)"/>&nbsp;{{ds.label.variants[language]}}
-                    </li>
-                </ul>
+
+            <div class="lv-body">
+                <div class="lv-item media" ng-repeat="ds in datasets">
+                    <p ng-show="datasets.length == 0">No named datasets found.</p>
+                    <div class="checkbox pull-left">
+                        <label>
+                            <input type="checkbox" ng-model="ds.isActive" ng-change="changeDataset($index)"/>
+                            <i class="input-helper"></i>
+                        </label>
+                    </div>
+                    <div class="media-body">
+                        <div>{{ds.label.variants[language] || "Unlabeled DSD"}}</div>
+                    </div>
+                </div>
             </div>
-            <div class="panel-footer"></div>
         </div>
 
         <div ng-repeat="type in componentTypes">
             <div class="listview lv-bordered lv-lg">
                 <div class="lv-header-alt">
                     <h2 class="lvh-label">{{type.plural}} settings</h2>
-                    <!--
-                                    <ul class="lv-actions actions">
-                                        <li>
-                                            <a href="">
-                                                <i class="md md-info"></i>
-                                            </a>
-                                        </li>
-                                    </ul>-->
                 </div>
 
                 <div class="lv-body">
