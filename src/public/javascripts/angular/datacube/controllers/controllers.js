@@ -502,7 +502,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope.slicesSelected = false;
 
                     if ($scope.measuresSelectedCount == 1) {
-                        $scope.slicesSelected = dimensionsWithMultipleCount >= 1;
+                        $scope.slicesSelected = (dimensionsWithMultipleCount > 0 && dimensionsWithMultipleCount <= 2);
                     } else if ($scope.measuresSelectedCount > 1) {
                         $scope.slicesSelected = dimensionsWithMultipleCount == 1;
                     }
