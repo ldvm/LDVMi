@@ -20,7 +20,7 @@ define(['angular', './controllers'], function (ng) {
                 var l = window.location;
 
                 var uri = "ws://" + l.host + "/api/v1/pipelines/discover";
-                if ("dataSourceTemplateId" in $routeParams && $routeParams.dataSourceTemplateIds) {
+                if ("dataSourceTemplateIds" in $routeParams && $routeParams.dataSourceTemplateIds) {
 
                     var params = $routeParams.dataSourceTemplateIds.map(function(p){
                         return "dataSourceTemplateIds=" + p;
