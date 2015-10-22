@@ -388,8 +388,13 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     pushDataToChart();
                 }
 
-                $scope.toggleMeasure = function (measureComponent) {
+                $scope.toggleMeasure = function (measureComponent, isActive) {
                     measureComponent.isActive = !(measureComponent.isActive || false);
+                    if (isActive === true) {
+                        measureComponent.isActive = true;
+                    } else if (isActive === false) {
+                        measureComponent.isActive = false;
+                    }
                     $scope.measuresSelectedCount = $scope.activeMeasures().length;
                     computeSlicing();
                 };
@@ -475,7 +480,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 function computeSlicing() {
 
-                    if(!$scope.values){
+                    if (!$scope.values) {
                         return;
                     }
 
@@ -571,7 +576,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                                 });
 
                                 if (measure) {
-                                    $scope.toggleMeasure(measure);
+                                    $scope.toggleMeasure(measure, true);
                                 }
                             } else {
                                 var values = c.values;
