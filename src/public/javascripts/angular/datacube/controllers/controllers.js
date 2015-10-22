@@ -2,7 +2,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
     'use strict';
 
     ng.module('datacube.controllers', []).
-        controller('DataCube',
+    controller('DataCube',
         ['$scope', 'DataCubeService', '$q', '$location', '$routeParams', '$timeout',
             function ($scope, DataCubeService, $q, $location, $routeParams, $timeout) {
 
@@ -119,8 +119,10 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.availableLanguages = ["cs", "en"];
 
-                DataCubeService.getDatasets({ visualizationId: $id }, function (datasets) {
+                $scope.queryingDataset = "datasets";
+                DataCubeService.getDatasets({visualizationId: $id}, function (datasets) {
                     $scope.datasets = datasets;
+                    $scope.queryingDataset = null;
                 });
 
                 $scope.loadByPermanentToken = function () {
@@ -167,8 +169,17 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     DataCubeService.getComponents({id: $id, uri: dsd.uri}, function (data) {
                         $scope.queryingDataset = null;
                         dsd.components = data.components;
+
+                        var measures = _.filter(dsd.components, function (c) {
+                            return c.measure;
+                        });
+
+                        if (measures.length == 1) {
+                            $scope.toggleMeasure(measures[0]);
+                        }
+
                         callback();
-                    }, function(){
+                    }, function () {
                         $scope.queryingDataset = null;
                     });
                 };
@@ -214,9 +225,15 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.xAxisTitle = function (activeMeasures) {
                     var xAxisComponent = _.chain($scope.activeDSD.components)
-                        .filter(function(c){ return c.dimension; })
-                        .sortBy(function(c){ return -c.order; })
-                        .find(function(c){ return $scope.dimensionValuesActiveCount[c.dimension.uri] > 1; })
+                        .filter(function (c) {
+                            return c.dimension;
+                        })
+                        .sortBy(function (c) {
+                            return -c.order;
+                        })
+                        .find(function (c) {
+                            return $scope.dimensionValuesActiveCount[c.dimension.uri] > 1;
+                        })
                         .value();
 
                     return $scope.label(xAxisComponent.label);
@@ -372,7 +389,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 }
 
                 $scope.toggleMeasure = function (measureComponent) {
-
                     measureComponent.isActive = !(measureComponent.isActive || false);
                     $scope.measuresSelectedCount = $scope.activeMeasures().length;
                     computeSlicing();
@@ -458,9 +474,15 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
                 function computeSlicing() {
+
+                    if(!$scope.values){
+                        return;
+                    }
+
                     var dimensions = _.filter($scope.activeDSD.components, function (c) {
                         return c.dimension;
                     });
+
                     dimensions.forEach(function (d) {
                         var values = $scope.values[d.dimension.uri];
                         var activeValues = _.where(values, {isActive: true});
