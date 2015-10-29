@@ -1,8 +1,11 @@
 package model.repository
 
+import java.util.Formatter.DateTime
+
 import model.entity.CustomUnicornPlay.driver.simple._
 import model.entity._
 import utils.PaginationInfo
+import com.github.tototoshi.slick.JdbcJodaSupport._
 
 import scala.slick.lifted.{Ordered, TableQuery}
 
@@ -32,5 +35,13 @@ class PipelineRepository extends CrudRepository[PipelineId, Pipeline, PipelineTa
       }
     }
 
+  }
+
+  def deleteExpired(hoursCount: Int)(implicit session: Session) = {
+    query.filter(p => {
+      p.createdUtc < new org.joda.time.DateTime().minusHours(hoursCount) &&
+      p.isTemporary &&
+      pipelineEvaluationQuery.filter(e => e.pipelineId === p.id).length === 0
+    }).delete
   }
 }

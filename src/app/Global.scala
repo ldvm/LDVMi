@@ -1,8 +1,8 @@
-import java.util.concurrent.TimeUnit
-
 import controllers.ControllerModule
 import controllers.api.ApiModule
+import model.repository.{PipelineRepository, PipelineEvaluationRepository}
 import play.api._
+import play.api.db.DB
 import play.api.libs.concurrent.Akka
 import play.api.mvc.WithFilters
 import play.filters.gzip.GzipFilter
@@ -10,8 +10,10 @@ import scaldi.play.ScaldiSupport
 import model.rdf.RdfModule
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.Play.current
+import scala.concurrent.duration._
 
-import scala.concurrent.duration.Duration
+import scala.slick.driver.H2Driver.simple._
+
 
 object Global extends WithFilters(
   new GzipFilter(
@@ -20,13 +22,18 @@ object Global extends WithFilters(
     )
   )
 ) with ScaldiSupport with GlobalSettings {
-  def applicationModule = new RepositoryModule :: new ServiceModule :: new RdfModule :: new ControllerModule :: new ApiModule
+  val services = new ServiceModule
+  def applicationModule = new RepositoryModule :: services :: new RdfModule :: new ControllerModule :: new ApiModule
 
   override def onStart(app: Application) = {
     super.onStart(app)
 
-    Akka.system.scheduler.schedule(Duration.create(10, TimeUnit.MINUTES), Duration.create(2, TimeUnit.HOURS)) {
-      //run automated discovery
+    lazy val database = Database.forDataSource(DB.getDataSource())
+    lazy val session = database.createSession()
+
+    Akka.system.scheduler.schedule(0.microsecond, 2.minutes) {
+      val expiredHours = 72
+      (new PipelineRepository).deleteExpired(expiredHours)(session)
     }
   }
 }
