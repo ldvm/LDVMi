@@ -29,9 +29,8 @@ GET         /assets/javascripts/angular/:ngAppName/main.js                      
 GET         /assets/javascripts/angular/:ngAppName/controllers/layoutController.js        @controllers.util.AngularController.layoutController(ngAppName: String)
 GET         /assets/javascripts/angular/:ngAppName/controllers.js                         @controllers.util.AngularController.controllersModule(ngAppName: String)
 
-POST        /ttlupload                                                                    @controllers.VisualizationController.fromFiles()
-POST        /ttldl                                                                        @controllers.VisualizationController.fromUris()
-GET         /ttlds                                                                        @controllers.VisualizationController.dataSource()
+GET         /multisource                                                                  @controllers.VisualizationController.multiSource()
+POST        /datasources                                                                  @controllers.VisualizationController.multiUpload()
 GET         /discover/                                                                    @controllers.VisualizationController.discover(dataSourceTemplateIds : List[Long], combine: Boolean ?= false)
 
 
@@ -49,7 +48,7 @@ GET         /api/v1/component/:id/features                                      
 GET         /api/v1/component/:id/inputs                                                  @controllers.api.ComponentTemplateApiController.inputsById(id: Long)
 GET         /api/v1/component/:id/output                                                  @controllers.api.ComponentTemplateApiController.outputById(id: Long)
 GET         /api/v1/component/:id/descriptors                                             @controllers.api.ComponentTemplateApiController.descriptorsById(id: Long)
-GET         /api/v1/component/makePermanent/:id                                          @controllers.api.ComponentTemplateApiController.makePermanent(id: Long)
+GET         /api/v1/component/makePermanent/:id                                           @controllers.api.ComponentTemplateApiController.makePermanent(id: Long)
 
 # LDVM pipelines
 GET         /api/v1/pipelines/evaluate/:pipelineId                                        @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
