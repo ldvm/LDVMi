@@ -25,7 +25,7 @@ object PipelineDiscoveryAlgorithm {
 class PipelineDiscoveryAlgorithm(
   allComponentsByType: Map[ComponentType, Seq[SpecificComponentTemplate]],
   reporterProps: Props,
-  maybeGeneralDs: Seq[DataSourceTemplate] = Seq(),
+  generalDS: Seq[DataSourceTemplate] = Seq(),
   maxIterations: Int = PipelineDiscoveryAlgorithm.MaxIterations
   )
   (implicit val inj: Injector, implicit val session: Session) extends SessionScoped with Injectable {
@@ -64,10 +64,10 @@ class PipelineDiscoveryAlgorithm(
         reportMessage("All completed pipelines: " + allCompleted.size)
 
         try {
-          val pipelinesToSave = if (maybeGeneralDs.isEmpty) {
+          val pipelinesToSave = if (generalDS.isEmpty) {
             createdCompletedPipelines
           } else {
-            createdCompletedPipelines.filter(_.componentInstances.exists(i => maybeGeneralDs.exists(_.componentTemplateId == i.componentTemplateId)))
+            createdCompletedPipelines.filter(_.componentInstances.exists(i => generalDS.exists(_.componentTemplateId == i.componentTemplateId)))
           }
           pipelineService.saveDiscoveryResults(discoveryId, pipelinesToSave, reporter)
 
