@@ -28,7 +28,7 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
         |   OPTIONAL { ?s skos:prefLabel ?spl . }
         |   OPTIONAL { ?s rdfs:label ?l . }
         |   OPTIONAL { ?s skos:notation ?sn . }
-        |   OPTIONAL { ?s s:title ?st . }
+        |   OPTIONAL { ?s s:name ?st . }
         |   OPTIONAL { ?s s:description ?sd . }
         |
         |   %r

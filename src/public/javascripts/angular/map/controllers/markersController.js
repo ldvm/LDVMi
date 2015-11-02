@@ -54,14 +54,14 @@ define(['angular', './controllers'], function (ng) {
                             $scope.values = propertiesValuesMap;
                             $scope.colors = {};
 
-                            angular.forEach($scope.values, function (values, k) {
-                                angular.forEach(values, function (v) {
+                            ng.forEach($scope.values, function (values, k) {
+                                ng.forEach(values, function (v) {
                                     v.isActive = false;
                                 });
                             });
 
                             if ($scope.mainProperty) {
-                                angular.forEach($scope.values[$scope.mainProperty.uri], function (v) {
+                                ng.forEach($scope.values[$scope.mainProperty.uri], function (v) {
                                     var key = v.uri || v.label.variants[$scope.currentLanguage];
                                     $scope.colors[key] = "rgba(" + random() + ", " + random() + ", " + random() + ", 0.7)";
                                     v.colorStyle = {"background-color": $scope.colors[key]};
@@ -83,9 +83,9 @@ define(['angular', './controllers'], function (ng) {
 
                     var filters = {};
 
-                    angular.forEach($scope.values, function (array, k) {
+                    ng.forEach($scope.values, function (array, k) {
                         if (k.substr(0, 1) != "$") {
-                            angular.forEach(array, function (v, key) {
+                            ng.forEach(array, function (v, key) {
                                 if (parseInt(key) > -1) {
                                     filters[k] = filters[k] || [];
                                     filters[k].push({
