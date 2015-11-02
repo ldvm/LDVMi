@@ -14,7 +14,7 @@ import play.api.libs.Files
 import play.api.mvc.MultipartFormData
 import scaldi.{Injectable, Injector}
 
-import scala.io.Source
+import scala.io.{Codec, Source}
 
 class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService with Injectable {
 
@@ -35,6 +35,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
         val dataSourceId = createDataSource(dataSourceName, Some(dataSourceDescription), r)
 
         u.foreach { uri =>
+          implicit val codec = Codec("UTF-8")
           val source = Source.fromURL(uri)
           val ttl = source.mkString
           source.close()

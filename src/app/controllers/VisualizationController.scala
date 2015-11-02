@@ -73,9 +73,7 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
   }
 
   def visualize(pipelineEvaluationId: Long) = DBAction { implicit rws =>
-
     withEvaluation(pipelineEvaluationId) { e =>
-
       val maybeVisualizerTemplateUri = e.pipeline.componentInstances.find(!_.hasOutput).map(_.componentTemplate.uri)
 
       maybeVisualizerTemplateUri.map { uri =>
