@@ -44,6 +44,10 @@
     <script>
         var uri = "/api/v1/skos/scheme/@evaluationId.id?schemeUri=" + encodeURIComponent('@schemeUri');
 
+        function name(node) {
+            return node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
+        }
+
 var w = 1120,
     h = 600,
     x = d3.scale.linear().range([0, w]),
@@ -79,7 +83,7 @@ d3.json(uri, function(root) {
       .attr("transform", transform)
       .attr("dy", ".35em")
       .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0; })
-      .text(function(d) { return d.name; });
+      .text(function(d) { return name(d); });
 
   g.append("svg:title")
       .text(function(d, i) { return d.uri; });

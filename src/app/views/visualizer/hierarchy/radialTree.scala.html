@@ -37,6 +37,10 @@
 
     <script>
         var uri = "/api/v1/skos/scheme/@evaluationId.id?schemeUri=" + encodeURIComponent('@schemeUri');
+
+        function name(node) {
+            return node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
+        }
 var diameter = 960;
 
 var tree = d3.layout.tree()
@@ -77,7 +81,7 @@ d3.json(uri, function(error, root) {
       .attr("dy", ".31em")
       .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
       .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
-      .text(function(d) { return d.name; });
+      .text(function(d) { return name(d); });
 });
 
 

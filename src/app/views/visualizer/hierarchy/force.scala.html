@@ -34,6 +34,10 @@
     <script>
         var uri = "/api/v1/skos/scheme/@evaluationId.id?schemeUri=" + encodeURIComponent('@schemeUri');
 
+        function name(node) {
+            return node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
+        }
+
 var w = 1280,
     h = 800,
     node,

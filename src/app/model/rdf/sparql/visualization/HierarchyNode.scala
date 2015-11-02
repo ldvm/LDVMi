@@ -1,3 +1,5 @@
 package model.rdf.sparql.visualization
 
-case class HierarchyNode(name: String, uri: String, size: Option[Int] = None, children: Option[Seq[HierarchyNode]] = None)
+import model.rdf.LocalizedValue
+
+case class HierarchyNode(name: LocalizedValue, uri: String, size: Option[Int] = None, children: Option[Seq[HierarchyNode]] = None)

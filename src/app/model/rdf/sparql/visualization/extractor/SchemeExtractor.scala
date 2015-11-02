@@ -3,8 +3,9 @@ package model.rdf.sparql.visualization.extractor
 import java.io.StringWriter
 
 import com.hp.hpl.jena.query.QueryExecution
-import com.hp.hpl.jena.rdf.model.{Model, Resource}
+import com.hp.hpl.jena.rdf.model.{Literal, Model, Resource}
 import com.hp.hpl.jena.vocabulary.RDF
+import model.rdf.LocalizedValue
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.visualization.HierarchyNode
 import model.rdf.sparql.visualization.query.SchemeQuery
@@ -45,15 +46,39 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
     }
 
     val roots = rootUris.flatMap(buildSubtree)
-    val schemeLabel = Option(schemeResource)
-      .flatMap(r => Option(r.getProperty(SKOS.prefLabel)).map(_.getString))
-      .getOrElse(schemeUri.split("[/#]").lastOption.getOrElse(schemeUri))
+
+    val maybeResource = Option(schemeResource)
+    val labels = maybeResource.map(r => r.listProperties(SKOS.prefLabel).toSeq.map(l => l.getLiteral)).getOrElse(Seq())
+
+    val schemeLabel = labels.size match {
+      case 0 => LocalizedValue.create(("nolang", schemeUri.split("[/#]").lastOption.getOrElse(schemeUri)))
+      case _ => LocalizedValue.create(labels)
+    }
+
     HierarchyNode(schemeLabel, schemeUri, Some(1), Some(roots))
   }
 
+  private def collectLabels(labelsList: List[(Option[String], Option[Literal], Option[Literal], Option[Literal], Option[Literal], Option[Literal], Option[Literal])]): Option[LocalizedValue] = {
+    val variants = labelsList.flatMap { case (_, value, l, spl, sn, sna, st) =>
+      Seq(value, sn, l, spl, sna, st).collect {
+        case Some(lp) => Option(lp.getLanguage).filter(_.trim.nonEmpty).getOrElse("nolang") -> lp.getString
+      }
+    }.toMap
+
+    if (variants.nonEmpty) {
+      Some(LocalizedValue(variants))
+    } else {
+      None
+    }
+  }
+
   private def getNode(model: Model, nodeResource: Resource) : HierarchyNode = {
-    val maybeNameNode = Option(model.getProperty(nodeResource, SKOS.prefLabel))
-    val name = maybeNameNode.map{n => n.getString}.getOrElse(nodeResource.getURI)
+    val nameNodes = model.listObjectsOfProperty(nodeResource, SKOS.prefLabel).toSeq.map(o => o.asLiteral())
+    val name = nameNodes.size match {
+      case 0 => LocalizedValue.create(("nolang", nodeResource.getURI))
+      case _ => LocalizedValue.create(nameNodes)
+    }
+
     val value = model.getProperty(nodeResource, RDF.value)
     val intValue = Option(value).map(_.getInt)
     HierarchyNode(name, nodeResource.getURI, if(intValue.isDefined){ intValue } else { Some(1) })

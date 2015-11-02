@@ -32,7 +32,8 @@ class SkosApiController(implicit inj: Injector) extends ApiController {
 
   def scheme(id: Long, schemeUri: String) = DBAction { implicit rs =>
     withEvaluation(id) { evaluation =>
-      Ok(Json.toJson(visualizationService.skosScheme(evaluation, schemeUri)))
+      val scheme = visualizationService.skosScheme(evaluation, schemeUri)
+      Ok(Json.toJson(scheme))
     }
   }
 
