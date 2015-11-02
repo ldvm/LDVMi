@@ -1,4 +1,4 @@
-define(['angular', './controllers'], function (ng) {
+define(['angular', 'underscorejs', './controllers'], function (ng, _) {
     'use strict';
 
     function random() {
@@ -10,11 +10,10 @@ define(['angular', './controllers'], function (ng) {
             "$scope",
             "$routeParams",
             "MapService",
-            "DataCubeService",
             function ($scope,
                       $routeParams,
-                      MapService,
-                      DataCubeService) {
+                      mapsApi
+            ) {
 
                 var $id = $routeParams.id;
 
@@ -36,37 +35,52 @@ define(['angular', './controllers'], function (ng) {
                     return undefined;
                 };
 
+                function getConceptUris() {
+                    return $scope.properties.map(function (p) {
+                        return p.schemeUri;
+                    });
+                }
+
+                function getSchemaUris(schemeUri) {
+                    return $scope.values[schemeUri].map(function (v) {
+                        return v.uri || v.label.variants[$scope.language];
+                    });
+                }
+
+                function loadCounts(uri, schemeUri) {
+                    mapsApi.conceptCounts({evaluationId: $id}, {propertyUri: uri, conceptUris: getSchemaUris(schemeUri)}).$promise.then(function (countsMap) {
+                        $scope.counts = _.extend($scope.counts, countsMap);
+                    });
+                }
+
                 if (!("autoLoad" in $routeParams)) {
 
                     $scope.queryingDataset = "properties of geolocated entities";
-                    MapService.properties({evaluationId: $id}, function (properties) {
+
+                    mapsApi.properties({evaluationId: $id}, function (properties) {
                         $scope.properties = properties;
 
                         $scope.mainProperty = properties[0] || null;
 
-                        var uris = properties.map(function (p) {
-                            return p.uri;
-                        });
+                        $scope.queryingDataset = "SKOS schemes";
 
-                        $scope.queryingDataset = "values of properties";
-                        DataCubeService.getValues({evaluationId: $id}, {uris: uris}, function (propertiesValuesMap) {
+                        mapsApi.getSkosConcepts({evaluationId: $id}, {conceptUris: getConceptUris()}).$promise.then(function (propertiesValuesMap) {
                             $scope.queryingDataset = null;
                             $scope.values = propertiesValuesMap;
                             $scope.colors = {};
 
-                            ng.forEach($scope.values, function (values, k) {
-                                ng.forEach(values, function (v) {
-                                    v.isActive = false;
-                                });
-                            });
-
                             if ($scope.mainProperty) {
-                                ng.forEach($scope.values[$scope.mainProperty.uri], function (v) {
-                                    var key = v.uri || v.label.variants[$scope.currentLanguage];
+                                ng.forEach($scope.values[$scope.mainProperty.schemeUri], function (v) {
+                                    var key = v.uri || v.label.variants[$scope.language];
                                     $scope.colors[key] = "rgba(" + random() + ", " + random() + ", " + random() + ", 0.7)";
                                     v.colorStyle = {"background-color": $scope.colors[key]};
                                 });
                             }
+
+                            $scope.counts = {};
+                            ng.forEach($scope.properties, function(p){
+                                loadCounts(p.uri, p.schemeUri);
+                            });
                         });
                     });
 
@@ -87,8 +101,15 @@ define(['angular', './controllers'], function (ng) {
                         if (k.substr(0, 1) != "$") {
                             ng.forEach(array, function (v, key) {
                                 if (parseInt(key) > -1) {
-                                    filters[k] = filters[k] || [];
-                                    filters[k].push({
+
+                                    var trueKey = k;
+                                    var matchingObjects = _.where($scope.properties, {schemeUri: k});
+                                    if (matchingObjects.length) {
+                                        trueKey = matchingObjects[0].uri;
+                                    }
+
+                                    filters[trueKey] = filters[trueKey] || [];
+                                    filters[trueKey].push({
                                         label: (v.label || {variants: {}}).variants[$scope.currentLanguage],
                                         uri: v.uri,
                                         isActive: v.isActive || false
@@ -98,7 +119,7 @@ define(['angular', './controllers'], function (ng) {
                         }
                     });
 
-                    MapService.markers({evaluationId: $id}, {filters: filters}, function (data) {
+                    mapsApi.markers({evaluationId: $id}, {filters: filters}, function (data) {
                         $scope.queryingDataset = null;
                         $scope.markers = data;
                         $scope.lastError = false;

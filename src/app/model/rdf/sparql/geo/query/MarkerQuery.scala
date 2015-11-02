@@ -54,26 +54,26 @@ class MarkerQuery(queryData: MapQueryData) extends SparqlQuery {
 
   private def getRestrictions(rule: Map[String, Seq[ValueFilter]]): String = {
     rule.map { case (uri, valueFilters) =>
-      """
-        |  ?s <%s> %v .
-        |  %rf
-      """
-        .replaceAll("%s", uri)
-        .replaceAll("%v", variableGenerator.next.getVariable)
-        .replaceAll("%rf", Matcher.quoteReplacement(restrictionFilters(variableGenerator.getVariable, valueFilters)))
-        .stripMargin
+
+      val v = variableGenerator.next.getVariable
+      val rf = Matcher.quoteReplacement(restrictionFilters(variableGenerator.getVariable, valueFilters))
+
+      s"""
+        |  ?s <$uri> $v .
+        |  $rf
+      """.stripMargin
+
     }.mkString("\n")
   }
 
   private def restrictionFilters(variable: String, filters: Seq[ValueFilter]): String = {
     filters.filterNot(_.isActive.getOrElse(false)).map { f =>
       labelOrUri(f).map { s =>
-        """
-          |  FILTER(%v != %fv)
-        """
-          .replaceAll("%v", variable)
-          .replaceAll("%fv", Matcher.quoteReplacement(s))
-          .stripMargin
+
+        val fv = Matcher.quoteReplacement(s)
+        s"""
+          |  FILTER($variable != $fv)
+        """.stripMargin
       }
     }.filter(_.isDefined).map(_.get).mkString("\n")
   }

@@ -21,7 +21,7 @@
                                 <div class="lv-title">
                                     {{label(value.label) || value.uri}}
                                     <div class="pull-right">
-                                        ({{counts[value.uri]}})
+                                        ({{counts[value.uri] || '-'}})
                                     </div>
                                 </div>
                             </div>
