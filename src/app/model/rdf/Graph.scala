@@ -4,13 +4,13 @@ import java.io._
 import java.net.URL
 import java.util.UUID
 
-import com.hp.hpl.jena.rdf.model.{ModelFactory}
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.jena.rdf.model.ModelFactory
 
-case class Graph(jenaModel: com.hp.hpl.jena.rdf.model.Model) {
+case class Graph(jenaModel: org.apache.jena.rdf.model.Model) {
 
   def union(otherGraphOption: Option[Graph]): Graph = {
     otherGraphOption.map { otherGraph =>
@@ -101,7 +101,7 @@ object Graph {
     }
   }
 
-  def apply(jenaModel: com.hp.hpl.jena.rdf.model.Model, lang: String = defaultRdfLang): Option[Graph] = {
+  def apply(jenaModel: org.apache.jena.rdf.model.Model, lang: String = defaultRdfLang): Option[Graph] = {
     Some(new Graph(jenaModel))
   }
 

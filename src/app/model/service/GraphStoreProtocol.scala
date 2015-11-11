@@ -3,12 +3,12 @@ package model.service
 import java.io.{File, ByteArrayOutputStream}
 
 import akka.actor.Props
-import com.hp.hpl.jena.rdf.model.Model
 import model.rdf.Graph
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.{ContentType, FileEntity, StringEntity}
 import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.jena.rdf.model.Model
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 

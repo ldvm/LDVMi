@@ -2,12 +2,12 @@ package model.service.impl
 
 import java.util.UUID
 
-import com.hp.hpl.jena.rdf.model.{Model, ModelFactory}
-import com.hp.hpl.jena.vocabulary.RDF
 import model.entity.{DataSourceTemplate, DataSourceTemplateId}
 import model.rdf.vocabulary.{DSPARQL, SD}
 import model.repository.{PipelineRepository, ComponentTemplateRepository, DataSourceTemplateRepository}
 import model.service.{ComponentTemplateService, DataSourceService, GraphStoreProtocol}
+import org.apache.jena.rdf.model.{ModelFactory, Model}
+import org.apache.jena.vocabulary.RDF
 import play.api.Play.current
 import play.api.db.slick.Session
 import play.api.libs.Files

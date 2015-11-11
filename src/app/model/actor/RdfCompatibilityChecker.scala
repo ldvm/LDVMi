@@ -1,8 +1,7 @@
 package model.actor
 
-import com.hp.hpl.jena.query.QueryExecutionFactory
-import com.hp.hpl.jena.rdf.model.ModelFactory
-import model.rdf.Graph
+import org.apache.jena.query.QueryExecutionFactory
+import org.apache.jena.rdf.model.ModelFactory
 
 class RdfCompatibilityChecker(uri: String) extends CompatibilityChecker {
   def receive: Receive = {

@@ -1,11 +1,11 @@
 package model.service.ldvm.extractor
 
-import com.hp.hpl.jena.graph.TripleBoundary
-import com.hp.hpl.jena.rdf.model.{Model, ModelExtract, Property, Resource, StatementTripleBoundary}
-import com.hp.hpl.jena.vocabulary.{DCTerms, RDF, RDFS}
 import model.rdf.Graph
 import model.rdf.extractor.GraphExtractor
 import model.rdf.vocabulary.LDVM
+import org.apache.jena.graph.TripleBoundary
+import org.apache.jena.rdf.model.{Resource, Model, StatementTripleBoundary, ModelExtract, Property}
+import org.apache.jena.vocabulary.{DCTerms, RDF, RDFS}
 import scaldi.{Injectable, Injector}
 
 import scala.collection.JavaConversions._

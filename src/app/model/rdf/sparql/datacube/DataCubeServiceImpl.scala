@@ -130,7 +130,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
         val allRules = additionalConditions ++ List(keyFilterTuple._2)
         val matchingCells = cells.find(allRules.reduceLeft((a, b) => c => a(c) && b(c)))
 
-        keyFilterTuple._1 -> matchingCells.map(_.measureValues(m.componentUri)).flatten
+        keyFilterTuple._1 -> matchingCells.flatMap(_.measureValues(m.componentUri))
 
       }.toList.toMap
     }.toMap)

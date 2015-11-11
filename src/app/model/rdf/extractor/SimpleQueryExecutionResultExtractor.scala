@@ -1,7 +1,7 @@
 package model.rdf.extractor
 
-import com.hp.hpl.jena.query.{QueryExecution, QuerySolution}
-import com.hp.hpl.jena.rdf.model.{Literal, Resource}
+import org.apache.jena.query.{QueryExecution, QuerySolution}
+import org.apache.jena.rdf.model.{Literal, Resource}
 import play.api.libs.iteratee.{Enumeratee, Enumerator}
 import model.rdf.LocalizedValue
 import model.rdf.sparql.query.SparqlQuery

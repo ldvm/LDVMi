@@ -1,8 +1,8 @@
 package model.service.ldvm.extractor
 
-import com.hp.hpl.jena.graph.TripleBoundary
-import com.hp.hpl.jena.rdf.model.{StatementTripleBoundary, ModelExtract, Model, Resource}
-import com.hp.hpl.jena.vocabulary.RDF
+import org.apache.jena.graph.TripleBoundary
+import org.apache.jena.rdf.model.{StatementTripleBoundary, ModelExtract, Model, Resource}
+import org.apache.jena.vocabulary.RDF
 import model.dto.ConcreteComponentInstance
 import model.rdf.Graph
 import model.rdf.extractor.GraphExtractor

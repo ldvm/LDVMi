@@ -40,8 +40,7 @@ class PipelineRepository extends CrudRepository[PipelineId, Pipeline, PipelineTa
   def deleteExpired(hoursCount: Int)(implicit session: Session) = {
     query.filter(p => {
       p.createdUtc < new org.joda.time.DateTime().minusHours(hoursCount) &&
-      p.isTemporary &&
-      pipelineEvaluationQuery.filter(e => e.pipelineId === p.id).length === 0
+      p.isTemporary && !pipelineEvaluationQuery.filter(e => e.pipelineId === p.id).exists
     }).delete
   }
 }

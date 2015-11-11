@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit
 import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
-import com.hp.hpl.jena.vocabulary.RDF
 import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCompatibilityChecker, SparqlEndpointCompatibilityChecker}
 import model.entity._
 import model.rdf.Graph

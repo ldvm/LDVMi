@@ -1,9 +1,9 @@
 package model.rdf.sparql.geo.extractor
 
-import com.hp.hpl.jena.query.{QueryExecution, QuerySolution}
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.geo.query.MarkerQuery
 import model.rdf.sparql.geo.{Coordinates, MapQueryData, Marker}
+import org.apache.jena.query.{QuerySolution, QueryExecution}
 
 import scala.collection.JavaConversions._
 

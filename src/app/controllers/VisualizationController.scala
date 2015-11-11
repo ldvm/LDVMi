@@ -21,7 +21,7 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     Ok(views.html.visualization.multiSource())
   }
 
-  def multiUpload = Action.async(parse.maxLength(100 * 1024 * 1024, parse.multipartFormData)) { request =>
+  def multiUpload = Action.async(parse.maxLength(200 * 1024 * 1024, parse.multipartFormData)) { request =>
     request.body.fold({ ms =>
       Future.successful(Redirect(routes.ApplicationController.index()).flashing("error" -> "Max size exceeded."))
     }, { body =>
@@ -58,16 +58,16 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
   }
 
   private def endpoints(body: MultipartFormData[Files.TemporaryFile])(implicit session: Session): Future[Seq[DataSourceTemplateId]] = Future {
-    val maybeEndpoints = body.dataParts.get("endpointUrl")
+    val maybeEndpoint = body.dataParts.get("endpointUrl")
     val maybeGraphUris = body.dataParts.get("graphUris")
 
-    if (maybeEndpoints.isEmpty || maybeGraphUris.isEmpty) {
+    if (maybeEndpoint.isEmpty || maybeGraphUris.isEmpty) {
       Seq()
     } else {
-      val links = maybeEndpoints.get.zip(maybeGraphUris.get)
-      links.flatMap { case (endpointUrl, graphUris) =>
+      val links = maybeEndpoint.get.zip(maybeGraphUris.get)
+      links.filter(_._1.trim.nonEmpty).flatMap { case (endpointUrl, graphUris) =>
         val graphs = graphUris.split("\\s+").toSeq
-        dataSourceService.createDataSourceFromUris(endpointUrl, if (graphs.nonEmpty) {Some(graphs)} else None)
+        dataSourceService.createDataSourceFromUris(endpointUrl.trim, if (graphs.nonEmpty) {Some(graphs)} else None)
       }
     }
   }

@@ -1,10 +1,10 @@
 package model.rdf.sparql.geo.extractor
 
-import com.hp.hpl.jena.query.QuerySolution
-import com.hp.hpl.jena.rdf.model.{Literal, Resource}
 import model.rdf.Property
 import model.rdf.extractor.SimpleQueryExecutionResultExtractor
 import model.rdf.sparql.geo.query.PolygonEntitiesPropertiesQuery
+import org.apache.jena.query.QuerySolution
+import org.apache.jena.rdf.model.{Literal, Resource}
 
 
 class PolygonEntitiesPropertiesExtractor extends SimpleQueryExecutionResultExtractor[PolygonEntitiesPropertiesQuery, Property] {

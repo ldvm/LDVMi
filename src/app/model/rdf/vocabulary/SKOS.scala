@@ -1,6 +1,6 @@
 package model.rdf.vocabulary
 
-import com.hp.hpl.jena.rdf.model.{Resource, Property}
+import org.apache.jena.rdf.model.{Resource, Property}
 
 object SKOS extends Vocabulary {
 

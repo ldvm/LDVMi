@@ -1,11 +1,11 @@
 package model.rdf.sparql.datacube.extractor
 
-import com.hp.hpl.jena.query.{QueryExecution, QuerySolution}
-import com.hp.hpl.jena.rdf.model.Literal
 import model.rdf.LocalizedValue
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.datacube.DataCubeComponentValue
 import model.rdf.sparql.datacube.query.DataCubeValuesQuery
+import org.apache.jena.query.{QuerySolution, QueryExecution}
+import org.apache.jena.rdf.model.Literal
 
 import scala.collection.JavaConversions._
 

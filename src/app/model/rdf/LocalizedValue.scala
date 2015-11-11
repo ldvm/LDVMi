@@ -48,11 +48,11 @@ object LocalizedValue {
     apply(Seq(variant).toMap)
   }
 
-  def create(literal: com.hp.hpl.jena.rdf.model.Literal) : LocalizedValue = {
+  def create(literal: org.apache.jena.rdf.model.Literal) : LocalizedValue = {
     create((literal.getLanguage, literal.getString))
   }
 
-  def create(literals: Seq[com.hp.hpl.jena.rdf.model.Literal]) : LocalizedValue = {
+  def create(literals: Seq[org.apache.jena.rdf.model.Literal]) : LocalizedValue = {
     apply(literals.map(l => (l.getLanguage, l.getString)).toMap)
   }
 

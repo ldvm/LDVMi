@@ -1,6 +1,6 @@
 import controllers.ControllerModule
 import controllers.api.ApiModule
-import model.repository.{PipelineRepository, PipelineEvaluationRepository}
+import model.repository._
 import play.api._
 import play.api.db.DB
 import play.api.libs.concurrent.Akka
@@ -34,6 +34,10 @@ object Global extends WithFilters(
     Akka.system.scheduler.schedule(0.microsecond, 2.minutes) {
       val expiredHours = 72
       (new PipelineRepository).deleteExpired(expiredHours)(session)
+      (new DataPortBindingSetRepository).cleanup(session)
+      (new ComponentInstanceMembershipRepository).cleanup(session)
+      (new ComponentInstanceRepository).cleanup(session)
+      (new ComponentTemplateRepository).deleteExpired(expiredHours)(session)
     }
   }
 }

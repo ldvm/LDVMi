@@ -1,11 +1,11 @@
 package model.rdf.sparql.datacube.extractor
 
-import com.hp.hpl.jena.query.QueryExecution
-import com.hp.hpl.jena.vocabulary.RDF
 import model.rdf.sparql.datacube.DataCubeDataset
 import model.rdf.sparql.datacube.query.DataCubeDatasetsQuery
 import model.rdf.extractor.{ExtractorHelpers, QueryExecutionResultExtractor, ConstructResultExtractor}
 import model.rdf.vocabulary.QB
+import org.apache.jena.query.QueryExecution
+import org.apache.jena.vocabulary.RDF
 import scala.collection.JavaConversions._
 
 class DataCubeDatasetsExtractor extends QueryExecutionResultExtractor[DataCubeDatasetsQuery, Seq[DataCubeDataset]] {

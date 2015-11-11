@@ -1,12 +1,12 @@
 package model.rdf.sparql.visualization.extractor
 
-import com.hp.hpl.jena.query.QueryExecution
-import com.hp.hpl.jena.vocabulary.RDF
 import model.rdf.LocalizedValue
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.visualization.Concept
-import model.rdf.sparql.visualization.query.{ConceptsQuery, ConceptsBySchemaQuery}
+import model.rdf.sparql.visualization.query.ConceptsQuery
 import model.rdf.vocabulary.SKOS
+import org.apache.jena.query.QueryExecution
+import org.apache.jena.vocabulary.RDF
 
 import scala.collection.JavaConversions._
 
@@ -35,7 +35,7 @@ class ConceptsExtractor extends QueryExecutionResultExtractor[ConceptsQuery, Seq
         Concept(conceptResource.getURI, Some(LocalizedValue(Seq(("nolang", label)).toMap)), None, schemeUri, linkUris)
       })
     } catch {
-      case e: com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP => {
+      case e: org.apache.jena.sparql.engine.http.QueryExceptionHTTP => {
         None
       }
     }

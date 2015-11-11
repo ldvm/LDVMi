@@ -3,10 +3,10 @@ package model.service.component
 import java.util.UUID
 
 import akka.actor.Props
-import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP
 import model.entity.ComponentInstance
 import model.rdf.sparql.GenericSparqlEndpoint
 import model.service.GraphStoreProtocol
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 

@@ -2,14 +2,14 @@ package model.rdf.sparql.visualization.extractor
 
 import java.io.StringWriter
 
-import com.hp.hpl.jena.query.QueryExecution
-import com.hp.hpl.jena.rdf.model.{Literal, Model, Resource}
-import com.hp.hpl.jena.vocabulary.RDF
 import model.rdf.LocalizedValue
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.visualization.HierarchyNode
 import model.rdf.sparql.visualization.query.SchemeQuery
 import model.rdf.vocabulary.SKOS
+import org.apache.jena.query.QueryExecution
+import org.apache.jena.rdf.model.{Literal, Model, Resource}
+import org.apache.jena.vocabulary.RDF
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 

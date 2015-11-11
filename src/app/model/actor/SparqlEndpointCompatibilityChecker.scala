@@ -21,10 +21,10 @@ class SparqlEndpointCompatibilityChecker(componentInstanceConfiguration: Option[
           sender() ! CheckCompatibilityResponse(None, descriptor, sourceUri = Some(componentUri))
         }
       } catch {
-        case he: com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP => {
+        case he: org.apache.jena.sparql.engine.http.QueryExceptionHTTP => {
           sender() ! akka.actor.Status.Failure(he)
         }
-        case e: com.hp.hpl.jena.query.QueryException => {
+        case e: org.apache.jena.query.QueryException => {
           sender() ! akka.actor.Status.Failure(e)
         }
         case e: Throwable =>

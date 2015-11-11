@@ -1,6 +1,6 @@
 package model.dto
 
-import com.hp.hpl.jena.rdf.model.Model
+import org.apache.jena.rdf.model.Model
 
 case class ComponentTemplate(
   uri: String,

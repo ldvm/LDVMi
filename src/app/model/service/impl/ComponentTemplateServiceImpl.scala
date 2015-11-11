@@ -3,8 +3,6 @@ package model.service.impl
 import java.io.StringWriter
 import java.util.UUID
 
-import com.hp.hpl.jena.rdf.model.{Model, ModelFactory}
-import com.hp.hpl.jena.vocabulary.RDF
 import model.dto.{BoundComponentInstances, ConcreteComponentInstance}
 import model.entity.ComponentType.ComponentType
 import model.entity.CustomUnicornPlay.driver.simple._

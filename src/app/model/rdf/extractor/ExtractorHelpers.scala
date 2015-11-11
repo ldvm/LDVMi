@@ -1,11 +1,11 @@
 package model.rdf.extractor
 
-import com.hp.hpl.jena.vocabulary.{RDFS, DCTerms}
 import model.rdf.vocabulary.SKOS
+import org.apache.jena.rdf.model.{Property, Resource}
+import org.apache.jena.vocabulary.{RDFS, DCTerms}
 
 import scala.collection.JavaConversions._
 
-import com.hp.hpl.jena.rdf.model.{Property, Resource}
 import model.rdf.LocalizedValue
 
 case class Descriptions(DCT_title: Option[LocalizedValue] = None, RDFS_label: Option[LocalizedValue] = None, RDFS_comment: Option[LocalizedValue] = None, DCT_description: Option[LocalizedValue] = None, SKOS_prefLabel: Option[LocalizedValue] = None)

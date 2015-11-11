@@ -1,6 +1,6 @@
 package model.rdf.sparql
 
-import com.hp.hpl.jena.query.QueryExecution
+import org.apache.jena.query.QueryExecution
 
 trait SparqlEndpoint {
 
