@@ -1,4 +1,4 @@
-define(['angular', 'pipeline-visualizer'], function (ng, d3LdvmPipeline) {
+define(['angular', 'pipeline-visualizer', './directives'], function (ng, d3LdvmPipeline) {
     'use strict';
 
     return ng.module('ldvm.directives')

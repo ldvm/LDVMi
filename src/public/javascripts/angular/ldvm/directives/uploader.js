@@ -1,4 +1,4 @@
-define(['angular'], function (ng) {
+define(['angular', './directives'], function (ng) {
     'use strict';
 
     return ng.module('ldvm.directives')
