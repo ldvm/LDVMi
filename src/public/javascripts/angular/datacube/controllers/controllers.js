@@ -93,6 +93,16 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     }
                 };
 
+                $scope.setLang = function (language, setLanguage) {
+                    $scope.language = language;
+                    if(setLanguage) {
+                        $location.search("language", language);
+                        $timeout(function () {
+                            $scope.permalink = window.location.href;
+                        });
+                    }
+                };
+
                 $scope.switchLinear = function () {
                     $scope.highcharts.options.yAxis = $scope.highcharts.options.yAxis || {};
                     $scope.highcharts.options.yAxis.type = 'linear';
@@ -101,10 +111,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 $scope.switchLog = function () {
                     $scope.highcharts.options.yAxis = $scope.highcharts.options.yAxis || {};
                     $scope.highcharts.options.yAxis.type = 'logarithmic';
-                };
-
-                $scope.setLang = function (language) {
-                    $scope.language = language;
                 };
 
                 if ($view == "chart") {
@@ -356,6 +362,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                             search.view = "chart";
                             search.chartType = $scope.highcharts.options.chart.type;
                             search.isPolar = $scope.highcharts.options.chart.polar === true;
+                            search.language = $scope.language;
                         }
 
                         $scope.queryingDataset = "chart data";
