@@ -95,7 +95,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.setLang = function (language, setLanguage) {
                     $scope.language = language;
-                    if(setLanguage) {
+                    if (setLanguage) {
                         $location.search("language", language);
                         $timeout(function () {
                             $scope.permalink = window.location.href;
@@ -229,7 +229,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     return "";
                 };
 
-                $scope.xAxisTitle = function (activeMeasures) {
+                $scope.xAxisTitle = function () {
                     var xAxisComponent = _.chain($scope.activeDSD.components)
                         .filter(function (c) {
                             return c.dimension;
@@ -526,33 +526,38 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     };
 
                     var i = 100;
-                    _.sortBy($scope.activeDSD.components, function (c) {
-                        return c.order || i++;
-                    }).forEach(function (c) {
-                        var componentProperty = c.dimension || c.measure || c.attribute;
-
-                        if (componentProperty && componentProperty.uri) {
-                            var filter = {
-                                componentUri: componentProperty.uri,
-                                isActive: c.isActive || false,
-                                type: c.dimension ? "dimension" : (c.measure ? "measure" : "attribute"),
-                                values: ($scope.values[componentProperty.uri] || []).map(function (v) {
-                                    var r = {};
-                                    if (v.uri) {
-                                        r.uri = v.uri;
-                                    } else {
-                                        r.label = ((v.label || {})[$scope.language]) || ((v.label || {})[""]);
-                                    }
-                                    r.isActive = v.isActive;
-                                    return r;
-                                })
-                            };
-                            filters.components.push(filter);
-                        } else {
-                            throw "The component property has no URI. This is not supported";
-                        }
-
+                    var componentsWithOrder = $scope.activeDSD.components.map(function (c) {
+                        c.order = c.order || i++;
+                        return c;
                     });
+
+                    _.sortBy(componentsWithOrder, 'order')
+                        .forEach(function (c) {
+                            var componentProperty = c.dimension || c.measure || c.attribute;
+
+                            if (componentProperty && componentProperty.uri) {
+                                var filter = {
+                                    componentUri: componentProperty.uri,
+                                    order: c.order,
+                                    isActive: c.isActive || false,
+                                    type: c.dimension ? "dimension" : (c.measure ? "measure" : "attribute"),
+                                    values: ($scope.values[componentProperty.uri] || []).map(function (v) {
+                                        var r = {};
+                                        if (v.uri) {
+                                            r.uri = v.uri;
+                                        } else {
+                                            r.label = ((v.label || {})[$scope.language]) || ((v.label || {})[""]);
+                                        }
+                                        r.isActive = v.isActive;
+                                        return r;
+                                    })
+                                };
+                                filters.components.push(filter);
+                            } else {
+                                throw "The component property has no URI. This is not supported";
+                            }
+
+                        });
 
                     return filters;
                 }
@@ -576,16 +581,27 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 function applyDimensionFilters(data, callback) {
                     var components = data.filters.components;
                     if (components) {
-                        angular.forEach(components, function (c) {
-                            if (c.type == "measure" && c.isActive) {
-                                var measure = _.find($scope.activeDSD.components, function (adc) {
-                                    return adc.measure && adc.measure.uri == c.componentUri;
-                                });
+                        ng.forEach(components, function (c) {
+                            if (c.type === "measure") {
+                                if (c.isActive) {
+                                    var measure = _.find($scope.activeDSD.components, function (adc) {
+                                        return adc.measure && adc.measure.uri == c.componentUri;
+                                    });
 
-                                if (measure) {
-                                    $scope.toggleMeasure(measure, true);
+                                    if (measure) {
+                                        $scope.toggleMeasure(measure, true);
+                                    }
                                 }
                             } else {
+
+                                if (c.type === "dimension") {
+                                    var component = _.find($scope.activeDSD.components, function (adc) {
+                                        return adc.dimension && adc.dimension.uri == c.componentUri;
+                                    });
+                                }
+
+                                component.order = c.order || component.order;
+
                                 var values = c.values;
                                 if (values) {
                                     values.forEach(function (fValue) {

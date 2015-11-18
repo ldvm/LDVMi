@@ -1,11 +1,10 @@
 package model.rdf.sparql.datacube
 
-import model.service.{PipelineService, SessionScoped}
-import model.entity.{PipelineEvaluationQuery, PipelineEvaluation}
+import model.entity.{PipelineEvaluation, PipelineEvaluationQuery}
 import model.rdf.sparql.datacube.extractor._
 import model.rdf.sparql.datacube.query._
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpoint, SparqlEndpointService, ValueFilter}
-import play.api.libs.iteratee.Enumerator
+import model.service.{PipelineService, SessionScoped}
 import play.api.libs.json.JsValue
 import scaldi.{Injectable, Injector}
 import utils.MD5
@@ -22,7 +21,7 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
   private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation): GenericSparqlEndpoint = {
     withSession { implicit session =>
       val evaluationResults = evaluation.results
-      evaluationResults.map { result => new GenericSparqlEndpoint(result.endpointUrl, List(), result.graphUri.map(_.split("\n")).toSeq.flatten)}.head
+      evaluationResults.map { result => new GenericSparqlEndpoint(result.endpointUrl, List(), result.graphUri.map(_.split("\n")).toSeq.flatten) }.head
     }
   }
 
@@ -61,10 +60,11 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
 
   private def sliceCube(sparqlEndpoint: SparqlEndpoint, queryData: DataCubeQueryData): Option[DataCube] = {
 
-    val allDimensionsHaveActiveValue = queryData.filters.components.filter(_.`type` == "dimension").forall(componentHasActiveValue)
+    val allDimensionsHaveActiveValue = queryData.filters.components
+      .filter(_.`type` == "dimension")
+      .forall(componentHasActiveValue)
 
     if (allDimensionsHaveActiveValue) {
-
       val cubeKeys = getCubeKeys(queryData)
       val cells = cubeKeys.par.map { k =>
         sparqlEndpointService.getResult(sparqlEndpoint, new DataCubeCellQuery(ObservationPattern(k)), new DataCubeCellExtractor(k)).get

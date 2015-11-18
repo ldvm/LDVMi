@@ -130,7 +130,8 @@ package object api {
       (JsPath \ "componentUri").read[String] and
         (JsPath \ "type").read[String] and
         (JsPath \ "values").read[Seq[ValueFilter]] and
-        (JsPath \ "isActive").readNullable[Boolean]
+        (JsPath \ "isActive").readNullable[Boolean] and
+        (JsPath \ "order").readNullable[Int]
       )(DataCubeQueryComponentFilter.apply _)
     implicit val cubeQueryFiltersReads: Reads[DataCubeQueryFilter] = (
       (JsPath \ "dsdUri").readNullable[String] and
