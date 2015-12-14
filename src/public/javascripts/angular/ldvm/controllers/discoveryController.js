@@ -23,7 +23,7 @@ define(['angular', './controllers'], function (ng) {
                 if ("dataSourceTemplateIds" in $routeParams && $routeParams.dataSourceTemplateIds) {
 
                     var ids = Array.isArray($routeParams.dataSourceTemplateIds) ? $routeParams.dataSourceTemplateIds : [$routeParams.dataSourceTemplateIds];
-                    var params = ids.map(function(p){
+                    var params = ids.map(function (p) {
                         return "dataSourceTemplateIds=" + p;
                     });
 
@@ -55,7 +55,9 @@ define(['angular', './controllers'], function (ng) {
                             }
 
                             if (data.isFinished && data.isSuccess) {
-                                window.location.href = "/pipelines#/list?discoveryId=" + data.id;
+                                window.setTimeout(function () {
+                                    window.location.href = "/pipelines#/list?discoveryId=" + data.id;
+                                }, 2000);
                             }
                         }
 
