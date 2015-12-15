@@ -21,44 +21,24 @@
 
         <div class="listview lv-bordered lv-lg">
             <div class="lv-header-alt">
-                <h2 class="lvh-label">Available data structures</h2>
-            </div>
-
-            <div class="lv-body">
-                <div class="lv-item media" ng-repeat="ds in dataStructures">
-                    <div class="checkbox pull-left">
-                        <label>
-                            <input type="checkbox" ng-model="ds.isActive" ng-change="switchDSD(ds)"/>
-                            <i class="input-helper"></i>
-                        </label>
-                    </div>
-                    <div class="media-body">
-                        <div>{{ds.label.variants[language] || "Unlabeled DSD"}}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <p ng-show="dataStructures.length == 0">No data structures found in the supplied datasource.</p>
-
-        <div class="listview lv-bordered lv-lg">
-            <div class="lv-header-alt">
                 <h2 class="lvh-label">Available datasets</h2>
             </div>
 
             <div class="lv-body">
                 <div class="lv-item media" ng-repeat="ds in datasets">
-                    <p ng-show="datasets.length == 0">No named datasets found.</p>
                     <div class="checkbox pull-left">
                         <label>
-                            <input type="checkbox" ng-model="ds.isActive" ng-change="changeDataset($index)"/>
+                            <input type="checkbox" ng-model="ds.isActive" ng-change="switchDataset(ds)"/>
                             <i class="input-helper"></i>
                         </label>
                     </div>
                     <div class="media-body">
-                        <div>{{ds.label.variants[language] || "Unlabeled DSD"}}</div>
+                        <div>{{ds.label.variants[language] || "Unlabeled dataset"}}</div>
                     </div>
                 </div>
+            </div>
+            <div class="lv-item media" ng-show="datasets.length == 0">
+                No datasets found in the supplied datasource.
             </div>
         </div>
 
@@ -70,7 +50,7 @@
 
                 <div class="lv-body">
                     <div class="lv-item media"
-                         ng-repeat="component in activeDSD.components | orderBy:'order'"
+                         ng-repeat="component in activeDataset.dataStructure.components | orderBy:'order'"
                          ng-if="component[type.key]"
                          ng-class="{'lv-item-danger': values[component[type.key].uri].length == 0}"
                         >
@@ -135,7 +115,7 @@
                 <div class="container">
                     <div class="card">
 
-                        <div ng-repeat="component in activeDSD.components | orderBy:'order'" ng-if="component['dimension']">
+                        <div ng-repeat="component in activeDataset.dataStructure.components | orderBy:'order'" ng-if="component['dimension']">
 
                             <div class="listview lv-bordered lv-lg" ng-show="settingsVisible == component.dimension.uri">
                                 <div class="lv-header-alt">
@@ -192,11 +172,11 @@
             </div>
 
             <div ng-if="!settingsVisible">
-                <div class="alert alert-danger" ng-show="dataStructures.length == 0">
-                    <p>The chosen datasource does not contain any DataCube vocabularies.</p>
+                <div class="alert alert-danger" ng-show="datasets.length == 0">
+                    <p>The chosen datasource does not contain any DataCube datasets.</p>
                 </div>
 
-                <div ng-if="activeDSD">
+                <div ng-if="activeDataset">
                     <div ng-if="slicesSelected">
                         <div class="container">
                             <div class="card">
@@ -318,11 +298,11 @@
                     </div>
                 </div>
 
-                <div class="container" ng-if="!activeDSD">
+                <div class="container" ng-if="!activeDataset">
                     <div class="card">
                         <div class="card-header bgm-red">
-                            <h2>No DSD selected!
-                                <small>You need to choose a DSD to see charts.</small>
+                            <h2>No dataset selected!
+                                <small>You need to choose a dataset to see charts.</small>
                             </h2>
                         </div>
 
