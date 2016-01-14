@@ -15,7 +15,7 @@ class DataCubeComponentsQuery(datasetUri: String, componentType: String = "dimen
       "?c   " + ctPattern
     }
 
-    val q = s"""
+    s"""
       | PREFIX qb: <http://purl.org/linked-data/cube#>
       | PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -26,7 +26,7 @@ class DataCubeComponentsQuery(datasetUri: String, componentType: String = "dimen
       |        qb:component [
       |            qb:$componentType ?dim ;
       |            rdfs:label ?l ;
-      |            skos:notion ?sn ;
+      |            skos:notation ?sn ;
       |            skos:prefLabel ?spl ;
       |            qb:order ?order ;
       |            qb:concept ?concept
@@ -46,8 +46,6 @@ class DataCubeComponentsQuery(datasetUri: String, componentType: String = "dimen
       |    OPTIONAL { ?c skos:notation ?sn . }
       |  }
     """.stripMargin
-    println(q)
-    q
   }
 
 }
