@@ -1,29 +1,16 @@
 @(title: String)
 
     @scripts = {
-        <script>
-            var require = {
-                callback: function() {
-                    @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
-                        requirejs.config(@Html(webJarJson.toString));
-                    }
+        <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyCesJn7XyQUzK78CRLwJusuLUR1-Wy8fVc"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
+        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ol3/3.5.0/ol.min.js"></script>
+        <script src="http://epsg.io/4326.js"></script>
+        <script src="http://epsg.io/5514.js"></script>
+        <script src="http://epsg.io/4258.js"></script>
+        <script src="http://epsg.io/3857.js"></script>
+    }
 
-                    requirejs.config({
-                        shim: {
-                            openlayers: {
-                                exports: "ol"
-                            }
-                        },
-                        paths: {
-                            openlayers: "@routes.WebJarAssets.at(WebJarAssets.locate("ol.js")).url.replaceAll(".js", "")"
-                        }
-                    });
-                }
-            };
-        </script>
-
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCesJn7XyQUzK78CRLwJusuLUR1-Wy8fVc"></script>
-        <script data-main="@routes.Assets.versioned("javascripts/angular/maps/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
+    @requireConfig = {
     }
 
     @styles = {
@@ -33,11 +20,4 @@
         <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
     }
 
-@main("Map", scripts, styles) {
-
-    <div class="container-fluid" style="padding-top : 60px;">
-
-        <div ng-view></div>
-    </div> <!-- /container -->
-
-}
+@ngLayout("map", "Map visualization", scripts, styles, requireConfig)

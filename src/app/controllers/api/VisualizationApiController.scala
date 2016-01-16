@@ -1,13 +1,13 @@
 package controllers.api
 
+import controllers.api.JsonImplicits._
+import model.entity.PipelineEvaluationId
 import play.api.Play.current
-import play.api.db.slick._
 import play.api.cache.Cache
-import play.api.db.slick.DBAction
+import play.api.db.slick.{DBAction, _}
 import play.api.libs.json._
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
-import JsonImplicits._
 
 class VisualizationApiController(implicit inj: Injector) extends ApiController with Injectable {
 
@@ -16,9 +16,15 @@ class VisualizationApiController(implicit inj: Injector) extends ApiController w
     Ok(mayBeResult.getOrElse(JsObject(Seq(("error", JsString("notfound"))))))
   }
 
-  def tree(id: Long) = DBAction { implicit rs =>
+  def dataReferences(id: Long) = DBAction { implicit rs =>
     withEvaluation(id) { evaluation =>
-      Ok(Json.toJson(visualizationService.hierarchy(evaluation)))
+      Ok(Json.toJson(visualizationService.dataReferences(evaluation)))
+    }
+  }
+
+  def findById(id: Long) = DBAction { implicit rs =>
+    withEvaluation(id) { evaluation =>
+      Ok(Json.toJson(evaluation))
     }
   }
 

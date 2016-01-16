@@ -3,7 +3,7 @@ package model.rdf.sparql.geo.query
 import model.rdf.sparql.geo.MapQueryData
 import model.rdf.sparql.query.SparqlQuery
 import model.rdf.sparql.{ValueFilter, VariableGenerator}
-import model.rdf.vocabulary.SKOS
+import model.rdf.vocabulary.{SCHEMA, SKOS}
 
 
 class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
@@ -11,53 +11,60 @@ class WKTEntitiesQuery(queryData: MapQueryData) extends SparqlQuery {
   lazy val variableGenerator = new VariableGenerator
 
   def get: String = {
-    val q = prefixes +
-      """
-        | SELECT ?s ?l ?p %v WHERE {
-        |   ?s <http://www.opengis.net/ont/geosparql#hasGeometry> ?g ;
-        |      skos:prefLabel ?l .
+
+    val restrictions = getRestrictions(queryData.filters)
+    val valueVariable = if (queryData.filters.nonEmpty) { "?v1" } else { "" }
+
+    prefixes +
+      s"""
+        | SELECT ?s ?l ?n ?p $valueVariable WHERE {
+        |   ?s <http://www.opengis.net/ont/geosparql#hasGeometry> ?g .
+        |      OPTIONAL { ?s rdfs:label ?l }
+        |      OPTIONAL { ?s schema:name ?n }
         |   ?g <http://www.opengis.net/ont/geosparql#asWKT> ?p .
         |
-        |   %r
+        |   $restrictions
         | }
-      """
-        .replaceAll(
-          "%r", getRestrictions(queryData.filters))
-        .replaceAll("%v", if (queryData.filters.nonEmpty) { "?v1" } else {"" })
-        .stripMargin
-    q
+      """.stripMargin
   }
 
-  private def prefixes =
-    """
-      | PREFIX skos: <%skos>
+  private def prefixes = {
+
+    val skosPrefix = SKOS.PREFIX_URL
+    val schemaPrefix = SCHEMA.PREFIX_URL
+    val rdfsPrefix = "http://www.w3.org/2000/01/rdf-schema#"
+
+    s"""
+      | PREFIX skos: <$skosPrefix>
+      | PREFIX rdfs: <$rdfsPrefix>
+      | PREFIX schema: <$schemaPrefix>
       |
 
     """
-      .replaceAll("%skos", SKOS.PREFIX_URL)
       .stripMargin
+  }
 
   private def getRestrictions(rule: Map[String, Seq[ValueFilter]]): String = {
+
+
     rule.map { case (uri, valueFilters) =>
-      """
-        |  ?s <%s> %v
-        |  %rf
-      """
-        .replaceAll("%s", uri)
-        .replaceAll("%v", variableGenerator.next.getVariable)
-        .replaceAll("%rf", restrictionFilters(variableGenerator.getVariable, valueFilters))
-        .stripMargin
+
+      val v = variableGenerator.next.getVariable
+      val filters = restrictionFilters(variableGenerator.getVariable, valueFilters)
+
+      s"""
+        |  ?s <$uri> $v
+        |  $filters
+      """.stripMargin
     }.mkString("\n")
   }
 
   private def restrictionFilters(variable: String, filters: Seq[ValueFilter]): String = {
     filters.filterNot(_.isActive.getOrElse(false)).map { f =>
-      labelOrUri(f).map { s =>
+      labelOrUri(f).map { string =>
+        s"""
+          |  FILTER($variable != $string)
         """
-          |  FILTER(%v != %fv)
-        """
-          .replaceAll("%v", variable)
-          .replaceAll("%fv", s)
           .stripMargin
       }
     }.filter(_.isDefined).map(_.get).mkString("\n")
@@ -80,6 +87,7 @@ object WKTEntitiesQuery {
     val geolocatedEntity = Value("s")
     val wkt = Value("p")
     val title = Value("l")
+    val name = Value("n")
   }
 
 }

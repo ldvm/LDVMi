@@ -28,21 +28,9 @@ class MapApiController(implicit inj: Injector) extends ApiController {
     }
   }
 
-  def properties(id: Long) = DBAction { implicit rs =>
-    withEvaluation(id) { evaluation =>
-
-      val json = geoService.properties(evaluation).map(_.map { case (uri, maybeLabel) =>
-        JsObject(Seq(
-          "uri" -> JsString(uri),
-          "label" -> maybeLabel.map(JsString).getOrElse(JsNull)
-        ))
-      })
-
-      Ok(Json.toJson(json))
-    }
-  }
-
-
+  def properties(id: Long) = simpleFuture(id) { pipelineEvaluation =>
+    geoService.properties(pipelineEvaluation)
+  } { entities => Json.toJson(entities) }
 
   private def withEvaluation(id: Long, json: JsValue)
     (func: (PipelineEvaluation, MapQueryData) => Result)
@@ -56,7 +44,6 @@ class MapApiController(implicit inj: Injector) extends ApiController {
         }
 
       case e: JsError => {
-        println(e)
         UnprocessableEntity
       }
     }

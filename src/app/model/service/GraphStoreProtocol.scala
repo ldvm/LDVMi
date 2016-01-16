@@ -3,12 +3,12 @@ package model.service
 import java.io.{File, ByteArrayOutputStream}
 
 import akka.actor.Props
-import com.hp.hpl.jena.rdf.model.Model
 import model.rdf.Graph
 import org.apache.http.auth.{AuthScope, UsernamePasswordCredentials}
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.{ContentType, FileEntity, StringEntity}
 import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.jena.rdf.model.Model
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 
@@ -17,7 +17,7 @@ class GraphStoreProtocol {
   val internalEndpointUrl = play.api.Play.configuration.getString("ldvmi.triplestore.push").getOrElse("")
 
   def pushToTripleStore(file: File, graphUri: String, contentType: Option[String]) = {
-    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl, graphUri)
+    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl.replace("/sparql",""), graphUri)
 
     val credentials = new UsernamePasswordCredentials("dba", "dba")
     val httpClient = new DefaultHttpClient()
@@ -45,7 +45,7 @@ class GraphStoreProtocol {
   }
 
   def pushToTripleStore(ttl: String, graphUri: String) = {
-    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl, graphUri)
+    val requestUri = String.format("%s/sparql-graph-crud-auth?graph-uri=%s", internalEndpointUrl.replace("/sparql",""), graphUri)
     val credentials = new UsernamePasswordCredentials("dba", "dba")
     val httpClient = new DefaultHttpClient()
     val post = new HttpPost(requestUri)

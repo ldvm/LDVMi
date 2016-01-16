@@ -1,10 +1,11 @@
 package controllers
 
-import model.entity.{PipelineEvaluation, PipelineEvaluationId}
+import model.entity.{DataSourceTemplateId, PipelineEvaluation, PipelineEvaluationId}
 import model.service.{DataSourceService, PipelineService}
 import play.api.Play.current
-import play.api.db.slick._
-import play.api.mvc.{Action, Controller, Result}
+import play.api.db.slick.{Session, _}
+import play.api.libs.Files
+import play.api.mvc.{Action, Controller, MultipartFormData, Result}
 import scaldi.{Injectable, Injector}
 import views.VisualizerRoute
 
@@ -16,65 +17,63 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
   val pipelineService = inject[PipelineService]
   val dataSourceService = inject[DataSourceService]
 
-  def dataSource = DBAction { implicit rws =>
-    Ok(views.html.visualization.dataSource())
+  def multiSource = DBAction { implicit rws =>
+    Ok(views.html.visualization.multiSource())
   }
 
-  def fromFiles = Action.async(parse.maxLength(100 * 1024 * 1024, parse.multipartFormData)) { request =>
-    Future {
-      request.body.fold({ ms =>
-        Redirect(routes.ApplicationController.index()).flashing("error" -> "Max size exceeded.")
-      }, { body =>
-
-        DB.withSession { implicit s =>
-          val files = body.files.filter(_.key == "ttlfile")
-          val maybeDataSourceId = dataSourceService.createDataSourceFromFiles(files)
-
-          maybeDataSourceId.map { i =>
-            val combine = body
-              .dataParts
-              .get("combine")
-              .flatMap(_.headOption.map(_ == "true"))
-              .getOrElse(false)
-
-            Redirect(routes.VisualizationController.discover(maybeDataSourceId.map(_.id), combine))
-          }.getOrElse {
-            Redirect(routes.ApplicationController.index()).flashing("error" -> "No data in files.")
-          }
-        }
-
-      })
-    }
-  }
-
-  def fromUris = Action.async(parse.urlFormEncoded) { request =>
-    Future {
+  def multiUpload = Action.async(parse.maxLength(200 * 1024 * 1024, parse.multipartFormData)) { request =>
+    request.body.fold({ ms =>
+      Future.successful(Redirect(routes.ApplicationController.index()).flashing("error" -> "Max size exceeded."))
+    }, { body =>
       DB.withSession { implicit s =>
-        request.body.get("ttlurl").map { urls =>
+        val eventuallyDatasourceIds = Future.sequence(Seq(
+          upload(body),
+          download(body),
+          endpoints(body)
+        ))
 
-          val sanitizedList = urls.flatMap(_.split("\n")).map(_.trim).filter(_.nonEmpty)
-          val maybeDataSourceId = dataSourceService.createDataSourceFromRemoteTtl(sanitizedList)
+        val combine = body
+          .dataParts
+          .get("combine")
+          .flatMap(_.headOption.map(_ == "true"))
+          .getOrElse(false)
 
-          val combine = request
-            .body
-            .get("combine")
-            .flatMap(_.headOption.map(_ == "true"))
-            .getOrElse(false)
-
-          Redirect(routes.VisualizationController.discover(maybeDataSourceId.map(_.id), combine))
-
-        }.getOrElse {
-          Redirect(routes.ApplicationController.index()).flashing(
-            "error" -> "Missing file")
+        eventuallyDatasourceIds.map { ids =>
+          Redirect(routes.VisualizationController.discover(ids.flatten.map(_.id).toList, combine))
         }
+      }
+    })
+  }
+
+  private def upload(body: MultipartFormData[Files.TemporaryFile])(implicit session: Session): Future[Seq[DataSourceTemplateId]] = Future {
+    val files = body.files.filter(_.key == "ttlfile")
+    dataSourceService.createDataSourceFromFiles(files).toSeq
+  }
+
+  private def download(body: MultipartFormData[Files.TemporaryFile])(implicit session: Session): Future[Seq[DataSourceTemplateId]] = Future {
+    body.dataParts.get("ttlurl").flatMap { urls =>
+      val sanitizedList = urls.flatMap(_.split("\n")).map(_.trim).filter(_.nonEmpty)
+      dataSourceService.createDataSourceFromRemoteTtl(sanitizedList)
+    }.toSeq
+  }
+
+  private def endpoints(body: MultipartFormData[Files.TemporaryFile])(implicit session: Session): Future[Seq[DataSourceTemplateId]] = Future {
+    val maybeEndpoint = body.dataParts.get("endpointUrl")
+    val maybeGraphUris = body.dataParts.get("graphUris")
+
+    if (maybeEndpoint.isEmpty || maybeGraphUris.isEmpty) {
+      Seq()
+    } else {
+      val links = maybeEndpoint.get.zip(maybeGraphUris.get)
+      links.filter(_._1.trim.nonEmpty).flatMap { case (endpointUrl, graphUris) =>
+        val graphs = graphUris.split("\\s+").toSeq
+        dataSourceService.createDataSourceFromUris(endpointUrl.trim, if (graphs.nonEmpty) {Some(graphs)} else None)
       }
     }
   }
 
   def visualize(pipelineEvaluationId: Long) = DBAction { implicit rws =>
-
     withEvaluation(pipelineEvaluationId) { e =>
-
       val maybeVisualizerTemplateUri = e.pipeline.componentInstances.find(!_.hasOutput).map(_.componentTemplate.uri)
 
       maybeVisualizerTemplateUri.map { uri =>
@@ -86,9 +85,32 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
 
   }
 
-  def treemap(pipelineEvaluationId: Long) = DBAction { implicit rws =>
+  trait HierarchyVisualisationTemplate {
+    def apply(evaluationId: PipelineEvaluationId, schemeUri: String): play.twirl.api.HtmlFormat.Appendable
+  }
+
+  def cluster = skosVisualisation(views.html.visualizer.hierarchy.cluster.apply) _
+
+  def tree = skosVisualisation(views.html.visualizer.hierarchy.tree.apply) _
+
+  def force = skosVisualisation(views.html.visualizer.hierarchy.force.apply) _
+
+  def partition = skosVisualisation(views.html.visualizer.hierarchy.partition.apply) _
+
+  def bilevel = skosVisualisation(views.html.visualizer.hierarchy.bilevel.apply) _
+
+  def packLayout = skosVisualisation(views.html.visualizer.hierarchy.packLayout.apply) _
+
+  def sunburst = skosVisualisation(views.html.visualizer.hierarchy.sunburst.apply) _
+
+  def treemap = skosVisualisation(views.html.visualizer.hierarchy.treemap.apply) _
+
+  def radialTree = skosVisualisation(views.html.visualizer.hierarchy.radialTree.apply) _
+
+  private def skosVisualisation(template: (PipelineEvaluationId, String) => play.twirl.api.HtmlFormat.Appendable)
+    (pipelineEvaluationId: Long, schemeUri: String) = DBAction { implicit rws =>
     withEvaluation(pipelineEvaluationId) { e =>
-      Ok(views.html.visualizer.treemap(e.id.get))
+      Ok(template(e.id.get, schemeUri))
     }
   }
 
@@ -96,12 +118,12 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     pipelineService.findEvaluationById(PipelineEvaluationId(id)).map(func).getOrElse(NotFound)
   }
 
-  def discover(dataSourceTemplateId: Option[Long], combine: Boolean = false) = DBAction { rws =>
+  def discover(dataSourceTemplateIds: List[Long], combine: Boolean = false) = DBAction { rws =>
 
     val n = if (combine) {1} else {0}
 
     val url: String = "/pipelines#/discover?" +
-      "dataSourceTemplateId=" + dataSourceTemplateId.orNull
+      dataSourceTemplateIds.map(i => "dataSourceTemplateIds=" + i).mkString("&") +
       "&combine=" + n.toString
 
     TemporaryRedirect(url)

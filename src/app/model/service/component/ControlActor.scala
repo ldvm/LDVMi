@@ -31,8 +31,9 @@ class ControlActor(evaluation: PipelineEvaluation, reporterProps: Props, visuali
 
         r.dataReferences.map { dr =>
           val portTemplateId = inputs.get(dr.portUri).get
+          val referenceGraphUris = if(dr.graphUris.isEmpty) { None } else { Some(dr.graphUris.mkString("\n")) }
           evaluationResultRepo.save(
-            PipelineEvaluationResult(None, evaluation.id.get, visualizerInstance.componentTemplate.id.get, portTemplateId, dr.endpointUri, dr.graphUri)
+            PipelineEvaluationResult(None, evaluation.id.get, visualizerInstance.componentTemplate.id.get, portTemplateId, dr.endpointUri, referenceGraphUris)
           )
         }
       }

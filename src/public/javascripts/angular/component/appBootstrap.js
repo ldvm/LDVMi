@@ -9,7 +9,4 @@ define([
 ], function (require, ng) {
     'use strict';
 
-    require(['requirejs-domready!'], function (document) {
-        ng.bootstrap(document, ['component']);
-    });
 });

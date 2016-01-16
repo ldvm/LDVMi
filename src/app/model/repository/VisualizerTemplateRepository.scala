@@ -21,4 +21,11 @@ class VisualizerTemplateRepository extends CrudRepository[VisualizerTemplateId, 
       s <- query if s.componentTemplateId inSetBind ids
     } yield s).list
   }
+
+  def findByUri(uri: String)(implicit session: Session): Option[VisualizerTemplate] = {
+    (for {
+      v <- query
+      c <- componentTemplatesQuery if c.id === v.componentTemplateId && c.uri === uri
+    } yield v).firstOption
+  }
 }

@@ -25,7 +25,7 @@ class GeoServiceImpl(implicit val inj: Injector) extends GeoService with Session
     runQuery(evaluation, new PolygonEntitiesPropertiesQuery, new PolygonEntitiesPropertiesExtractor)()
   }
 
-  def properties(evaluation: PipelineEvaluation): Option[Seq[(String, Option[String])]] = {
+  def properties(evaluation: PipelineEvaluation): Option[Enumerator[Option[Property]]] = {
     runQuery(evaluation, new GeoPropertiesQuery, new GeoPropertiesExtractor)()
   }
 }

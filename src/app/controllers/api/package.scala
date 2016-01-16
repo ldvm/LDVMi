@@ -6,8 +6,9 @@ import model.entity._
 import model.rdf.sparql.ValueFilter
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.geo._
-import model.rdf.sparql.visualization.HierarchyNode
+import model.rdf.sparql.visualization.{Scheme, Concept, HierarchyNode}
 import model.rdf.{LocalizedValue, Property}
+import model.service.component.DataReference
 import play.api.db
 import play.api.db.slick._
 import play.api.libs.functional.syntax._
@@ -44,7 +45,8 @@ package object api {
     }
 
     implicit lazy val hierarchyWrites: Writes[HierarchyNode] = (
-      (__ \ "name").write[String] and
+      (__ \ "name").write[LocalizedValue] and
+        (__ \ "uri").write[String] and
         (__ \ "size").writeNullable[Int] and
         (__ \ "children").lazyWriteNullable(Writes.seq[HierarchyNode](hierarchyWrites))
       )(unlift(HierarchyNode.unapply))
@@ -54,12 +56,18 @@ package object api {
     implicit val featureCompatibilityCheckWrites = Json.writes[FeatureCompatibilityCheck]
     implicit val componentInstanceCompatibilityCheckWrites = Json.writes[ComponentInstanceCompatibilityCheck]
     implicit val descriptorCompatibilityCheckWrites = Json.writes[DescriptorCompatibilityCheck]
+    implicit val portCompatibilityCheckWrites = Json.writes[PortCheckResult]
     implicit val descriptorWrites = Json.writes[Descriptor]
     implicit val featureWrites = Json.writes[Feature]
     implicit val portWrites = Json.writes[DataPortTemplate]
     implicit val compatibilityResponseWrites = Json.writes[CheckCompatibilityResponse]
+    implicit val dataReferenceWrites = Json.writes[DataReference]
 
     implicit val localizedLiteralWrites = Json.writes[LocalizedValue]
+
+    implicit val skosConceptWrites = Json.writes[Concept]
+    implicit val skosSchemeWrites = Json.writes[Scheme]
+
     implicit val dataCubeDatasetWrites = Json.writes[DataCubeDataset]
     implicit val dataCubeDimensionPropertyWrites = Json.writes[DataCubeDimensionProperty]
     implicit val dataCubeMeasurePropertyWrites = Json.writes[DataCubeMeasureProperty]
@@ -71,6 +79,10 @@ package object api {
     implicit val dataCubeCellWrites = Json.writes[DataCubeCell]
     implicit val dataCubeWrites = Json.writes[model.rdf.sparql.datacube.DataCube]
     implicit val dataCubeQueryResultWrites = Json.writes[DataCubeQueryResult]
+    implicit val valueFilterWrites = Json.writes[ValueFilter]
+    implicit val dataCubeQueryComponentFilterWrites = Json.writes[DataCubeQueryComponentFilter]
+    implicit val dataCubeQueryFilterWrites = Json.writes[DataCubeQueryFilter]
+    implicit val dataCubeQueryDataWrites = Json.writes[DataCubeQueryData]
 
     implicit val pipelinesWrites = Json.writes[Pipeline]
     implicit val pipelineEvaluationWrites = Json.writes[PipelineEvaluation]
@@ -118,7 +130,8 @@ package object api {
       (JsPath \ "componentUri").read[String] and
         (JsPath \ "type").read[String] and
         (JsPath \ "values").read[Seq[ValueFilter]] and
-        (JsPath \ "isActive").readNullable[Boolean]
+        (JsPath \ "isActive").readNullable[Boolean] and
+        (JsPath \ "order").readNullable[Int]
       )(DataCubeQueryComponentFilter.apply _)
     implicit val cubeQueryFiltersReads: Reads[DataCubeQueryFilter] = (
       (JsPath \ "dsdUri").readNullable[String] and

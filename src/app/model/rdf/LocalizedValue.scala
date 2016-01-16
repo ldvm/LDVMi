@@ -36,12 +36,24 @@ class LocalizedValue {
 
 object LocalizedValue {
 
-  def apply(variants: Map[String, String]) = {
+  def apply(variants: Map[String, String]) : LocalizedValue = {
     val l = new LocalizedValue
     variants.foreach { p =>
       l.put(p._1, p._2)
     }
     l
+  }
+
+  def create(variant: (String, String)) : LocalizedValue = {
+    apply(Seq(variant).toMap)
+  }
+
+  def create(literal: org.apache.jena.rdf.model.Literal) : LocalizedValue = {
+    create((literal.getLanguage, literal.getString))
+  }
+
+  def create(literals: Seq[org.apache.jena.rdf.model.Literal]) : LocalizedValue = {
+    apply(literals.map(l => (l.getLanguage, l.getString)).toMap)
   }
 
   def unapply(l: LocalizedValue) : Option[Map[String, String]] = {

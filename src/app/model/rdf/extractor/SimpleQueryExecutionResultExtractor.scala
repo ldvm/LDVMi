@@ -1,7 +1,7 @@
 package model.rdf.extractor
 
-import com.hp.hpl.jena.query.{QueryExecution, QuerySolution}
-import com.hp.hpl.jena.rdf.model.{Literal, Resource}
+import org.apache.jena.query.{QueryExecution, QuerySolution}
+import org.apache.jena.rdf.model.{Literal, Resource}
 import play.api.libs.iteratee.{Enumeratee, Enumerator}
 import model.rdf.LocalizedValue
 import model.rdf.sparql.query.SparqlQuery
@@ -18,7 +18,6 @@ trait SimpleQueryExecutionResultExtractor[Q <: SparqlQuery, I] extends QueryExec
   def withLiteralSolution(literal: Literal): Option[I]
 
   def extract(data: QueryExecution): Option[Enumerator[Option[I]]] = {
-
     val enumerator = Enumerator.enumerate(data.execSelect().asInstanceOf[java.util.Iterator[QuerySolution]])
     enumerator.onDoneEnumerating(() => data.close())
 
@@ -51,6 +50,10 @@ trait SimpleQueryExecutionResultExtractor[Q <: SparqlQuery, I] extends QueryExec
   }
 
   protected def localizedLabel(literal: Literal): LocalizedValue = {
-    LocalizedValue(Seq(literal.getLanguage -> literal.getString).toMap)
+    var lang = literal.getLanguage
+    if(lang == ""){
+      lang = "nolang"
+    }
+    LocalizedValue(Seq(lang -> literal.getString).toMap)
   }
 }

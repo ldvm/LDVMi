@@ -1,27 +1,24 @@
 package model.rdf.sparql.geo.extractor
 
-import com.hp.hpl.jena.query.{QuerySolution, QueryExecution}
-import model.rdf.extractor.QueryExecutionResultExtractor
+import model.rdf.Property
+import model.rdf.extractor.SimpleQueryExecutionResultExtractor
 import model.rdf.sparql.geo.query.GeoPropertiesQuery
-import scala.collection.JavaConversions._
+import org.apache.jena.query.QuerySolution
+import org.apache.jena.rdf.model.{Literal, Resource}
 
-class GeoPropertiesExtractor extends QueryExecutionResultExtractor[GeoPropertiesQuery, Seq[(String, Option[String])]] {
-  override def extract(input: QueryExecution): Option[Seq[(String, Option[String])]] = {
-    val results = input.execSelect()
+class GeoPropertiesExtractor extends SimpleQueryExecutionResultExtractor[GeoPropertiesQuery, Property] {
 
-    val tupleIterator = results.map { querySolution =>
-      (
-        querySolution.getResource(GeoPropertiesQuery.NodeVariables.VALUE_PROPERTY_VARIABLE.toString).getURI,
-        label(querySolution)
-      )
-    }
+  override def getPropertyVariableName: String = GeoPropertiesQuery.NodeVariables.VALUE_PROPERTY_VARIABLE.toString
 
-    Some(tupleIterator.toMap.toSeq)
+  def getSchemeVariableName: String = GeoPropertiesQuery.NodeVariables.VALUE_SCHEME_VARIABLE.toString
+
+  override def withResourceSolution(resource: Resource, qs: QuerySolution): Option[Property] = {
+    val label = getLabel(qs, GeoPropertiesQuery.LabelVariables)
+    val schemeUri = qs.getResource(getSchemeVariableName).getURI
+    Some(new Property(label, Some(resource.getURI), Some(schemeUri)))
   }
 
-  def label(querySolution: QuerySolution) : Option[String] = {
-    GeoPropertiesQuery.LabelVariables.values.collectFirst{
-      case varName if querySolution.contains(varName.toString) => querySolution.getLiteral(varName.toString).getString
-    }
+  override def withLiteralSolution(literal: Literal): Option[Property] = {
+    Some(new Property(Some(localizedLabel(literal)), None, None))
   }
 }

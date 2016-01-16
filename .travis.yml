@@ -6,3 +6,4 @@ jdk:
   
 before_script: cd src
 script: sbt ++$TRAVIS_SCALA_VERSION test
+

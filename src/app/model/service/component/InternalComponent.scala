@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit
 import akka.actor.Props
 import akka.pattern.ask
 import akka.util.Timeout
-import com.hp.hpl.jena.vocabulary.RDF
 import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCompatibilityChecker, SparqlEndpointCompatibilityChecker}
 import model.entity._
 import model.rdf.Graph
@@ -23,12 +22,12 @@ import scala.concurrent.{Future, Promise}
 
 
 object EndpointConfig {
-  def apply(ttl: Option[String]): Option[(String, Option[String])] = {
+  def apply(ttl: Option[String]): Option[(String, Seq[String])] = {
     Graph(ttl).flatMap { g =>
       val maybeEndpointUrl = GenericSparqlEndpoint.getEndpointUrl(Seq(Some(g)))
-      val maybeGraphUri = GenericSparqlEndpoint.getNamedGraphs(Seq(Some(g)))
+      val graphUris = GenericSparqlEndpoint.getNamedGraphs(Seq(Some(g)))
 
-      maybeEndpointUrl.map(e => (e, maybeGraphUri.headOption))
+      maybeEndpointUrl.map(e => (e, graphUris))
     }
   }
 }
@@ -40,7 +39,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
   val props = ComponentActor.props(this, reporterProps)
   val actor = Akka.system.actorOf(props)
 
-  def evaluate(dataReferences: Seq[DataReference]): Future[(String, Option[String])] = {
+  def evaluate(dataReferences: Seq[DataReference]): Future[(String, Seq[String])] = {
     plugin.map{ p =>
       p.run(dataReferences, reporterProps)
     }.getOrElse {
@@ -61,7 +60,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
   }
 
 
-  def dataSourceConfiguration: Option[(String, Option[String])] = {
+  def dataSourceConfiguration: Option[(String, Seq[String])] = {
     withSession { implicit session =>
       lazy val instanceConfig = componentInstance.configuration
       lazy val templateConfig = componentInstance.componentTemplate.defaultConfiguration
@@ -75,11 +74,9 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
     }
   }
 
-  def check(context: BindingContext, reporterProps: Props)(implicit session: Session) = {
+  def check(context: BindingContext)(implicit session: Session) = {
     val features = componentInstance.componentTemplate.features
     val featuresWithDescriptors = features.map { f => (f, f.descriptors)}
-
-    val reporter = Akka.system.actorOf(reporterProps)
 
     val eventualComponentInstanceCompatibility = featuresWithDescriptors.map {
       case (feature, descriptors) => {
@@ -91,18 +88,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
 
           val maybeComponentForDescriptor = inputInstanceUri.flatMap(context(_))
           maybeComponentForDescriptor.map { componentForDescriptor =>
-
-            val eventualDescriptorCompatibility = componentForDescriptor.checkIsCompatibleWith(descriptor, reporterProps)
-
-            eventualDescriptorCompatibility.onSuccess {
-              case r => reporter ! r
-            }
-
-            eventualDescriptorCompatibility.onFailure {
-              case e => reporter ! e.getMessage
-            }
-
-            eventualDescriptorCompatibility
+            componentForDescriptor.checkIsCompatibleWith(descriptor, reporterProps)
           }
         }
 
@@ -128,11 +114,16 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
       reporter ! "Checking compatibility of descriptor " + descriptor.title
       o.dataSample match {
         case Some(uri) => Akka.system.actorOf(Props(classOf[RdfCompatibilityChecker], uri))
-        case None => Akka.system.actorOf(Props(classOf[SparqlEndpointCompatibilityChecker], Graph(componentInstance.configuration), Graph(component.defaultConfiguration)))
+        case None => Akka.system.actorOf(Props(classOf[SparqlEndpointCompatibilityChecker], Graph(componentInstance.configuration), Graph(component.defaultConfiguration), component.uri))
       }
     }.get
 
-    (checker ask CheckCompatibilityRequest(descriptor)).mapTo[CheckCompatibilityResponse]
+    val future = (checker ask CheckCompatibilityRequest(descriptor)).mapTo[CheckCompatibilityResponse]
+    future.onSuccess{
+      case r: CheckCompatibilityResponse => reporter ! r
+    }
+
+    future
   }
 
   def checkCouldBeBoundWithComponentViaPort(componentToAsk: Component, portUri: String, reporterProps: Props)(implicit session: Session): Future[Boolean] = {

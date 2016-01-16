@@ -1,13 +1,13 @@
 package model.rdf.sparql.datacube.extractor
 
-import com.hp.hpl.jena.query.QueryExecution
-import com.hp.hpl.jena.rdf.model.{Property, Resource, Statement}
-import com.hp.hpl.jena.shared.PropertyNotFoundException
-import com.hp.hpl.jena.vocabulary.RDF
 import model.rdf.extractor.{Descriptions, ExtractorHelpers, QueryExecutionResultExtractor}
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.datacube.query.DataCubeComponentsQuery
 import model.rdf.vocabulary.QB
+import org.apache.jena.query.QueryExecution
+import org.apache.jena.rdf.model.{Statement, Property, Resource}
+import org.apache.jena.shared.PropertyNotFoundException
+import org.apache.jena.vocabulary.RDF
 
 import scala.collection.JavaConversions._
 
@@ -15,9 +15,9 @@ class DataCubeComponentsExtractor extends QueryExecutionResultExtractor[DataCube
 
   def extract(input: QueryExecution): Option[Seq[DataCubeComponent]] = {
     val componentResources = input.execConstruct().listSubjectsWithProperty(RDF.`type`, QB.dataStructureDefinition).toList
-    Some(componentResources.map { resource =>
+    Some(componentResources.flatMap { resource =>
       extractComponents(resource)
-    }.flatten)
+    })
   }
 
   private def extractComponents(dataStructure: Resource): Seq[DataCubeComponent] = {
@@ -90,10 +90,10 @@ class DataCubeComponentsExtractor extends QueryExecutionResultExtractor[DataCube
     (extractor: (Descriptions, Statement) => Option[D]): Option[D] = {
 
     val componentProperty = component.getProperty(property)
-    Option(componentProperty).map { c =>
+    Option(componentProperty).flatMap { c =>
       val descriptions = ExtractorHelpers.extractDescriptions(c.getResource)
       extractor(descriptions, c)
-    }.flatten
+    }
   }
 
   private def getAttribute(component: Resource): Option[DataCubeAttributeProperty] = {

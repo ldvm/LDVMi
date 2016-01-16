@@ -20,7 +20,15 @@ case class PipelineEvaluationResult(
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-  ) extends IdEntity[PipelineEvaluationResultId]
+  ) extends IdEntity[PipelineEvaluationResultId] {
+
+  def port(implicit session: Session) : DataPortTemplate = {
+    (for {
+      p <- dataPortTemplatesQuery if p.id === portId
+    } yield p).first
+  }
+
+}
 
 
 class PipelineEvaluationResultTable(tag: Tag) extends IdEntityTable[PipelineEvaluationResultId, PipelineEvaluationResult](tag, "pipeline_evaluation_result") {

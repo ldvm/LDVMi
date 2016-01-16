@@ -3,10 +3,10 @@ package model.rdf.sparql
 
 import _root_.model.rdf.Graph
 import _root_.model.rdf.vocabulary.{DSPARQL, SD}
-import com.hp.hpl.jena.query.{QueryExecution, QueryExecutionFactory}
-import com.hp.hpl.jena.rdf.model.Property
-import com.hp.hpl.jena.update.{UpdateProcessor, UpdateFactory, UpdateExecutionFactory}
 import org.apache.jena.atlas.web.auth.{SimpleAuthenticator}
+import org.apache.jena.query.{QueryExecutionFactory, QueryExecution}
+import org.apache.jena.rdf.model.Property
+import org.apache.jena.update.{UpdateProcessor, UpdateFactory, UpdateExecutionFactory}
 
 import scala.collection.JavaConversions._
 

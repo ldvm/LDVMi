@@ -1,6 +1,6 @@
 package model.rdf.vocabulary
 
-import com.hp.hpl.jena.rdf.model.Property
+import org.apache.jena.rdf.model.Property
 
 object SDMX extends Vocabulary {
 

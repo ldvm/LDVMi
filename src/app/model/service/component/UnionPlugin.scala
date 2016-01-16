@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UnionPlugin(internalComponent: InternalComponent, graphStore: GraphStoreProtocol) extends AnalyzerPlugin {
-  override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
+  override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Seq[String])] = {
     val resultGraph = "urn:" + UUID.randomUUID().toString
 
     val reporter = Akka.system.actorOf(reporterProps)
@@ -26,7 +26,7 @@ class UnionPlugin(internalComponent: InternalComponent, graphStore: GraphStorePr
 
           val query = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
 
-          val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri,dataRef.graphUri.toSeq, List())
+          val endpoint = new GenericSparqlEndpoint(dataRef.endpointUri,dataRef.graphUris.toSeq, List())
 
           val model = endpoint.queryExecutionFactory()(query).execConstruct()
           graphStore.pushToTripleStore(model, resultGraph)(reporterProps)
@@ -40,7 +40,7 @@ class UnionPlugin(internalComponent: InternalComponent, graphStore: GraphStorePr
         }
       }
 
-      (graphStore.internalEndpointUrl, Some(resultGraph))
+      (graphStore.internalEndpointUrl, Seq(resultGraph))
     }
   }
 

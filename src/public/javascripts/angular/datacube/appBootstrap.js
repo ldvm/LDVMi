@@ -4,12 +4,9 @@
 define([
     'require',
     'angular',
+    'material',
     'app',
     'appConfig'
-], function (require, ng) {
+], function (require, ng, material) {
     'use strict';
-
-    require(['requirejs-domready!'], function (document) {
-        ng.bootstrap(document, ['dataCube']);
-    });
 });

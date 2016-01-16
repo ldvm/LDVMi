@@ -2,6 +2,7 @@ package model.entity
 
 import java.util.UUID
 
+import model.entity.ComponentType.ComponentType
 import model.entity.CustomUnicornPlay._
 import model.entity.CustomUnicornPlay.driver.simple._
 import org.joda.time.DateTime
@@ -54,19 +55,23 @@ case class ComponentInstance(
     } yield c).first
   }
 
+  def getType(implicit session: Session): ComponentType = {
+    componentTemplate.getType
+  }
+
   override def toString = uri
 
 }
 
 class ComponentInstanceTable(tag: Tag) extends UriIdentifiedEntityTable[ComponentInstanceId, ComponentInstance](tag, "component_instances") {
 
-  def * = (id.?, uri, title, description, componentId, configuration, uuid, createdUtc, modifiedUtc) <>(ComponentInstance.tupled, ComponentInstance.unapply _)
+  def * = (id.?, uri, title, description, componentTemplateId, configuration, uuid, createdUtc, modifiedUtc) <>(ComponentInstance.tupled, ComponentInstance.unapply _)
 
   def configuration = column[Option[String]]("configuration")
 
-  def component = foreignKey("fk_cit_ct_component_id", componentId, componentTemplatesQuery)(_.id)
+  def component = foreignKey("fk_cit_ct_component_id", componentTemplateId, componentTemplatesQuery)(_.id)
 
-  def componentId = column[ComponentTemplateId]("component_id", O.NotNull)
+  def componentTemplateId = column[ComponentTemplateId]("component_id", O.NotNull)
 
 }
 

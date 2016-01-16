@@ -1,6 +1,7 @@
 define([
         'angular',
-        './controllers',
+        './controllers/controllers',
+        './controllers/layoutController',
         './directives',
         './filters',
         './services',
@@ -15,11 +16,11 @@ define([
     function (ng) {
         'use strict';
 
-        return ng.module('dataCube', [
-            'dataCube.services',
-            'dataCube.controllers',
-            'dataCube.filters',
-            'dataCube.directives',
+        return ng.module('datacube', [
+            'datacube.services',
+            'datacube.controllers',
+            'datacube.filters',
+            'datacube.directives',
             'ngRoute',
             'ngResource',
             'ui.bootstrap',

@@ -9,9 +9,9 @@ class DataCubeCellQuery(pattern: ObservationPattern) extends SparqlQuery {
   def get: String = prefixes +
     """
       | CONSTRUCT {
-      |   """.stripMargin + pattern.getSPARQLPattern + """
+      |   """.stripMargin + pattern.getConstructPattern + """
       | } WHERE {
-      |   """.stripMargin + pattern.getSPARQLPattern + """
+      |   """.stripMargin + pattern.getWherePattern + """
       | }
     """.stripMargin
 

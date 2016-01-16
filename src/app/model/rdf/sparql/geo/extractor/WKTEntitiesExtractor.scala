@@ -1,16 +1,17 @@
 package model.rdf.sparql.geo.extractor
 
-import com.hp.hpl.jena.query.QuerySolution
-import com.hp.hpl.jena.rdf.model.{Literal, RDFNode, Resource}
 import model.rdf.LocalizedValue
 import model.rdf.extractor.SimpleQueryExecutionResultExtractor
 import model.rdf.sparql.geo.query.WKTEntitiesQuery
 import model.rdf.sparql.geo.{WKTEntity, MapQueryData}
+import org.apache.jena.query.QuerySolution
+import org.apache.jena.rdf.model.{RDFNode, Literal, Resource}
 
 class WKTEntitiesExtractor(data: MapQueryData) extends SimpleQueryExecutionResultExtractor[WKTEntitiesQuery, WKTEntity] {
 
   private lazy val groupByProperty = data.filters.headOption.map(_._1)
   val titleVariableName = WKTEntitiesQuery.NodeVariables.title.toString
+  val nameVariableName = WKTEntitiesQuery.NodeVariables.name.toString
 
   override def getPropertyVariableName: String = WKTEntitiesQuery.NodeVariables.geolocatedEntity.toString
 
@@ -24,6 +25,9 @@ class WKTEntitiesExtractor(data: MapQueryData) extends SimpleQueryExecutionResul
 
       val label = if (qs.contains(titleVariableName)) {
         val literal = qs.get(titleVariableName).asLiteral()
+        Some(LocalizedValue(Seq(literal.getLanguage -> literal.toString).toMap))
+      } else if (qs.contains(nameVariableName)) {
+        val literal = qs.get(nameVariableName).asLiteral()
         Some(LocalizedValue(Seq(literal.getLanguage -> literal.toString).toMap))
       } else {
         None

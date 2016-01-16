@@ -16,8 +16,8 @@ case class Pipeline(
   uri: String,
   title: String,
   description: Option[String],
-  isTemporary: Boolean,
-  pipelineDiscovery: Option[PipelineDiscoveryId],
+  isTemporary: Boolean = true,
+  pipelineDiscovery: Option[PipelineDiscoveryId] = None,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None

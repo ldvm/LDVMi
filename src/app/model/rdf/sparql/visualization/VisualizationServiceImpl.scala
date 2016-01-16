@@ -2,28 +2,63 @@ package model.rdf.sparql.visualization
 
 import _root_.model.service.SessionScoped
 import model.entity.PipelineEvaluation
-import model.rdf.sparql.datacube.extractor._
-import model.rdf.sparql.datacube.query._
-import model.rdf.sparql.visualization.extractor.HierarchyExtractor
-import model.rdf.sparql.visualization.query.HierarchyQuery
-import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpoint, SparqlEndpointService, ValueFilter}
-import play.api.libs.iteratee.Enumerator
-import play.api.libs.json.JsValue
+import model.rdf.sparql.visualization.extractor.{ConceptCountExtractor, ConceptsExtractor, SchemeExtractor, SchemesExtractor}
+import model.rdf.sparql.visualization.query._
+import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
+import model.service.component.DataReference
+import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
-import utils.MD5
 
 class VisualizationServiceImpl(implicit val inj: Injector) extends VisualizationService with SessionScoped with Injectable {
 
   var sparqlEndpointService = inject[SparqlEndpointService]
 
-  def hierarchy(evaluation: PipelineEvaluation): Option[Seq[HierarchyNode]] = {
-    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new HierarchyQuery, new HierarchyExtractor)
+  def skosScheme(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode] = {
+    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new SchemeQuery(schemeUri), new SchemeExtractor(schemeUri))
+  }
+
+  def dataReferences(evaluation: PipelineEvaluation)(implicit session: Session): Seq[DataReference] = {
+    evaluation.results.map { r =>
+      val uris = r.graphUri.map(_.split("\n").toSeq).getOrElse(Seq())
+      DataReference(r.port.uri, r.endpointUrl, uris)
+    }
+  }
+
+  def skosSchemes(evaluation: PipelineEvaluation, tolerant: Boolean)(implicit session: Session): Option[Seq[Scheme]] = {
+
+    val query = if (tolerant) {
+      new SchemesTolerantQuery
+    } else {
+      new SchemesQuery
+    }
+
+    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), query, new SchemesExtractor)
+  }
+
+  def skosConcepts(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Concept]] = {
+    sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new ConceptsQuery, new ConceptsExtractor)
+  }
+
+  def skosConcepts(evaluation: PipelineEvaluation, uris: Seq[String])(implicit session: Session): Map[String, Option[Seq[Concept]]] = {
+    uris.map { u =>
+      u -> sparqlEndpointService
+        .getResult(evaluationToSparqlEndpoint(evaluation), new ConceptsBySchemaQuery(u), new ConceptsExtractor)
+    }.toMap
+  }
+
+  def skosConceptsCounts(evaluation: PipelineEvaluation, propertyUri: String, values: Seq[String])(implicit session: Session): Map[String, Option[Int]] = {
+    values.map { u =>
+      u -> sparqlEndpointService
+        .getResult(evaluationToSparqlEndpoint(evaluation), new ConceptCountQuery(propertyUri, u), new ConceptCountExtractor)
+    }.toMap
   }
 
   private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation): GenericSparqlEndpoint = {
     withSession { implicit session =>
       val evaluationResults = evaluation.results
-      evaluationResults.map { result => new GenericSparqlEndpoint(result.endpointUrl, List(), result.graphUri.toSeq)}.head
+      evaluationResults.map { result =>
+        new GenericSparqlEndpoint(result.endpointUrl, List(), result.graphUri.map(_.split("\n").toSeq).getOrElse(Seq()))
+      }.head
     }
   }
 }

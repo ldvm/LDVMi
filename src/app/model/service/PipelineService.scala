@@ -1,9 +1,10 @@
 package model.service
 
-import akka.actor.{Props, ActorRef}
+import akka.actor.{ActorRef, Props}
 import model.entity._
 import model.repository.PipelineRepository
 import play.api.db.slick._
+import utils.PaginationInfo
 
 import scala.slick.lifted.Ordered
 
@@ -15,24 +16,34 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
     pipelines.map(save)
   }
 
-  def findPaginatedFiltered[T <% Ordered](skip: Int = 0, take: Int = 50, pipelineDiscoveryId: Option[PipelineDiscoveryId] = None, visualizerId: Option[ComponentTemplateId] = None)
+  def evaluateSimplePipeline(componentTemplates: (DataSourceTemplate, VisualizerTemplate))(implicit session: Session): Option[PipelineEvaluationId]
+
+  def findPaginatedFiltered[T <% Ordered](
+    paginationInfo: PaginationInfo,
+    pipelineDiscoveryId: Option[PipelineDiscoveryId] = None,
+    visualizerId: Option[ComponentTemplateId] = None
+    )
     (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
     (implicit session: Session): Seq[Pipeline]
 
-  def discover(reporterProps: Props, dataSourceTemplateId: Option[Long], combine: Boolean = false)(implicit session: Session): PipelineDiscoveryId
+  def discover(reporterProps: Props, dataSourceTemplateIds: List[Long], combine: Boolean = false)(implicit session: Session): PipelineDiscoveryId
 
   def evaluate(pipelineId: PipelineId)(reporterProps: Props)(implicit session: Session): Option[PipelineEvaluationId]
 
-  def discoveryState(pipelineDiscoveryId: PipelineDiscoveryId)(implicit session: Session) : Option[PipelineDiscovery]
+  def discoveryState(pipelineDiscoveryId: PipelineDiscoveryId)(implicit session: Session): Option[PipelineDiscovery]
 
   def saveDiscoveryResults(pipelineDiscoveryId: PipelineDiscoveryId, pipelines: Seq[PartialPipeline], jsLogger: ActorRef)
 
-  def lastEvaluations(pipelineId: PipelineId, skip: Int = 0, take: Int = 10)(implicit session: Session): Seq[PipelineEvaluation]
+  def lastEvaluations(pipelineId: PipelineId, paginationInfo: PaginationInfo)(implicit session: Session): Seq[PipelineEvaluation]
 
   def findEvaluationById(evaluationId: PipelineEvaluationId)(implicit session: Session): Option[PipelineEvaluation]
 
-  def setEvaluationQuery(token: String, query: PipelineEvaluationQuery)(implicit session: Session)
+  def setEvaluationQuery(token: String, query: PipelineEvaluationQuery)(implicit session: Session): PipelineEvaluationQueryId
 
-  def findQueryByIdAndToken(id: PipelineEvaluationId, token: String)(implicit session: Session) : Option[PipelineEvaluationQuery]
+  def findQueryByIdAndToken(id: PipelineEvaluationId, token: String)(implicit session: Session): Option[PipelineEvaluationQuery]
+
+  def modifyEvaluationQuery(id: PipelineEvaluationId, token: String, dimensionUri: String, valueUri: String)(implicit session: Session): Option[String]
+
+  def makePermanent(pipelineId: PipelineId)(implicit session: Session)
 
 }

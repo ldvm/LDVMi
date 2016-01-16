@@ -1,8 +1,7 @@
 package model.actor
 
-import com.hp.hpl.jena.query.QueryExecutionFactory
-import com.hp.hpl.jena.rdf.model.ModelFactory
-import model.rdf.Graph
+import org.apache.jena.query.QueryExecutionFactory
+import org.apache.jena.rdf.model.ModelFactory
 
 class RdfCompatibilityChecker(uri: String) extends CompatibilityChecker {
   def receive: Receive = {
@@ -12,7 +11,7 @@ class RdfCompatibilityChecker(uri: String) extends CompatibilityChecker {
         model.read(uri, null, "N3")
         val qe = QueryExecutionFactory.create(descriptor.query, model)
         val result = qe.execAsk()
-        sender() ! CheckCompatibilityResponse(Some(result), descriptor)
+        sender() ! CheckCompatibilityResponse(Some(result), descriptor, rdfUri = Some(uri))
       } catch {
         case e: Throwable =>
           sender() ! akka.actor.Status.Failure(e)

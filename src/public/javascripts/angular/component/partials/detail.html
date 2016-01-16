@@ -1,57 +1,157 @@
-<h2>{{component.title}}</h2>
+<div class="container-fluid">
+    <div class="block-header">
+        <h2>{{componentType}} description</h2>
+        <ul class="actions">
+            <li>
+                <a href="/pipelines#/list?visualizerId={{component.id}}" title="List pipelines using this visualizer"><i
+                        class="md md-trending-up"></i></a>
+            </li>
+        </ul>
+    </div>
 
-<p>Type: {{componentType}}</p>
-<p>{{component.description}}</p>
-<p>{{component.uri}}</p>
+    <div class="row">
+        <div class="col-md-6">
 
-<p>
-    <a href="/pipelines#/list?visualizerId={{component.id}}" class="btn btn-default">List pipelines using this visualizer</a>
-</p>
+            <div class="card">
+                <div class="card-header bgm-cyan">
+                    <h2>{{component.title}}
+                        <small>{{component.uri}}</small>
+                    </h2>
+                </div>
 
-<h3>Default configuration</h3>
-<pre>{{component.defaultConfiguration}}</pre>
+                <div class="card-body card-padding">
+                    <p>{{component.description || 'No description'}}</p>
+                </div>
+            </div>
+        </div>
 
-<h3>Features</h3>
-<table class="table table-striped">
-    <tr ng-repeat="feature in features">
-        <td>{{feature.id}}</td>
-        <td>{{feature.title}}</td>
-        <td>{{feature.isMandatory}}</td>
-        <td>{{feature.description}}</td>
-        <td>{{feature.uri}}</td>
-    </tr>
-</table>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body card-padding text-right">
+                    <div>
+                        <button ng-click="permanent(component.id)" ng-show="component.isTemporary" class="btn btn-default">Make permanent</button>
+                        <span class="badge badge-info" ng-show="!component.isTemporary">Permanent</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<h3>Inputs</h3>
-<table class="table table-striped">
-    <tr ng-repeat="dataPort in inputs">
-        <td>{{dataPort.id}}</td>
-        <td>{{dataPort.title}}</td>
-        <td>{{dataPort.description}}</td>
-        <td>{{dataPort.uri}}</td>
-    </tr>
-</table>
+    <div class="row">
+        <div class="col-md-12">
 
+            <div class="card">
+                <div class="card-header">
+                    <h2>Default configuration</h2>
+                </div>
 
-<h3>Output</h3>
-<table class="table table-striped">
-    <tr>
-        <td>{{output.id}}</td>
-        <td>{{output.title}}</td>
-        <td>{{output.description}}</td>
-        <td>{{output.uri}}</td>
-    </tr>
-</table>
+                <div class="card-body card-padding">
+                    <pre>{{component.defaultConfiguration || 'Empty TTL'}}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<h3>Descriptors</h3>
-<table class="table table-striped">
-    <tr ng-repeat="descriptor in descriptors">
-        <td>{{descriptor.id}}</td>
-        <td>{{descriptor.title}}</td>
-        <td>{{descriptor.description}}</td>
-        <td><ui-codemirror ng-model="descriptor.query" ui-codemirror-opts="mirrorOpts"></ui-codemirror></td>
-        <td>{{descriptor.uri}}</td>
-        <td>{{descriptor.featureId}}</td>
-        <td>{{descriptor.inputTemplateId}}</td>
-    </tr>
-</table>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ch-alt">
+                    <h2>Features</h2>
+                </div>
+
+                <div class="card-body">
+                    <div class="listview" ng-repeat="feature in features">
+                        <a class="lv-item" href="">
+                            <div class="media">
+                                <div class="pull-left">
+                                    {{feature.isMandatory}} {{feature.id}}
+                                </div>
+                                <div class="media-body">
+                                    <div class="lv-title">{{feature.title}}</div>
+                                    <small class="lv-small">{{feature.uri}}, {{feature.description}}</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ch-alt">
+                    <h2>Inputs</h2>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="listview" ng-repeat="dataPort in inputs">
+                        <a class="lv-item" href="">
+                            <div class="media">
+                                <div class="pull-left">
+                                    {{dataPort.id}}
+                                </div>
+                                <div class="media-body">
+                                    <div class="lv-title">{{dataPort.title}}</div>
+                                    <small class="lv-small">{{dataPort.uri}}, {{dataPort.description}}</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ch-alt">
+                    <h2>Output</h2>
+                </div>
+
+                <div class="card-body">
+                    <div class="listview">
+                        <a class="lv-item" href="">
+                            <div class="media">
+                                <div class="pull-left">
+                                    {{output.id}}
+                                </div>
+                                <div class="media-body">
+                                    <div class="lv-title">{{output.title}}</div>
+                                    <small class="lv-small">{{output.uri}}, {{output.description}}</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="listview lv-bordered lv-lg">
+            <div class="lv-header-alt">
+                <h2 class="lvh-label hidden-xs">Descriptors</h2>
+            </div>
+
+            <div class="lv-body">
+                <div class="lv-item media" ng-repeat="descriptor in descriptors">
+                    <div class="media-body">
+                        <div class="lv-title">
+                            {{descriptor.title}}
+                        </div>
+
+                        <ul class="lv-attrs">
+                            <li>ID {{descriptor.id}}</li>
+                            <li>{{descriptor.uri}}</li>
+                            <li>Feature: ID {{descriptor.featureId}}</li>
+                            <li>Input: ID {{descriptor.inputTemplateId}}</li>
+                        </ul>
+
+                        <p>{{descriptor.description}}</p>
+
+                        <small></small>
+                        <pre ng-bind="descriptor.query" ui-codemirror-opts="mirrorOpts"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 package model.rdf.vocabulary
 
-import com.hp.hpl.jena.rdf.model.{Model, ModelFactory}
+import org.apache.jena.rdf.model.{ModelFactory, Model}
 
 trait Vocabulary {
 

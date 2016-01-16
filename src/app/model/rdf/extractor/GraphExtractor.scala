@@ -1,9 +1,10 @@
 package model.rdf.extractor
 
-import com.hp.hpl.jena.rdf.model.{Property, Resource}
-import com.hp.hpl.jena.vocabulary.{DCTerms, RDFS}
+
 import model.rdf.Graph
 import model.rdf.vocabulary.SKOS
+import org.apache.jena.rdf.model.{Property, Resource}
+import org.apache.jena.vocabulary.{RDFS, DCTerms}
 
 trait GraphExtractor[OutputType] extends RdfExtractor[Graph, OutputType] {
 

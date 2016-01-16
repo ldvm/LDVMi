@@ -3,8 +3,6 @@ package model.service.impl
 import java.io.StringWriter
 import java.util.UUID
 
-import com.hp.hpl.jena.rdf.model.{Model, ModelFactory}
-import com.hp.hpl.jena.vocabulary.RDF
 import model.dto.{BoundComponentInstances, ConcreteComponentInstance}
 import model.entity.ComponentType.ComponentType
 import model.entity.CustomUnicornPlay.driver.simple._
@@ -69,17 +67,17 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
     analyzers ++ visualizers ++ transformers ++ dataSources
   }
 
-  def getAllForDiscovery(dataSourceTemplateId: Option[Long], combine: Boolean)
-    (implicit session: Session): (Map[ComponentType, Seq[SpecificComponentTemplate]], Option[DataSourceTemplate]) = {
+  def getAllForDiscovery(dataSourceTemplateIds: List[Long], combine: Boolean)
+    (implicit session: Session): (Map[ComponentType, Seq[SpecificComponentTemplate]], Seq[DataSourceTemplate]) = {
 
-    val maybeDsTemplate = dataSourceTemplateId.flatMap { i =>
+    val dsTemplates = dataSourceTemplateIds.map { i =>
       dataSourceTemplateRepository.findById(DataSourceTemplateId(i))
-    }
+    }.filter(_.isDefined).map(_.get)
 
-    val datasources = if(combine) {
-      maybeDsTemplate.toSeq ++ dataSourceTemplateRepository.findPermanent
-    } else if(maybeDsTemplate.isDefined){
-      maybeDsTemplate.toSeq
+    val datasources = if (combine) {
+      dsTemplates ++ dataSourceTemplateRepository.findPermanent
+    } else if (dsTemplates.nonEmpty) {
+      dsTemplates
     } else {
       dataSourceTemplateRepository.findPermanent
     }
@@ -89,8 +87,7 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
       (ComponentType.Analyzer, analyzerTemplateRepository.findAllWithMandatoryDescriptors),
       (ComponentType.Transformer, transformerTemplateRepository.findAllWithMandatoryDescriptors),
       (ComponentType.Visualizer, visualizerTemplateRepository.findAllWithMandatoryDescriptors)
-    ).toMap,
-      maybeDsTemplate)
+    ).toMap, dsTemplates)
   }
 
   def save(componentTemplate: model.dto.ComponentTemplate)(implicit session: Session): ComponentTemplateId = {
@@ -429,6 +426,10 @@ class ComponentTemplateServiceImpl(implicit inj: Injector) extends ComponentTemp
 
   def saveVisualizer(visualizer: VisualizerTemplate)(implicit session: Session): VisualizerTemplateId = {
     visualizerTemplateRepository.save(visualizer)
+  }
+
+  def findVisualizerByUri(uri: String)(implicit session: Session): Option[VisualizerTemplate] = {
+    visualizerTemplateRepository.findByUri(uri)
   }
 
   def saveTransformer(transformer: TransformerTemplate)(implicit session: Session): TransformerTemplateId = {

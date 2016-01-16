@@ -1,6 +1,6 @@
 package model.rdf.vocabulary
 
-import com.hp.hpl.jena.rdf.model.{RDFNode, Property}
+import org.apache.jena.rdf.model.{RDFNode, Property}
 
 object SPARQL extends Vocabulary {
 

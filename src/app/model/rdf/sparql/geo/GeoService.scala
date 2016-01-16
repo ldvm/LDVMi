@@ -12,6 +12,6 @@ trait GeoService extends SparqlService {
 
   def polygonEntitiesProperties(evaluation: PipelineEvaluation): Option[Enumerator[Option[Property]]]
 
-  def properties(evaluation: PipelineEvaluation): Option[Seq[(String, Option[String])]]
+  def properties(evaluation: PipelineEvaluation): Option[Enumerator[Option[Property]]]
 
 }

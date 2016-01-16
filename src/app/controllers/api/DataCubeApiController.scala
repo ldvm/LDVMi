@@ -1,7 +1,7 @@
 package controllers.api
 
 import controllers.api.JsonImplicits._
-import model.entity.PipelineEvaluation
+import model.entity.{PipelineEvaluationId, PipelineEvaluation}
 import model.rdf.sparql.datacube.DataCubeQueryData
 import play.api.Play.current
 import play.api.db.slick._
@@ -22,24 +22,32 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
     }
   }
 
+  def createVisualisation(dataSourceTemplateId: Long) = {
+    val visualizerUri = "http://linked.opendata.cz/resource/ldvm/visualizer/data-cube-simple/DataCubeVisualizerTemplate"
+    super.createVisualisation(dataSourceTemplateId, visualizerUri)
+  }
 
-  def dataStructureComponents(id: Long, uri: String) = DBAction { implicit rs =>
+  def dataStructureComponents(id: Long, uri: String, isTolerant: Boolean = false) = DBAction { implicit rs =>
     withEvaluation(id) { evaluation =>
-      val components = dataCubeService.getDataStructureComponents(evaluation, uri)
+      val components = dataCubeService.getDataStructureComponents(evaluation, uri, isTolerant)
       val componentsJson = Seq("components" -> components).toMap
       Ok(Json.toJson(componentsJson))
     }
   }
 
-  def values(id: Long) = parsingFuture(id) { (evaluation, uris: List[String], _) =>
-    val futures = dataCubeService.getValues(evaluation, uris).flatMap { case (key, maybeEnumerator) =>
-      maybeEnumerator.map { enumerator =>
-        enumeratorToSeq(enumerator).transform(values => key -> values, t => t)
+  def values(id: Long) = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
+    val json: JsValue = rs.request.body
+    val urisValidation = (json \ "uris").validate[List[String]]
+
+    urisValidation match {
+      case v: JsSuccess[List[String]] => withEvaluation(id) { evaluation =>
+        val values = dataCubeService.getValues(evaluation, v.get)
+        Ok(Json.toJson(values))
       }
+      case e: JsError => BadRequest
     }
 
-    Future.sequence(futures).transform(s => Ok(Json.toJson(s.toMap)), t => t)
-  } { json => (json \ "uris").validate[List[String]]}
+  }
 
   def sliceCube(id: Long) = DBAction(parse.json(1024 * 1024 * 100)) { implicit rs =>
     val json: JsValue = rs.request.body
@@ -67,12 +75,27 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
         InternalServerError(e.errors.toString)
       }
     }
-
   }
 
   def datasets(id: Long) = DBAction { implicit rs =>
     withEvaluation(id) { evaluation =>
       Ok(Json.toJson(dataCubeService.getDatasets(evaluation)))
+    }
+  }
+
+  def customCube(id: Long, permalinkToken: String, dimensionUri: String, valueUri: String) = DBAction { implicit rs =>
+
+    pipelineService.modifyEvaluationQuery(PipelineEvaluationId(id), permalinkToken, dimensionUri, valueUri)
+      .map { token =>
+      val filteredParams = rs.request
+        .queryString.-("token", "dimensionUri", "valueUri")
+        .flatMap { case (k, values) =>
+        values.map { v => k + "=" + v }
+      }.mkString("&")
+
+      Redirect("/visualize/datacube#/id/" + id + "/?p=" + token + "&" + filteredParams)
+    }.getOrElse {
+      NotFound
     }
   }
 }

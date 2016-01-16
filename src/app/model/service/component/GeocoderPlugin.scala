@@ -3,10 +3,10 @@ package model.service.component
 import java.util.UUID
 
 import akka.actor.Props
-import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP
 import model.entity.ComponentInstance
 import model.rdf.sparql.GenericSparqlEndpoint
 import model.service.GraphStoreProtocol
+import org.apache.jena.sparql.engine.http.QueryExceptionHTTP
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 
@@ -15,7 +15,7 @@ import scala.concurrent.Future
 import scala.collection.JavaConversions._
 
 class GeocoderPlugin(internalComponent: InternalComponent, graphStore: GraphStoreProtocol) extends AnalyzerPlugin {
-  override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Option[String])] = {
+  override def run(dataReferences: Seq[DataReference], reporterProps: Props): Future[(String, Seq[String])] = {
     val resultGraph = "urn:" + UUID.randomUUID().toString
 
     val reporter = Akka.system.actorOf(reporterProps)
@@ -57,11 +57,11 @@ class GeocoderPlugin(internalComponent: InternalComponent, graphStore: GraphStor
             |		}
           """.stripMargin
 
-        val geoEndpoint = new GenericSparqlEndpoint(geoRef.get.endpointUri, geoRef.get.graphUri.toSeq, List())
+        val geoEndpoint = new GenericSparqlEndpoint(geoRef.get.endpointUri, geoRef.get.graphUris.toSeq, List())
 
         if(datasetRef.get.endpointUri == graphStore.internalEndpointUrl) {
           val dataQuery = "CONSTRUCT { ?s <http://ruian.linked.opendata.cz/ontology/links/obec> ?o } WHERE { ?s <http://ruian.linked.opendata.cz/ontology/links/obec> ?o }"
-          val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUri.toSeq, List())
+          val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUris.toSeq, List())
           val dataModel = dataEndpoint.queryExecutionFactory()(dataQuery).execConstruct()
 
           // for each entity from model having geolink, add another data
@@ -80,11 +80,11 @@ class GeocoderPlugin(internalComponent: InternalComponent, graphStore: GraphStor
             dataModel.add(model)
           }
 
-          graphStore.pushToTripleStore(dataModel, datasetRef.get.graphUri.head)(reporterProps)
-          (graphStore.internalEndpointUrl, Some(datasetRef.get.graphUri.head))
+          graphStore.pushToTripleStore(dataModel, datasetRef.get.graphUris.head)(reporterProps)
+          (graphStore.internalEndpointUrl, datasetRef.get.graphUris)
         }else {
           val dataQuery = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
-          val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUri.toSeq, List())
+          val dataEndpoint = new GenericSparqlEndpoint(datasetRef.get.endpointUri, datasetRef.get.graphUris.toSeq, List())
           val dataModel = dataEndpoint.queryExecutionFactory()(dataQuery).execConstruct()
 
           // for each entity from model having geolink, add another data
@@ -104,21 +104,21 @@ class GeocoderPlugin(internalComponent: InternalComponent, graphStore: GraphStor
           }
 
           graphStore.pushToTripleStore(dataModel, resultGraph)(reporterProps)
-          (graphStore.internalEndpointUrl, Some(resultGraph))
+          (graphStore.internalEndpointUrl, Seq(resultGraph))
         }
       } catch {
         case e: QueryExceptionHTTP => {
           reporter ! "Error when querying: " + e.getResponseCode + " : " + e.getResponseMessage
           println(e.getResponseCode + " : " + e.getResponseMessage )
-          (graphStore.internalEndpointUrl, Some(resultGraph))
+          (graphStore.internalEndpointUrl, Seq(resultGraph))
         }
         case e: Throwable => {
           println(e)
-          (graphStore.internalEndpointUrl, Some(resultGraph))
+          (graphStore.internalEndpointUrl, Seq(resultGraph))
         }
       }
       }else{
-        (graphStore.internalEndpointUrl, Some(resultGraph))
+        (graphStore.internalEndpointUrl, Seq(resultGraph))
       }
     }
   }

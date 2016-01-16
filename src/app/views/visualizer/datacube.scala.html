@@ -1,20 +1,12 @@
 @(title: String)
 
-    @scripts = {
-        <script>
-            var require = {
-                callback: function() {
-                    // default requirejs configs
-                    @for(webJarJson <- org.webjars.RequireJS.getSetupJson(routes.WebJarAssets.at("").url).values()) {
-                        requirejs.config(@Html(webJarJson.toString));
-                    }
+    @scripts = {}
 
-                requirejs.config({ paths: { "highcharts-all": "/webjars/highcharts/4.0.3/highcharts-all" } });
-                requirejs.config({ paths:{"highcharts-ng":["/webjars/highcharts-ng/0.0.6/highcharts-ng","highcharts-ng"]},"shim":{"highcharts-ng":["angular","highcharts-all"]}});
-                }
-            };
+    @requireConfig = {
+        <script>
+            requirejs.config({ paths: { "highcharts-all": "/webjars/highcharts/4.0.3/highcharts-all" } });
+            requirejs.config({ paths:{"highcharts-ng":["/webjars/highcharts-ng/0.0.6/highcharts-ng","highcharts-ng"]},"shim":{"highcharts-ng":["angular","highcharts-all"]}});
         </script>
-        <script data-main="@routes.Assets.versioned("javascripts/angular/datacube/main.js")" src="@routes.WebJarAssets.at(WebJarAssets.locate("require.js"))"></script>
     }
 
     @styles = {
@@ -24,11 +16,4 @@
         <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/main.css")'>
     }
 
-@main("DataCube", scripts, styles) {
-
-    <div class="container-fluid" style="padding-top : 60px;">
-
-        <div ng-view></div>
-    </div> <!-- /container -->
-
-}
+@ngLayout("datacube", "DataCube", scripts, styles, requireConfig)

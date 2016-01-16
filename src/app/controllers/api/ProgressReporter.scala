@@ -6,6 +6,8 @@ import model.actor.CheckCompatibilityResponse
 import model.entity.{DataPortBindingSetCompatibilityCheck, ComponentInstanceCompatibilityCheck, FeatureCompatibilityCheck, DescriptorCompatibilityCheck}
 import play.api.libs.json.{JsValue, Json, JsString, JsObject}
 
+case class PortCheckResult(isCompatible: Boolean, portUri: String, portOwnerComponentUri: String, sourceUri: String)
+
 object ProgressReporter {
   def props(out: ActorRef) = Props(new ProgressReporter(out))
   def props = Props(new DummyReporter)
@@ -34,7 +36,9 @@ class ProgressReporter(jsLogger: ActorRef) extends Actor {
     case checkResponse: CheckCompatibilityResponse => {
       jsLogger ! Json.toJson(checkResponse)
     }
-    case r : CheckCompatibilityResponse => jsLogger ! Json.toJson(r)
+    case checkResponse: PortCheckResult => {
+      jsLogger ! Json.toJson(checkResponse)
+    }
     case j : JsValue => jsLogger ! j
     case msg: String => jsLogger ! JsObject(Seq(("message", JsString(msg))))
   }

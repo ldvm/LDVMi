@@ -1,12 +1,12 @@
 package model.service.ldvm.extractor
 
-import com.hp.hpl.jena.graph.TripleBoundary
-import com.hp.hpl.jena.rdf.model.{Resource, StatementTripleBoundary, ModelExtract, Model, Property}
-import com.hp.hpl.jena.vocabulary.{DCTerms, RDF, RDFS}
 import model.rdf.Graph
 import model.rdf.extractor.GraphExtractor
 import model.rdf.vocabulary.LDVM
-import scaldi.{Injector, Injectable}
+import org.apache.jena.graph.TripleBoundary
+import org.apache.jena.rdf.model.{Resource, Model, StatementTripleBoundary, ModelExtract, Property}
+import org.apache.jena.vocabulary.{DCTerms, RDF, RDFS}
+import scaldi.{Injectable, Injector}
 
 import scala.collection.JavaConversions._
 
@@ -38,9 +38,8 @@ class ComponentExtractor(implicit inj: Injector) extends GraphExtractor[Map[Stri
           val modelExtractor = new ModelExtract(new StatementTripleBoundary(TripleBoundary.stopNowhere))
           val configResource = component.getProperty(LDVM.componentConfigurationTemplate)
 
-          val defaultConfigurationModel = configResource match {
-            case null => None
-            case _ => Some(modelExtractor.extract(configResource.getObject.asResource, graphModel))
+          val defaultConfigurationModel = Option(configResource).map { cr =>
+            modelExtractor.extract(cr.getObject.asResource, graphModel)
           }
 
           model.dto.ComponentTemplate(component.getURI, label, comment, defaultConfigurationModel, inputs.values.toSeq, output, nestedMembers.toSeq, features)
@@ -52,7 +51,7 @@ class ComponentExtractor(implicit inj: Injector) extends GraphExtractor[Map[Stri
 
   private def extractNestedMembers(graphModel: Model, component: Resource) = {
     val nestedPipelines = graphModel.listObjectsOfProperty(LDVM.nestedPipeline).toList
-    val componentInstances = nestedPipelines.flatMap {p =>
+    val componentInstances = nestedPipelines.flatMap { p =>
       val nestedMembers = graphModel.listObjectsOfProperty(LDVM.member).toList
       nestedMembers.map { member =>
         val memberResource = member.asResource()
@@ -121,10 +120,9 @@ class ComponentExtractor(implicit inj: Injector) extends GraphExtractor[Map[Stri
       dp =>
         val sample = graphModel.getProperty(graphModel.getResource(dp.uri), LDVM.outputDataSample)
 
-        sample match {
-          case null => model.dto.OutputTemplate(dp, None)
-          case x => model.dto.OutputTemplate(dp, Some(x.getObject.asResource().getURI))
-        }
+        Option(sample).map { x =>
+          model.dto.OutputTemplate(dp, Some(x.getObject.asResource().getURI))
+        }.getOrElse(model.dto.OutputTemplate(dp, None))
     }
   }
 }
