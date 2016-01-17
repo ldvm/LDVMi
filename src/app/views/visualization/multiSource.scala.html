@@ -1,0 +1,108 @@
+@()
+@layout("LDVMi - upload your TTL", requirePath = Some(routes.Assets.versioned("javascripts/global/main.js").url)) {
+
+    <div class="container">
+        <div class="block-header">
+            <h2>Run discovery</h2>
+            <p>
+                You can upload TTL files (max. 100 MB), point to a remote ones and combine these with multiple SPARQL
+                endpoints.<br />Multiple DataSources will be created and passed to the discovery algorithm.
+            </p>
+        </div>
+
+
+        <form action="/datasources" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-sm-12">
+
+                    <div class="card">
+                        <div class="card-header ch-alt">
+                            <h2>Upload <small>Upload TTL files from your machine.</small></h2>
+                        </div>
+
+                        <div class="card-body card-padding text-center">
+                            <div class="form-group">
+                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                    <span class="btn btn-default btn-file m-r-10">
+                                        <span class="fileinput-new">Select file(s)</span>
+                                        <span class="fileinput-exists">Change</span>
+                                        <input type="file" name="ttlfile" multiple="multiple" />
+                                    </span>
+                                    <span class="fileinput-filename"></span>
+                                    <a href="#" class="close fileinput-exists" data-dismiss="fileinput">&times;</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header ch-alt">
+                            <h2>Use remote TTL <small>Paste a list of URLs containing TTL files. Those will be downloaded to our storage.</small></h2>
+                        </div>
+                        <div class="card-body card-padding">
+                            <div class="form-group">
+                                <label for="ttlurl">TTL URLs (separated by newline)</label>
+                                <div class="fg-line">
+                                    <textarea name="ttlurl" id="ttlurl" class="form-control auto-size" placeholder="http://example.com/test.ttl"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header ch-alt">
+                            <h2>Use SPARQL endpoints <small>Define SPARQL endpoints and graph URIs.</small></h2>
+                        </div>
+                        <div class="card-body card-padding">
+                            <div class="form-group">
+                                <label for="ttlurl">Endpoint URL</label>
+                                <div class="fg-line">
+                                    <input type="text" name="endpointUrl" class="form-control" placeholder="http://example.com/sparql" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="ttlurl">Graph URIs (separated by newlines)</label>
+                                <div class="fg-line">
+                                    <textarea name="graphUris" class="form-control auto-size" placeholder="http://example.com/graphs/graph"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body card-padding">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="toggle-switch">
+                                            <label for="ts1" class="ts-label">Combine with other datasources</label>
+                                            <input id="ts1" type="checkbox" hidden="hidden" name="combine" value="true">
+                                            <label for="ts1" class="ts-helper"></label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 text-right">
+                                    <input type="submit" class="btn btn-primary" value="Discover" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div> <!-- /container -->
+}

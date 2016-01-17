@@ -1,0 +1,74 @@
+<div>
+
+    <aside id="chat">
+    </aside>
+
+    <section id="content">
+        <div class="container">
+
+            <uploader on-upload-completed="onUploadCompleted" ng-hide="id"></uploader>
+
+            <div class="row" ng-show="id">
+                <div class="col-sm-12">
+
+                    <div class="card">
+                        <div class="card-body card-padding">
+                            <div class="listview">
+                                <div class="lv-header">
+                                    SKOS schemes found in your files
+                                </div>
+                                <div class="lv-body">
+                                    <span class="lv-item" ng-repeat="scheme in schemes">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <div class="lv-title">{{scheme.uri}}</div>
+                                                <small class="lv-small">{{scheme.label.variants['nolang']}}</small>
+                                                <strong><a href="#/hierarchy/tree/{{id}}?uri={{uri(scheme.uri)}}">Visualize</a></strong>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body card-padding">
+                            <div class="listview lv-bordered">
+                                <div class="lv-header">
+                                    Concepts
+                                </div>
+                                <div class="lv-body">
+                                    <span class="lv-item media" ng-repeat="concept in concepts">
+                                        <div class="">
+                                            <div class="media-body">
+                                                <div class="lv-title">{{concept.label.variants['nolang']}}</div>
+                                                <strong>In scheme:</strong> <span ng-bind="concept.schemeUri"></span>
+                                                <small class="lv-small">URI: {{concept.uri}}</small>
+                                                <ul class="lv-attrs">
+                                                    <li ng-show="!schemeExists(concept.schemeUri)" class="danger">Scheme URI does not match any scheme</li>
+                                                </ul>
+                                                <br />
+                                                <strong ng-show="concept.linkUris.length">Links validation:</strong>
+                                                <ul>
+                                                    <li ng-repeat="link in concept.linkUris">
+                                                        {{link}}:
+                                                        <span class="label label-success" ng-show="linkExists(link)">OK</span>
+                                                        <span class="label label-danger" ng-hide="linkExists(link)">Referenced entity not present</span>
+                                                    </li>
+                                                </ul>
+                                                <span ng-show="concept.linkUris.length < 1">Root scheme</span>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+</div>

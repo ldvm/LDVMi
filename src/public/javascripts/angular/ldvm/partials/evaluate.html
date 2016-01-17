@@ -1,0 +1,46 @@
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header"
+                     ng-class="{'bgm-teal': !isFinished,'bgm-darkorange': isFinished && !isSuccess, 'bgm-green': isFinished && isSuccess}">
+                    <h2>Progress
+                        <small>Evaluation state</small>
+                    </h2>
+                </div>
+
+                <div class="card-body card-padding">
+                    <ul class="list-unstyled">
+                        <li>
+                            State: <span ng-show="!isFinished">Running</span>
+                            <span ng-show="isFinished">Finished with
+                                <span ng-show="isSuccess">success</span><span ng-show="!isSuccess">failure</span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Log
+                        <small>What was done so far</small>
+                    </h2>
+                </div>
+
+                <div class="card-body card-padding">
+                    <ul>
+                        <li ng-repeat="i in info">
+                            <span ng-if="i.message" ng-bind="i.message"></span>
+                            <span ng-if="!i.message"><strong>{{i|json}}</strong></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

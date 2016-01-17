@@ -1,0 +1,117 @@
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header"
+                     ng-class="{'bgm-teal': !isFinished,'bgm-darkorange': isFinished && !isSuccess, 'bgm-green': isFinished && isSuccess}">
+                    <h2>Progress
+                        <small>Discovery state</small>
+                    </h2>
+                </div>
+
+                <div class="card-body card-padding">
+                    <ul class="list-unstyled">
+                        <li>
+                            State: <span ng-show="!isFinished">Running</span>
+                            <span ng-show="isFinished">Finished with
+                                <span ng-show="isSuccess">success</span><span ng-show="!isSuccess">failure</span>
+                            </span>
+                        </li>
+                        <li>
+                            Last completed iteration: <span ng-bind="lastPerformedIteration"></span>
+                        </li>
+                        <li>
+                            Pipelines discovered: <span ng-bind="pipelinesDiscoveredCount"></span>
+                        </li>
+                        <li>
+                            Duration: <span ng-bind="duration"></span> ms
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mini-charts-item bgm-cyan">
+                <div class="clearfix">
+                    <div class="chart stats-bar" sparkline-bar="data" style="width: 113px;"></div>
+                    <div class="count">
+                        <small>Discovered pipelines</small>
+                        <h2 ng-bind="pipelinesDiscoveredCount">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="listview lv-bordered lv-lg">
+                    <div class="lv-header-alt">
+                        <h2 class="lvh-label hidden-xs">Descriptors checks</h2>
+                    </div>
+
+                    <div class="lv-body">
+                        <div class="lv-item media" ng-repeat="c in checks">
+                            <div class="media-body">
+                                <div class="lv-title">
+                                    <span ng-bind="c.descriptor.title"></span>
+                                </div>
+                                <span ng-bind="c.descriptor.query"></span>
+                                <ul class="lv-attrs">
+                                    <li ng-show="c.isCompatible" class="bgm-green">Y</li>
+                                    <li ng-hide="c.isCompatible" class="bgm-red">N</li>
+                                    <li><i ng-bind="c.rdfUri || c.sourceUri"></i></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="listview lv-bordered lv-lg">
+                    <div class="lv-header-alt">
+                        <h2 class="lvh-label hidden-xs">Port checks</h2>
+                    </div>
+
+                    <div class="lv-body">
+                        <div class="lv-item media" ng-repeat="pc in portChecks">
+                            <div class="media-body">
+                                <div class="lv-title">
+                                    <span ng-bind="pc.portUri"></span>
+                                </div>
+                                of
+                                <span ng-bind="pc.portOwnerComponentUri"></span>
+                                against
+                                <span ng-bind="pc.sourceUri"></span>
+                                <ul class="lv-attrs">
+                                    <li ng-show="pc.isCompatible" class="bgm-green">Y</li>
+                                    <li ng-hide="pc.isCompatible" class="bgm-red">N</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Log
+                        <small>What was discovered so far</small>
+                    </h2>
+                </div>
+
+                <div class="card-body card-padding">
+                    <ul>
+                        <li ng-repeat="i in info">
+                            <span ng-if="i.message" ng-bind="i.message"></span>
+                            <span ng-if="!i.message"><strong>{{i|json}}</strong></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
