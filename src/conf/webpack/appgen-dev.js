@@ -1,16 +1,30 @@
+var webpack = require('webpack');
+
+var dir = __dirname + '/../../app/assets_webpack/appgen/javascripts';
+
 module.exports = {
-    entry: __dirname + '/../../app/assets_webpack/appgen/javascripts/main.jsx',
-    devtool: 'source-map',
-    cache: true,
+    entry: [
+        'webpack-hot-middleware/client',
+        dir + '/index.js'
+    ],
+    devtool: 'cheap-module-eval-source-map',
+    output: {
+        path: __dirname + "/../../target/web/public/main/javascripts/appgen/index.js",
+        filename: "bundle.js",
+        publicPath: "http://localhost:9090/build/"
+    },
+    plugins: [
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.NoErrorsPlugin()
+    ],
     module: {
         loaders: [
-            {test: /\.jsx$/, exclude: /node_modules/, loaders: ['react-hot', 'babel-loader']},
+            {
+                test: /\.js$/,
+                loaders: ['react-hot', 'babel'],
+                exclude: /node_modules/
+            },
             {test: /\.less$/, loader: 'style!css!less'}
         ]
-    },
-    output: {
-        path: __dirname + "/../../target/web/public/main/javascripts/appgen/main.js",
-        publicPath: "http://localhost:9090/build/",
-        filename: "main.js"
     }
 };
