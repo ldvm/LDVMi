@@ -99,8 +99,19 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         $timeout(function () {
                             $scope.permalink = window.location.href;
                         });
+                        sortValues();
                     }
                 };
+
+                function sortValues() {
+                    _.forEach($scope.values, function (values, key) {
+                        if (!key.startsWith('$')) {
+                            $scope.values[key] = _.sortBy(values, function (v) {
+                                return $scope.label(v.label) || v.uri;
+                            });
+                        }
+                    });
+                }
 
                 $scope.switchLinear = function () {
                     $scope.highcharts.options.yAxis = $scope.highcharts.options.yAxis || {};
@@ -289,6 +300,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                         if (callback) {
                             callback();
+                            sortValues();
                         }
                     }, function () {
                         $scope.queryingDataset = null;

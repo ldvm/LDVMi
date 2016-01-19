@@ -7,12 +7,12 @@ class DataCubeComponentsQuery(datasetUri: String, componentType: String = "dimen
 
   def get: String = {
 
-    val ctPattern = s"    qb:$componentType ?dim ."
+    val ctPattern = s"?c qb:$componentType ?dim ."
 
     val componentTypeWhere = if(isTolerant) {
-      s"OPTIONAL { ?c $ctPattern }"
+      s"OPTIONAL { $ctPattern }"
     } else {
-      "?c   " + ctPattern
+      ctPattern
     }
 
     s"""
@@ -21,22 +21,20 @@ class DataCubeComponentsQuery(datasetUri: String, componentType: String = "dimen
       | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       |
       | CONSTRUCT {
-      |     <$datasetUri> qb:structure [
-      |        a qb:DataStructureDefinition ;
-      |        qb:component [
-      |            qb:$componentType ?dim ;
-      |            rdfs:label ?l ;
-      |            skos:notation ?sn ;
-      |            skos:prefLabel ?spl ;
-      |            qb:order ?order ;
-      |            qb:concept ?concept
-      |        ]
-      |     ] .
+      |     <$datasetUri> qb:structure ?dsd .
+      |     ?dsd a qb:DataStructureDefinition ;
+      |          qb:component ?c .
+      |     ?c qb:$componentType ?dim ;
+      |        rdfs:label ?l ;
+      |        skos:notion ?sn ;
+      |        skos:prefLabel ?spl ;
+      |        qb:order ?order ;
+      |        qb:concept ?concept .
       | } WHERE
       |  { {
-      |       <$datasetUri> qb:structure [
-      |            qb:component ?c
-      |       ] .
+      |       <$datasetUri> qb:structure ?dsd .
+      |       ?dsd  a qb:DataStructureDefinition ;
+      |             qb:component ?c .
       |       $componentTypeWhere
       |    }
       |    OPTIONAL { ?dim qb:concept ?concept . }
