@@ -1,10 +1,16 @@
 import React from 'react'
 import { render } from 'react-dom'
-import Root from './Root'
-// import Root from './containers/Root'
-// import configureStore from './store/configureStore'
+import { syncReduxAndRouter } from 'redux-simple-router';
+import { browserHistory } from 'react-router'
+import injectTapEventPlugin from 'react-tap-event-plugin'; // dependency for material-ui
+import styles from '../stylesheets/main.scss'
+import Root from './containers/Root'
+import configureStore from './store/configureStore'
 
-const store = {};
+const store = configureStore();
+const history = {};
 
-render(<Root />, document.getElementById('approot'));
+injectTapEventPlugin(); // to make taps in material ui work
+
+render(<Root store={store} history={browserHistory} />, document.getElementById('approot'));
 

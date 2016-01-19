@@ -1,4 +1,5 @@
 var webpack = require('webpack');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 var dir = __dirname + '/../../app/assets_webpack/appgen/javascripts';
 
@@ -14,9 +15,13 @@ module.exports = {
         publicPath: "http://localhost:9090/build/"
     },
     plugins: [
+        // new ExtractTextPlugin('bundle.css', {allChunks: true}),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.NoErrorsPlugin()
     ],
+    resolve: {
+        extensions: ['', '.js', '.json', '.scss']
+    },
     module: {
         loaders: [
             {
@@ -24,7 +29,11 @@ module.exports = {
                 loaders: ['react-hot', 'babel'],
                 exclude: /node_modules/
             },
-            {test: /\.less$/, loader: 'style!css!less'}
+            {
+                test: /(\.scss|\.css)$/,
+                // loader: ExtractTextPlugin.extract('style-loader', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap'),
+                loader: 'style!css!sass'
+            }
         ]
     }
 };
