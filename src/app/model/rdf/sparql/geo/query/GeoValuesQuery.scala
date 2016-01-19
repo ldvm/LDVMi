@@ -16,7 +16,7 @@ class GeoValuesQuery(val uri: String) extends SparqlQuery {
       |
       |     OPTIONAL { ?o skos:prefLabel ?spl . }
       |     OPTIONAL { ?o rdfs:label ?l . }
-      |     OPTIONAL { ?o skos:notion ?sn . }
+      |     OPTIONAL { ?o skos:notation ?sn . }
       | }
     """.stripMargin.replaceAll("[\n\r]", "").replace("@s", uri)
 
@@ -33,7 +33,7 @@ object GeoValuesQuery {
     type LabelVariables = Value
     val VALUE_LABEL_VARIABLE = Value("l")
     val VALUE_PREFLABEL_VARIABLE = Value("spl")
-    val VALUE_NOTION_VARIABLE = Value("sn")
+    val VALUE_NOTATION_VARIABLE = Value("sn")
   }
 
 }
