@@ -8,10 +8,10 @@ import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 
 export default (
-  <Route component={App} path={baseUrl}>
+  <Route component={App} path='/'>
     <IndexRoute component={Home} />
-    <Route component={SignUp} path="signup" />
-    <Route component={SignIn} path="signin" />
-    <Route component={NotFound} path="*"/>
+    <Route component={SignUp} path='signup' />
+    <Route component={SignIn} path='signin' />
+    <Route component={NotFound} path='*' />
   </Route>
 );

@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { syncHistory, routeReducer } from 'redux-simple-router'
-import { browserHistory } from 'react-router'
+import browserHistory from '../misc/browserHistory'
 import DevTools from '../containers/DevTools'
 // import thunk from 'redux-thunk'
 // import api from '../middleware/api'

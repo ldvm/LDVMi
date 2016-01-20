@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Link from '../misc/Link'
+import { Link } from 'react-router'
 import {Grid, Row, Col} from 'react-flexbox-grid'
 
 export default class Home extends Component {

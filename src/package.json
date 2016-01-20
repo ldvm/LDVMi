@@ -9,6 +9,7 @@
     "babel-polyfill": "^6.3.14",
     "classnames": "^2.2.3",
     "flexboxgrid": "^6.3.0",
+    "history": "^2.0.0-rc2",
     "material-ui": "^0.14.2",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",

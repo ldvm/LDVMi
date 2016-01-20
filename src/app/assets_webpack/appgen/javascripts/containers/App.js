@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { goTo } from '../misc/routeActions'
+import { routeActions } from 'redux-simple-router'
 
 import AppBar from 'material-ui/lib/app-bar'
 import IconButton from 'material-ui/lib/icon-button'
@@ -24,8 +24,8 @@ class App extends Component {
               iconButtonElement={ <IconButton><MoreVertIcon /></IconButton> }
               targetOrigin={{horizontal: 'right', vertical: 'top'}}
               anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-              <MenuItem primaryText="Sign up" onTouchTap={() => dispatch(goTo('signup'))} />
-              <MenuItem primaryText="Sign in" onTouchTap={() => dispatch(goTo('signin'))} />
+              <MenuItem primaryText="Sign up" onTouchTap={() => dispatch(routeActions.push('/signup'))} />
+              <MenuItem primaryText="Sign in" onTouchTap={() => dispatch(routeActions.push('/signin'))} />
             </IconMenu> } />
 
         {this.props.children}
