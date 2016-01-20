@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import Link from '../misc/Link'
 import {Grid, Row, Col} from 'react-flexbox-grid'
 
 export default class Home extends Component {
@@ -7,7 +8,9 @@ export default class Home extends Component {
       <Grid>
         <Row>
           <Col md={12} lg={6}><h1>Home!</h1></Col>
-          <Col md={12} lg={6}>Ups: Second column</Col>
+          <Col md={12} lg={6}>
+            <Link to="/signup">Sign up!</Link>
+          </Col>
         </Row>
       </Grid>
     );
