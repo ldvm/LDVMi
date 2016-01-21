@@ -25,9 +25,14 @@ module.exports = {
         exclude: /node_modules/
       }, {
         test: /(\.scss|\.css)$/,
-        // loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap')
-        loader: 'style!css!sass'
-      }]
+        loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap'),
+        include: /node_modules/
+      }, {
+        test: /(\.scss|\.css)$/,
+        loader: 'style!css!sass',
+        exclude: /node_modules/
+      }
+    ]
   },
   postcss: [autoprefixer],
   plugins: [
