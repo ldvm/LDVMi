@@ -5,10 +5,12 @@ import DevTools from '../containers/DevTools'
 // import thunk from 'redux-thunk'
 // import api from '../middleware/api'
 import createLogger from 'redux-logger'
+import {reducer as formReducer} from 'redux-form';
 // import rootReducer from '../reducers'
 
 const rootReducer = combineReducers({
-  routing: routeReducer
+  routing: routeReducer,
+  form: formReducer
 });
 
 const reduxRouterMiddleware = syncHistory(browserHistory);

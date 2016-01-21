@@ -1,8 +1,11 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,700,700italic,300,500,400italic&subset=latin,latin-ext);
 
+$gutter: 16px; // Default material theme gutter
+
 body {
   font-family: Roboto, serif;
   margin: 0;
+  background-color: #edecec;
 }
 h1 {
   font-weight: 300;
@@ -10,4 +13,11 @@ h1 {
 .appbar-logo {
   cursor: pointer;
   font-weight: 300;
+}
+.signup-container {
+  width: 400px;
+  margin: 0 auto;
+}
+.signup-form {
+  padding: $gutter * 2;
 }
