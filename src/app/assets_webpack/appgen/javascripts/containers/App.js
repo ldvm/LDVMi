@@ -8,6 +8,7 @@ import NavigationClose from 'material-ui/lib/svg-icons/navigation/close'
 import IconMenu from 'material-ui/lib/menus/icon-menu'
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert'
 import MenuItem from 'material-ui/lib/menus/menu-item'
+import FontIcon from 'material-ui/lib/font-icon'
 import {Grid, Row, Col} from 'react-flexbox-grid'
 
 class App extends Component {
@@ -19,10 +20,12 @@ class App extends Component {
           className="appbar"
           title={
             <span onTouchTap={() => dispatch(routeActions.push('/'))} className="appbar-logo">
-              Payola-viz Application Generator
-            </span>
-          }
-          iconElementLeft={<span />}
+              LDVMi Application Generator
+            </span> }
+          iconElementLeft={
+            <IconButton onTouchTap={() => dispatch(routeActions.push('/'))}>
+              <FontIcon className="material-icons">explore</FontIcon>
+            </IconButton> }
           iconElementRight={
             <IconMenu
               iconButtonElement={ <IconButton><MoreVertIcon /></IconButton> }
@@ -39,6 +42,7 @@ class App extends Component {
             </Col>
           </Row>
         </Grid>
+
       </div> )
   }
 }

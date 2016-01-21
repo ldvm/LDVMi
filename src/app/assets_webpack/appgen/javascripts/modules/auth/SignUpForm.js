@@ -15,7 +15,7 @@ const SignUpForm = (props) => {
         <TextField floatingLabelText="Confirm password" type="password" {...confirmPassword} fullWidth />
       </div>
       <br />
-      <RaisedButton label="Sign up!" onTouchTap={handleSubmit} primary fullWidth />
+      <RaisedButton label="Sign up" onTouchTap={handleSubmit} primary fullWidth />
     </form>
   );
 };
