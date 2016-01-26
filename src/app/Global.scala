@@ -35,18 +35,6 @@ object Global extends WithFilters(
     super.onStart(app)
 
     loadCustomTrustStore(app)
-
-    lazy val database = Database.forDataSource(DB.getDataSource())
-    lazy val session = database.createSession()
-
-    Akka.system.scheduler.schedule(0.microsecond, 2.minutes) {
-      val expiredHours = 72
-      (new PipelineRepository).deleteExpired(expiredHours)(session)
-      (new DataPortBindingSetRepository).cleanup(session)
-      (new ComponentInstanceMembershipRepository).cleanup(session)
-      (new ComponentInstanceRepository).cleanup(session)
-      (new ComponentTemplateRepository).deleteExpired(expiredHours)(session)
-    }
   }
 
   private def loadCustomTrustStore(app: Application): Unit ={
