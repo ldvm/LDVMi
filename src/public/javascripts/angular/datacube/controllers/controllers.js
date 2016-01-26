@@ -463,14 +463,43 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     computeSlicing();
                 };
 
-                $scope.label = function (label) {
-                    if (label && label.variants) {
-                        if (label.variants[$scope.language]) {
-                            return label.variants[$scope.language];
-                        } else if (label.variants["nolang"]) {
-                            return label.variants["nolang"];
+                $scope.label = function (labelledObject) {
+
+                    if (!labelledObject) {
+                        return undefined;
+                    }
+
+                    labelledObject.label = labelledObject.label || {variants: {}};
+                    labelledObject.label.variants = labelledObject.label.variants || {};
+
+                    var label = labelledObject.label;
+
+                    // current language needs to be always the first one
+                    var languages = _.without($scope.availableLanguages, $scope.language);
+                    languages.unshift($scope.language);
+                    if ($scope.language != 'nolang') {
+                        languages.push('nolang');
+                    }
+
+                    for (var l in languages) {
+                        var code = languages[l];
+                        if (label.variants[code]) {
+                            return label.variants[code];
                         }
                     }
+
+                    var uri = labelledObject.uri;
+
+                    if (uri) {
+                        if (!label.dereferenced) {
+                            DataCubeService.dereference({uri: uri}, function(data){
+                                label.variants = _.extend(label.variants, data.variants);
+                            });
+                            label.dereferenced = 1;
+                        }
+                        return uri;
+                    }
+
                     return undefined;
                 };
 

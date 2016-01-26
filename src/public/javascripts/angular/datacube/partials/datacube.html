@@ -159,7 +159,7 @@
                                         </div>
                                         <div class="media-body">
                                             <div class="lv-title">
-                                                <span ng-bind="label(v.label) || v.uri" ng-hide="displayUris"></span>
+                                                <span ng-bind="label(v)" ng-hide="displayUris"></span>
                                                 <span ng-bind="v.uri" ng-show="displayUris"></span>
                                             </div>
                                         </div>
@@ -190,9 +190,9 @@
                                         <strong>DataCube values fixed to get this chart:</strong>
                                         <ul ng-repeat="(uri, count) in dimensionValuesActiveCount" ng-if="count == 1">
                                             <li>
-                                                <span ng-bind="label(dimension(uri).label) || uri"></span>
+                                                <span ng-bind="label(dimension(uri))"></span>
                                                 <ul>
-                                                    <li ng-repeat="v in values[uri]" ng-if="v.isActive" ng-bind="label(v.label) || v.uri"></li>
+                                                    <li ng-repeat="v in values[uri]" ng-if="v.isActive" ng-bind="label(v)"></li>
                                                 </ul>
                                             </li>
                                         </ul>
