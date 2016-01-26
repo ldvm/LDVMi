@@ -19,8 +19,7 @@ object Global extends WithFilters(
     )
   )
 ) with ScaldiSupport with GlobalSettings {
-  val services = new ServiceModule
-  def applicationModule = new RepositoryModule :: services :: new RdfModule :: new ControllerModule :: new ApiModule
+  def applicationModule = new RepositoryModule :: new ServiceModule :: new RdfModule :: new ControllerModule :: new ApiModule
 
   override def onStart(app: Application) = {
     super.onStart(app)
