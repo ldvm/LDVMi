@@ -77,7 +77,7 @@ object Global extends WithFilters(
     }
 
 
-    var sslContext = SSLContext.getInstance("TLS")
+    val sslContext = SSLContext.getInstance("TLS")
     sslContext.init(null, Seq(customTm).toArray, null)
 
     // You don't have to set this as the default context,
