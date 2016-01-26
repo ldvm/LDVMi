@@ -1,24 +1,15 @@
-import java.io.FileInputStream
 import java.security.KeyStore
 import java.security.cert.X509Certificate
 import javax.net.ssl.{SSLContext, X509TrustManager, TrustManagerFactory}
-import javax.security.cert.{CertificateException}
+import javax.security.cert.CertificateException
 
 import controllers.ControllerModule
 import controllers.api.ApiModule
-import model.repository._
 import play.api._
-import play.api.db.DB
-import play.api.libs.concurrent.Akka
 import play.api.mvc.WithFilters
 import play.filters.gzip.GzipFilter
 import scaldi.play.ScaldiSupport
 import model.rdf.RdfModule
-import play.api.libs.concurrent.Execution.Implicits._
-import play.api.Play.current
-import scala.concurrent.duration._
-
-import scala.slick.driver.H2Driver.simple._
 
 
 object Global extends WithFilters(
