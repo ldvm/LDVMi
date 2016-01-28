@@ -9,11 +9,12 @@ import IconMenu from 'material-ui/lib/menus/icon-menu'
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import FontIcon from 'material-ui/lib/font-icon'
+import CircularProgress from 'material-ui/lib/circular-progress'
 import {Grid, Row, Col} from 'react-flexbox-grid'
 
 class App extends Component {
   render() {
-    const { dispatch } = this.props;
+    const { dispatch, loading } = this.props;
     return (
       <div>
         <AppBar
@@ -27,13 +28,18 @@ class App extends Component {
               <FontIcon className="material-icons">explore</FontIcon>
             </IconButton> }
           iconElementRight={
-            <IconMenu
-              iconButtonElement={ <IconButton><MoreVertIcon /></IconButton> }
-              targetOrigin={{horizontal: 'right', vertical: 'top'}}
-              anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-              <MenuItem primaryText="Sign up" onTouchTap={() => dispatch(routeActions.push('/signup'))} />
-              <MenuItem primaryText="Sign in" onTouchTap={() => dispatch(routeActions.push('/signin'))} />
-            </IconMenu> } />
+            <div>
+              {loading > 0 && <CircularProgress size={0.5} color="white"
+                style={{position: 'absolute', right: '50px'}}
+               />}
+              <IconMenu
+                iconButtonElement={ <IconButton><MoreVertIcon color="white" /></IconButton> }
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
+                <MenuItem primaryText="Sign up" onTouchTap={() => dispatch(routeActions.push('/signup'))} />
+                <MenuItem primaryText="Sign in" onTouchTap={() => dispatch(routeActions.push('/signin'))} />
+              </IconMenu>
+            </div>} />
 
         <Grid>
           <Row>

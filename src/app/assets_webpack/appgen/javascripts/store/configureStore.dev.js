@@ -6,11 +6,13 @@ import DevTools from '../containers/DevTools'
 // import api from '../middleware/api'
 import createLogger from 'redux-logger'
 import {reducer as formReducer} from 'redux-form';
+import loadingReducer from '../reducers/loading'
 // import rootReducer from '../reducers'
 
 const rootReducer = combineReducers({
   routing: routeReducer,
-  form: formReducer
+  form: formReducer,
+  loading: loadingReducer
 });
 
 const reduxRouterMiddleware = syncHistory(browserHistory);

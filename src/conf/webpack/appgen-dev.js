@@ -6,6 +6,7 @@ var dir = __dirname + '/../../app/assets_webpack/appgen/javascripts';
 
 module.exports = {
   entry: [
+    'babel-polyfill',
     'webpack-hot-middleware/client',
     dir + '/index.js'
   ],

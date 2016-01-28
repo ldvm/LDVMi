@@ -5,7 +5,7 @@ import RaisedButton from 'material-ui/lib/raised-button';
 import { makeValidator, errorText } from '../../misc/formUtils'
 
 const SignUpForm = (props) => {
-  const {fields: {name, email, password, confirmPassword}, handleSubmit} = props;
+  const {fields: {name, email, password, confirmPassword}, handleSubmit, submitting} = props;
 
   return (
     <form onSubmit={handleSubmit} className={props.className}>
@@ -16,7 +16,7 @@ const SignUpForm = (props) => {
         <TextField floatingLabelText="Confirm password" type="password" {...confirmPassword} {...errorText(confirmPassword)} fullWidth />
       </div>
       <br />
-      <RaisedButton label="Sign up" onTouchTap={handleSubmit} primary fullWidth />
+      <RaisedButton label="Sign up" onTouchTap={handleSubmit} primary fullWidth disabled={submitting} />
     </form>
   );
 };
