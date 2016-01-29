@@ -17,12 +17,18 @@ export default async function rest(url, payload) {
       data: JSON.stringify(payload)
     }));
 
-    // TODO: do finer error handling
-
     return response;
-  } catch (e) {
-    debug('API call failed.');
-    debug(e);
-    throw e;
+  } catch (response) {
+    debug('API call failed with status ' + response.status);
+
+    // If the error is on our side I expect to get valid JSON back.
+    if (response.status == 400) {
+      const error = JSON.parse(response.responseText);
+      debug(error);
+      throw error;
+    } else {
+      debug(response.responseText);
+      throw new Error(response.responseText);
+    }
   }
 };

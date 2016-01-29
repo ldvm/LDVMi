@@ -9,9 +9,9 @@ import model.appgen.entity.{UserId, User}
 class UserService(implicit inj: Injector) extends Injectable {
   val usersRepository = inject[UsersRepository]
 
-  def addUser(user: User)(implicit session: Session): UserAddResult = {
+  def addUser(name: String, email: String, password: String)(implicit session: Session): UserAddResult = {
     try {
-      val id = usersRepository save user
+      val id = usersRepository save new User(None, name, email, password)
       UserSuccessfullyAdded(id)
     } catch {
       case (e: JdbcSQLException) =>

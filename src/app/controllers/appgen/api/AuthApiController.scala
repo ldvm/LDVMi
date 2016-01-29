@@ -1,28 +1,25 @@
 package controllers.appgen.api
 
-import model.appgen.entity.User
+import model.appgen.rest.SignUpRequest._
 import model.appgen.service.{UserAlreadyExists, UserSuccessfullyAdded, UserService}
-import play.api.libs.json._
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
-import play.api.db.slick.{_}
+import play.api.db.slick._
 import play.api.Play.current
+import model.appgen.rest.Response._
 
 class AuthApiController(implicit inj: Injector) extends Controller with Injectable {
 
   var userService = inject[UserService]
 
   def signUp = Action(BodyParsers.parse.json) { request => DB.withSession { implicit session =>
-    // TODO: move the implicit converter to the companion object
-    // (how to modify implicit companion object?)
-    implicit val userReads: Reads[User] = Json.reads[User]
-
-    request.body.validate[User].fold(
-      errors => { BadRequest(Json.obj("status" -> "OK", "message" -> JsError.toFlatJson(errors))) },
-      user => {
-        userService.addUser(user) match {
-          case UserSuccessfullyAdded(id) => Ok(Json.obj("status" -> "OK", "id" -> id))
-          case UserAlreadyExists => Ok(Json.obj("status" -> "KO", "message" -> "User already exists"))
+    request.body.validate[SignUpRequest].fold(
+      errors => { BadRequest(InvalidJsonResponse(errors)) },
+      json => {
+        userService.addUser(json.name, json.email, json.password) match {
+          case UserSuccessfullyAdded(id) => Ok(SuccessResponse(data = Seq("id" -> id)))
+          case UserAlreadyExists => BadRequest(ErrorResponse("User already exists",
+            Seq("email" -> "E-mail address already exists")))
         }
       }
     )
