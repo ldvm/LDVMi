@@ -1,31 +1,30 @@
 package controllers.appgen.api
 
-import play.api.db
+import model.appgen.entity.User
+import model.appgen.service.{UserAlreadyExists, UserSuccessfullyAdded, UserService}
 import play.api.libs.json._
 import play.api.mvc._
 import scaldi.{Injectable, Injector}
-import model.appgen.entity.{UserId, User}
-import model.appgen.repository.UsersRepository
+import play.api.db.slick.{_}
 import play.api.Play.current
 
 class AuthApiController(implicit inj: Injector) extends Controller with Injectable {
 
-  val usersRepository = inject[UsersRepository]
+  var userService = inject[UserService]
 
-  def signUp = Action(BodyParsers.parse.json) { request =>
+  def signUp = Action(BodyParsers.parse.json) { request => DB.withSession { implicit session =>
     // TODO: move the implicit converter to the companion object
     // (how to modify implicit companion object?)
     implicit val userReads: Reads[User] = Json.reads[User]
-    implicit val session = db.slick.DB.createSession()
 
-    val b = request.body.validate[User]
-
-    b.fold(
+    request.body.validate[User].fold(
       errors => { BadRequest(Json.obj("status" -> "OK", "message" -> JsError.toFlatJson(errors))) },
       user => {
-        val userId = usersRepository save user
-        Ok(Json.obj("status" -> "OK", "id" -> userId))
+        userService.addUser(user) match {
+          case UserSuccessfullyAdded(id) => Ok(Json.obj("status" -> "OK", "id" -> id))
+          case UserAlreadyExists => Ok(Json.obj("status" -> "KO", "message" -> "User already exists"))
+        }
       }
     )
-  }
+  }}
 }

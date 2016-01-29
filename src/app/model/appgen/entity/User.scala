@@ -39,5 +39,7 @@ class Users(tag: Tag) extends IdTable[UserId, User](tag, "USERS") {
 
   def password = column[String]("PASSWORD", O.NotNull)
 
+  def idx = index("idx_unique_email", email, unique = true)
+
   override def * = (id.?, name, email, password) <> (User.tupled, User.unapply)
 }
