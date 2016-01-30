@@ -1,6 +1,6 @@
 import { actionTypes as formActions } from 'redux-form'
 
-/** Maintains the number of running background tasks (i. e. AJAX calls */
+/** Maintains the number of running background tasks (i. e. AJAX calls) */
 export default function loadingReducer(state = 0, action) {
   switch (action.type) {
     case formActions.START_SUBMIT:

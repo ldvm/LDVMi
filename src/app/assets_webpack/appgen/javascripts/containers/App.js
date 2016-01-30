@@ -10,11 +10,12 @@ import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import FontIcon from 'material-ui/lib/font-icon'
 import CircularProgress from 'material-ui/lib/circular-progress'
+import Snackbar from 'material-ui/lib/snackbar'
 import {Grid, Row, Col} from 'react-flexbox-grid'
 
 class App extends Component {
   render() {
-    const { dispatch, loading } = this.props;
+    const { dispatch, loading, notifications } = this.props;
     return (
       <div>
         <AppBar
@@ -49,6 +50,10 @@ class App extends Component {
           </Row>
         </Grid>
 
+        <Snackbar
+          open={notifications.size > 0}
+          message={notifications.size > 0 ? notifications.last().message : ''}
+          onRequestClose={() => null} />
       </div> )
   }
 }

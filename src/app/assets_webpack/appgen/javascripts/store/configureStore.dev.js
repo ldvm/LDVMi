@@ -2,23 +2,25 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { syncHistory, routeReducer } from 'redux-simple-router'
 import browserHistory from '../misc/browserHistory'
 import DevTools from '../containers/DevTools'
-// import thunk from 'redux-thunk'
+import thunk from 'redux-thunk'
 // import api from '../middleware/api'
 import createLogger from 'redux-logger'
 import {reducer as formReducer} from 'redux-form';
 import loadingReducer from '../reducers/loading'
+import notificationsReducer from '../reducers/notifications'
 // import rootReducer from '../reducers'
 
 const rootReducer = combineReducers({
   routing: routeReducer,
   form: formReducer,
-  loading: loadingReducer
+  loading: loadingReducer,
+  notifications: notificationsReducer
 });
 
 const reduxRouterMiddleware = syncHistory(browserHistory);
 
 const finalCreateStore = compose(
-//  applyMiddleware(thunk, api),
+  applyMiddleware(thunk),
   applyMiddleware(reduxRouterMiddleware),
   applyMiddleware(createLogger()),
   DevTools.instrument()
