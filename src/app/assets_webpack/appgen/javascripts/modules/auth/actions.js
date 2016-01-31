@@ -1,3 +1,8 @@
-import api from './api'
+import createAction from '../../misc/createAction'
 
-const SIGN_UP = 'SIGN_UP';
+export const SIGN_IN = 'SIGN_IN';
+
+export function singIn(user) {
+  return createAction(SIGN_IN, user);
+}
+

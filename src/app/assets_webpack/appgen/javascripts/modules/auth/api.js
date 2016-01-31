@@ -5,7 +5,7 @@ export async function signUp({name, email, password}) {
 }
 
 export async function signIn({email, password}) {
-  return await rest('auth/signin', {email, password});
+  return (await rest('auth/signin', {email, password})).data;
 }
 
 export async function getUser() {

@@ -2,17 +2,19 @@ import { connect } from 'react-redux'
 import React, {Component} from 'react'
 import Paper from 'material-ui/lib/paper';
 import SignInForm from '../modules/auth/SignInForm'
-import { signIn, getUser } from '../modules/auth/api'
+import { signIn } from '../modules/auth/api'
+import * as authActions from '../modules/auth/actions'
 import { notification } from '../actions/notification'
 
 const SignIn = ({dispatch}) => {
 
   const onSubmit = async values => {
     try {
-      await signIn(values);
+      const user = await signIn(values);
       dispatch(notification("You've been successfully signed in!"));
+      dispatch(authActions.singIn(user));
     } catch (e) {
-      dispatch(notification(message));
+      dispatch(notification(e.message));
     }
   };
 
