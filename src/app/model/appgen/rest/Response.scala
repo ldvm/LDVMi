@@ -5,11 +5,11 @@ import play.api.libs.json.Json.JsValueWrapper
 import play.api.libs.json._
 
 object Response {
-  def SuccessResponse(message: String = "", data: Seq[(String, JsValueWrapper)]) : JsObject = {
+  def SuccessResponse(message: String = "", data: Seq[(String, JsValueWrapper)] = Seq()) : JsObject = {
     Json.obj("status" -> "success", "message" -> message, "data" -> Json.obj(data:_*))
   }
 
-  def ErrorResponse(message: String = "", data: Seq[(String, JsValueWrapper)]) : JsObject = {
+  def ErrorResponse(message: String = "", data: Seq[(String, JsValueWrapper)] = Seq()) : JsObject = {
     Json.obj("status" -> "error", "message" -> message, "data" -> Json.obj(data:_*))
   }
 

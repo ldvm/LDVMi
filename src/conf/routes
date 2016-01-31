@@ -93,6 +93,8 @@ POST        /api/v1/datacube/values/:id                                         
 POST        /api/v1/datacube/slices/:id                                                   @controllers.api.DataCubeApiController.sliceCube(id: Long)
 
 POST        /appgen/api/auth/signup                         @controllers.appgen.api.AuthApiController.signUp
+POST        /appgen/api/auth/signin                         @controllers.appgen.api.AuthApiController.signIn
+POST        /appgen/api/auth/getUser                        @controllers.appgen.api.AuthApiController.getUser
 GET         /appgen$any<.*>                                 @controllers.appgen.ApplicationController.index(any)
 
 # Map static resources from the /public folder to the /assets URL path

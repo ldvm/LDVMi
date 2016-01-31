@@ -9,8 +9,9 @@ import model.appgen.entity.{UserId, User}
 class UserService(implicit inj: Injector) extends Injectable {
   val usersRepository = inject[UsersRepository]
 
-  def addUser(name: String, email: String, password: String)(implicit session: Session): UserAddResult = {
+  def add(name: String, email: String, password: String)(implicit session: Session): UserAddResult = {
     try {
+      // TODO: Hash password
       val id = usersRepository save new User(None, name, email, password)
       UserSuccessfullyAdded(id)
     } catch {
@@ -20,8 +21,17 @@ class UserService(implicit inj: Injector) extends Injectable {
         } else {
           throw e
         }
-      case (e) => throw e
+      case (e: Throwable) => throw e
     }
+  }
+
+  def find(email: String, password: String)(implicit session: Session): Option[User] = {
+    // TODO: Hash password
+    usersRepository.find(email, password)
+  }
+
+  def find(email: String)(implicit session: Session): Option[User] = {
+    usersRepository.find(email)
   }
 }
 

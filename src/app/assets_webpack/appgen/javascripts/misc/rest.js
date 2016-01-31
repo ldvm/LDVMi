@@ -5,7 +5,7 @@ import { apiEndpoint } from '../config'
 
 const debug = debugFactory('rest');
 
-export default async function rest(url, payload) {
+export default async function rest(url, payload = {}) {
   try {
     debug('API call: ' + url);
     const response = await when(request({
@@ -26,6 +26,10 @@ export default async function rest(url, payload) {
       const error = JSON.parse(response.responseText);
       debug(error);
       throw error;
+    } else if (response.status === 404) {
+      throw new Error('API endpoint did not recognize this call (404 Not Found)');
+    } else if (response.status === 200) {
+      throw new Error('API call failed but the HTTP status is 200. Probably invalid JSON?');
     } else {
       debug(response.responseText);
       throw new Error(response.responseText);

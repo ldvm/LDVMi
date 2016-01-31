@@ -11,4 +11,12 @@ import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
  *
  * Use your favourite DI method to instantiate it in your application.
  */
-class UsersRepository extends BaseIdRepository[UserId, User, Users](TableQuery[Users])
+class UsersRepository extends BaseIdRepository[UserId, User, Users](TableQuery[Users]) {
+  def find(email: String, password: String)(implicit session: Session): Option[User] =  {
+    query.filter(_.email === email).filter(_.password === password).firstOption
+  }
+
+  def find(email: String)(implicit session: Session): Option[User] =  {
+    query.filter(_.email === email).firstOption
+  }
+}
