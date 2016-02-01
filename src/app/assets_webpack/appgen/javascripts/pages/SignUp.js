@@ -26,7 +26,7 @@ const SignUp = ({dispatch}) => {
 
   return (
     <div className="signup-container">
-      <PaperCard title="Sign up" subtitle="Fill some basic info to get your LDVMi account">
+      <PaperCard title="Sign up" subtitle="Fill in some basic info to get your LDVMi account">
         <SignUpForm onSubmit={onSubmit} />
       </PaperCard>
     </div>

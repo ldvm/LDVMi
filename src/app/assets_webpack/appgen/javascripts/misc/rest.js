@@ -9,7 +9,7 @@ export default async function rest(url, payload = {}) {
   try {
     debug('API call: ' + url);
     const response = await when(request({
-      url: apiEndpoint + '/' + url,
+      url: url.startsWith('/') ? url : apiEndpoint + '/' + url,
       method: 'POST',
       crossOrigin: true,
       type: 'json',
