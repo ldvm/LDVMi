@@ -9,4 +9,4 @@ const Home = ({user}) =>
     {user ? 'Signed in ' + user.name : 'No user signed in'}
   </div>
 
-export default connect(state => ({user: state.user.user}))(Home);
+export default connect(state => ({user: state.auth.user}))(Home);

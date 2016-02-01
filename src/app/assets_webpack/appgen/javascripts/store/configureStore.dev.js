@@ -8,7 +8,7 @@ import createLogger from 'redux-logger'
 import {reducer as formReducer} from 'redux-form';
 import loadingReducer from '../reducers/loading'
 import notificationsReducer from '../reducers/notifications'
-import userReducer from '../modules/auth/reducer'
+import authReducer from '../modules/auth/reducer'
 // import rootReducer from '../reducers'
 
 const rootReducer = combineReducers({
@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
   form: formReducer,
   loading: loadingReducer,
   notifications: notificationsReducer,
-  user: userReducer
+  auth: authReducer
 });
 
 const reduxRouterMiddleware = syncHistory(browserHistory);

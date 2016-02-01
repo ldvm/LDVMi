@@ -7,7 +7,7 @@ const InitialState = Record({
 });
 const initialState = new InitialState;
 
-export default function usersReducer(state = initialState, action) {
+export default function authReducer(state = initialState, action) {
   switch (action.type) {
     case authActions.SIGN_IN: {
       return state.set('user', new User(action.payload));

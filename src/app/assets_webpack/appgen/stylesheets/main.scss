@@ -1,24 +1,53 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,700,700italic,300,500,400italic&subset=latin,latin-ext);
 
-$gutter: 16px; // Default material theme gutter
+// Should be kept in sync with Material UI Theme (somehow)
+$gutter: 16px;
+$primaryColor: #009688;
+$accentColor: #ec407a;
+$fontSize: 16px;
 
 body {
   font-family: Roboto, serif;
+  font-size: $fontSize;
   margin: 0;
-  background-color: #edecec;
+  background-color: #f2f2f2;
   color: rgba(0, 0, 0, 0.87);
 }
-h1 {
-  font-weight: 300;
+a {
+ color: $accentColor;
+}
+a:hover {
+  color: $primaryColor;
+  text-decoration: none;
 }
 .appbar-logo {
   cursor: pointer;
   font-weight: 300;
 }
 .signup-container {
-  width: 400px;
+  width: 500px;
   margin: 0 auto;
 }
-.signup-form {
-  padding: $gutter * 2;
+
+/** Paper Card */
+.paper-card {
+  margin: 2 * $gutter;
+}
+.paper-card-header {
+  background-color: #f7f7f7;
+  padding: 1.5 * $gutter;
+}
+.paper-card-header h2 {
+  font-weight: normal;
+  font-size: 1.1 * $fontSize;
+  margin: 0;
+  padding: 0;
+}
+.paper-card-header h2 small {
+  font-size: 0.9 * $fontSize;
+  color: #aeaeae;
+  display: block;
+}
+.paper-card-body {
+  padding: 1.5 * $gutter;
 }

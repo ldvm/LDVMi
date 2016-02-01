@@ -12,4 +12,3 @@ const store = configureStore();
 injectTapEventPlugin(); // to make taps in material ui work
 
 render(<Root store={store} history={browserHistory} />, document.getElementById('approot'));
-
