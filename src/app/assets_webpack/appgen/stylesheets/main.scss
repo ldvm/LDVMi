@@ -28,6 +28,10 @@ a:hover {
   width: 500px;
   margin: 0 auto;
 }
+pre {
+  font-size: 0.9 * $fontSize;
+  overflow-x: scroll;
+}
 
 /** Paper Card */
 .paper-card {
@@ -39,7 +43,7 @@ a:hover {
 }
 .paper-card-header h2 {
   font-weight: normal;
-  font-size: 1.1 * $fontSize;
+  font-size: 1.2 * $fontSize;
   margin: 0;
   padding: 0;
 }

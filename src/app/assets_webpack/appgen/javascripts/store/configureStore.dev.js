@@ -9,6 +9,7 @@ import {reducer as formReducer} from 'redux-form';
 import loadingReducer from '../reducers/loading'
 import notificationsReducer from '../reducers/notifications'
 import authReducer from '../modules/auth/reducer'
+import discoveryReducer from '../modules/discovery/reducer'
 // import rootReducer from '../reducers'
 
 const rootReducer = combineReducers({
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   form: formReducer,
   loading: loadingReducer,
   notifications: notificationsReducer,
-  auth: authReducer
+  auth: authReducer,
+  discovery: discoveryReducer
 });
 
 const reduxRouterMiddleware = syncHistory(browserHistory);
