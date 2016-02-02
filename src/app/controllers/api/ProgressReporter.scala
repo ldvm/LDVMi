@@ -3,8 +3,8 @@ package controllers.api
 import akka.actor.{Actor, Props, ActorRef}
 import controllers.api.JsonImplicits._
 import model.actor.CheckCompatibilityResponse
-import model.entity.{DataPortBindingSetCompatibilityCheck, ComponentInstanceCompatibilityCheck, FeatureCompatibilityCheck, DescriptorCompatibilityCheck}
-import play.api.libs.json.{JsValue, Json, JsString, JsObject}
+import model.entity._
+import play.api.libs.json._
 
 case class PortCheckResult(isCompatible: Boolean, portUri: String, portOwnerComponentUri: String, sourceUri: String)
 
@@ -39,6 +39,7 @@ class ProgressReporter(jsLogger: ActorRef) extends Actor {
     case checkResponse: PortCheckResult => {
       jsLogger ! Json.toJson(checkResponse)
     }
+    case i : PipelineEvaluationId => jsLogger ! JsObject(Seq(("id", JsNumber(i.id))))
     case j : JsValue => jsLogger ! j
     case msg: String => jsLogger ! JsObject(Seq(("message", JsString(msg))))
   }

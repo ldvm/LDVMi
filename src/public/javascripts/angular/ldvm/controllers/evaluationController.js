@@ -10,6 +10,8 @@ define(['angular', './controllers'], function (ng) {
                 $scope.isFinished = false;
                 $scope.duration = 0;
 
+                var id = null;
+
                 var l = window.location;
                 var connection = $connection("ws://" + l.host + "/api/v1/pipelines/evaluate/" + $routeParams.id);
                 connection.listen(function () {
@@ -23,10 +25,14 @@ define(['angular', './controllers'], function (ng) {
                             $scope.info.unshift({message: "Pipeline evaluation is done. You are being redirected."});
 
                             if (parseInt($routeParams.autorun) === 1) {
-                                window.location.href = "/visualize/" + data.id;
+                                window.location.href = "/visualize/" + id;
                             } else {
                                 window.location.href = "/pipelines#/detail/" + $routeParams.id;
                             }
+                        }
+
+                        if (data.id) {
+                            id = parseInt(data.id);
                         }
 
                         if ("isFinished" in data) {
