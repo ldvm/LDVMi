@@ -3,41 +3,47 @@ define(['angular', './controllers'], function (ng) {
 
     return ng.module('ldvm.controllers')
         .controller('List',
-        ['$scope', 'Pipelines', '$routeParams',
-            function ($scope, pipelines, $routeParams) {
+            ['$scope', 'Pipelines', '$routeParams',
+                function ($scope, pipelines, $routeParams) {
 
-                $scope.page = $routeParams.page || 1;
-                $scope.count = $routeParams.count || 50;
-                $scope.filter = {
-                    discoveryId: $routeParams.discoveryId,
-                    visualizerId: $routeParams.visualizerId
-                };
-                $scope.total = 0;
+                    $scope.page = $routeParams.page || 1;
+                    $scope.count = $routeParams.count || 50;
+                    $scope.filter = {
+                        discoveryId: $routeParams.discoveryId,
+                        visualizerId: $routeParams.visualizerId
+                    };
+                    $scope.total = 0;
 
-                $scope.pages = function () {
-                    var num = Math.ceil($scope.total / $scope.count);
-                    return Array.apply(null, Array(num)).map(function (_, i) {
-                        return i;
-                    });
-                };
+                    var quick = parseInt($routeParams.quick);
 
-                var showPagination = !($routeParams.discoveryId || $routeParams.visualizerId);
+                    $scope.pages = function () {
+                        var num = Math.ceil($scope.total / $scope.count);
+                        return Array.apply(null, Array(num)).map(function (_, i) {
+                            return i;
+                        });
+                    };
 
-                $scope.pipelines = [];
+                    var showPagination = !($routeParams.discoveryId || $routeParams.visualizerId);
 
-                var getPipelines = function () {
-                    var promise = pipelines.findPaginated($scope.page, $scope.count, $scope.filter);
-                    promise.then(function (data) {
-                        $scope.total = (showPagination ? data.count : data.data.length);
-                        $scope.pipelines = data.data;
-                    });
-                };
+                    $scope.pipelines = [];
 
-                $scope.$watch('page', getPipelines);
+                    var getPipelines = function () {
+                        var promise = pipelines.findPaginated($scope.page, $scope.count, $scope.filter);
+                        promise.then(function (data) {
+                            $scope.total = (showPagination ? data.count : data.data.length);
+                            $scope.pipelines = data.data;
 
-                $scope.time = function (a, b) {
-                    return a || b;
-                };
+                            if ($scope.total === 1 && quick === 1) {
+                                window.location.href = "/pipelines#/detail/" + $scope.pipelines[0].id + "?autorun=1";
+                            }
+                        });
+                    };
 
-            }]);
+                    $scope.$watch('page', getPipelines);
+
+                    $scope.time = function (a, b) {
+                        return a || b;
+                    };
+
+                }]);
 });

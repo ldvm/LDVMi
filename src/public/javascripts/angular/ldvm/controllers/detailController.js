@@ -12,6 +12,10 @@ define(['angular', './controllers'], function (ng) {
 
                 pipelines.get($routeParams.id).then(function (pipeline) {
                     $scope.pipeline = pipeline;
+
+                    if (parseInt($routeParams.autorun) === 1) {
+                        window.location.href = "/pipelines#/evaluate/" + pipeline.id + "?autorun=1";
+                    }
                 });
 
                 pipelines.visualization($routeParams.id).then(function (data) {

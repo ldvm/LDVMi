@@ -21,9 +21,12 @@ define(['angular', './controllers'], function (ng) {
                         if (data.message && data.message == "==== DONE ====") {
                             $scope.info.unshift({});
                             $scope.info.unshift({message: "Pipeline evaluation is done. You are being redirected."});
-                            window.setTimeout(function () {
+
+                            if (parseInt($routeParams.autorun) === 1) {
+                                window.location.href = "/visualize/" + data.id;
+                            } else {
                                 window.location.href = "/pipelines#/detail/" + $routeParams.id;
-                            }, 2000);
+                            }
                         }
 
                         if ("isFinished" in data) {

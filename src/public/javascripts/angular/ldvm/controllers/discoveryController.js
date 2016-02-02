@@ -55,9 +55,7 @@ define(['angular', './controllers'], function (ng) {
                             }
 
                             if (data.isFinished && data.isSuccess) {
-                                window.setTimeout(function () {
-                                    window.location.href = "/pipelines#/list?discoveryId=" + data.id;
-                                }, 2000);
+                                window.location.href = "/pipelines#/list?quick=1&discoveryId=" + data.id;
                             }
                         }
 
