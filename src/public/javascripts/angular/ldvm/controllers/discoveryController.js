@@ -55,7 +55,11 @@ define(['angular', './controllers'], function (ng) {
                             }
 
                             if (data.isFinished && data.isSuccess) {
-                                window.location.href = "/pipelines#/list?quick=1&discoveryId=" + data.id;
+                                var uri = "/pipelines#/list?quick=1&discoveryId=" + data.id;
+                                if (parseInt($routeParams.lucky)) {
+                                    uri += "&lucky=1";
+                                }
+                                window.location.href = uri;
                             }
                         }
 
