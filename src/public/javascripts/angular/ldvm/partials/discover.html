@@ -5,7 +5,7 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header"
-                     ng-class="{'bgm-teal': !isFinished,'bgm-darkorange': isFinished && !isSuccess, 'bgm-green': isFinished && isSuccess}">
+                     ng-class="{'bgm-teal': !isFinished,'bgm-deeporange': isFinished && !isSuccess, 'bgm-green': isFinished && isSuccess}">
                     <h2>Progress
                         <small>Discovery state</small>
                     </h2>
@@ -16,7 +16,7 @@
                         <li>
                             State: <span ng-show="!isFinished">Running</span>
                             <span ng-show="isFinished">Finished with
-                                <span ng-show="isSuccess">success</span><span ng-show="!isSuccess">failure</span>
+                                <strong ng-show="isSuccess">success</strong><strong ng-show="!isSuccess">failure</strong>
                             </span>
                         </li>
                         <li>
@@ -32,7 +32,7 @@
                 </div>
             </div>
 
-            <div class="mini-charts-item bgm-cyan">
+            <div class="mini-charts-item bgm-cyan" ng-class="{'bgm-teal': !isFinished,'bgm-deeporange': isFinished && !isSuccess, 'bgm-green': isFinished && isSuccess}">
                 <div class="clearfix">
                     <div class="chart stats-bar" sparkline-bar="data" style="width: 113px;"></div>
                     <div class="count">
