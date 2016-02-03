@@ -1,7 +1,7 @@
 import rest from '../../misc/rest'
 
 /**
- * @return {Array<number>} list of data source template ids
+ * @returns {Promise<Array<number>>} list of data source template ids
  **/
 export async function addDataSources(dataSources) {
   const result = await rest('/api/v1/datasources/add', dataSources);
@@ -18,4 +18,12 @@ export function openDiscoverySocket(dataSourceTemplateIds) {
     + dataSourceTemplateIds.map(id => 'dataSourceTemplateIds=' + id).join('&');
 
   return new WebSocket(socketUrl);
+}
+
+/**
+ * @returns {Promise<Array<{id: number, bindingSetId: number, title: string, uuid: string}>>}
+ */
+export async function getPipelines(discoveryId) {
+  const result = await rest('/api/v1/pipelines?discoveryId=' + discoveryId + '&skip=0&take=50', null, 'GET');
+  return result.data;
 }

@@ -6,10 +6,12 @@ import thunk from 'redux-thunk'
 // import api from '../middleware/api'
 import createLogger from 'redux-logger'
 import {reducer as formReducer} from 'redux-form';
+import promiseMiddleware from 'redux-promise-middleware';
 import loadingReducer from '../reducers/loading'
 import notificationsReducer from '../reducers/notifications'
 import authReducer from '../modules/auth/reducer'
-import discoveryReducer from '../modules/discovery/reducer'
+import discoveryReducer from '../modules/discovery/discoveryReducer'
+import pipelinesReducer from '../modules/discovery/pipelinesReducer'
 // import rootReducer from '../reducers'
 
 const rootReducer = combineReducers({
@@ -18,13 +20,18 @@ const rootReducer = combineReducers({
   loading: loadingReducer,
   notifications: notificationsReducer,
   auth: authReducer,
-  discovery: discoveryReducer
+  discovery: discoveryReducer,
+  pipelines: pipelinesReducer
 });
+
 
 const reduxRouterMiddleware = syncHistory(browserHistory);
 
 const finalCreateStore = compose(
-  applyMiddleware(thunk),
+  applyMiddleware(
+    thunk,
+    promiseMiddleware({promiseTypeSuffixes: ['START', 'SUCCESS', 'ERROR']})
+  ),
   applyMiddleware(reduxRouterMiddleware),
   applyMiddleware(createLogger()),
   DevTools.instrument()

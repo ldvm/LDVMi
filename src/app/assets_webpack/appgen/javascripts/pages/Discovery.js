@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import LinearProgress from 'material-ui/lib/linear-progress'
 import RaisedButton from 'material-ui/lib/raised-button'
 import PaperCard from '../misc/components/PaperCard'
+import { routeActions } from 'redux-simple-router'
 import { runDiscovery } from '../modules/discovery/actions'
 
 class Discovery extends Component {
@@ -12,7 +13,8 @@ class Discovery extends Component {
   }
 
   render() {
-    const {isFinished, isSuccess, errors, messages, pipelinesDiscoveredCount, id} = this.props;
+    const {isFinished, isSuccess, errors, messages, pipelinesDiscoveredCount, id, dispatch} = this.props;
+
     return (
       <PaperCard
         title="Analysis in progress"
@@ -30,7 +32,8 @@ class Discovery extends Component {
           {errors.map(error=> error + '\n')}
         </pre>
         {isFinished && isSuccess &&
-          <RaisedButton label={"Show discovered pipelines (id: " + id + ")"} primary={true} />
+          <RaisedButton label={"Show discovered pipelines (id: " + id + ")"} primary={true}
+            onTouchTap={() => dispatch(routeActions.push('/pipelines/' + id))} />
         }
       </PaperCard>
     )

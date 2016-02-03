@@ -8,6 +8,7 @@ import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import SelectSources from './pages/SelectSources'
 import Discovery from './pages/Discovery'
+import Pipelines from './pages/Pipelines'
 
 export default (
   <Route component={App} path='/'>
@@ -16,6 +17,7 @@ export default (
     <Route component={SignIn} path='signin' />
     <Route component={SelectSources} path='select-sources' />
     <Route component={Discovery} path='discovery' />
+    <Route component={Pipelines} path="pipelines/:discoveryId" />
     <Route component={NotFound} path='*' />
   </Route>
 );

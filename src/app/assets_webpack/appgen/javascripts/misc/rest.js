@@ -5,12 +5,12 @@ import { apiEndpoint } from '../config'
 
 const debug = debugFactory('rest');
 
-export default async function rest(url, payload = {}) {
+export default async function rest(url, payload = null, method = 'POST') {
   try {
     debug('API call: ' + url);
     const response = await when(request({
       url: url.startsWith('/') ? url : apiEndpoint + '/' + url,
-      method: 'POST',
+      method: method,
       crossOrigin: true,
       type: 'json',
       contentType: 'application/json',

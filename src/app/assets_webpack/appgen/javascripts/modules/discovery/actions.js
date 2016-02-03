@@ -1,5 +1,5 @@
 import createAction from '../../misc/createAction'
-import { openDiscoverySocket} from './api'
+import * as api from './api'
 
 export const DISCOVERY_START = 'DISCOVERY_START';
 export const DISCOVERY_FINISHED = 'DISCOVERY_FINISHED';
@@ -10,7 +10,7 @@ export function runDiscovery(dataSourceTemplateIds) {
   // Create nice web socket middleware, maybe?
   return dispatch => {
     dispatch(createAction(DISCOVERY_START));
-    const socket = openDiscoverySocket(dataSourceTemplateIds);
+    const socket = api.openDiscoverySocket(dataSourceTemplateIds);
 
     socket.onerror = error =>
       dispatch(createAction(DISCOVERY_ERROR, error));
@@ -29,4 +29,13 @@ export function runDiscovery(dataSourceTemplateIds) {
       }
     }
   };
+}
+
+export const GET_PIPELINES_START = 'GET_PIPELINES_START';
+export const GET_PIPELINES_ERROR = 'GET_PIPELINES_ERROR';
+export const GET_PIPELINES_SUCCESS = 'GET_PIPELINES_SUCCESS';
+
+export function getPipelines(discoveryId) {
+  const promise = api.getPipelines(discoveryId);
+  return createAction('GET_PIPELINES', {promise, data: {discoveryId}});
 }
