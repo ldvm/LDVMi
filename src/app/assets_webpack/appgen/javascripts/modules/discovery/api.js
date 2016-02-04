@@ -23,6 +23,16 @@ export function openDiscoverySocket(dataSourceTemplateIds) {
 }
 
 /**
+ * Opens an evaluation socket with the backend.
+ * @param {Array<number>} pipelineId
+ * @returns {WebSocket}
+ */
+export function openEvaluationSocket(pipelineId) {
+  const socketUrl = 'ws://' + window.location.host + '/api/v1/pipelines/evaluate/' + pipelineId
+  return new WebSocket(socketUrl);
+}
+
+/**
  * Get list of pipelines by discovery id.
  * @returns {Promise<List<Pipeline>>}
  */

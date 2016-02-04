@@ -6,6 +6,7 @@ import SelectSources from './pages/SelectSources'
 import Discovery from './pages/Discovery'
 import Pipelines from './pages/Pipelines'
 import Pipeline from './pages/Pipeline'
+import Evaluation from './pages/Evaluation'
 
 import { getPipelineEvaluations } from './ducks/evaluations'
 import { getPipeline } from './ducks/pipeline'
@@ -23,6 +24,7 @@ export default function createRoutes(path, dispatch) {
         dispatch(getPipeline(next.params.pipelineId));
         dispatch(getPipelineEvaluations(next.params.pipelineId));
       }} />
+      <Route component={Evaluation} path='evaluation/:pipelineId' />
     </Route>
   );
 }
