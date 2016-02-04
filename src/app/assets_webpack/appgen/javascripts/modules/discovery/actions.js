@@ -39,3 +39,21 @@ export function getPipelines(discoveryId) {
   const promise = api.getPipelines(discoveryId);
   return createAction('GET_PIPELINES', {promise, data: {discoveryId}});
 }
+
+export const GET_PIPELINE_START = 'GET_PIPELINE_START';
+export const GET_PIPELINE_ERROR = 'GET_PIPELINE_ERROR';
+export const GET_PIPELINE_SUCCESS = 'GET_PIPELINE_SUCCESS';
+
+export function getPipeline(pipelineId) {
+  const promise = api.getPipeline(pipelineId);
+  return createAction('GET_PIPELINE', {promise, data: {pipelineId}});
+}
+
+export const GET_PIPELINE_EVALUATIONS_START = 'GET_PIPELINE_EVALUATIONS_START';
+export const GET_PIPELINE_EVALUATIONS_ERROR = 'GET_PIPELINE_EVALUATIONS_ERROR';
+export const GET_PIPELINE_EVALUATIONS_SUCCESS = 'GET_PIPELINE_EVALUATIONS_SUCCESS';
+
+export function getPipelineEvaluations(pipelineId) {
+  const promise = api.getPipelineEvaluations(pipelineId);
+  return createAction('GET_PIPELINE_EVALUATIONS', {promise, data: {pipelineId}});
+}

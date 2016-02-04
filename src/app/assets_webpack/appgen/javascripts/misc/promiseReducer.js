@@ -1,7 +1,5 @@
 import { Record, fromJS } from 'immutable';
 
-
-
 export default function createPromiseReducer(customInitialState, actionTypes, customReducer = null) {
   const [startAction, successAction, errorAction] = actionTypes;
 

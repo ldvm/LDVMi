@@ -12,6 +12,8 @@ import notificationsReducer from '../reducers/notifications'
 import authReducer from '../modules/auth/reducer'
 import discoveryReducer from '../modules/discovery/discoveryReducer'
 import pipelinesReducer from '../modules/discovery/pipelinesReducer'
+import pipelineEvaluationsReducer from '../modules/discovery/pipelineEvaluations'
+import pipelineReducer from '../modules/discovery/pipelineReducer'
 // import rootReducer from '../reducers'
 
 const rootReducer = combineReducers({
@@ -21,7 +23,9 @@ const rootReducer = combineReducers({
   notifications: notificationsReducer,
   auth: authReducer,
   discovery: discoveryReducer,
-  pipelines: pipelinesReducer
+  pipelines: pipelinesReducer,
+  pipelineEvaluations: pipelineEvaluationsReducer,
+  pipeline: pipelineReducer
 });
 
 

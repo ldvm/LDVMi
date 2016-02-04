@@ -1,3 +1,5 @@
+import { List } from 'immutable'
+import { Pipeline, Evaluation } from './models'
 import rest from '../../misc/rest'
 
 /**
@@ -22,26 +24,26 @@ export function openDiscoverySocket(dataSourceTemplateIds) {
 
 /**
  * Get list of pipelines by discovery id.
- * @returns {Promise<Array<{id: number, bindingSetId: number, title: string, uuid: string}>>}
+ * @returns {Promise<List<Pipeline>>}
  */
 export async function getPipelines(discoveryId) {
   const result = await rest('/api/v1/pipelines?discoveryId=' + discoveryId + '&skip=0&take=50', null, 'GET');
-  return result.data;
+  return new List(result.data.map(pipeline => Pipeline(pipeline)));
 }
 
 /**
  * Get pipeline by its id.
- * @returns {Promise<{id: number, bindingSetId: number, title: string, uuid: string}>}
+ * @returns {Promise<Pipeline>}
  */
 export async function getPipeline(id) {
-  return await rest('/api/v1/pipelines/' + id, null, 'GET');
+  return new Pipeline(await rest('/api/v1/pipelines/' + id, null, 'GET'));
 }
 
 /**
  * Get pipeline evaluations.
  * @returns {Promise<Array<{id: number, isFinished: boolean, isSuccess: boolean, pipelineId: 89}>>}
  */
-export async function getPipelineEvaluations() {
+export async function getPipelineEvaluations(id) {
   const result =  await rest('/api/v1/pipelines/evaluations/' + id, null, 'GET');
-  return result.data;
+  return new List(result.data.map(evaluation => Evaluation(evaluation)));
 }

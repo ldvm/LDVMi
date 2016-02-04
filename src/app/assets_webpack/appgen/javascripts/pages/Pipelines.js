@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import Table from 'material-ui/lib/table/table';
 import TableHeaderColumn from 'material-ui/lib/table/table-header-column';
@@ -32,12 +33,15 @@ class Pipelines extends Component {
             <TableBody>
               {data.map(pipeline =>
                 <TableRow key={pipeline.id}>
-                  <TableRowColumn>{pipeline.title}</TableRowColumn>
+                  <TableRowColumn>
+                    <Link to={"/pipeline/" + pipeline.id}>
+                      {pipeline.title}
+                    </Link>
+                  </TableRowColumn>
                   <TableRowColumn>(id: {pipeline.id})</TableRowColumn>
                 </TableRow>
               )}
             </TableBody>
-            <br />
           </Table> }
       </PaperCard>
     )
