@@ -18,7 +18,7 @@ class Pipelines extends Component {
   }
 
   render() {
-    const { error, isLoading, pipelines } = this.props;
+    const { error, isLoading, data } = this.props;
     return (
       <PaperCard
         title="2. Discovered pipelines"
@@ -27,10 +27,10 @@ class Pipelines extends Component {
         {isLoading && <LinearProgress mode="indeterminate"/>}
         {error && error != "" && <p>{error}</p>}
 
-        {pipelines.length > 0 &&
+        {data.length > 0 &&
           <Table>
             <TableBody>
-              {pipelines.map(pipeline =>
+              {data.map(pipeline =>
                 <TableRow key={pipeline.id}>
                   <TableRowColumn>{pipeline.title}</TableRowColumn>
                   <TableRowColumn>(id: {pipeline.id})</TableRowColumn>
