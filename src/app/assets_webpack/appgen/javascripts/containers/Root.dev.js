@@ -31,7 +31,7 @@ export default class Root extends Component {
         <div>
           <div style={{width: '70%'}}>
             <Router history={history}>
-              {routes}
+              {routes(store.dispatch)}
             </Router>
           </div>
           <DevTools />

@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import React, {Component} from 'react'
-import Paper from 'material-ui/lib/paper';
+import Paper from '../../../../../../../node_modules/material-ui/lib/paper';
 import { routeActions } from 'redux-simple-router'
-import SelectSourcesForm from '../modules/discovery/SelectSourcesForm'
-import { addDataSources } from '../modules/discovery/api'
-import { notification } from '../actions/notification'
-import PaperCard from '../misc/components/PaperCard'
+import SelectSourcesForm from '../SelectSourcesForm'
+import { addDataSources } from '../api'
+import { notification } from '../../../actions/notification'
+import PaperCard from '../../../misc/components/PaperCard'
 
 const SelectSources = ({dispatch}) => {
 
@@ -13,7 +13,7 @@ const SelectSources = ({dispatch}) => {
     try {
       graphUris = graphUris.split('\n');
       const dataSourceTemplateIds = await addDataSources([{url, graphUris}]);
-      const redirect = '/discovery/?' + dataSourceTemplateIds.map(id => 'dataSourceTemplateIds=' + id).join('&');
+      const redirect = '/discovery/discovery/?' + dataSourceTemplateIds.map(id => 'dataSourceTemplateIds=' + id).join('&');
       dispatch(routeActions.push(redirect));
     } catch (e) {
       const {message, data} = e;

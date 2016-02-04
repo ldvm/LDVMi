@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import LinearProgress from 'material-ui/lib/linear-progress'
-import RaisedButton from 'material-ui/lib/raised-button'
-import PaperCard from '../misc/components/PaperCard'
+import LinearProgress from '../../../../../../../node_modules/material-ui/lib/linear-progress'
+import RaisedButton from '../../../../../../../node_modules/material-ui/lib/raised-button'
+import PaperCard from '../../../misc/components/PaperCard'
 import { routeActions } from 'redux-simple-router'
-import { runDiscovery } from '../modules/discovery/actions'
+import { runDiscovery } from '../ducks/discovery'
 
 class Discovery extends Component {
   componentDidMount() {
@@ -33,7 +33,7 @@ class Discovery extends Component {
         </pre>
         {isFinished && isSuccess &&
           <RaisedButton label={"Show discovered pipelines (id: " + id + ")"} primary={true}
-            onTouchTap={() => dispatch(routeActions.push('/pipelines/' + id))} />
+            onTouchTap={() => dispatch(routeActions.push('/discovery/pipelines/' + id))} />
         }
       </PaperCard>
     )
@@ -44,6 +44,6 @@ export default connect(state => {
   const ids = state.routing.location.query.dataSourceTemplateIds || [];
   return {
     dataSourceTemplateIds: Array.isArray(ids) ? ids : [ids],
-    ...state.discovery.toJS()
+    ...state.discovery.discovery.toJS()
   };
 })(Discovery);
