@@ -25,6 +25,22 @@ const Pipeline = (props) => {
 
       {error && error != "" && <p>{error}</p>}
       {evaluations.count() == 0 && <p>You have to run the pipeline first to get a visualization.</p>}
+
+      {evaluations.count() > 0 &&
+        <Table>
+          <TableBody>
+            {evaluations.map(evaluation =>
+              <TableRow key={evaluation.id}>
+                <TableRowColumn>
+                  {evaluation.uuid}
+                </TableRowColumn>
+                <TableRowColumn>{evaluation.isFinished ? 'finished' : 'not finished'}</TableRowColumn>
+                <TableRowColumn>{evaluation.isSuccess ? 'success' : 'error'}</TableRowColumn>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      }
     </PaperCard>
   )
 };
