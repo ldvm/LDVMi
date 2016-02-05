@@ -19,7 +19,7 @@ class DataCubeCellExtractor(k: DataCubeKey) extends QueryExecutionResultExtracto
       uri -> measureNodes.collectFirst {
         case o if o.isLiteral => {
           val literal = o.asLiteral()
-          BigDecimal.apply(Option(literal.getString).GetOrElse("0"))
+          BigDecimal.apply(Option(literal.getString).getOrElse("0"))
         }
       }
     }
