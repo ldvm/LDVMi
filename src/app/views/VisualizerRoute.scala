@@ -12,7 +12,7 @@ object VisualizerRoute {
       case "http://linked.opendata.cz/resource/ldvm/visualizer/sunburst/SunburstVisualizerTemplate" => "/visualize#/hierarchy/sunburst/%ei"
       case "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/PolygonMapsVisualizerTemplate" => "/visualize/map#/id/%ei"
       case "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate" => "/visualize/map#/markers/%ei"
-      case "http://linked.opendata.cz/resource/ldvm/visualizer/data-cube-simple/DataCubeVisualizerTemplate" => "/visualize/datacube#/id/%ei"
+      case "http://linked.opendata.cz/ontology/ldvm/visualizer/data-cube/DataCubeVisualizerTemplate" => "/visualize/datacube#/id/%ei"
       case "http://linked.opendata.cz/resource/ldvm/visualizer/openlayers/OpenLayersVisualizerTemplate" => "/visualize/openlayers#/id/%ei"
       case _ => "/404"
     }
