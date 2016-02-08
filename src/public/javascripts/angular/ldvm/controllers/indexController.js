@@ -9,6 +9,7 @@ define(['angular', 'material', 'underscore.string', './controllers'], function (
             $scope.pipelines = [];
 
             $scope.visualize = function (feelsLucky) {
+
                 var data = $scope.endpoints.splice(0, $scope.endpoints.length - 1).map(function (e) {
                     return {
                         url: e.url,

@@ -31,7 +31,7 @@ GET         /assets/javascripts/angular/:ngAppName/controllers.js               
 
 GET         /multisource                                                                  @controllers.VisualizationController.multiSource()
 POST        /datasources                                                                  @controllers.VisualizationController.multiUpload()
-GET         /discover/                                                                    @controllers.VisualizationController.discover(dataSourceTemplateIds : List[Long], combine: Boolean ?= false)
+GET         /discover/                                                                    @controllers.VisualizationController.discover(dataSourceTemplateIds : List[Long], combine: Boolean ?= false, lucky: Boolean ?= false)
 
 
 # API v1

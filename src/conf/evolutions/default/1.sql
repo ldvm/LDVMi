@@ -68,7 +68,6 @@ alter table "pipelines" add constraint "visualizer_component_template" foreign k
 alter table "transformer_instances" add constraint "fk_tit_cit_component_instance_id" foreign key("component_instance_id") references "component_instances"("id") on update NO ACTION on delete NO ACTION;
 alter table "transformer_instances" add constraint "fk_tit_dst_component_id" foreign key("transformer_id") references "transformer_templates"("id") on update NO ACTION on delete NO ACTION;
 alter table "transformer_templates" add constraint "fk_tt_ctt_component_template_id" foreign key("component_template_id") references "component_templates"("id") on update NO ACTION on delete NO ACTION;
-alter table "visualization_configuration" add constraint "fk_vc_ct_uri" foreign key("visualizer_uri") references "component_templates"("uri") on update NO ACTION on delete NO ACTION;
 alter table "visualizer_instances" add constraint "fk_vit_cit_component_instance_id" foreign key("component_instance_id") references "component_instances"("id") on update NO ACTION on delete NO ACTION;
 alter table "visualizer_instances" add constraint "fk_vit_dst_visualizer_id" foreign key("visualizer_id") references "visualizer_templates"("id") on update NO ACTION on delete NO ACTION;
 alter table "visualizer_templates" add constraint "fk_vt_ctt_component_template_id" foreign key("component_id") references "component_templates"("id") on update NO ACTION on delete NO ACTION;
@@ -78,7 +77,6 @@ alter table "visualizer_templates" add constraint "fk_vt_ctt_component_template_
 alter table "visualizer_templates" drop constraint "fk_vt_ctt_component_template_id";
 alter table "visualizer_instances" drop constraint "fk_vit_cit_component_instance_id";
 alter table "visualizer_instances" drop constraint "fk_vit_dst_visualizer_id";
-alter table "visualization_configuration" drop constraint "fk_vc_ct_uri";
 alter table "transformer_templates" drop constraint "fk_tt_ctt_component_template_id";
 alter table "transformer_instances" drop constraint "fk_tit_cit_component_instance_id";
 alter table "transformer_instances" drop constraint "fk_tit_dst_component_id";

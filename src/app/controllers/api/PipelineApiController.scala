@@ -55,8 +55,6 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
       }
     )
 
-    pipelinesPage.foreach(p => println(p.visualizationConfiguration.map(_.priority)))
-
     val result = JsObject(Seq(
       "data" -> Json.toJson(pipelinesPage),
       "count" -> JsNumber(pipelineService.countAll)

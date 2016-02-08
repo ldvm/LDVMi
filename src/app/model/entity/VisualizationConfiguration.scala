@@ -23,8 +23,6 @@ case class VisualizationConfiguration(
 
 class VisualizationConfigurationTable(tag: Tag) extends IdEntityTable[VisualizationConfigurationId, VisualizationConfiguration](tag, "visualization_configuration") {
 
-  def visualizerTemplate = foreignKey("fk_vc_ct_uri", visualizerUri, componentTemplatesQuery)(_.uri)
-
   def visualizerUri = column[String]("visualizer_uri", O.NotNull)
 
   def visualizationUri = column[String]("visualization_uri", O.NotNull)
