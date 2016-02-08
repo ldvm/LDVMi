@@ -86,7 +86,7 @@ class PipelineDiscoveryAlgorithm(
           case PartialPipeline(m, p, _) => PartialPipeline(m, p, used = true)
         }
 
-        val allPartial = (usedPartialPipelines ++ createdPartialPipelines)
+        val allPartial = usedPartialPipelines ++ createdPartialPipelines
 
         reportMessage("All partial pipelines: " + allPartial.size)
 

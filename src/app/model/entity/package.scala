@@ -10,6 +10,8 @@ package object entity {
   val visualizerTemplatesQuery = TableQuery[VisualizerTemplateTable]
   val dataSourceTemplatesQuery = TableQuery[DataSourceTemplateTable]
 
+  val visualizationConfigurationsQuery = TableQuery[VisualizationConfigurationTable]
+
   val componentFeaturesQuery = TableQuery[FeatureToComponentTable]
   val featuresQuery = TableQuery[FeatureTable]
   val bindingSetsQuery = TableQuery[DataPortBindingSetTable]

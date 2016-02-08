@@ -1,7 +1,7 @@
 package controllers.api
 
 import controllers.api.JsonImplicits._
-import model.entity.{ComponentTemplateId, Pipeline, PipelineDiscoveryId, PipelineId}
+import model.entity._
 import model.service.PipelineService
 import play.api.Play.current
 import play.api.db.slick._
@@ -9,6 +9,7 @@ import play.api.libs.json._
 import play.api.mvc.Controller
 import scaldi.{Injectable, Injector}
 import utils.PaginationInfo
+import CustomUnicornPlay.driver.simple._
 
 class PipelineApiController(implicit inj: Injector) extends Controller with Injectable {
 
@@ -46,8 +47,18 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     val pipelineDiscoveryId = discoveryId.map(PipelineDiscoveryId.apply)
     val visualizerTemplateId = visualizerId.map(ComponentTemplateId.apply)
 
+    val pipelinesPage = pipelineService.findPaginatedFiltered(PaginationInfo(skip, take), pipelineDiscoveryId, visualizerTemplateId)(
+      e => {
+        val priorities = e.visualizationConfiguration.map(_.priority)
+        val sum = priorities.sum
+        (sum, e.modifiedUtc.desc, e.createdUtc.desc)
+      }
+    )
+
+    pipelinesPage.foreach(p => println(p.visualizationConfiguration.map(_.priority)))
+
     val result = JsObject(Seq(
-      "data" -> Json.toJson(pipelineService.findPaginatedFiltered(PaginationInfo(skip, take), pipelineDiscoveryId, visualizerTemplateId)()),
+      "data" -> Json.toJson(pipelinesPage),
       "count" -> JsNumber(pipelineService.countAll)
     ))
 

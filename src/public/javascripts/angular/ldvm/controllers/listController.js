@@ -1,4 +1,4 @@
-define(['angular', 'underscore', './controllers'], function (ng, _) {
+define(['angular', './controllers'], function (ng) {
     'use strict';
 
     return ng.module('ldvm.controllers')
@@ -34,15 +34,8 @@ define(['angular', 'underscore', './controllers'], function (ng, _) {
                             $scope.total = (showPagination ? data.count : data.data.length);
                             $scope.pipelines = data.data;
 
-                            if ($scope.total === 1 && (quick === 1 || lucky)) {
+                            if (($scope.total === 1 && quick === 1) || ($scope.total > 0 && lucky)) {
                                 window.location.href = "/pipelines#/detail/" + $scope.pipelines[0].id + "?autorun=1";
-                            }
-
-                            if ($scope.total > 1 && lucky) {
-                                var luckyPipeline = _.find($scope.pipelines, function (p) {
-                                    return p.lucky === 1;
-                                });
-                                window.location.href = "/pipelines#/detail/" + luckyPipeline.id + "?autorun=1";
                             }
                         });
                     };
