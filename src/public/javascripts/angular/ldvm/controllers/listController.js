@@ -14,6 +14,8 @@ define(['angular', './controllers'], function (ng) {
                     };
                     $scope.total = 0;
 
+                    $scope.discoveryId = $routeParams.discoveryId;
+
                     var quick = parseInt($routeParams.quick);
                     var lucky = parseInt($routeParams.lucky);
 

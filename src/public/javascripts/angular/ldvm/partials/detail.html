@@ -2,7 +2,8 @@
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <a ng-href="#/evaluate/{{pipelineId}}" class="btn btn-primary"><i class="glyphicon glyphicon-play"></i> Run</a>
+            <a href="/visualize/{{e.id}}" class="btn btn-primary" ng-show="evaluations && evaluations.length > 0 && evaluations[0].isSuccess">Visualization</a>
+            <a ng-href="#/evaluate/{{pipelineId}}" class="btn btn-default" ng-class="{'btn-primary': evaluations.length == 0}"><i class="glyphicon glyphicon-play"></i> Execute pipeline</a>
 
             <div class="pull-right">
                 <button ng-click="permanent(pipelineId)" ng-show="pipeline.isTemporary" class="btn btn-default">Make permanent</button>
