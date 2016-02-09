@@ -2,8 +2,10 @@ package model.rdf.sparql.datacube
 
 import model.entity.{PipelineEvaluation, PipelineEvaluationQuery}
 import model.rdf.LocalizedValue
+import model.rdf.extractor.LabelsExtractor
 import model.rdf.sparql.datacube.extractor._
 import model.rdf.sparql.datacube.query._
+import model.rdf.sparql.query.LabelsDereferenceQuery
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpoint, SparqlEndpointService, ValueFilter}
 import model.service.{PipelineService, SessionScoped}
 import play.api.libs.json.JsValue
@@ -30,10 +32,6 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
 
   def getDataStructures(evaluation: PipelineEvaluation): Seq[DataCubeDataStructure] = {
     sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new DataCubeDataStructuresQuery, new DataCubeDataStructuresExtractor).get
-  }
-
-  def getLabels(uri: String): Option[LocalizedValue] = {
-    sparqlEndpointService.dereference(uri, new LabelsDereferenceQuery(uri), new LabelsExtractor)
   }
 
   def getDataStructureComponents(evaluation: PipelineEvaluation, uri: String, isTolerant: Boolean = false): Seq[DataCubeComponent] = {

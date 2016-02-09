@@ -91,7 +91,7 @@ GET         /api/v1/datacube/datastructure                                      
 POST        /api/v1/datacube/values/:id                                                   @controllers.api.DataCubeApiController.values(id: Long)
 POST        /api/v1/datacube/slices/:id                                                   @controllers.api.DataCubeApiController.sliceCube(id: Long)
 
-GET         /dereference                                                                  @controllers.api.DataCubeApiController.dereference(uri: String)
+GET         /dereference/labels                                                           @controllers.api.VisualizationApiController.dereferenceLabels(uri: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /vassets/*file                                                                controllers.Assets.versioned(path="/public", file: Asset)

@@ -13,8 +13,6 @@ trait DataCubeService {
 
   def getDataStructureComponents(evaluation: PipelineEvaluation, uri: String, isTolerant: Boolean = false): Seq[DataCubeComponent]
 
-  def getLabels(uri: String) : Option[LocalizedValue]
-
   def getValues(evaluation: PipelineEvaluation, uris: List[String]): Map[String, Option[Seq[DataCubeComponentValue]]]
 
   def sliceCubeAndPersist(evaluation: PipelineEvaluation, queryData: DataCubeQueryData, queryDataJson: JsValue)

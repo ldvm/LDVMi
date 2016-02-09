@@ -1,8 +1,7 @@
-package model.rdf.sparql.datacube.extractor
+package model.rdf.extractor
 
 import model.rdf.LocalizedValue
-import model.rdf.extractor.QueryExecutionResultExtractor
-import model.rdf.sparql.datacube.query.LabelsDereferenceQuery
+import model.rdf.sparql.query.LabelsDereferenceQuery
 import org.apache.jena.query.{QueryExecution, QuerySolution}
 import org.apache.jena.rdf.model.Literal
 

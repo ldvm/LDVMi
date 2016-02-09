@@ -1,14 +1,17 @@
 package model.rdf.sparql.visualization
 
 import model.entity.{VisualizerTemplate, PipelineEvaluation}
+import model.rdf.LocalizedValue
 import model.service.component.DataReference
 import play.api.db.slick._
 
 trait VisualizationService {
 
-  def skosScheme(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode]
-
   def dataReferences(evaluation: PipelineEvaluation)(implicit session: Session): Seq[DataReference]
+
+  def getLabels(uri: String) : Option[LocalizedValue]
+
+  def skosScheme(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode]
 
   def skosSchemes(evaluation: PipelineEvaluation, tolerant: Boolean)(implicit session: Session): Option[Seq[Scheme]]
 

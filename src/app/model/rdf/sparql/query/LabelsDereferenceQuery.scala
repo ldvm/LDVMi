@@ -1,6 +1,4 @@
-package model.rdf.sparql.datacube.query
-
-import model.rdf.sparql.query.SparqlQuery
+package model.rdf.sparql.query
 
 
 class LabelsDereferenceQuery(val uri: String) extends SparqlQuery {
