@@ -15,6 +15,7 @@ import play.api.db.slick.Session
 import play.api.libs.json.{JsSuccess, Json}
 import scaldi.{Injectable, Injector}
 import utils.{MD5, PaginationInfo}
+import CustomUnicornPlay.driver.simple._
 
 import scala.slick.lifted.Ordered
 
@@ -57,6 +58,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       pipeline.uri.getOrElse("Unlabeled pipeline"),
       pipeline.title.getOrElse("Unlabeled pipeline"),
       description = None,
+      componentTemplatesQuery.filter(_.uri === pipeline.componentInstances.last.componentInstance.uri).first.id.get,
       isTemporary = false,
       pipelineDiscovery = None
     ))
@@ -102,9 +104,13 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
     val binding = DataPortBinding(None, setId, outputPortId, inputPortId)
     dataPortBindingsRepository.save(binding)
 
-    val pipeline = Pipeline(None, setId, "urn:"+UUID.randomUUID().toString(),
+    val pipeline = Pipeline(
+      None,
+      setId,
+      "urn:"+UUID.randomUUID().toString,
       "Validator: (" + dataSourceTemplate.componentTemplate.title + " -> " + visualizerTemplate.componentTemplate.title + " )",
-      None
+      None,
+      visualizerInstance.template.componentTemplateId
     )
 
     val pipelineId = pipelinesRepository.save(pipeline)
@@ -181,10 +187,16 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
 
         val instances = pipeline.componentInstances
 
-        val dsNames = "(" + instances.filter(_.componentTemplate.inputTemplates.size == 0).map(_.title).mkString(", ") + ")"
-        val vizName = "(" + instances.filter(_.componentTemplate.outputTemplate.isEmpty).map(_.title).mkString(", ") + ")"
+        val datasources = instances.filter(_.componentTemplate.inputTemplates.isEmpty)
+        val visualizers = instances.filter(_.componentTemplate.outputTemplate.isEmpty)
+        val visualizer = visualizers.head // if the visualizer is not present, it's not a pipeline
+
+        val dsNames = "(" + datasources.map(_.title).mkString(", ") + ")"
+        val vizName = "(" + visualizer.title + ")"
         val name = dsNames + " -> (" + (instances.size - 2) + ") -> " + vizName
-        pipelinesRepository.save(Pipeline(None, bindingSetId, "", name, None, isTemporary = true, pipelineDiscovery = Some(pipelineDiscoveryId)))
+
+        val isTemporary = true
+        pipelinesRepository.save(Pipeline(None, bindingSetId, "", name, None, visualizer.componentTemplate.id.get, isTemporary, Some(pipelineDiscoveryId)))
 
         pipeline.portMappings.map { mapping =>
           val sourceId = instanceData(mapping.sourceComponentInstance)._3.get

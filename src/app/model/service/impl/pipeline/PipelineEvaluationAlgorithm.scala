@@ -15,6 +15,7 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
 
   val logger = Akka.system.actorOf(reporterProps)
   logger ! evaluation.uuid.toString
+  logger ! evaluation.id.get
 
   def run(bindingSet: DataPortBindingSet) {
 

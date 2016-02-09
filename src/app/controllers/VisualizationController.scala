@@ -118,13 +118,15 @@ class VisualizationController(implicit inj: Injector) extends Controller with In
     pipelineService.findEvaluationById(PipelineEvaluationId(id)).map(func).getOrElse(NotFound)
   }
 
-  def discover(dataSourceTemplateIds: List[Long], combine: Boolean = false) = DBAction { rws =>
+  def discover(dataSourceTemplateIds: List[Long], combine: Boolean = false, lucky: Boolean = false) = DBAction { rws =>
 
     val n = if (combine) {1} else {0}
+    val l = if (lucky) {1} else {0}
 
     val url: String = "/pipelines#/discover?" +
       dataSourceTemplateIds.map(i => "dataSourceTemplateIds=" + i).mkString("&") +
-      "&combine=" + n.toString
+      "&combine=" + n.toString +
+      "&lucky=" + l.toString
 
     TemporaryRedirect(url)
   }

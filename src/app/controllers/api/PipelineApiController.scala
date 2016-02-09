@@ -1,17 +1,15 @@
 package controllers.api
 
-import akka.actor._
 import controllers.api.JsonImplicits._
-import controllers.api.ProgressReporter._
-import model.entity.{ComponentTemplateId, PipelineDiscoveryId, Pipeline, PipelineId}
+import model.entity._
 import model.service.PipelineService
-import play.api.db
+import play.api.Play.current
 import play.api.db.slick._
 import play.api.libs.json._
-import play.api.mvc.{WebSocket, Controller}
+import play.api.mvc.Controller
 import scaldi.{Injectable, Injector}
-import play.api.Play.current
 import utils.PaginationInfo
+import CustomUnicornPlay.driver.simple._
 
 class PipelineApiController(implicit inj: Injector) extends Controller with Injectable {
 
@@ -49,15 +47,23 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     val pipelineDiscoveryId = discoveryId.map(PipelineDiscoveryId.apply)
     val visualizerTemplateId = visualizerId.map(ComponentTemplateId.apply)
 
+    val pipelinesPage = pipelineService.findPaginatedFiltered(PaginationInfo(skip, take), pipelineDiscoveryId, visualizerTemplateId)(
+      e => {
+        val priorities = e.visualizationConfiguration.map(_.priority)
+        val sum = priorities.sum
+        (sum, e.modifiedUtc.desc, e.createdUtc.desc)
+      }
+    )
+
     val result = JsObject(Seq(
-      "data" -> Json.toJson(pipelineService.findPaginatedFiltered(PaginationInfo(skip, take), pipelineDiscoveryId, visualizerTemplateId)()),
+      "data" -> Json.toJson(pipelinesPage),
       "count" -> JsNumber(pipelineService.countAll)
     ))
 
     Ok(result)
   }
 
-  def discover(dataSourceTemplateIds: List[Long], combine: Boolean = false) =  withWebSocket { logger => implicit session =>
+  def discover(dataSourceTemplateIds: List[Long], combine: Boolean = false) = withWebSocket { logger => implicit session =>
     pipelineService.discover(logger, dataSourceTemplateIds, combine)
   }
 
@@ -81,7 +87,7 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
         "label" -> JsString(ci.title),
         "htmlContent" -> JsString(ci.description.getOrElse("")),
         "type" -> JsString(ci.getType.toString.toLowerCase),
-        "inputs" -> JsArray(ci.inputInstances.map{ ii =>
+        "inputs" -> JsArray(ci.inputInstances.map { ii =>
           JsObject(Seq(
             "id" -> JsNumber(ii.id.get.id),
             "uri" -> JsString(ii.dataPortInstance.uri),
