@@ -1,30 +1,63 @@
 import React from 'react';
 import { connect } from 'react-redux'
+import { reduxForm } from 'redux-form';
+import { makeValidator, errorTextFactory } from '../../../misc/formUtils'
+import { dialogClose } from '../../../ducks/dialog'
+import TextField from 'material-ui/lib/text-field';
+import Checkbox from '../../../misc/components/Checkbox';
 import Button from '../../../misc/components/Button'
 import Dialog from '../../../containers/Dialog';
-import { dialogClose } from '../../../ducks/dialog'
 
-export const name = 'ADD_DATA_SOURCE_DIALOG';
+export const dialogName = 'ADD_DATA_SOURCE_DIALOG';
 
 const AddDataSourceDialog = (props) =>  {
-  const { dialogClose } = props;
+  const {dispatch, fields: {name, url, graphUris, isPublic}, handleSubmit, submitting, submitFailed} = props;
+  const errorText = errorTextFactory(submitFailed);
 
   const actions = [
-    <Button label="Cancel" secondary={true}
-      onTouchTap={dialogClose} />,
-    <Button label="Submit" primary={true} keyboardFocused={true}
-      onTouchTap={dialogClose} />
+    <Button label="Cancel" secondary
+      onTouchTap={() => dispatch(dialogClose(dialogName))} />,
+    <Button label="Add source" primary raised disabled={submitting}
+      onTouchTap={handleSubmit} />
   ];
 
   return (
-    <div>
-      <Dialog name={name} title="Add new data source" actions={actions} modal={false}>
-        The form will be here
-      </Dialog>
-    </div>
+    <Dialog name={dialogName} title="Add new data source" actions={actions} modal={false}>
+      <form onSubmit={handleSubmit} className={props.className}>
+        <div>
+          <TextField floatingLabelText="Name" {...name} {...errorText(name)} fullWidth />
+          <TextField floatingLabelText="Endpoint URL" {...url} {...errorText(url)} fullWidth />
+          <TextField floatingLabelText="Graph URIs (line separated, optional)"
+            multiLine={true} rows={1} rowsMax={4}
+            {...graphUris} {...errorText(graphUris)} fullWidth />
+          <br /><br />
+          <Checkbox label="Make this data source available to other users" {...isPublic} />
+        </div>
+      </form>
+    </Dialog>
   );
 };
 
-export default connect(state => state, dispatch => ({
-  dialogClose: () => dispatch(dialogClose(name))
-}))(AddDataSourceDialog);
+const validate = makeValidator({
+  properties: {
+    name: {
+      allowEmpty: false,
+      message: 'Please specify the name of the new data source'
+    },
+    url: {
+      allowEmpty: false,
+      message: 'Please specify an endpoint'
+    },
+    graphUris: {
+      allowEmpty: true
+    }
+  }
+});
+
+export default reduxForm({
+  form: 'add-data-source',
+  fields: ['name', 'url', 'graphUris', 'isPublic'],
+  validate
+})(AddDataSourceDialog);
+
+

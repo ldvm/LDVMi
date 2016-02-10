@@ -6,9 +6,11 @@ $primaryColor: #009688;
 $accentColor: #ec407a;
 $fontSize: 16px;
 
-body {
+html {
   font-family: Roboto, serif;
   font-size: $fontSize;
+}
+body {
   margin: 0;
   background-color: #f2f2f2;
   color: rgba(0, 0, 0, 0.87);

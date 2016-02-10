@@ -25,3 +25,13 @@ export function makeValidator(scheme) {
 export function errorText(field) {
   return field.touched && field.error ? { errorText: field.error } : {};
 }
+
+/**
+ * Add error text property to Material text field with current error message if
+ * (1) The form has been submitted
+ * (2) The form failed
+ * (3) The form faild on this field
+ */
+export function errorTextFactory(submitFailed) {
+  return (field) => submitFailed && field.error ? {errorText: field.error} : {};
+}
