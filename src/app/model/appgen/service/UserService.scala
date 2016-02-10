@@ -16,7 +16,7 @@ class UserService(implicit inj: Injector) extends Injectable {
       UserSuccessfullyAdded(id)
     } catch {
       case (e: JdbcSQLException) =>
-        if (e.getErrorCode == 23505) {
+        if (e.getErrorCode == 23505) { // TODO: replace by a constant
           UserAlreadyExists
         } else {
           throw e

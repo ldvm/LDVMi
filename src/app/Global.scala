@@ -30,6 +30,9 @@ object Global extends WithFilters(
   )
 ) with ScaldiSupport with GlobalSettings {
   val services = new ServiceModule
+
+  // TODO: The services line should be back in the def definition as this way, it's initialized
+  // immediately and breaks the only test we have (via Injector).
   def applicationModule = new RepositoryModule :: services :: new RdfModule :: new
       ControllerModule :: new ApiModule :: new AppgenRepositoryModule
 
