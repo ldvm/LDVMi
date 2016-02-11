@@ -26,18 +26,18 @@ case class User(id: Option[UserId], name: String, email: String, password: Strin
 
 
 /** Table definition for users. */
-class Users(tag: Tag) extends IdTable[UserId, User](tag, "USERS") {
+class Users(tag: Tag) extends IdTable[UserId, User](tag, "appgen_users") {
 
 
   // use this property if you want to change name of `id` column to uppercase
   // you need this on H2 for example
-  override val idColumnName = "ID"
+  override val idColumnName = "id"
 
-  def name = column[String]("NAME", O.NotNull)
+  def name = column[String]("name", O.NotNull)
 
-  def email = column[String]("EMAIL", O.NotNull)
+  def email = column[String]("email", O.NotNull)
 
-  def password = column[String]("PASSWORD", O.NotNull)
+  def password = column[String]("password", O.NotNull)
 
   def idx = index("idx_unique_email", email, unique = true)
 
