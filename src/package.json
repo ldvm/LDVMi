@@ -26,6 +26,7 @@
     "redux-simple-router": "^2.0.3",
     "redux-thunk": "^1.0.3",
     "reqwest": "^2.0.5",
+    "reselect": "^2.0.3",
     "revalidator": "^0.3.1",
     "when": "^3.7.7"
   },

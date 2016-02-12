@@ -11,6 +11,7 @@ import loadingReducer from '../reducers/loading'
 import notificationsReducer from '../reducers/notifications'
 import authReducer from '../modules/auth/reducer'
 import discoveryReducer from '../modules/discovery/reducer'
+import createAppReducer from '../modules/createApp/reducer'
 import dialogReducer from '../ducks/dialog'
 // import rootReducer from '../reducers'
 
@@ -20,8 +21,9 @@ const rootReducer = combineReducers({
   loading: loadingReducer,
   notifications: notificationsReducer,
   auth: authReducer,
+  dialog: dialogReducer,
   discovery: discoveryReducer,
-  dialog: dialogReducer
+  createApp: createAppReducer
 });
 
 

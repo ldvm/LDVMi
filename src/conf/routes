@@ -96,6 +96,7 @@ POST        /appgen/api/auth/signup                         @controllers.appgen.
 POST        /appgen/api/auth/signin                         @controllers.appgen.api.AuthApiController.signIn
 POST        /appgen/api/auth/getUser                        @controllers.appgen.api.AuthApiController.getUser
 POST        /appgen/api/createApp/addDataSource             @controllers.appgen.api.CreateAppApiController.addDataSource
+POST        /appgen/api/createApp/getDataSources            @controllers.appgen.api.CreateAppApiController.getDataSources
 GET         /appgen$any<.*>                                 @controllers.appgen.ApplicationController.index(any)
 
 # Map static resources from the /public folder to the /assets URL path

@@ -1,8 +1,10 @@
 package controllers.appgen.api
 
+import controllers.appgen.api.JsonImplicits._
 import model.appgen.entity.UserDataSource
 import model.appgen.repository.UserDataSourcesRepository
 import model.appgen.rest.AddDataSourceRequest._
+import model.appgen.rest.EmptyRequest.EmptyRequest
 import model.service.DataSourceService
 import scaldi.Injector
 import model.appgen.rest.Response._
@@ -15,6 +17,11 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
     val dataSourceTemplateId = dataSourceService.createDataSourceFromUris(json.url, json.graphUris).get
     userDataSourceRepository save
       new UserDataSource(None, json.name, json.isPublic, request.user.id.get, dataSourceTemplateId)
-    Ok(SuccessResponse("Data source has been added"))
+    Ok(SuccessResponse("Data source has been added")) // TODO: return the data source
+  }
+
+  def getDataSources = RestAction[EmptyRequest] { implicit request => json =>
+    val dataSources = userDataSourceRepository.find(request.user)
+    Ok(SuccessResponse(data = Seq("dataSources" -> dataSources)))
   }
 }

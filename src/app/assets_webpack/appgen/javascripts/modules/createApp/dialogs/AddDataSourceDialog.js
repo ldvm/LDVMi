@@ -59,5 +59,3 @@ export default reduxForm({
   fields: ['name', 'url', 'graphUris', 'isPublic'],
   validate
 })(AddDataSourceDialog);
-
-

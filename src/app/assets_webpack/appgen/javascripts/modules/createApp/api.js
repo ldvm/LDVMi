@@ -9,3 +9,7 @@ export async function addDataSources(dataSource) {
   const result = await rest('createApp/addDataSource', dataSource);
   return result;
 }
+
+export async function getDataSources() {
+  return await rest('createApp/getDataSources');
+}
