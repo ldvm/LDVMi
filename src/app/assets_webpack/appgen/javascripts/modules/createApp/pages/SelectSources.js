@@ -36,8 +36,8 @@ const SelectSources = ({ dialogOpen, dialogClose, notification, dataSources }) =
     <PaperCard title="1. Select data sources" subtitle="Select data sources for your new visualization">
       <PromiseResult isLoading={dataSources.isLoading} error={dataSources.error} />
 
-      {!dataSources.isLoading && !dataSources.error && <div>
-        <Button label="Browse" onTouchTap={() => 0} icon="folder_open" raised/>
+      {dataSources.done && <div>
+        <Button label="Browse" onTouchTap={() => 0} icon="folder_open" raised />
         <Button label="Add new" onTouchTap={() => dialogOpen(dialogName)} icon="add" raised />
         <AddDataSourceDialog onSubmit={addDataSource} initialValues={initialValues} />
       </div>}
@@ -46,8 +46,6 @@ const SelectSources = ({ dialogOpen, dialogClose, notification, dataSources }) =
 };
 
 export default connect(
-  createSelector(moduleSelector, state => ({
-    dataSources: state.dataSources
-  })),
+  createSelector(moduleSelector, state => state),
   dispatch => bindActionCreators({ dialogOpen, dialogClose, notification }, dispatch)
 )(SelectSources);

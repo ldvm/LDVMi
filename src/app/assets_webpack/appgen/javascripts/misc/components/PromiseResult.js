@@ -1,21 +1,14 @@
 import React, { PropTypes } from 'react'
-import FontIcon from 'material-ui/lib/font-icon'
-import CircularProgress from 'material-ui/lib/circular-progress';
+import Loading from './Loading'
+import Alert from './Alert'
 
 const PromiseResult = ({error, isLoading}) => {
   if (isLoading === true) {
-    return <div>
-      <CircularProgress size={0.5} style={{ float: 'left', marginRight: '8px' }}/>
-      <div style={{ lineHeight: '50px' }}>Loading...</div>
-    </div>
+    return <Loading>Loading...</Loading>
   } else if (error) {
-    // TODO: create universal warning message component
-    return <p>
-      <FontIcon className="material-icons" style={{ float: 'left', marginRight: '8px' }}>error</FontIcon>
-      {error}
-    </p>;
+    return <Alert danger>{error}</Alert>;
   } else {
-    return <span></span>;
+    return <span />;
   }
 };
 

@@ -18,6 +18,7 @@ export default function createPromiseReducer(customInitialState, actionTypes, cu
   const InitialState = Record({
     error: "",
     isLoading: false,
+    done: false,
     data: customInitialState
   });
   const initialState = InitialState();
@@ -39,6 +40,7 @@ export default function createPromiseReducer(customInitialState, actionTypes, cu
       case successAction:
         return state
           .set('isLoading', false)
+          .set('done', true)
           .update('data', data => reducer(data, action));
     }
 
