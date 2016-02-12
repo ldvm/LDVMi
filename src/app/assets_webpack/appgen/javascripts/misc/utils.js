@@ -13,3 +13,14 @@ export function arrayToObject(array, extractKey) {
 
   return obj;
 }
+
+export function getColorType(props) {
+  switch (true) {
+    case (props.primary): return 'primary';
+    case (props.success): return 'success';
+    case (props.info): return 'info';
+    case (props.warning): return 'warning';
+    case (props.danger): return 'danger';
+    default: return 'default';
+  }
+}

@@ -2,16 +2,18 @@ import Colors from 'material-ui/lib/styles/colors';
 import ColorManipulator from 'material-ui/lib/utils/color-manipulator';
 import Spacing from 'material-ui/lib/styles/spacing';
 import zIndex from 'material-ui/lib/styles/zIndex';
+import * as Theme from './theme'
+
 
 export default {
   spacing: Spacing,
   zIndex: zIndex,
   fontFamily: 'Roboto, sans-serif',
   palette: {
-    primary1Color: Colors.teal500,
+    primary1Color: Theme.primary, // AppBar, Secondary Button, Check boxes and other elements
     primary2Color: Colors.teal700,
     primary3Color: Colors.lightBlack,
-    accent1Color: Colors.pink400,
+    accent1Color: Theme.primary, // Primary button
     accent2Color: Colors.grey100,
     accent3Color: Colors.grey500,
     textColor: Colors.darkBlack,
