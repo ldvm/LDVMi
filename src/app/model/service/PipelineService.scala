@@ -21,7 +21,8 @@ trait PipelineService extends CrudService[PipelineId, Pipeline, PipelineTable, P
   def findPaginatedFiltered[T <% Ordered](
     paginationInfo: PaginationInfo,
     pipelineDiscoveryId: Option[PipelineDiscoveryId] = None,
-    visualizerId: Option[ComponentTemplateId] = None
+    visualizerId: Option[ComponentTemplateId] = None,
+    onlyPermanent: Boolean = false
     )
     (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
     (implicit session: Session): Seq[Pipeline]

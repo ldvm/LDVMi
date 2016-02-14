@@ -42,12 +42,12 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     Ok(result)
   }
 
-  def list(skip: Int = 0, take: Int = 50, discoveryId: Option[Long] = None, visualizerId: Option[Long] = None) = DBAction { implicit rws =>
+  def list(skip: Int = 0, take: Int = 50, discoveryId: Option[Long] = None, visualizerId: Option[Long] = None, onlyPermanent: Option[Boolean] = None) = DBAction { implicit rws =>
 
     val pipelineDiscoveryId = discoveryId.map(PipelineDiscoveryId.apply)
     val visualizerTemplateId = visualizerId.map(ComponentTemplateId.apply)
 
-    val pipelinesPage = pipelineService.findPaginatedFiltered(PaginationInfo(skip, take), pipelineDiscoveryId, visualizerTemplateId)(
+    val pipelinesPage = pipelineService.findPaginatedFiltered(PaginationInfo(skip, take), pipelineDiscoveryId, visualizerTemplateId, onlyPermanent.getOrElse(false))(
       e => {
         val priorities = e.visualizationConfiguration.map(_.priority)
         val sum = priorities.sum

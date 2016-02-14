@@ -33,8 +33,7 @@ define(['angular', 'material', 'underscore.string', './controllers'], function (
                 });
             };
 
-
-            var promise = pipelines.findPaginated(1, 10);
+            var promise = pipelines.findPaginated(1, 10, { onlyPermanent: true });
             promise.then(function (data) {
                 $scope.pipelines = data.data;
             });

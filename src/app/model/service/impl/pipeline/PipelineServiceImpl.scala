@@ -238,12 +238,13 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
   def findPaginatedFiltered[T <% Ordered](
     paginationInfo: PaginationInfo,
     pipelineDiscoveryId: Option[PipelineDiscoveryId] = None,
-    visualizerId: Option[ComponentTemplateId] = None
+    visualizerId: Option[ComponentTemplateId] = None,
+    onlyPermanent: Boolean = false
     )
     (ordering: PipelineTable => T = { e: PipelineTable => (e.modifiedUtc.desc, e.createdUtc.desc) })
     (implicit session: Session): Seq[Pipeline] = {
 
-    repository.findPaginatedFilteredOrdered(paginationInfo)(pipelineDiscoveryId, visualizerId)(ordering)
+    repository.findPaginatedFilteredOrdered(paginationInfo)(pipelineDiscoveryId, visualizerId, onlyPermanent)(ordering)
   }
 
   def discover(reporterProps: Props, dataSourceTemplateIds: List[Long], combine: Boolean = false)(implicit session: Session): PipelineDiscoveryId = {

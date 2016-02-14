@@ -52,7 +52,7 @@ GET         /api/v1/component/makePermanent/:id                                 
 
 # LDVM pipelines
 GET         /api/v1/pipelines/evaluate/:pipelineId                                        @controllers.api.PipelineApiController.evaluate(pipelineId: Long)
-GET         /api/v1/pipelines                                                             @controllers.api.PipelineApiController.list(skip: Int ?= 0, take: Int ?= 50, discoveryId: Option[Long] ?= None, visualizerId: Option[Long] ?= None)
+GET         /api/v1/pipelines                                                             @controllers.api.PipelineApiController.list(skip: Int ?= 0, take: Int ?= 50, discoveryId: Option[Long] ?= None, visualizerId: Option[Long] ?= None, onlyPermanent: Option[Boolean] ?= None)
 GET         /api/v1/pipelines/discover                                                    @controllers.api.PipelineApiController.discover(dataSourceTemplateIds: List[Long], combine: Boolean ?= false)
 GET         /api/v1/pipelines/evaluations/:id                                             @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
 GET         /api/v1/pipelines/visualization/:id                                           @controllers.api.PipelineApiController.visualizationById(id: Long)
