@@ -3,16 +3,16 @@ import com.typesafe.sbt.SbtNativePackager._
 import NativePackagerKeys._
 import com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV
 
-name := "LDVMi"
+name := "LinkedPipes Visualization"
 
 version := "1.1.1"
 
 /** Debian packaging **/
 maintainer in Linux := "Jiri Helmich <helmich@ksi.mff.cuni.cz>"
 
-packageSummary in Linux := "LDVMi - Linked Data visualizations"
+packageSummary in Linux := "LinkedPipes Visualization - Linked Data visualizations"
 
-packageDescription := "LDVMi - Linked Data visualizations"
+packageDescription := "LinkedPipes Visualization - Linked Data visualizations"
 
 serverLoading in Debian := SystemV
 
