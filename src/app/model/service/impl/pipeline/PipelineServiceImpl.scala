@@ -193,7 +193,8 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
 
         val dsNames = "(" + datasources.map(_.title).mkString(", ") + ")"
         val vizName = "(" + visualizer.title + ")"
-        val name = dsNames + " -> (" + (instances.size - 2) + ") -> " + vizName
+        val info = if (instances.size > 2) { " -> (" + (instances.size - 2) + ") -> " } else { "" }
+        val name = dsNames + info + vizName
 
         val isTemporary = true
         pipelinesRepository.save(Pipeline(None, bindingSetId, "", name, None, visualizer.componentTemplate.id.get, isTemporary, Some(pipelineDiscoveryId)))

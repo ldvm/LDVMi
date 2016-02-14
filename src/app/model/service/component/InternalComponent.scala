@@ -171,7 +171,7 @@ object InternalComponent {
     val componentTemplate = specificComponentTemplate.componentTemplate
     session.close()
     new InternalComponent(
-      ComponentInstance(None, componentTemplate.uri + "#instance", componentTemplate.title + " instance", None, specificComponentTemplate.componentTemplateId, None),
+      ComponentInstance(None, componentTemplate.uri + "#instance", componentTemplate.title, None, specificComponentTemplate.componentTemplateId, None),
       pluginFactory,
       reporterProps
     )
