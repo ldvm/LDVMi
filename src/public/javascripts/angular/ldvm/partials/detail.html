@@ -6,8 +6,8 @@
             <a ng-href="#/evaluate/{{pipelineId}}" class="btn btn-default" ng-class="{'btn-primary': evaluations.length == 0}"><i class="glyphicon glyphicon-play"></i> Execute pipeline</a>
 
             <div class="pull-right">
-                <button ng-click="permanent(pipelineId)" ng-show="pipeline.isTemporary" class="btn btn-default">Make permanent</button>
-                <span class="badge badge-info" ng-show="!pipeline.isTemporary">Permanent</span>
+                <button ng-click="permanent(pipelineId)" ng-show="pipeline.isTemporary" class="btn btn-default">Save</button>
+                <span class="badge badge-info" ng-show="!pipeline.isTemporary">Saved</span>
             </div>
         </div>
     </div>
