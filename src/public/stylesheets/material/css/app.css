@@ -11340,6 +11340,9 @@ body #content {
   body.sw-toggled #content {
     padding: 30px 0 30px 250px;
   }
+  body.chat-toggled #content {
+    padding-right: 360px;
+  }
 }
 @media (min-width: 1200px) {
   body.sw-toggled #content > .container {
@@ -12344,9 +12347,15 @@ input:focus {
   filter: alpha(opacity=0);
   overflow-y: scroll;
 }
-#chat.toggled {
+body:not(.sw-toggled) #chat.toggled {
   -webkit-transform: translate3d(calc(100vw - 360px), 0, 0);
   transform: translate3d(calc(100vw - 360px), 0, 0);
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+body.sw-toggled #chat.toggled {
+  -webkit-transform: translate3d(calc(100vw - 610px), 0, 0);
+  transform: translate3d(calc(100vw - 610px), 0, 0);
   opacity: 1;
   filter: alpha(opacity=100);
 }

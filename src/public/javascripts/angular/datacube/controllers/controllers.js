@@ -1,8 +1,7 @@
 define(['angular', 'underscorejs'], function (ng, _) {
     'use strict';
 
-    ng.module('datacube.controllers', []).
-    controller('DataCube',
+    ng.module('datacube.controllers', []).controller('DataCube',
         ['$scope', 'DataCubeService', '$q', '$location', '$routeParams', '$timeout',
             function ($scope, DataCubeService, $q, $location, $routeParams, $timeout) {
 
@@ -142,6 +141,8 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                     if ($scope.init && $permanentToken) {
                         $scope.loadByPermanentToken();
+                    } else {
+                        $(".tm-chat").click();
                     }
 
                     $scope.init = false;
@@ -492,7 +493,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                     if (uri) {
                         if (!label.dereferenced) {
-                            DataCubeService.dereference({uri: uri}, function(data){
+                            DataCubeService.dereference({uri: uri}, function (data) {
                                 label.variants = _.extend(label.variants, data.variants);
                             });
                             label.dereferenced = 1;
