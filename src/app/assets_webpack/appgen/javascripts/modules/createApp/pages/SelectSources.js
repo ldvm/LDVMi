@@ -4,14 +4,17 @@ import { bindActionCreators } from 'redux'
 import { createSelector } from 'reselect'
 import PaperCard from '../../../misc/components/PaperCard'
 import Button from '../../../misc/components/Button'
+import CenteredMessage from '../../../misc/components/CenteredMessage'
 import PromiseResult from '../../../misc/components/PromiseResult'
-import AddDataSourceDialog, { dialogName } from '../dialogs/AddDataSourceDialog'
+import AddDataSourceDialog from '../dialogs/AddDataSourceDialog'
+import BrowseDataSourcesDialog from '../dialogs/BrowseDataSourcesDialog'
 import { dialogOpen, dialogClose } from '../../../ducks/dialog'
 import { notification } from '../../../actions/notification'
+import { selectDataSource, deselectDataSource } from '../ducks/selectedDataSources'
 import * as api from '../api'
-import moduleSelector from '../selector'
+import { dataSourcesSelector } from '../selector'
 
-const SelectSources = ({ dialogOpen, dialogClose, notification, dataSources }) => {
+const SelectSources = ({ dialogOpen, dialogClose, notification, selectDataSource, deselectDataSource, dataSources }) => {
 
   const initialValues = {
     graphUris: "",
@@ -23,9 +26,8 @@ const SelectSources = ({ dialogOpen, dialogClose, notification, dataSources }) =
       dataSource.graphUris = dataSource.graphUris.split('\n');
       const result = await api.addDataSources(dataSource);
 
-      console.log(result);
       notification('New data source has been added');
-      dialogClose(dialogName);
+      dialogClose(AddDataSourceDialog.dialogName);
     }
     catch (e) {
       notification(e.message);
@@ -37,15 +39,34 @@ const SelectSources = ({ dialogOpen, dialogClose, notification, dataSources }) =
       <PromiseResult isLoading={dataSources.isLoading} error={dataSources.error} />
 
       {dataSources.done && <div>
-        <Button label="Browse" onTouchTap={() => 0} icon="folder_open" raised />
-        <Button label="Add new" onTouchTap={() => dialogOpen(dialogName)} icon="add" raised />
-        <AddDataSourceDialog onSubmit={addDataSource} initialValues={initialValues} />
+
+        {dataSources.selected.map(dataSource => dataSource.name)}
+
+        {dataSources.selected.size == 0 &&
+          <CenteredMessage>Click the 'Browse' button to start selecting data sources.</CenteredMessage>}
+
+        <Button
+          label="Browse"
+          onTouchTap={() => dialogOpen(BrowseDataSourcesDialog.dialogName)}
+          icon="folder_open" raised />
+        <Button
+          label="Add new"
+          onTouchTap={() => dialogOpen(AddDataSourceDialog.dialogName)}
+          icon="add" raised success />
+        <AddDataSourceDialog
+          onSubmit={addDataSource}
+          initialValues={initialValues}
+          dialogClose={dialogClose} />
+        <BrowseDataSourcesDialog
+          dialogClose={dialogClose}
+          selectDataSource={selectDataSource}
+          deselectDataSource={deselectDataSource}
+          dataSources={dataSources.all} />
       </div>}
     </PaperCard>
   )
 };
 
-export default connect(
-  createSelector(moduleSelector, state => state),
-  dispatch => bindActionCreators({ dialogOpen, dialogClose, notification }, dispatch)
+export default connect(dataSourcesSelector,
+  dispatch => bindActionCreators({ dialogOpen, dialogClose, notification, selectDataSource, deselectDataSource }, dispatch)
 )(SelectSources);

@@ -1,5 +1,4 @@
-import { connect } from 'react-redux'
-import { Map } from 'immutable'
+import { fromJS, Map } from 'immutable'
 import * as api from '../api'
 import createPromiseReducer from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
@@ -24,7 +23,7 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_DATA_SOURCES_SUCCESS:
       const obj = arrayToObject(action.payload.data.dataSources, dataSource => dataSource.id);
-      return new Map(obj);
+      return fromJS(obj);
   }
   return state;
 };

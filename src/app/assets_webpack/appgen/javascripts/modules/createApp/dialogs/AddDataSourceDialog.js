@@ -11,13 +11,13 @@ import Dialog from '../../../containers/Dialog';
 export const dialogName = 'ADD_DATA_SOURCE_DIALOG';
 
 const AddDataSourceDialog = (props) =>  {
-  const {dispatch, fields: {name, url, graphUris, isPublic}, handleSubmit, submitting, submitFailed} = props;
+  const {dialogClose, fields: {name, url, graphUris, isPublic}, handleSubmit, submitting, submitFailed} = props;
   const errorText = errorTextFactory(submitFailed);
 
   const actions = [
-    <Button label="Cancel" secondary
-      onTouchTap={() => dispatch(dialogClose(dialogName))} />,
-    <Button label="Add source" primary raised disabled={submitting}
+    <Button label="Cancel"
+      onTouchTap={() => dialogClose(dialogName)} />,
+    <Button label="Add source" success raised disabled={submitting}
       onTouchTap={handleSubmit} />
   ];
 
@@ -54,8 +54,12 @@ const validate = makeValidator({
   }
 });
 
-export default reduxForm({
+const DialogComponent = reduxForm({
   form: 'add-data-source',
   fields: ['name', 'url', 'graphUris', 'isPublic'],
   validate
 })(AddDataSourceDialog);
+
+DialogComponent.dialogName = dialogName;
+
+export default DialogComponent;
