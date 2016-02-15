@@ -2,7 +2,7 @@
 
     <div class="panel panel-default">
         <div class="panel-body">
-            <a href="/visualize/{{e.id}}" class="btn btn-primary" ng-show="evaluations && evaluations.length > 0 && evaluations[0].isSuccess">Visualization</a>
+            <a href="/visualize/{{evaluations[0].id}}" class="btn btn-primary" ng-show="evaluations && evaluations.length > 0 && evaluations[0].isSuccess">Visualization</a>
             <a ng-href="#/evaluate/{{pipelineId}}" class="btn btn-default" ng-class="{'btn-primary': evaluations.length == 0}"><i class="glyphicon glyphicon-play"></i> Execute pipeline</a>
 
             <div class="pull-right">
