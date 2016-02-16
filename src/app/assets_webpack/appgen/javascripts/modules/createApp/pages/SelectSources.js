@@ -8,6 +8,7 @@ import CenteredMessage from '../../../misc/components/CenteredMessage'
 import PromiseResult from '../../../misc/components/PromiseResult'
 import AddDataSourceDialog from '../dialogs/AddDataSourceDialog'
 import BrowseDataSourcesDialog from '../dialogs/BrowseDataSourcesDialog'
+import SelectedDataSources from '../components/SelectedDataSources'
 import { dialogOpen, dialogClose } from '../../../ducks/dialog'
 import { notification } from '../../../actions/notification'
 import { selectDataSource, deselectDataSource } from '../ducks/selectedDataSources'
@@ -40,10 +41,13 @@ const SelectSources = ({ dialogOpen, dialogClose, notification, selectDataSource
 
       {dataSources.done && <div>
 
-        {dataSources.selected.map(dataSource => dataSource.name)}
-
         {dataSources.selected.size == 0 &&
           <CenteredMessage>Click the 'Browse' button to start selecting data sources.</CenteredMessage>}
+
+        {dataSources.selected.size > 0 &&
+          <SelectedDataSources
+            dataSources={dataSources.selected}
+            deselectDataSource={deselectDataSource} />}
 
         <Button
           label="Browse"
