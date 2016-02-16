@@ -1,5 +1,6 @@
 import { Set } from 'immutable'
 import createAction from '../../../misc/createAction'
+import { ADD_DATA_SOURCE } from './dataSources'
 
 // Actions
 
@@ -25,6 +26,10 @@ export default function selectedDataSourcesReducer(state = initialState, action)
 
     case DESELECT_DATA_SOURCE:
       return state.delete(action.payload);
+
+    case ADD_DATA_SOURCE:
+      const { payload: { dataSource }} = action;
+      return state.add(dataSource.id);
   }
 
   return state;

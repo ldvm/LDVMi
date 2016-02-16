@@ -2,12 +2,11 @@ import { List } from 'immutable'
 import rest from '../../misc/rest'
 
 /**
- * // TODO: return the whole data source
- * @returns {Promise<number>} user data source id
+ * @returns {Promise<object>} inserted data source including its id
  **/
-export async function addDataSources(dataSource) {
+export async function addDataSource(dataSource) {
   const result = await rest('createApp/addDataSource', dataSource);
-  return result;
+  return result.data.dataSource;
 }
 
 export async function getDataSources() {

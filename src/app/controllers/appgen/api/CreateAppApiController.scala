@@ -10,14 +10,15 @@ import scaldi.Injector
 import model.appgen.rest.Response._
 
 class CreateAppApiController(implicit inj: Injector) extends RestController {
-  var dataSourceService = inject[DataSourceService]
+  val dataSourceService = inject[DataSourceService]
   val userDataSourceRepository = inject[UserDataSourcesRepository]
 
   def addDataSource = RestAction[AddDataSourceRequest] { implicit request => json =>
     val dataSourceTemplateId = dataSourceService.createDataSourceFromUris(json.url, json.graphUris).get
-    userDataSourceRepository save
+    val id = userDataSourceRepository save
       new UserDataSource(None, json.name, json.isPublic, request.user.id.get, dataSourceTemplateId)
-    Ok(SuccessResponse("Data source has been added")) // TODO: return the data source
+    Ok(SuccessResponse("Data source has been added",
+      data = Seq("dataSource" -> userDataSourceRepository.findById(id).get)))
   }
 
   def getDataSources = RestAction[EmptyRequest] { implicit request => json =>

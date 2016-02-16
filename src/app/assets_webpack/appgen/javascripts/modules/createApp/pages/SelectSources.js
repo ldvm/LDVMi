@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 import { createSelector } from 'reselect'
+import { reset as resetForm } from 'redux-form';
 import PaperCard from '../../../misc/components/PaperCard'
 import Button from '../../../misc/components/Button'
 import CenteredMessage from '../../../misc/components/CenteredMessage'
@@ -11,27 +11,32 @@ import BrowseDataSourcesDialog from '../dialogs/BrowseDataSourcesDialog'
 import SelectedDataSources from '../components/SelectedDataSources'
 import { dialogOpen, dialogClose } from '../../../ducks/dialog'
 import { notification } from '../../../actions/notification'
+import { addDataSource } from '../ducks/dataSources'
 import { selectDataSource, deselectDataSource } from '../ducks/selectedDataSources'
 import * as api from '../api'
 import { dataSourcesSelector } from '../selector'
 
-const SelectSources = ({ dialogOpen, dialogClose, notification, selectDataSource, deselectDataSource, dataSources }) => {
+const SelectSources = ({ dispatch, dataSources }) => {
 
   const initialValues = {
     graphUris: "",
     isPublic: true
   };
 
-  const addDataSource = async (dataSource) => {
+  const handleAddDataSource = async (dataSource) => {
     try {
       dataSource.graphUris = dataSource.graphUris.split('\n');
-      const result = await api.addDataSources(dataSource);
+      const result = await api.addDataSource(dataSource);
 
-      notification('New data source has been added');
-      dialogClose(AddDataSourceDialog.dialogName);
+      // Well... technically it's one event so dispatching a single action should be enough
+      dispatch(notification('New data source has been added'));
+      dispatch(resetForm(AddDataSourceDialog.formName));
+      dispatch(dialogClose(AddDataSourceDialog.dialogName));
+      dispatch(addDataSource(result));
     }
     catch (e) {
-      notification(e.message);
+      console.log(e);
+      dispatch(notification(e.message));
     }
   };
 
@@ -47,30 +52,28 @@ const SelectSources = ({ dialogOpen, dialogClose, notification, selectDataSource
         {dataSources.selected.size > 0 &&
           <SelectedDataSources
             dataSources={dataSources.selected}
-            deselectDataSource={deselectDataSource} />}
+            deselectDataSource={id => dispatch(deselectDataSource(id))} />}
 
         <Button
           label="Browse"
-          onTouchTap={() => dialogOpen(BrowseDataSourcesDialog.dialogName)}
+          onTouchTap={() => dispatch(dialogOpen(BrowseDataSourcesDialog.dialogName))}
           icon="folder_open" raised />
         <Button
           label="Add new"
-          onTouchTap={() => dialogOpen(AddDataSourceDialog.dialogName)}
+          onTouchTap={() => dispatch(dialogOpen(AddDataSourceDialog.dialogName))}
           icon="add" raised success />
         <AddDataSourceDialog
-          onSubmit={addDataSource}
+          onSubmit={handleAddDataSource}
           initialValues={initialValues}
-          dialogClose={dialogClose} />
+          dialogClose={name => dispatch(dialogClose(name))} />
         <BrowseDataSourcesDialog
-          dialogClose={dialogClose}
-          selectDataSource={selectDataSource}
-          deselectDataSource={deselectDataSource}
+          dialogClose={name => dispatch(dialogClose(name))}
+          selectDataSource={id => dispatch(selectDataSource(id))}
+          deselectDataSource={id => dispatch(deselectDataSource(id))}
           dataSources={dataSources.all} />
       </div>}
     </PaperCard>
   )
 };
 
-export default connect(dataSourcesSelector,
-  dispatch => bindActionCreators({ dialogOpen, dialogClose, notification, selectDataSource, deselectDataSource }, dispatch)
-)(SelectSources);
+export default connect(dataSourcesSelector)(SelectSources);

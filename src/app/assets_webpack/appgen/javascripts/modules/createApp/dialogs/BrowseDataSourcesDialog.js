@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { PropTypes } from 'react'
+import { List } from 'immutable';
 import { dialogClose } from '../../../ducks/dialog'
 import Button from '../../../misc/components/Button'
 import Dialog from '../../../containers/Dialog';
@@ -58,4 +59,12 @@ const BrowseDataSourcesDialog = (props) =>  {
 };
 
 BrowseDataSourcesDialog.dialogName = dialogName;
+
+BrowseDataSourcesDialog.propTypes = {
+  dialogClose: PropTypes.func.isRequired,
+  selectDataSource: PropTypes.func.isRequired,
+  deselectDataSource: PropTypes.func.isRequired,
+  dataSources: PropTypes.instanceOf(List).isRequired
+};
+
 export default BrowseDataSourcesDialog;

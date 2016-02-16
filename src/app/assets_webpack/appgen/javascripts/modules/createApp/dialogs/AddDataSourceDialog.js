@@ -9,6 +9,7 @@ import Button from '../../../misc/components/Button'
 import Dialog from '../../../containers/Dialog';
 
 export const dialogName = 'ADD_DATA_SOURCE_DIALOG';
+export const formName = 'add-data-source';
 
 const AddDataSourceDialog = (props) =>  {
   const {dialogClose, fields: {name, url, graphUris, isPublic}, handleSubmit, submitting, submitFailed} = props;
@@ -55,11 +56,12 @@ const validate = makeValidator({
 });
 
 const DialogComponent = reduxForm({
-  form: 'add-data-source',
+  form: formName,
   fields: ['name', 'url', 'graphUris', 'isPublic'],
   validate
 })(AddDataSourceDialog);
 
 DialogComponent.dialogName = dialogName;
+DialogComponent.formName = formName;
 
 export default DialogComponent;
