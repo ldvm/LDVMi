@@ -6,6 +6,7 @@ import PaperCard from '../../../misc/components/PaperCard'
 import Button from '../../../misc/components/Button'
 import CenteredMessage from '../../../misc/components/CenteredMessage'
 import PromiseResult from '../../../misc/components/PromiseResult'
+import ButtonBar from '../../../misc/components/ButtonBar'
 import AddDataSourceDialog from '../dialogs/AddDataSourceDialog'
 import BrowseDataSourcesDialog from '../dialogs/BrowseDataSourcesDialog'
 import SelectedDataSources from '../components/SelectedDataSources'
@@ -40,6 +41,15 @@ const SelectSources = ({ dispatch, dataSources }) => {
     }
   };
 
+  const handleRunAnalysis = () => {
+    const templateIds = dataSources.selected.map(dataSource => dataSource.dataSourceTemplateId);
+    if (templateIds.size == 0) {
+      dispatch(notification('Please select some data sources first'));
+    } else {
+      console.log(templateIds.toArray());
+    }
+  };
+
   return (
     <PaperCard title="1. Select data sources" subtitle="Select data sources for your new visualization">
       <PromiseResult isLoading={dataSources.isLoading} error={dataSources.error} />
@@ -54,14 +64,6 @@ const SelectSources = ({ dispatch, dataSources }) => {
             dataSources={dataSources.selected}
             deselectDataSource={id => dispatch(deselectDataSource(id))} />}
 
-        <Button
-          label="Browse"
-          onTouchTap={() => dispatch(dialogOpen(BrowseDataSourcesDialog.dialogName))}
-          icon="folder_open" raised />
-        <Button
-          label="Add new"
-          onTouchTap={() => dispatch(dialogOpen(AddDataSourceDialog.dialogName))}
-          icon="add" raised success />
         <AddDataSourceDialog
           onSubmit={handleAddDataSource}
           initialValues={initialValues}
@@ -71,6 +73,25 @@ const SelectSources = ({ dispatch, dataSources }) => {
           selectDataSource={id => dispatch(selectDataSource(id))}
           deselectDataSource={id => dispatch(deselectDataSource(id))}
           dataSources={dataSources.all} />
+
+        <ButtonBar
+          left={<div>
+            <Button
+              label="Browse"
+              onTouchTap={() => dispatch(dialogOpen(BrowseDataSourcesDialog.dialogName))}
+              icon="folder_open" raised />
+            <Button
+              label="Add new"
+              onTouchTap={() => dispatch(dialogOpen(AddDataSourceDialog.dialogName))}
+              icon="add" raised success />
+            </div>}
+          right={<div>
+            <Button
+              label="Run analysis"
+              icon="play_arrow" raised warning
+              onTouchTap={handleRunAnalysis}
+              disabled={dataSources.selected.size == 0} />
+            </div>}/>
       </div>}
     </PaperCard>
   )
