@@ -92,11 +92,13 @@ GET         /api/v1/datacube/datastructure-components                           
 POST        /api/v1/datacube/values/:id                                                   @controllers.api.DataCubeApiController.values(id: Long)
 POST        /api/v1/datacube/slices/:id                                                   @controllers.api.DataCubeApiController.sliceCube(id: Long)
 
+# Appgen
 POST        /appgen/api/auth/signup                         @controllers.appgen.api.AuthApiController.signUp
 POST        /appgen/api/auth/signin                         @controllers.appgen.api.AuthApiController.signIn
 POST        /appgen/api/auth/getUser                        @controllers.appgen.api.AuthApiController.getUser
 POST        /appgen/api/createApp/addDataSource             @controllers.appgen.api.CreateAppApiController.addDataSource
 POST        /appgen/api/createApp/getDataSources            @controllers.appgen.api.CreateAppApiController.getDataSources
+POST        /appgen/api/createApp/runDiscovery              @controllers.appgen.api.CreateAppApiController.runDiscovery
 GET         /appgen$any<.*>                                 @controllers.appgen.ApplicationController.index(any)
 
 # Map static resources from the /public folder to the /assets URL path

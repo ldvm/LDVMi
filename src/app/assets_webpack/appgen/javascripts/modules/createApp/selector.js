@@ -6,7 +6,8 @@ export default moduleSelector;
 
 export const dataSourcesSelector = createSelector(
   [moduleSelector],
-  ({dataSources: {error, isLoading, done, data}, selectedDataSources}) => ({
+  ({dataSources: {error, isLoading, done, data}, selectedDataSources, runDiscoveryStatus }) => ({
+    runDiscoveryStatus,
     dataSources: {
       error, isLoading, done,
       selected: data.toList()

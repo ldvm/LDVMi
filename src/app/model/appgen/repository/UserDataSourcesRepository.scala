@@ -10,5 +10,3 @@ class UserDataSourcesRepository extends BaseIdRepository[UserDataSourceId, UserD
     query.filter(_.userId === user.id.get).run
   }
 }
-
-

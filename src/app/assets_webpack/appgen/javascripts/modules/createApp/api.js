@@ -12,3 +12,12 @@ export async function addDataSource(dataSource) {
 export async function getDataSources() {
   return await rest('createApp/getDataSources');
 }
+
+/**
+ * @param {Array<number>} userDataSourceIds
+ * @returns {Promise<number>}
+ */
+export async function runDiscovery(userDataSourceIds) {
+  const result = await rest('createApp/runDiscovery', { userDataSourceIds });
+  return result.data.userPipelineDiscoveryId;
+}

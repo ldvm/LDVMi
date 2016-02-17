@@ -13,11 +13,12 @@ import SelectedDataSources from '../components/SelectedDataSources'
 import { dialogOpen, dialogClose } from '../../../ducks/dialog'
 import { notification } from '../../../actions/notification'
 import { addDataSource } from '../ducks/dataSources'
+import { runDiscovery } from '../ducks/runDiscoveryStatus'
 import { selectDataSource, deselectDataSource } from '../ducks/selectedDataSources'
 import * as api from '../api'
 import { dataSourcesSelector } from '../selector'
 
-const SelectSources = ({ dispatch, dataSources }) => {
+const SelectSources = ({ dispatch, dataSources, runDiscoveryStatus }) => {
 
   const initialValues = {
     graphUris: "",
@@ -29,7 +30,8 @@ const SelectSources = ({ dispatch, dataSources }) => {
       dataSource.graphUris = dataSource.graphUris.split('\n');
       const result = await api.addDataSource(dataSource);
 
-      // Well... technically it's one event so dispatching a single action should be enough
+      // Well... technically it's one event so dispatching a single action should be enough,
+      // but only one of them updates the actual state, the rest is just UI.
       dispatch(notification('New data source has been added'));
       dispatch(resetForm(AddDataSourceDialog.formName));
       dispatch(dialogClose(AddDataSourceDialog.dialogName));
@@ -42,17 +44,18 @@ const SelectSources = ({ dispatch, dataSources }) => {
   };
 
   const handleRunAnalysis = () => {
-    const templateIds = dataSources.selected.map(dataSource => dataSource.dataSourceTemplateId);
-    if (templateIds.size == 0) {
+    const ids = dataSources.selected.map(dataSource => dataSource.id);
+    if (ids.size == 0) {
       dispatch(notification('Please select some data sources first'));
     } else {
-      console.log(templateIds.toArray());
+      dispatch(runDiscovery(ids));
     }
   };
 
   return (
     <PaperCard title="1. Select data sources" subtitle="Select data sources for your new visualization">
       <PromiseResult isLoading={dataSources.isLoading} error={dataSources.error} />
+      <PromiseResult isLoading={runDiscoveryStatus.isLoading} error={runDiscoveryStatus.error} />
 
       {dataSources.done && <div>
 
@@ -90,7 +93,7 @@ const SelectSources = ({ dispatch, dataSources }) => {
               label="Run analysis"
               icon="play_arrow" raised warning
               onTouchTap={handleRunAnalysis}
-              disabled={dataSources.selected.size == 0} />
+              disabled={dataSources.selected.size == 0 || runDiscoveryStatus.isLoading } />
             </div>}/>
       </div>}
     </PaperCard>
