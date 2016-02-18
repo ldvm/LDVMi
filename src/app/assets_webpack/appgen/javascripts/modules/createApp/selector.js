@@ -22,6 +22,9 @@ export const dataSourcesSelector = createSelector(
   })
 );
 
+// TODO: optimize this selector
+// Because we're polling the server to get the updated discovery status, the "isLoading" property is
+// changing frequently and because of it reselect's memoization doesn't work (that's the hypothesis)
 export const discoverySelector = createSelector(
   [moduleSelector],
   ({discovery: {error, isLoading, done, data} }) => ({

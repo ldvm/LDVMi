@@ -8,7 +8,28 @@ import DiscoveryStatus from '../components/DiscoveryStatus'
 import Pipelines from '../components/Pipelines'
 
 class Discovery extends Component {
-  componentDidMount() {
+  componentWillMount() {
+    this.getDiscovery();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    clearTimeout(this.timeout);
+
+    const isFinished = nextProps.discovery && nextProps.discovery.isFinished;
+    if (!isFinished) {
+      this.startPoll();
+    }
+  }
+
+  startPoll() {
+    this.timeout = setTimeout(() => this.getDiscovery(), 1000);
+  }
+
+  getDiscovery() {
     const {dispatch, params: {userPipelineDiscoveryId}} = this.props;
     dispatch(getDiscovery(userPipelineDiscoveryId));
   }
@@ -17,7 +38,7 @@ class Discovery extends Component {
     const {isLoading, error, discovery, pipelines} = this.props;
 
     return <div>
-      <PromiseResult isLoading={isLoading} error={error} />
+      {!discovery && <PromiseResult isLoading={isLoading} error={error} />}
       {discovery && <div>
         <DiscoveryStatus discovery={discovery} />
         {pipelines.size > 0 ?

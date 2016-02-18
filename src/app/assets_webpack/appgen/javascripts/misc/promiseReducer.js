@@ -1,6 +1,12 @@
 import { Record, fromJS } from 'immutable';
 
-export default function createPromiseReducer(customInitialState, actionTypes, customReducer = null) {
+// Affects behavior of the reducer when the start action is dispatched. In RESET_STATE mode the
+// state is always reset to default state, in PRESERVE_STATE mode is the state preserved (can be
+// used for merging results from multiple calls)
+export const RESET_STATE = 0;
+export const PRESERVE_STATE = 1;
+
+export default function createPromiseReducer(customInitialState, actionTypes, customReducer = null, mode = RESET_STATE) {
   const [startAction, successAction, errorAction] = actionTypes;
 
   // The default reducer simply stores the resolved promises' output
@@ -27,8 +33,9 @@ export default function createPromiseReducer(customInitialState, actionTypes, cu
     switch (action.type) {
 
       case startAction:
-        return initialState
+        return (mode == RESET_STATE ? initialState : state)
           .set('isLoading', true)
+          .set('done', false)
           .update('data', data => reducer(data, action));
 
       case errorAction:
