@@ -374,3 +374,20 @@ button.ol-full-screen-true:after {
 .ol-attribution, .ol-control button, .ol-has-tooltip [role=tooltip], .ol-scale-line-inner {
     font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif
 }
+
+.data-source-list {
+    counter-reset: data-source-counter;
+}
+
+.data-source-list .data-source{
+    padding-left: 15px;
+}
+
+.data-source-list .data-source:before {
+    content: counter(data-source-counter) ".";
+    counter-increment: data-source-counter;
+    float: left;
+    display: block;
+    margin-left: -15px;
+    padding-top: 4px;
+}

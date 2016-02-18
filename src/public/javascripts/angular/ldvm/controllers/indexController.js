@@ -4,8 +4,14 @@ define(['angular', 'material', 'underscore.string', './controllers'], function (
     return ng.module('ldvm.controllers')
         .controller('Index', ['$scope', 'Components', 'Pipelines', function ($scope, components, pipelines) {
 
-            $scope.showMore = false;
-            $scope.endpoints = [{}];
+            $scope.sources = [
+                {
+                    type: 'sparqlEndpoint',
+                    url: 'http://linked.opendata.cz/sparql'
+                }
+            ];
+
+            /*
             $scope.pipelines = [];
 
             $scope.visualize = function (feelsLucky) {
@@ -44,6 +50,6 @@ define(['angular', 'material', 'underscore.string', './controllers'], function (
                     $scope.endpoints.push({});
                     material.initForms();
                 }
-            }, true);
+            }, true);*/
         }]);
 });

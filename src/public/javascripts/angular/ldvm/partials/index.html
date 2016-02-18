@@ -7,53 +7,38 @@
 
                 <div class="card">
                     <div class="card-header bgm-green">
-                        <h2>Visualize
-                            <small>Want to see data from your own endpoint?</small>
+                        <h2>Select Data Sources
+                            <small>LinkedPipes will analyze those sources and try to discover visualizations.</small>
                         </h2>
                     </div>
 
-                    <div class="card-body card-padding">
-                        <form>
-
-                            <div ng-repeat="endpoint in endpoints">
-                                <div class="form-group fg-float">
+                    <div class="card-body card-padding data-source-list">
+                        <form name="dataSources">
+                            <div class="data-source" ng-repeat="source in sources" ng-switch="source.type">
+                                <div class="form-group fg-float" ng-switch-when="sparqlEndpoint">
                                     <div class="fg-line">
-                                        <input type="text" ng-model="endpoint.url" class="form-control fg-input"/>
+                                        <input type="text" ng-model="source.url" class="form-control fg-input"/>
                                     </div>
-                                    <label class="fg-label">Endpoint {{$index+1}} URL</label>
-                                </div>
-
-                                <div class="form-group fg-float" ng-show="showMore">
-                                    <div class="fg-line">
-                                        <textarea ng-model="endpoint.graphUris" class="form-control auto-size"></textarea>
-                                    </div>
-                                    <label class="fg-label">Graph URIs (line separated)</label>
+                                    <label class="fg-label">Endpoint URL</label>
                                 </div>
                             </div>
 
-                            <div class="form-group" ng-show="showMore">
-                                <div class="toggle-switch">
-                                    <label for="ts2" class="ts-label">Combine with other datasources</label>
-                                    <input id="ts2" type="checkbox" hidden="hidden" ng-model="combine" />
-                                    <label for="ts2" class="ts-helper"></label>
+                            <div class="text-left">
+                                <div class="btn-group">
+                                    <span class="btn btn-success">Add more</span>
                                 </div>
                             </div>
 
-                            <button class="btn btn-info waves-effect" ng-click="visualize()">Visualize</button>
-                            <button class="btn btn-default waves-effect" ng-click="visualize(true)">Feeling lucky</button>
-                            <button class="btn btn-link waves-effect" ng-show="!showMore"
-                                    ng-click="showMore = !showMore">More settings
-                            </button>
-                            <button class="btn btn-link waves-effect" ng-show="showMore"
-                                    ng-click="showMore = !showMore">Less settings
-                            </button>
+                            <div class="text-right" ng-show="sources.length">
+                                <button class="btn btn-default waves-effect" ng-click="visualize(true)">Feeling lucky</button>
+                                <button class="btn btn-info waves-effect" ng-click="visualize()">Visualize</button>
+                            </div>
+
+                            <div class="text-center" ng-show="!sources.length">
+                                <br />
+                                You need to add some data source for the discovery to run.
+                            </div>
                         </form>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-body card-padding">
-                        Want to upload TTL or combine more types of data sources? No SPARQL endpoint? <a href="/multisource">Yes, you can!</a>
                     </div>
                 </div>
 
