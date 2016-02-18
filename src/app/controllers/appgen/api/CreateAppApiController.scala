@@ -2,6 +2,7 @@ package controllers.appgen.api
 
 import controllers.api.ProgressReporter
 import controllers.appgen.api.JsonImplicits._
+import controllers.api.JsonImplicits._
 import model.appgen.entity._
 import model.appgen.repository.{UserPipelineDiscoveryRepository, UserDataSourcesRepository}
 import model.appgen.rest.AddDataSourceRequest._
@@ -10,6 +11,7 @@ import model.appgen.rest.RunDiscoveryRequest._
 import model.service.{PipelineService, DataSourceService}
 import scaldi.Injector
 import model.appgen.rest.Response._
+import utils.PaginationInfo
 
 class CreateAppApiController(implicit inj: Injector) extends RestController {
   val dataSourceService = inject[DataSourceService]
@@ -44,5 +46,20 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
       new UserPipelineDiscovery(None, discoveryName, request.user.id.get, pipelineDiscoveryId)
 
     Ok(SuccessResponse(data = Seq("userPipelineDiscoveryId" -> id)))
+  }
+
+  def getDiscovery(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
+    (for {
+      userDiscovery <- userPipelineDiscoveryRepository.findById(request.user, UserPipelineDiscoveryId(id))
+      discovery <- pipelineService.discoveryState(userDiscovery.pipelineDiscoveryId)
+      pipelines <- Some(pipelineService.findPaginatedFiltered(PaginationInfo(0, 50), Some(userDiscovery.pipelineDiscoveryId))())
+    } yield (userDiscovery, discovery, pipelines)) match {
+      case Some((userDiscovery, discovery, pipelines)) =>
+        Ok(SuccessResponse(data = Seq(
+          "userPipelineDiscovery" -> userDiscovery,
+          "pipelineDiscovery" -> discovery,
+          "pipelines" -> pipelines)))
+      case _ => BadRequest(ErrorResponse("Discovery was not found"))
+    }
   }
 }

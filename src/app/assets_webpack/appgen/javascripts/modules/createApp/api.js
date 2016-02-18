@@ -21,3 +21,12 @@ export async function runDiscovery(userDataSourceIds) {
   const result = await rest('createApp/runDiscovery', { userDataSourceIds });
   return result.data.userPipelineDiscoveryId;
 }
+
+/**
+ * @param {number} userPipelineDiscoveryId
+ * @returns {Promise<object>}
+ */
+export async function getDiscovery(userPipelineDiscoveryId) {
+  const result = await rest('createApp/getDiscovery/' + userPipelineDiscoveryId, {});
+  return result.data;
+}

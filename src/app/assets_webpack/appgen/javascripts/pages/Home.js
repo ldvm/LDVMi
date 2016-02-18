@@ -7,7 +7,7 @@ const Home = ({user}) =>
     <h1>Welcome to LDVMi generator</h1>
     <ul>
       <li><Link to="/signup">Sign up!</Link></li>
-      <li><Link to="/discovery/select-sources">Visualize</Link></li>
+      <li><Link to="/create-app/select-sources">Create new application</Link></li>
     </ul>
     {user ? ' Signed in ' + user.name : 'No user signed in'}
   </div>

@@ -8,4 +8,8 @@ class UserPipelineDiscoveryRepository extends BaseIdRepository[UserPipelineDisco
   def find(user: User)(implicit session: Session): Seq[UserPipelineDiscovery] = {
     query.filter(_.userId === user.id.get).run
   }
+
+  def findById(user: User, id: UserPipelineDiscoveryId)(implicit session: Session): Option[UserPipelineDiscovery] = {
+    byIdFunc(id).filter(_.userId === user.id.get).firstOption
+  }
 }

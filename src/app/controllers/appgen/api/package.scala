@@ -1,6 +1,6 @@
 package controllers.appgen
 
-import model.appgen.entity.UserDataSource
+import model.appgen.entity.{UserPipelineDiscovery, UserDataSource}
 import model.entity.CustomUnicornPlay
 import play.api.libs.json.{Writes, JsNumber, Json}
 
@@ -11,5 +11,6 @@ package object api {
     }
 
     implicit val userDataSourceWrites = Json.writes[UserDataSource]
+    implicit val userPipelineDiscoveryWrites = Json.writes[UserPipelineDiscovery]
   }
 }
