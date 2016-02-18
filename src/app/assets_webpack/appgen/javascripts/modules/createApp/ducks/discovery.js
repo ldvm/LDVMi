@@ -1,4 +1,4 @@
-import { fromJS, Map } from 'immutable'
+import { Map } from 'immutable'
 import * as api from '../api'
 import createPromiseReducer from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
@@ -11,5 +11,12 @@ export const GET_DISCOVERY_SUCCESS = 'GET_DISCOVERY_SUCCESS';
 
 export function getDiscovery(userPipelineDiscoveryId) {
   const promise = api.getDiscovery(userPipelineDiscoveryId);
-  return createAction('GET_DISCOVERY', {promise});
+  return createAction('GET_DISCOVERY', { promise });
 }
+
+const initialState = Map();
+
+export default createPromiseReducer(initialState, [
+  GET_DISCOVERY_START,
+  GET_DISCOVERY_SUCCESS,
+  GET_DISCOVERY_ERROR]);
