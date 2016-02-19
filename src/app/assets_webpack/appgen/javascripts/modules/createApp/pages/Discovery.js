@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getDiscovery } from '../ducks/discovery'
-import { discoverySelector } from '../selector'
+import { getDiscovery, discoverySelector } from '../ducks/discovery'
 import PromiseResult from '../../../misc/components/PromiseResult'
 import CenteredMessage from '../../../misc/components/CenteredMessage'
 import DiscoveryStatus from '../components/DiscoveryStatus'

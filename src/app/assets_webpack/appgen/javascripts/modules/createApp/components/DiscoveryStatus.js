@@ -1,20 +1,18 @@
 import React, { PropTypes, Component } from 'react'
+import { PureComponent } from 'react-pure-render'
 import { Discovery } from '../models'
 import PaperCard from '../../../misc/components/PaperCard'
 import LinearProgress from '../../../misc/components/LinearProgress'
 import Alert from '../../../misc/components/Alert'
 
-class DiscoveryStatus extends Component {
+class DiscoveryStatus extends PureComponent {
+  // Because of the animated <LinearProgress /> component, the number of re-renders should be
+  // kept to minimum to increase the smoothness. Smart selectors and pure render component will
+  // do the trick.
+
   static propTypes = {
     discovery: PropTypes.instanceOf(Discovery).isRequired
   };
-
-  shouldComponentUpdate(nextProps) {
-    // Because of the animated <LinearProgress /> component, the number of re-renders should be
-    // kept to minimum to increase the smoothness.
-    // TODO: deep compare should not be necessary since we're dealing with immutables.
-    return !nextProps.discovery.equals(this.props.discovery);
-  }
 
   render() {
     const {discovery} = this.props;
