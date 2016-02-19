@@ -1,4 +1,4 @@
-import { Record } from 'immutable';
+import { List, Record } from 'immutable';
 
 export const DataSource = Record({
   id: 0,
@@ -29,9 +29,15 @@ export const Pipeline = Record({
   visualizer: 'google-maps' // TODO: this should be somehow generated
 });
 
-export const Visualizer = Record({
+const visualizerProps = {
   id: 0,
   stringId: '',
   name: '',
   icon: ''
+};
+export const Visualizer = Record(visualizerProps);
+
+export const VisualizerWithPipelines = Record({
+  ...visualizerProps,
+  pipelines: new List()
 });

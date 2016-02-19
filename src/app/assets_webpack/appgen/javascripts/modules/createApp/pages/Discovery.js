@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getDiscovery, discoverySelector } from '../ducks/discovery'
+import { dialogOpen, dialogClose } from '../../../ducks/dialog'
 import PromiseResult from '../../../misc/components/PromiseResult'
 import CenteredMessage from '../../../misc/components/CenteredMessage'
 import DiscoveryStatus from '../components/DiscoveryStatus'
-import Pipelines from '../components/Pipelines'
+import Visualizers from '../components/Visualizers'
 
 class Discovery extends Component {
   componentWillMount() {
@@ -34,14 +35,18 @@ class Discovery extends Component {
   }
 
   render() {
-    const {isLoading, error, discovery, pipelines} = this.props;
+    const {dispatch, isLoading, error, discovery, pipelines, visualizers} = this.props;
 
     return <div>
       {!discovery && <PromiseResult isLoading={isLoading} error={error} />}
       {discovery && <div>
         <DiscoveryStatus discovery={discovery} />
-        {pipelines.size > 0 ?
-          <Pipelines pipelines={pipelines} /> :
+        {visualizers.size > 0 ?
+          <Visualizers
+            visualizers={visualizers}
+            dialogOpen={name => dispatch(dialogOpen(name))}
+            dialogClose={name => dispatch(dialogClose(name))}
+          /> :
           <CenteredMessage>
             No pipelines found {discovery.isFinished ? '.' : ' (yet).'}
           </CenteredMessage>

@@ -4,7 +4,8 @@ import * as api from '../api'
 import createPromiseReducer, { PRESERVE_STATE } from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
 import { discoverySelector as reducerSelector } from '../selector'
-import { Discovery, Pipeline } from '../models'
+import { visualizersSelector } from './visualizers'
+import { Discovery, Pipeline, VisualizerWithPipelines } from '../models'
 
 // Actions
 
@@ -60,10 +61,24 @@ const pipelinesSelector = createSelector(
     data.get('pipelines').map(pipeline => new Pipeline(pipeline)) : List()
 );
 
+const pipelineVisualizersSelector = createSelector(
+  [pipelinesSelector, visualizersSelector],
+  (pipelines, visualizers) => visualizers.toList()
+
+    // Group pipelines by visualizers
+    .map(visualizer => new VisualizerWithPipelines({
+        ...visualizer.toJS(), // spread operator doesn't work on Records!
+        pipelines: pipelines.filter(pipeline => pipeline.visualizer == visualizer.stringId)
+      }))
+
+    // Remove visualizers without any pipelines
+    .filter(visualizer => visualizer.pipelines.size > 0)
+);
+
 // This rather complex hierarchy of selectors makes sure that the memoization works correctly.
 export const discoverySelector = createSelector(
-  [promiseSelector, mergedDiscoverySelector, pipelinesSelector],
-  ({error, isLoading}, discovery, pipelines) => ({
-    error, isLoading, discovery, pipelines
+  [promiseSelector, mergedDiscoverySelector, pipelinesSelector, pipelineVisualizersSelector],
+  ({error, isLoading}, discovery, pipelines, visualizers) => ({
+    error, isLoading, discovery, pipelines, visualizers
   })
 );

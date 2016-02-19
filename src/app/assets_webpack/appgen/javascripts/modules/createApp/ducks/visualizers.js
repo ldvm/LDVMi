@@ -8,7 +8,7 @@ import { visualizersSelector as reducerSelector } from '../selector'
 // Just a sample visualizer
 const mapsVisualizer = new Visualizer({
   id: 1,
-  stringId: 'maps',
+  stringId: 'google-maps',
   name: 'Google Maps',
   icon: 'maps'
 });

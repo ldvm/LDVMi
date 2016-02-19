@@ -22,6 +22,9 @@ a:hover {
   color: $primaryColor;
   text-decoration: none;
 }
+.appbar {
+  margin-bottom: 2 * $gutter;
+}
 .appbar-logo {
   cursor: pointer;
   font-weight: 300;
@@ -37,7 +40,7 @@ pre {
 
 /** Paper Card */
 .paper-card {
-  margin: 2 * $gutter;
+  margin: $gutter auto;
 }
 .paper-card-header {
   background-color: #f7f7f7;
