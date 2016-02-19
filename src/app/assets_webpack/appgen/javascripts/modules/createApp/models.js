@@ -2,7 +2,7 @@ import { Record } from 'immutable';
 
 export const DataSource = Record({
   id: 0,
-  name: "",
+  name: '',
   isPublic: false,
   userId: 0,
   dataSourceTemplateId: 0,
@@ -11,7 +11,7 @@ export const DataSource = Record({
 
 export const Discovery = Record({
   id: 0,
-  name: "",
+  name: '',
   userId: 0,
   pipelineDiscoveryId: 0,
   isFinished: false,
@@ -24,6 +24,14 @@ export const Discovery = Record({
 export const Pipeline = Record({
   id: 0,
   bindingSetId: 0,
-  title: "",
-  uuid: ""
+  title: '',
+  uuid: '',
+  visualizer: 'google-maps' // TODO: this should be somehow generated
+});
+
+export const Visualizer = Record({
+  id: 0,
+  stringId: '',
+  name: '',
+  icon: ''
 });

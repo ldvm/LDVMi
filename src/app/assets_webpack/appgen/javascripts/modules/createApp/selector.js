@@ -27,3 +27,8 @@ export const discoverySelector = createSelector(
   [moduleSelector],
   state => state.discovery
 );
+
+export const visualizersSelector = createSelector(
+  [moduleSelector],
+  state => state.visualizers
+);
