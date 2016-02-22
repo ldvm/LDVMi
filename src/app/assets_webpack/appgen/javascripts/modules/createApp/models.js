@@ -26,14 +26,15 @@ export const Pipeline = Record({
   bindingSetId: 0,
   title: '',
   uuid: '',
-  visualizer: 'google-maps' // TODO: this should be somehow generated
+  visualizerComponentTemplateId: 0
 });
 
 const visualizerProps = {
   id: 0,
-  stringId: '',
-  name: '',
-  icon: ''
+  title: '',
+  description: '',
+  icon: '',
+  componentTemplateId: 0
 };
 export const Visualizer = Record(visualizerProps);
 

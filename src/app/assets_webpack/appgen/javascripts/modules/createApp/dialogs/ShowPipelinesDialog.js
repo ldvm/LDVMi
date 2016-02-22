@@ -15,14 +15,14 @@ import TableBody from 'material-ui/lib/table/table-body';
 export const dialogName = 'SHOW_PIPELINES_DIALOG';
 
 const ShowPipelinesDialog = (props) =>  {
-  const {dialogClose, pipelines} = props;
+  const {dialogClose, pipelines, dialogInstanceName} = props;
 
   const actions = [
     <Button label="Close" onTouchTap={() => dialogClose(dialogName)} />
   ];
 
   return (
-    <Dialog name={dialogName} title="Select pipeline" actions={actions} modal={false}>
+    <Dialog name={dialogInstanceName} title="Select pipeline" actions={actions} modal={false}>
       <Table selectable={false}>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
@@ -48,6 +48,7 @@ const ShowPipelinesDialog = (props) =>  {
 ShowPipelinesDialog.dialogName = dialogName;
 
 ShowPipelinesDialog.propTypes = {
+  dialogInstanceName: PropTypes.string.isRequired,
   pipelines: PropTypes.instanceOf(List).isRequired,
   dialogClose: PropTypes.func.isRequired
 };

@@ -1,6 +1,6 @@
 package controllers.appgen
 
-import model.appgen.entity.{UserPipelineDiscovery, UserDataSource}
+import model.appgen.entity.{Visualizer, UserPipelineDiscovery, UserDataSource}
 import model.entity.CustomUnicornPlay
 import play.api.libs.json.{Writes, JsNumber, Json}
 

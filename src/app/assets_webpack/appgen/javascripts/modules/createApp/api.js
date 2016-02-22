@@ -30,3 +30,11 @@ export async function getDiscovery(userPipelineDiscoveryId) {
   const result = await rest('createApp/getDiscovery/' + userPipelineDiscoveryId, {});
   return result.data;
 }
+
+/**
+ * @returns {Promise<Array<object>>}
+ */
+export async function getVisualizers() {
+  const result = await rest('createApp/getVisualizers', {});
+  return result.data.visualizers;
+}

@@ -8,6 +8,7 @@ import model.appgen.repository.{UserPipelineDiscoveryRepository, UserDataSources
 import model.appgen.rest.AddDataSourceRequest._
 import model.appgen.rest.EmptyRequest._
 import model.appgen.rest.RunDiscoveryRequest._
+import model.appgen.service.VisualizerService
 import model.service.{PipelineService, DataSourceService}
 import scaldi.Injector
 import model.appgen.rest.Response._
@@ -18,6 +19,7 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
   val userDataSourceRepository = inject[UserDataSourcesRepository]
   val userPipelineDiscoveryRepository = inject[UserPipelineDiscoveryRepository]
   val pipelineService = inject[PipelineService]
+  val visualizerService = inject[VisualizerService]
 
   def addDataSource = RestAction[AddDataSourceRequest] { implicit request => json =>
     val dataSourceTemplateId = dataSourceService.createDataSourceFromUris(json.url, json.graphUris).get
@@ -46,6 +48,12 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
       new UserPipelineDiscovery(None, discoveryName, request.user.id.get, pipelineDiscoveryId)
 
     Ok(SuccessResponse(data = Seq("userPipelineDiscoveryId" -> id)))
+  }
+
+  def getVisualizers = RestAction[EmptyRequest] { implicit request => json =>
+    Ok(SuccessResponse(data = Seq(
+      "visualizers" -> visualizerService.getVisualizers
+    )))
   }
 
   def getDiscovery(id: Long) = RestAction[EmptyRequest] { implicit request => json =>

@@ -63,12 +63,12 @@ const pipelinesSelector = createSelector(
 
 const pipelineVisualizersSelector = createSelector(
   [pipelinesSelector, visualizersSelector],
-  (pipelines, visualizers) => visualizers.toList()
+  (pipelines, visualizers) => visualizers
 
     // Group pipelines by visualizers
     .map(visualizer => new VisualizerWithPipelines({
         ...visualizer.toJS(), // spread operator doesn't work on Records!
-        pipelines: pipelines.filter(pipeline => pipeline.visualizer == visualizer.stringId)
+        pipelines: pipelines.filter(pipeline => pipeline.visualizerComponentTemplateId == visualizer.componentTemplateId)
       }))
 
     // Remove visualizers without any pipelines

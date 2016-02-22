@@ -24,22 +24,28 @@ const iconStyle = {
 };
 
 const Visualizer = ({ visualizer, dialogOpen, dialogClose }) => {
+  const dialogInstanceName = ShowPipelinesDialog + '_' + visualizer.id;
+
   return <Col md={3}>
     <Card style={cardStyle}>
       <CardHeader
-        title={visualizer.name}
+        title={visualizer.title}
         subtitle={visualizer.pipelines.size + ' discovered pipeline(s)'}
       />
       <CardText>
         <FontIcon className="material-icons" style={iconStyle}>{visualizer.icon}</FontIcon>
+        <p>{visualizer.description}</p>
       </CardText>
       <CardActions>
         <Button
           label="Show pipelines"
-          onTouchTap={() => dialogOpen(ShowPipelinesDialog.dialogName)}
+          onTouchTap={() => dialogOpen(dialogInstanceName)}
           primary raised fullWidth
         />
-        <ShowPipelinesDialog dialogClose={dialogClose} pipelines={visualizer.pipelines} />
+        <ShowPipelinesDialog
+          dialogInstanceName={dialogInstanceName}
+          dialogClose={dialogClose}
+          pipelines={visualizer.pipelines} />
       </CardActions>
     </Card>
     </Col>
