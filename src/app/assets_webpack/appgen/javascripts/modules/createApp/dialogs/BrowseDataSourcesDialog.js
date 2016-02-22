@@ -43,9 +43,9 @@ const BrowseDataSourcesDialog = (props) =>  {
                 <TableRowColumn>???</TableRowColumn>
                 <TableRowColumn>
                   {dataSource.selected ?
-                    <Button primary label="Remove"
+                    <Button primary label="Deselect"
                       onTouchTap={() => deselectDataSource(dataSource.id)} /> :
-                    <Button success label="Add"
+                    <Button success label="Select"
                       onTouchTap={() => selectDataSource(dataSource.id)} />
                   }
                 </TableRowColumn>
