@@ -11,6 +11,10 @@ import scaldi.{Injectable, Injector}
 
 class VisualizationApiController(implicit inj: Injector) extends ApiController with Injectable {
 
+  def dereferenceLabels(uri: String) = Action {
+    Ok(Json.toJson(visualizationService.getLabels(uri)))
+  }
+
   def getCachedResult(id: Long, permalinkToken: String) = Action { r =>
     val mayBeResult = Cache.getAs[JsValue](jsonCacheKey(id, permalinkToken))
     Ok(mayBeResult.getOrElse(JsObject(Seq(("error", JsString("notfound"))))))

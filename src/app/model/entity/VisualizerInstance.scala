@@ -19,7 +19,13 @@ case class VisualizerInstance(
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
-) extends IdEntity[VisualizerInstanceId]
+) extends IdEntity[VisualizerInstanceId] {
+
+  def template(implicit s: Session) = (for {
+    q <- visualizerTemplatesQuery if q.id === visualizerId
+  } yield q).first
+
+}
 
 
 class VisualizerInstanceTable(tag: Tag) extends IdEntityTable[VisualizerInstanceId, VisualizerInstance](tag, "visualizer_instances") {

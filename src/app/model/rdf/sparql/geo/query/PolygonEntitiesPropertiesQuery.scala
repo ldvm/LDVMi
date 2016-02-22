@@ -45,7 +45,7 @@ object PolygonEntitiesPropertiesQuery {
 
   object LabelVariables extends Enumeration {
     type LabelVariables = Value
-    val VALUE_NOTION_VARIABLE = Value("sn")
+    val VALUE_NOTATION_VARIABLE = Value("sn")
     val VALUE_PREFLABEL_VARIABLE = Value("spl")
     val VALUE_LABEL_VARIABLE = Value("l")
     val VALUE_SCHEMA_LABEL_VARIABLE = Value("st")

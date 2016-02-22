@@ -98,6 +98,7 @@ define([
                             $elem2 = '#chat-trigger';
 
                             $('#menu-trigger').removeClass('open');
+                            $('body').toggleClass('chat-toggled');
 
                             if (!$('#sidebar').hasClass('toggled')) {
                                 $('#header').toggleClass('sidebar-toggled');
@@ -107,6 +108,7 @@ define([
                             }
                         }
 
+                        /*
                         //When clicking outside
                         if ($('#header').hasClass('sidebar-toggled')) {
                             $(document).on('click', function (e) {
@@ -118,8 +120,8 @@ define([
                                     });
                                 }
                             });
-                        }
-                    })
+                        }*/
+                    });
 
                     //Submenu
                     $('body').on('click', '.sub-menu > a', function (e) {

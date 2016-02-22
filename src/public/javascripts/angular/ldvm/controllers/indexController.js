@@ -8,8 +8,9 @@ define(['angular', 'material', 'underscore.string', './controllers'], function (
             $scope.endpoints = [{}];
             $scope.pipelines = [];
 
-            $scope.visualize = function () {
-                var data = $scope.endpoints.splice(0, $scope.endpoints.length-1).map(function(e){
+            $scope.visualize = function (feelsLucky) {
+
+                var data = $scope.endpoints.splice(0, $scope.endpoints.length - 1).map(function (e) {
                     return {
                         url: e.url,
                         graphUris: e.graphUris ? e.graphUris.split(/\s+/) : undefined
@@ -18,18 +19,21 @@ define(['angular', 'material', 'underscore.string', './controllers'], function (
 
                 components.createDatasource(data).then(function (results) {
                     var uri = "/discover/?";
-                    var params = results.map(function(r){
+                    var params = results.map(function (r) {
                         return "dataSourceTemplateIds=" + r.id;
                     });
                     uri += params.join('&');
                     if ($scope.showMore && $scope.combine) {
                         uri += "&combine=true";
                     }
+                    if (feelsLucky) {
+                        uri += "&lucky=1";
+                    }
                     window.location.href = uri;
                 });
             };
 
-            var promise = pipelines.findPaginated(1, 10);
+            var promise = pipelines.findPaginated(1, 10, { onlyPermanent: true });
             promise.then(function (data) {
                 $scope.pipelines = data.data;
             });

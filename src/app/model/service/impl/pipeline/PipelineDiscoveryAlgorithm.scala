@@ -27,7 +27,7 @@ class PipelineDiscoveryAlgorithm(
   reporterProps: Props,
   generalDS: Seq[DataSourceTemplate] = Seq(),
   maxIterations: Int = PipelineDiscoveryAlgorithm.MaxIterations
-  )
+)
   (implicit val inj: Injector, implicit val session: Session) extends SessionScoped with Injectable {
 
   val pipelineDiscoveryRepository = inject[PipelineDiscoveryRepository]
@@ -49,6 +49,9 @@ class PipelineDiscoveryAlgorithm(
     reportMessage("****** Starting iteration " + iterationNumber + " with " + givenPartialPipelines.size + " partial pipeline(s)")
 
     val eventualCreatedPipelines = Future.sequence(tryAddAllComponents(givenPartialPipelines))
+    eventualCreatedPipelines.onFailure({ case f =>
+      reportProgress(Some(iterationNumber), isFinished = true, Some(givenCompletedPipelines.size), Some(givenCompletedPipelines.nonEmpty))
+    })
     eventualCreatedPipelines.map(_.flatten).flatMap { createdPipelines =>
 
       withSession { implicit session =>
@@ -83,7 +86,7 @@ class PipelineDiscoveryAlgorithm(
           case PartialPipeline(m, p, _) => PartialPipeline(m, p, used = true)
         }
 
-        val allPartial = (usedPartialPipelines ++ createdPartialPipelines)
+        val allPartial = usedPartialPipelines ++ createdPartialPipelines
 
         reportMessage("All partial pipelines: " + allPartial.size)
 
@@ -166,37 +169,37 @@ class PipelineDiscoveryAlgorithm(
         .filter(_.componentInstances.last.hasOutput)
         .collect {
 
-        case partialPipeline if componentToAdd.componentInstance.componentTemplate.uri != partialPipeline.componentInstances.last.componentTemplate.uri =>
+          case partialPipeline if componentToAdd.componentInstance.componentTemplate.uri != partialPipeline.componentInstances.last.componentTemplate.uri =>
 
 
-          val portUri = inputTemplate.dataPortTemplate.uri
-          val lastComponent = InternalComponent(partialPipeline.componentInstances.last, ProgressReporter.props)
+            val portUri = inputTemplate.dataPortTemplate.uri
+            val lastComponent = InternalComponent(partialPipeline.componentInstances.last, ProgressReporter.props)
 
-          reportMessage("Executing checks of <" + componentToAdd.componentInstance.componentTemplate.uri + ">")
+            reportMessage("Executing checks of <" + componentToAdd.componentInstance.componentTemplate.uri + ">")
 
-          val future = componentToAdd.checkCouldBeBoundWithComponentViaPort(lastComponent, portUri, reporterProps)
-          future.onFailure({ case e => {
-            reportMessage("ERROR: " + e.getMessage)
-            promise.tryFailure(e)
-          }
-          })
-          future.collect({
-            case true => {
-              withSession { implicit session =>
-                reportMessage("Able to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri + "> to <" + lastComponent.componentInstance.componentTemplate.uri + ">")
-                reporter ! PortCheckResult(true, portUri, componentToAdd.componentInstance.componentTemplate.uri, lastComponent.componentInstance.componentTemplate.uri)
-                Some(PortMapping(partialPipeline.componentInstances.last, componentToAdd.componentInstance, portUri), partialPipeline)
-              }
+            val future = componentToAdd.checkCouldBeBoundWithComponentViaPort(lastComponent, portUri, reporterProps)
+            future.onFailure({ case e => {
+              reportMessage("ERROR: " + e.getMessage)
+              promise.tryFailure(e)
             }
-            case false => {
-              withSession { implicit session =>
-                reportMessage("Unable to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri + "> to <" + lastComponent.componentInstance.componentTemplate.uri + ">")
-                reporter ! PortCheckResult(false, portUri, componentToAdd.componentInstance.componentTemplate.uri, lastComponent.componentInstance.componentTemplate.uri)
-                None
+            })
+            future.collect({
+              case true => {
+                withSession { implicit session =>
+                  reportMessage("Able to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri + "> to <" + lastComponent.componentInstance.componentTemplate.uri + ">")
+                  reporter ! PortCheckResult(true, portUri, componentToAdd.componentInstance.componentTemplate.uri, lastComponent.componentInstance.componentTemplate.uri)
+                  Some(PortMapping(partialPipeline.componentInstances.last, componentToAdd.componentInstance, portUri), partialPipeline)
+                }
               }
-            }
-          })
-      }
+              case false => {
+                withSession { implicit session =>
+                  reportMessage("Unable to bind <" + portUri + "> of <" + componentToAdd.componentInstance.componentTemplate.uri + "> to <" + lastComponent.componentInstance.componentTemplate.uri + ">")
+                  reporter ! PortCheckResult(false, portUri, componentToAdd.componentInstance.componentTemplate.uri, lastComponent.componentInstance.componentTemplate.uri)
+                  None
+                }
+              }
+            })
+        }
 
       reportMessage("Waiting for " + futures.size + " response(s).")
 

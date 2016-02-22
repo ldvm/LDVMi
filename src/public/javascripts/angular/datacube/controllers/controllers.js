@@ -1,8 +1,7 @@
 define(['angular', 'underscorejs'], function (ng, _) {
     'use strict';
 
-    ng.module('datacube.controllers', []).
-    controller('DataCube',
+    ng.module('datacube.controllers', []).controller('DataCube',
         ['$scope', 'DataCubeService', '$q', '$location', '$routeParams', '$timeout',
             function ($scope, DataCubeService, $q, $location, $routeParams, $timeout) {
 
@@ -17,9 +16,8 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     return;
                 }
 
-                $scope.dataStructures = [];
                 $scope.datasets = [];
-                $scope.activeDSD = null;
+                $scope.activeDataset = null;
                 $scope.language = $routeParams.language || "cs";
                 $scope.measuresSelectedCount = 0;
                 $scope.chartVisible = true;
@@ -100,8 +98,19 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         $timeout(function () {
                             $scope.permalink = window.location.href;
                         });
+                        sortValues();
                     }
                 };
+
+                function sortValues() {
+                    _.forEach($scope.values, function (values, key) {
+                        if (!key.startsWith('$')) {
+                            $scope.values[key] = _.sortBy(values, function (v) {
+                                return $scope.label(v.label) || v.uri;
+                            });
+                        }
+                    });
+                }
 
                 $scope.switchLinear = function () {
                     $scope.highcharts.options.yAxis = $scope.highcharts.options.yAxis || {};
@@ -128,6 +137,16 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 $scope.queryingDataset = "datasets";
                 DataCubeService.getDatasets({visualizationId: $id}, function (datasets) {
                     $scope.datasets = datasets;
+                    $scope.queryingDataset = null;
+
+                    if ($scope.init && $permanentToken) {
+                        $scope.loadByPermanentToken();
+                    } else {
+                        $(".tm-chat").click();
+                    }
+
+                    $scope.init = false;
+                }, function () {
                     $scope.queryingDataset = null;
                 });
 
@@ -156,27 +175,13 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     });
                 };
 
-                $scope.queryingDataset = "QB datastructure definitions";
-                DataCubeService.getDataStructures({visualizationId: $id}, function (data) {
-                    $scope.queryingDataset = null;
-                    $scope.dataStructures = data;
-
-                    if ($scope.init && $permanentToken) {
-                        $scope.loadByPermanentToken();
-                    }
-
-                    $scope.init = false;
-                }, function () {
-                    $scope.queryingDataset = null;
-                });
-
-                $scope.loadDSDDetails = function (dsd, callback) {
-                    $scope.queryingDataset = "QB dimensions";
-                    DataCubeService.getComponents({id: $id, uri: dsd.uri}, function (data) {
+                $scope.loadDatasetStructure = function (dataset, callback) {
+                    $scope.queryingDataset = "dataset structure";
+                    DataCubeService.getStructure({id: $id, uri: dataset.uri}, function (data) {
                         $scope.queryingDataset = null;
-                        dsd.components = data.components;
+                        dataset.dataStructure = {components: data.components};
 
-                        var measures = _.filter(dsd.components, function (c) {
+                        var measures = _.filter(dataset.dataStructure.components, function (c) {
                             return c.measure;
                         });
 
@@ -190,13 +195,13 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     });
                 };
 
-                $scope.switchDSD = function (dsd, callback) {
-                    $scope.dataStructures.forEach(function (ds) {
+                $scope.switchDataset = function (dataset, callback) {
+                    $scope.datasets.forEach(function (ds) {
                         ds.isActive = false;
                     });
-                    dsd.isActive = true;
-                    $scope.activeDSD = dsd;
-                    $scope.loadDSDDetails(dsd, function () {
+                    dataset.isActive = true;
+                    $scope.activeDataset = dataset;
+                    $scope.loadDatasetStructure(dataset, function () {
                         $scope.loadComponentsValues(callback);
                     });
                 };
@@ -210,8 +215,8 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
                 $scope.title = function () {
-                    var dsdLabel = $scope.activeDSD.label;
-                    return $scope.label(dsdLabel);
+                    var datasetLabel = $scope.activeDataset.label;
+                    return $scope.label(datasetLabel);
                 };
 
                 $scope.subtitle = function (activeMeasures) {
@@ -230,7 +235,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
                 $scope.xAxisTitle = function () {
-                    var xAxisComponent = _.chain($scope.activeDSD.components)
+                    var xAxisComponent = _.chain($scope.activeDataset.dataStructure.components)
                         .filter(function (c) {
                             return c.dimension;
                         })
@@ -246,13 +251,13 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
                 $scope.dimension = function (uri) {
-                    return _.find($scope.activeDSD.components, function (c) {
+                    return _.find($scope.activeDataset.dataStructure.components, function (c) {
                         return c.dimension && c.dimension.uri == uri
                     });
                 };
 
                 function fillLabelsRegistry() {
-                    $scope.activeDSD.components.forEach(function (c) {
+                    $scope.activeDataset.dataStructure.components.forEach(function (c) {
                         ["dimension", "attribute", "measure"].forEach(function (type) {
                             if (c[type]) {
                                 $scope.labelsRegistry[c[type].uri] = $scope.label(c.label);
@@ -276,7 +281,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 $scope.loadComponentsValues = function (callback) {
 
                     var uris = [];
-                    $scope.activeDSD.components.forEach(function (c) {
+                    $scope.activeDataset.dataStructure.components.forEach(function (c) {
 
                         function pushUri(component) {
                             if (component && component.uri) {
@@ -296,6 +301,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                         if (callback) {
                             callback();
+                            sortValues();
                         }
                     }, function () {
                         $scope.queryingDataset = null;
@@ -407,11 +413,11 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
                 $scope.activeMeasures = function () {
-                    if (!$scope.activeDSD) {
+                    if (!$scope.activeDataset) {
                         return [];
                     }
 
-                    return _.filter($scope.activeDSD.components, function (c) {
+                    return _.filter($scope.activeDataset.dataStructure.components, function (c) {
                         return c.measure && c.isActive;
                     });
                 };
@@ -458,19 +464,48 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     computeSlicing();
                 };
 
-                $scope.label = function (label) {
-                    if (label && label.variants) {
-                        if (label.variants[$scope.language]) {
-                            return label.variants[$scope.language];
-                        } else if (label.variants["nolang"]) {
-                            return label.variants["nolang"];
+                $scope.label = function (labelledObject) {
+
+                    if (!labelledObject) {
+                        return undefined;
+                    }
+
+                    labelledObject.label = labelledObject.label || {variants: {}};
+                    labelledObject.label.variants = labelledObject.label.variants || {};
+
+                    var label = labelledObject.label;
+
+                    // current language needs to be always the first one
+                    var languages = _.without($scope.availableLanguages, $scope.language);
+                    languages.unshift($scope.language);
+                    if ($scope.language != 'nolang') {
+                        languages.push('nolang');
+                    }
+
+                    for (var l in languages) {
+                        var code = languages[l];
+                        if (label.variants[code]) {
+                            return label.variants[code];
                         }
                     }
+
+                    var uri = labelledObject.uri;
+
+                    if (uri) {
+                        if (!label.dereferenced) {
+                            DataCubeService.dereference({uri: uri}, function (data) {
+                                label.variants = _.extend(label.variants, data.variants);
+                            });
+                            label.dereferenced = 1;
+                        }
+                        return uri;
+                    }
+
                     return undefined;
                 };
 
                 $scope.reorderComponents = function ($index, component, plusMinusOne) {
-                    var components = $scope.activeDSD.components;
+                    var components = $scope.activeDataset.dataStructure.components;
                     var currentOrder = component.order;
                     var newOrder = currentOrder + plusMinusOne;
 
@@ -491,7 +526,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         return;
                     }
 
-                    var dimensions = _.filter($scope.activeDSD.components, function (c) {
+                    var dimensions = _.filter($scope.activeDataset.dataStructure.components, function (c) {
                         return c.dimension;
                     });
 
@@ -521,12 +556,12 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 function collectFilters() {
                     var filters = {
-                        dsdUri: $scope.activeDSD.uri,
+                        datasetUri: $scope.activeDataset.uri,
                         components: []
                     };
 
                     var i = 100;
-                    var componentsWithOrder = $scope.activeDSD.components.map(function (c) {
+                    var componentsWithOrder = $scope.activeDataset.dataStructure.components.map(function (c) {
                         c.order = c.order || i++;
                         return c;
                     });
@@ -564,14 +599,14 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 function applyFilters(data, callback) {
                     var filters = data.filters;
-                    var dsdUri = filters.dsdUri;
+                    var datasetUri = filters.datasetUri;
 
-                    if (dsdUri) {
-                        var dsd = _.find($scope.dataStructures, function (d) {
-                            return d.uri == dsdUri;
+                    if (datasetUri) {
+                        var dataset = _.find($scope.datasets, function (d) {
+                            return d.uri == datasetUri;
                         });
-                        if (dsd) {
-                            $scope.switchDSD(dsd, function () {
+                        if (dataset) {
+                            $scope.switchDataset(dataset, function () {
                                 applyDimensionFilters(data, callback);
                             });
                         }
@@ -584,7 +619,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         ng.forEach(components, function (c) {
                             if (c.type === "measure") {
                                 if (c.isActive) {
-                                    var measure = _.find($scope.activeDSD.components, function (adc) {
+                                    var measure = _.find($scope.activeDataset.dataStructure.components, function (adc) {
                                         return adc.measure && adc.measure.uri == c.componentUri;
                                     });
 
@@ -595,7 +630,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                             } else {
 
                                 if (c.type === "dimension") {
-                                    var component = _.find($scope.activeDSD.components, function (adc) {
+                                    var component = _.find($scope.activeDataset.dataStructure.components, function (adc) {
                                         return adc.dimension && adc.dimension.uri == c.componentUri;
                                     });
                                 }

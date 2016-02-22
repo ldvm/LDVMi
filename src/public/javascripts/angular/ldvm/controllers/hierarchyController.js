@@ -37,9 +37,10 @@ define(['angular', './controllers'], function (ng) {
                     return (includeHost ? "http://" + document.location.host : "") + "/visualize/embed/" + visType + "/" + $scope.id + "?schemeUri=" + encodeURIComponent($routeParams.uri);
                 };
 
-                $scope.loadScheme = function (schemeUri) {
+                $scope.loadScheme = function (scheme) {
+                    console.log(scheme);
                     $scope.queryingDataset = true;
-                    var schemePromise = visualization.skos.scheme(id, schemeUri);
+                    var schemePromise = visualization.skos.scheme(id, scheme.uri);
                     schemePromise.then(function (scheme) {
                         $scope.queryingDataset = false;
                         $scope.scheme = scheme;

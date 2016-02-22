@@ -1,13 +1,18 @@
 package model.rdf.sparql.datacube
 
 import model.entity.{PipelineEvaluation, PipelineEvaluationQuery}
+import model.rdf.LocalizedValue
+import model.rdf.extractor.LabelsExtractor
 import model.rdf.sparql.datacube.extractor._
 import model.rdf.sparql.datacube.query._
+import model.rdf.sparql.query.LabelsDereferenceQuery
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpoint, SparqlEndpointService, ValueFilter}
 import model.service.{PipelineService, SessionScoped}
 import play.api.libs.json.JsValue
 import scaldi.{Injectable, Injector}
 import utils.MD5
+
+import scalaj.http.Http
 
 class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService with SessionScoped with Injectable {
 

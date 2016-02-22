@@ -7,27 +7,22 @@ import play.api.Play.current
 import play.api.db.slick._
 import play.api.cache.Cache
 import play.api.libs.json._
-import play.api.mvc.Result
+import play.api.mvc.{Action, Result}
 import scaldi.Injector
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scalaj.http.Http
 
 
 class DataCubeApiController(implicit inj: Injector) extends ApiController {
-
-  def dataStructures(id: Long) = DBAction { implicit rs =>
-    withEvaluation(id) { evaluation =>
-      Ok(Json.toJson(dataCubeService.getDataStructures(evaluation)))
-    }
-  }
 
   def createVisualisation(dataSourceTemplateId: Long) = {
     val visualizerUri = "http://linked.opendata.cz/resource/ldvm/visualizer/data-cube-simple/DataCubeVisualizerTemplate"
     super.createVisualisation(dataSourceTemplateId, visualizerUri)
   }
 
-  def dataStructureComponents(id: Long, uri: String, isTolerant: Boolean = false) = DBAction { implicit rs =>
+  def dataStructure(id: Long, uri: String, isTolerant: Boolean = false) = DBAction { implicit rs =>
     withEvaluation(id) { evaluation =>
       val components = dataCubeService.getDataStructureComponents(evaluation, uri, isTolerant)
       val componentsJson = Seq("components" -> components).toMap

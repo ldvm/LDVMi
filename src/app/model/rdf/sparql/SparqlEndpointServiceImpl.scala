@@ -1,10 +1,13 @@
 package model.rdf.sparql
 
+import _root_.model.rdf.Graph
 import _root_.model.rdf.extractor.QueryExecutionResultExtractor
 import _root_.model.rdf.sparql.query.SparqlQuery
-import org.apache.jena.query.QueryExecution
+import org.apache.jena.query.{QueryExecution, QueryExecutionFactory}
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP
 import scaldi.Injector
+
+import scalaj.http.{Http, HttpOptions}
 
 class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointService {
 
@@ -12,9 +15,28 @@ class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointSe
     try {
       extractor.extract(execution(sparqlEndpoint, query))
     } catch {
-      case qEx : QueryExceptionHTTP => {
-        throw qEx
+      case qEx: QueryExceptionHTTP => throw qEx
+    }
+  }
+
+  def dereference[Q <: SparqlQuery, R](uri: String, query: Q, extractor: QueryExecutionResultExtractor[Q, R]): Option[R] = {
+    try {
+      val request = Http(uri)
+        .timeout(connTimeoutMs = 2000, readTimeoutMs = 5000)
+        .header("Accept", "text/turtle")
+        .option(HttpOptions.followRedirects(true))
+
+      val response = request.asString
+
+      if (response.code == 303) {
+        dereference(response.header("Location").get, query, extractor)
+      } else {
+        val ttl = response.body
+        Graph(ttl).flatMap(g => extractor.extract(QueryExecutionFactory.create(query.get, g.jenaModel)))
       }
+    } catch {
+      case qEx: QueryExceptionHTTP => throw qEx
+      case e => println(e); None
     }
   }
 

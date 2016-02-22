@@ -3,16 +3,16 @@ import com.typesafe.sbt.SbtNativePackager._
 import NativePackagerKeys._
 import com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV
 
-name := "LDVMi"
+name := "LinkedPipes Visualization"
 
 version := "1.1.1"
 
 /** Debian packaging **/
 maintainer in Linux := "Jiri Helmich <helmich@ksi.mff.cuni.cz>"
 
-packageSummary in Linux := "LDVMi - Linked Data visualizations"
+packageSummary in Linux := "LinkedPipes Visualization - Linked Data visualizations"
 
-packageDescription := "LDVMi - Linked Data visualizations"
+packageDescription := "LinkedPipes Visualization - Linked Data visualizations"
 
 serverLoading in Debian := SystemV
 
@@ -54,13 +54,13 @@ libraryDependencies ++= Seq(
   "org.webjars" % "angular-nvd3" % "0.0.9",
   "org.webjars" % "nvd3" % "8415ee55d3",
   "org.webjars" % "angularjs-nvd3-directives" % "0.0.7-1",
-  "org.scalaj" %% "scalaj-http" % "0.3.16",
+  "org.scalaj" %% "scalaj-http" % "2.2.1",
   "org.scaldi" % "scaldi-play_2.11" % "0.4.1",
   "org.virtuslab" %% "unicorn-play" % "0.6.2",
   "org.apache.jena" % "jena" % "3.0.0",
   "org.apache.jena" % "jena-arq" % "3.0.0",
   "com.typesafe.play" %% "play-slick" % "0.8.0",
-  "com.newrelic.agent.java" % "newrelic-api" % "3.8.1",
+  "com.newrelic.agent.java" % "newrelic-api" % "3.25.0",
   "joda-time" % "joda-time" % "2.8.1",
   "org.joda" % "joda-convert" % "1.6",
   "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0",

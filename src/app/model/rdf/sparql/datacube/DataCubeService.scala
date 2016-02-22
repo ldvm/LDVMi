@@ -1,6 +1,7 @@
 package model.rdf.sparql.datacube
 
 import model.entity.{PipelineEvaluation, DataSourceTemplateEagerBox, DataSourceTemplate}
+import model.rdf.LocalizedValue
 import play.api.libs.iteratee.Enumerator
 import play.api.libs.json.JsValue
 

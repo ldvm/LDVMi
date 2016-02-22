@@ -3,89 +3,7 @@
         <br/><br/>
 
         <div class="row">
-            <div class="col-sm-4">
-                <div class="card">
-                    <div class="card-header ch-alt">
-                        <h2>LDVM visualizations
-                            <small>
-                                by XRG, Charles University in Prague
-                            </small>
-                        </h2>
-                    </div>
-
-                    <div class="card-body card-padding">
-                        <p>
-                            The goal of this application is to provide visualizations of Linked Data
-                            datasets using principles of <a
-                                href="http://events.linkeddata.org/ldow2014/papers/ldow2014_paper_13.pdf">
-                            Linked Data Visualization Model (LDVM)</a>.
-                            You can use it with your own SPARQL Endpoint.
-                        </p>
-                        <p>
-                            The Linked Data Visualization Model (LDVM) is an adaptation
-                            of the general Data State Reference Model (DSRM)
-                            for the specifics of the visualization of RDF and Linked Data.
-                        </p>
-                        <p>
-                            We extend DSRM with three
-                            additional concepts – analyzers, transformers and visualizers.
-                            They denote reusable software components that can
-                            be chained to form an LDVM instance.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="card picture-list">
-                    <div class="card-header">
-                        <h2>Examples
-                            <small>This is what LDVM can do for you.</small>
-                        </h2>
-
-                        <ul class="actions">
-                            <li class="dropdown action-show">
-                                <a href="" data-toggle="dropdown">
-                                    <i class="md md-more-vert"></i>
-                                </a>
-
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li>
-                                        <a href="">Refresh</a>
-                                    </li>
-                                    <li>
-                                        <a href="">Manage Widgets</a>
-                                    </li>
-                                    <li>
-                                        <a href="">Widgets Settings</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="pl-body">
-                        <div class="col-xs-4">
-                            <a href="http://live.payola.cz:29080/visualize/map#/markers/34?autoLoad=1">
-                                <img src="/assets/images/mapvis.png" alt="">
-                            </a>
-                        </div>
-
-                        <div class="col-xs-4">
-                            <a href="http://live.payola.cz:29080/visualize/datacube#/id/33?view=chart&chartType=column&isPolar=false&p=a23c1dafb7a49d703acfdadaefbf8f1d">
-                                <img src="/assets/images/datacube.png" alt="">
-                            </a>
-                        </div>
-
-                        <div class="col-xs-4">
-                            <a href="http://live.payola.cz:29080/visualize#/hierarchy/treemap/120?uri=http:%2F%2Flinked.cssz.cz%2Fontology%2Fpension-kinds%2FPensionKindScheme_2010">
-                                <img src="/assets/images/treemap.png" alt="">
-                            </a>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-sm-8">
+            <div class="col-sm-12">
 
                 <div class="card">
                     <div class="card-header bgm-green">
@@ -122,6 +40,7 @@
                             </div>
 
                             <button class="btn btn-info waves-effect" ng-click="visualize()">Visualize</button>
+                            <button class="btn btn-default waves-effect" ng-click="visualize(true)">Feeling lucky</button>
                             <button class="btn btn-link waves-effect" ng-show="!showMore"
                                     ng-click="showMore = !showMore">More settings
                             </button>
@@ -140,7 +59,7 @@
 
                 <div class="card">
                     <div class="card-header ch-alt m-b-20">
-                        <h2>Recent Pipelines <small>What are people visualizing?</small></h2>
+                        <h2>Recent Saved Pipelines</h2>
                         <ul class="actions">
                             <li>
                                 <a href="">

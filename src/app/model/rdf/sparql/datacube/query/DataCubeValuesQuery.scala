@@ -35,7 +35,7 @@ object DataCubeValuesQuery {
     type LabelVariables = Value
     val VALUE_LABEL_VARIABLE = Value("l")
     val VALUE_PREFLABEL_VARIABLE = Value("spl")
-    val VALUE_NOTION_VARIABLE = Value("sn")
+    val VALUE_NOTATION_VARIABLE = Value("sn")
     val VALUE_NAME_VARIABLE = Value("sna")
     val VALUE_TITLE_VARIABLE = Value("st")
   }

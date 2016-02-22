@@ -16,6 +16,7 @@ case class Pipeline(
   uri: String,
   title: String,
   description: Option[String],
+  visualizerComponentTemplateId: ComponentTemplateId,
   isTemporary: Boolean = true,
   pipelineDiscovery: Option[PipelineDiscoveryId] = None,
   var uuid: String = UUID.randomUUID().toString,
@@ -35,6 +36,15 @@ case class Pipeline(
       ci <- componentInstancesQuery if ci.id === m.componentInstanceId
     } yield ci).list
   }
+
+  def visualizationConfiguration(implicit session: Session) : Option[VisualizationConfiguration] = {
+    (for { v <- visualizationConfigurationsQuery if v.visualizerUri === visualizerComponentTemplate.uri } yield v).firstOption
+  }
+
+  def visualizerComponentTemplate(implicit session: Session) : ComponentTemplate = {
+    (for { v <- componentTemplatesQuery if v.id === visualizerComponentTemplateId } yield v).first
+  }
+
 }
 
 
@@ -52,5 +62,11 @@ class PipelineTable(tag: Tag) extends DescribedEntityTable[PipelineId, Pipeline]
 
   def pipelineDiscovery = foreignKey("pipeline_discovery", pipelineDiscoveryId, pipelineDiscoveriesQuery)(_.id)
 
-  def * = (id.?, bindingSetId, uri, title, description, isTemporary, pipelineDiscoveryId, uuid, createdUtc, modifiedUtc) <>(Pipeline.tupled, Pipeline.unapply _)
+  def visualizerComponentTemplateId = column[ComponentTemplateId]("visualizer_component_template_id")
+
+  def visualizerComponentTemplate = foreignKey("visualizer_component_template", visualizerComponentTemplateId, componentTemplatesQuery)(_.id)
+
+  def visualizationConfiguration = visualizationConfigurationsQuery.filter(c => visualizerComponentTemplate.filter(vct => vct.uri === c.visualizerUri).exists)
+
+  def * = (id.?, bindingSetId, uri, title, description, visualizerComponentTemplateId, isTemporary, pipelineDiscoveryId, uuid, createdUtc, modifiedUtc) <>(Pipeline.tupled, Pipeline.unapply)
 }

@@ -9,14 +9,11 @@ import model.actor.{CheckCompatibilityRequest, CheckCompatibilityResponse, RdfCo
 import model.entity._
 import model.rdf.Graph
 import model.rdf.sparql.GenericSparqlEndpoint
-import model.rdf.vocabulary.{DSPARQL, SD}
 import model.service.{GraphStoreProtocol, SessionScoped}
 import play.api.Play.current
 import play.api.db
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
-
-import scala.collection.JavaConversions._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{Future, Promise}
 
@@ -140,7 +137,10 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
         componentToAsk.checkIsCompatibleWith(descriptor, reporterProps)
       }
 
-      eventualResponses.foreach(_.onFailure { case e => p.tryFailure(e)})
+      eventualResponses.foreach(_.onFailure {
+        case e : org.apache.jena.query.QueryException if e.getMessage.matches(".+returned Content(.+)which is not currently.+") => p.tryFailure(e)
+        case _ => p.trySuccess(false)
+      })
       Future.sequence(eventualResponses)
         .map { x => x.forall(_.isCompatible.getOrElse(false))}
         .foreach { x =>
@@ -171,7 +171,7 @@ object InternalComponent {
     val componentTemplate = specificComponentTemplate.componentTemplate
     session.close()
     new InternalComponent(
-      ComponentInstance(None, componentTemplate.uri + "#instance", componentTemplate.title + " instance", None, specificComponentTemplate.componentTemplateId, None),
+      ComponentInstance(None, componentTemplate.uri + "#instance", componentTemplate.title, None, specificComponentTemplate.componentTemplateId, None),
       pluginFactory,
       reporterProps
     )

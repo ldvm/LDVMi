@@ -7,4 +7,6 @@ trait SparqlEndpointService {
 
   def getResult[Q <: SparqlQuery, R](sparqlEndpoint: SparqlEndpoint, query: Q, extractor: QueryExecutionResultExtractor[Q, R]): Option[R]
 
+  def dereference[Q <: SparqlQuery, R](uri: String, query: Q, extractor: QueryExecutionResultExtractor[Q, R]): Option[R]
+
 }

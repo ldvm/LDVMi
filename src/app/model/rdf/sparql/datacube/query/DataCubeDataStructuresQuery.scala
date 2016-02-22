@@ -15,13 +15,13 @@ class DataCubeDataStructuresQuery extends SparqlQuery {
       |     ?d a qb:DataStructureDefinition ;
       |        rdfs:label ?l ;
       |        skos:prefLabel ?spl ;
-      |        skos:notion ?sn .
+      |        skos:notation ?sn .
       | } WHERE
       | {
       |    ?d a qb:DataStructureDefinition .
       |    OPTIONAL { ?d skos:prefLabel ?spl . }
       |    OPTIONAL { ?d rdfs:label ?l . }
-      |    OPTIONAL { ?d skos:notion ?sn . }
+      |    OPTIONAL { ?d skos:notation ?sn . }
       | }
     """.stripMargin.replaceAll("[\n\r]", "")
 
