@@ -21,12 +21,18 @@ export const Discovery = Record({
   modifiedUtc: 0
 });
 
-export const Pipeline = Record({
+const pipelineProps = {
   id: 0,
   bindingSetId: 0,
   title: '',
   uuid: '',
   visualizerComponentTemplateId: 0
+};
+export const Pipeline = Record(pipelineProps);
+
+export const PipelineWithEvaluations = Record({
+  ...pipelineProps,
+  evaluations: new List()
 });
 
 const visualizerProps = {
@@ -41,4 +47,14 @@ export const Visualizer = Record(visualizerProps);
 export const VisualizerWithPipelines = Record({
   ...visualizerProps,
   pipelines: new List()
+});
+
+export const Evaluation = Record({
+  id: 0,
+  isFinished: false,
+  isSuccess: false,
+  modifiedUtc: 0,
+  createdUtc: 0,
+  pipelineId: 0,
+  uuid: ""
 });

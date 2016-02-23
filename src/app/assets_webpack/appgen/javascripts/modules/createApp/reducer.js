@@ -5,6 +5,7 @@ import runDiscoveryStatus from './ducks/runDiscoveryStatus'
 import runEvaluationStatus from './ducks/runEvaluationStatus'
 import discovery from './ducks/discovery'
 import visualizers from './ducks/visualizers'
+import evaluations from './ducks/evaluations'
 
 const rootReducer = combineReducers({
   dataSources,
@@ -12,5 +13,6 @@ const rootReducer = combineReducers({
   runDiscoveryStatus,
   runEvaluationStatus,
   discovery,
-  visualizers });
+  visualizers,
+  evaluations });
 export default rootReducer;

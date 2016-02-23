@@ -47,3 +47,12 @@ export async function runEvaluation(pipelineId) {
   const result = await rest('createApp/runEvaluation/' + pipelineId, {});
   return result.message;
 }
+
+/**
+ * @param {number} userPipelineDiscoveryId
+ * @returns {Promise<Array<object>>}
+ */
+export async function getEvaluations(userPipelineDiscoveryId) {
+  const result = await rest('createApp/getEvaluations/' + userPipelineDiscoveryId, {});
+  return result.data.evaluations;
+}

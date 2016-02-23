@@ -86,4 +86,20 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
       case None => BadRequest(ErrorResponse("The pipeline does not exist or is not accessible"))
     }
   }
+
+  def getEvaluations(discoveryId: Long) = RestAction[EmptyRequest] { implicit request => json =>
+    (for {
+      userDiscovery <- userPipelineDiscoveryRepository.findById(request.user, UserPipelineDiscoveryId(discoveryId))
+      discovery <- pipelineService.discoveryState(userDiscovery.pipelineDiscoveryId)
+      pipelines <- Some(pipelineService.findPaginatedFiltered(PaginationInfo(0, 50), Some(userDiscovery.pipelineDiscoveryId))())
+      evaluations <- Some(pipelines flatMap {pipeline =>
+        pipelineService.lastEvaluations(pipeline.id.get, PaginationInfo(0, 50))}
+      )
+    } yield (userDiscovery, discovery, pipelines, evaluations)) match {
+      case Some((userDiscovery, discovery, pipelines, evaluations)) =>
+        Ok(SuccessResponse(data = Seq(
+          "evaluations" -> evaluations)))
+      case _ => BadRequest(ErrorResponse("Discovery was not found"))
+    }
+  }
 }

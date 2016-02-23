@@ -5,7 +5,8 @@ import createPromiseReducer, { PRESERVE_STATE } from '../../../misc/promiseReduc
 import createAction from '../../../misc/createAction'
 import { discoverySelector as reducerSelector } from '../selector'
 import { visualizersSelector } from './visualizers'
-import { Discovery, Pipeline, VisualizerWithPipelines } from '../models'
+import { evaluationsSelector, promiseSelector as evaluationPromiseSelector } from './evaluations'
+import { Discovery, PipelineWithEvaluations, VisualizerWithPipelines } from '../models'
 
 // Actions
 
@@ -56,9 +57,14 @@ const mergedDiscoverySelector = createSelector(
 );
 
 const pipelinesSelector = createSelector(
-  [dataSelector],
-  data => data.has('pipelines') ?
-    data.get('pipelines').map(pipeline => new Pipeline(pipeline)) : List()
+  [dataSelector, evaluationsSelector],
+  (data, evaluations) => data.has('pipelines') ? data.get('pipelines')
+    .map(pipeline =>
+
+      // Add evaluations to the pipeline object
+      (new PipelineWithEvaluations(pipeline))
+        .set('evaluations', evaluations.filter(evaluation => evaluation.pipelineId == pipeline.get('id')))
+    ) : List()
 );
 
 const pipelineVisualizersSelector = createSelector(
@@ -77,8 +83,8 @@ const pipelineVisualizersSelector = createSelector(
 
 // This rather complex hierarchy of selectors makes sure that the memoization works correctly.
 export const discoverySelector = createSelector(
-  [promiseSelector, mergedDiscoverySelector, pipelinesSelector, pipelineVisualizersSelector],
-  ({error, isLoading}, discovery, pipelines, visualizers) => ({
-    error, isLoading, discovery, pipelines, visualizers
+  [promiseSelector, mergedDiscoverySelector, pipelinesSelector, pipelineVisualizersSelector, evaluationsSelector, evaluationPromiseSelector], // TODO: evaluationPromiseSelector is also very ugly, let's do something with that in the next step
+  ({error, isLoading}, discovery, pipelines, visualizers, evaluations, evaluationsPromise) => ({
+    error, isLoading, discovery, pipelines, visualizers, evaluations, evaluationsPromise
   })
 );

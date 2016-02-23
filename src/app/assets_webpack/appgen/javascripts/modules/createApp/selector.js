@@ -32,3 +32,8 @@ export const visualizersSelector = createSelector(
   [moduleSelector],
   state => state.visualizers
 );
+
+export const evaluationsSelector = createSelector(
+  [moduleSelector],
+  state => state.evaluations
+);
