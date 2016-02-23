@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getDiscovery, discoverySelector } from '../ducks/discovery'
 import { dialogOpen, dialogClose } from '../../../ducks/dialog'
+import { runEvaluation } from '../ducks/runEvaluationStatus'
 import PromiseResult from '../../../misc/components/PromiseResult'
 import CenteredMessage from '../../../misc/components/CenteredMessage'
 import DiscoveryStatus from '../components/DiscoveryStatus'
@@ -46,6 +47,7 @@ class Discovery extends Component {
             visualizers={visualizers}
             dialogOpen={name => dispatch(dialogOpen(name))}
             dialogClose={name => dispatch(dialogClose(name))}
+            runEvaluation={pipelineId => dispatch(runEvaluation(pipelineId))}
           /> :
           <CenteredMessage>
             No pipelines found {discovery.isFinished ? '.' : ' (yet).'}

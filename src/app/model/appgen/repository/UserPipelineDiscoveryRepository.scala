@@ -1,6 +1,7 @@
 package model.appgen.repository
 
 import model.appgen.entity._
+import model.entity.PipelineDiscoveryId
 import org.virtuslab.unicorn.LongUnicornPlay._
 import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
 
@@ -11,5 +12,11 @@ class UserPipelineDiscoveryRepository extends BaseIdRepository[UserPipelineDisco
 
   def findById(user: User, id: UserPipelineDiscoveryId)(implicit session: Session): Option[UserPipelineDiscovery] = {
     byIdFunc(id).filter(_.userId === user.id.get).firstOption
+  }
+
+  def findByPipelineDiscovery(user: User, id: PipelineDiscoveryId)(implicit session: Session): Option[UserPipelineDiscovery] = {
+    query
+      .filter(_.pipelineDiscoveryId === id)
+      .filter(_.userId === user.id.get).firstOption
   }
 }

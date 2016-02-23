@@ -15,7 +15,7 @@ import TableBody from 'material-ui/lib/table/table-body';
 export const dialogName = 'SHOW_PIPELINES_DIALOG';
 
 const ShowPipelinesDialog = (props) =>  {
-  const {dialogClose, pipelines, dialogInstanceName} = props;
+  const {dialogClose, runEvaluation, pipelines, dialogInstanceName} = props;
 
   const actions = [
     <Button label="Close" onTouchTap={() => dialogClose(dialogInstanceName)} />
@@ -27,15 +27,17 @@ const ShowPipelinesDialog = (props) =>  {
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
             <TableHeaderColumn>Name</TableHeaderColumn>
-            <TableHeaderColumn>Run</TableHeaderColumn>
+            <TableHeaderColumn width={150}>Run</TableHeaderColumn>
           </TableRow>
         </TableHeader>
         <TableBody displayRowCheckbox={false} allowMultiselect>
           {pipelines.map(pipeline =>
             <TableRow selected key={pipeline.id}>
               <TableRowColumn>{pipeline.title}</TableRowColumn>
-              <TableRowColumn>
-                <Button warning raised icon="play_arrow" label="Run pipeline" />
+              <TableRowColumn width={150}>
+                <Button warning raised icon="play_arrow" label="Run pipeline"
+                  onTouchTap={() => runEvaluation(pipeline.id)}
+                />
               </TableRowColumn>
             </TableRow>
           )}
@@ -50,7 +52,8 @@ ShowPipelinesDialog.dialogName = dialogName;
 ShowPipelinesDialog.propTypes = {
   dialogInstanceName: PropTypes.string.isRequired,
   pipelines: PropTypes.instanceOf(List).isRequired,
-  dialogClose: PropTypes.func.isRequired
+  dialogClose: PropTypes.func.isRequired,
+  runEvaluation: PropTypes.func.isRequired
 };
 
 export default ShowPipelinesDialog;

@@ -9,6 +9,7 @@ import model.appgen.rest.AddDataSourceRequest._
 import model.appgen.rest.EmptyRequest._
 import model.appgen.rest.RunDiscoveryRequest._
 import model.appgen.service.VisualizerService
+import model.entity.PipelineId
 import model.service.{PipelineService, DataSourceService}
 import scaldi.Injector
 import model.appgen.rest.Response._
@@ -38,8 +39,7 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
     val dataSources = userDataSourceRepository.findByIds(json.getIds).toList
     val discoveryName = dataSources.map(s => s.name) mkString ", "
 
-    // Run the pipeline on data sources and remember discovery id
-    // TODO: run async
+    // Run the discovery on data sources and remember discovery id
     val logger = ProgressReporter.props // Use dummy logger
     val pipelineDiscoveryId = pipelineService.discover(logger,
       dataSources.map(s => s.dataSourceTemplateId.id))
@@ -68,6 +68,22 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
           "pipelineDiscovery" -> discovery,
           "pipelines" -> pipelines)))
       case _ => BadRequest(ErrorResponse("Discovery was not found"))
+    }
+  }
+
+  def runEvaluation(pipelineId: Long) = RestAction[EmptyRequest] { implicit request => json =>
+    val pipeline = pipelineService.findById(PipelineId(pipelineId))
+    val discovery = pipeline.flatMap(p => pipelineService.discoveryState(p.pipelineDiscovery.get))
+    val userDiscovery = discovery.flatMap(d => userPipelineDiscoveryRepository.findByPipelineDiscovery(request.user, d.id.get))
+
+    userDiscovery match {
+      case Some(_) => {
+        // Run the pipeline
+        val logger = ProgressReporter.props // Use dummy logger
+        pipelineService.evaluate(PipelineId(pipelineId))(logger)
+        Ok(SuccessResponse("Evaluation has started"))
+      }
+      case None => BadRequest(ErrorResponse("The pipeline does not exist or is not accessible"))
     }
   }
 }

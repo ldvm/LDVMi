@@ -38,3 +38,12 @@ export async function getVisualizers() {
   const result = await rest('createApp/getVisualizers', {});
   return result.data.visualizers;
 }
+
+/**
+ * @param {number} pipelineId
+ * @returns {Promise<number>}
+ */
+export async function runEvaluation(pipelineId) {
+  const result = await rest('createApp/runEvaluation/' + pipelineId, {});
+  return result.message;
+}

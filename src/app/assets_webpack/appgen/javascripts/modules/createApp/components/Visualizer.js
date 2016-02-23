@@ -23,7 +23,7 @@ const iconStyle = {
   color: 'rgba(0, 0, 0, 0.7)'
 };
 
-const Visualizer = ({ visualizer, dialogOpen, dialogClose }) => {
+const Visualizer = ({ visualizer, dialogOpen, dialogClose, runEvaluation }) => {
   const dialogInstanceName = ShowPipelinesDialog + '_' + visualizer.id;
 
   return <Col md={3}>
@@ -45,7 +45,8 @@ const Visualizer = ({ visualizer, dialogOpen, dialogClose }) => {
         <ShowPipelinesDialog
           dialogInstanceName={dialogInstanceName}
           dialogClose={dialogClose}
-          pipelines={visualizer.pipelines} />
+          pipelines={visualizer.pipelines}
+          runEvaluation={runEvaluation} />
       </CardActions>
     </Card>
     </Col>
@@ -54,7 +55,8 @@ const Visualizer = ({ visualizer, dialogOpen, dialogClose }) => {
 Visualizer.propTypes = {
   visualizer: PropTypes.instanceOf(VisualizerWithPipelines).isRequired,
   dialogOpen: PropTypes.func.isRequired,
-  dialogClose: PropTypes.func.isRequired
+  dialogClose: PropTypes.func.isRequired,
+  runEvaluation: PropTypes.func.isRequired
 };
 
 export default Visualizer;
