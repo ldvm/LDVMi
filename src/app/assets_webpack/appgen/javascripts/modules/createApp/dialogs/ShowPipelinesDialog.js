@@ -18,7 +18,7 @@ const ShowPipelinesDialog = (props) =>  {
   const {dialogClose, pipelines, dialogInstanceName} = props;
 
   const actions = [
-    <Button label="Close" onTouchTap={() => dialogClose(dialogName)} />
+    <Button label="Close" onTouchTap={() => dialogClose(dialogInstanceName)} />
   ];
 
   return (

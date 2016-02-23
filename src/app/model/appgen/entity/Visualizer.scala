@@ -18,9 +18,11 @@ object Visualizer {
   implicit val visualizerWrites = Json.writes[Visualizer]
 
   def fromComponentTemplate(ct: ComponentTemplate) = {
-    // Hard coded icons
+    // Hard-coded icons
     val icon = ct.uri match {
       case "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate" => "maps"
+      case "http://linked.opendata.cz/resource/ldvm/visualizer/data-cube/DataCubeVisualizerTemplate" => "insert_chart"
+      case "http://linked.opendata.cz/resource/ldvm/visualizer/concept/ConceptVisualizerTemplate" => "library_books"
       case _ => "help"
     }
     Visualizer(ct.id, ct.uri, ct.title, icon, ct.description, ct.id)
