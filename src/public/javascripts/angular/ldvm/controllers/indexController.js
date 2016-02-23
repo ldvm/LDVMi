@@ -7,9 +7,15 @@ define(['angular', 'material', 'underscore.string', './controllers'], function (
             $scope.sources = [
                 {
                     type: 'sparqlEndpoint',
-                    url: 'http://linked.opendata.cz/sparql'
+                    endpointUrl: 'http://linked.opendata.cz/sparql',
+                    graphUris: []
                 }
             ];
+
+            window.setTimeout(function(){
+                material.initForms();
+            }, 0);
+
 
             /*
             $scope.pipelines = [];
@@ -48,7 +54,6 @@ define(['angular', 'material', 'underscore.string', './controllers'], function (
                 var lastIndex = newVal.length - 1;
                 if (!(!newVal[lastIndex].url || newVal[lastIndex].url == "")) {
                     $scope.endpoints.push({});
-                    material.initForms();
                 }
             }, true);*/
         }]);

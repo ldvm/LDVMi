@@ -15,11 +15,19 @@
                     <div class="card-body card-padding data-source-list">
                         <form name="dataSources">
                             <div class="data-source" ng-repeat="source in sources" ng-switch="source.type">
-                                <div class="form-group fg-float" ng-switch-when="sparqlEndpoint">
-                                    <div class="fg-line">
-                                        <input type="text" ng-model="source.url" class="form-control fg-input"/>
+                                <div ng-switch-when="sparqlEndpoint">
+                                    <div class="form-group fg-float">
+                                        <div class="fg-line">
+                                            <input type="text" ng-model="source.endpointUrl" class="form-control fg-input"/>
+                                        </div>
+                                        <label class="fg-label">Endpoint URL</label>
                                     </div>
-                                    <label class="fg-label">Endpoint URL</label>
+                                    <div class="form-group fg-float">
+                                        <div class="fg-line">
+                                            <input type="text" ng-model="source.endpointUrl" class="form-control fg-input"/>
+                                        </div>
+                                        <label class="fg-label">Graph URIs</label>
+                                    </div>
                                 </div>
                             </div>
 
