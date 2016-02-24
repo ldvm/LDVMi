@@ -39,6 +39,7 @@
         var uri = "/api/v1/skos/scheme/@evaluationId.id?schemeUri=" + encodeURIComponent('@schemeUri');
 
         function name(node) {
+            node.name = node.name || {variants: {}};
             return node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
         }
 var diameter = 960;
