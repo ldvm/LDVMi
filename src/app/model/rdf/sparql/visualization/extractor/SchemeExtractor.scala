@@ -37,11 +37,9 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
         hierarchyLinksByUri.put(b.getURI, hierarchyLinksByUri.getOrElse(b.getURI, Seq()) ++ Seq(nodeResource.getURI))
       }
 
-      val hasBroader = maybeBroader.isDefined
-      if(hasBroader) {
-        None
-      }else{
-        Some(nodeResource.getURI) // URI of root
+      maybeBroader.isDefined match {
+        case true => None
+        case false => Some(nodeResource.getURI)
       }
     }
 
