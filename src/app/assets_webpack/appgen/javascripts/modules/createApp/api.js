@@ -56,3 +56,13 @@ export async function getEvaluations(userPipelineDiscoveryId) {
   const result = await rest('createApp/getEvaluations/' + userPipelineDiscoveryId, {});
   return result.data.evaluations;
 }
+
+/**
+ * @param name of the application
+ * @param pipelineId
+ * @returns {Promise<number>} id of the new application
+ */
+export async function createApp(name, pipelineId) {
+  const result = await rest('createApp/createApp', { name, pipelineId});
+  return result.data.id;
+}

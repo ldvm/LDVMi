@@ -9,4 +9,5 @@ class AppgenRepositoryModule extends Module {
   binding to new UserDataSourcesRepository
   binding to new UserPipelineDiscoveryRepository
   binding to new VisualizerService
+  binding to new ApplicationsRepository
 }

@@ -28,8 +28,8 @@ const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus, dispatch}) => {
 
   const handleCreateApp = async (data) => {
     try {
-      // TODO: const result = await api.createApp(data.name);
-      dispatch(notification('New data application has been created'));
+      const appId = await api.createApp(data.name, pipeline.id);
+      dispatch(notification(`New data application (${appId}) has been created`));
       dispatch(dialogClose(createAppDialogName));
       // TODO: redirect
     }

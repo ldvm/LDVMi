@@ -1,15 +1,17 @@
 package controllers.appgen.api
 
+import play.api.mvc._
 import controllers.api.ProgressReporter
 import controllers.appgen.api.JsonImplicits._
 import controllers.api.JsonImplicits._
 import model.appgen.entity._
-import model.appgen.repository.{UserPipelineDiscoveryRepository, UserDataSourcesRepository}
+import model.appgen.repository.{ApplicationsRepository, UserPipelineDiscoveryRepository, UserDataSourcesRepository}
 import model.appgen.rest.AddDataSourceRequest._
 import model.appgen.rest.EmptyRequest._
 import model.appgen.rest.RunDiscoveryRequest._
+import model.appgen.rest.CreateAppRequest._
 import model.appgen.service.VisualizerService
-import model.entity.PipelineId
+import model.entity.{PipelineDiscovery, Pipeline, PipelineId}
 import model.service.{PipelineService, DataSourceService}
 import scaldi.Injector
 import model.appgen.rest.Response._
@@ -18,6 +20,7 @@ import utils.PaginationInfo
 class CreateAppApiController(implicit inj: Injector) extends RestController {
   val dataSourceService = inject[DataSourceService]
   val userDataSourceRepository = inject[UserDataSourcesRepository]
+  val applicationsRepository = inject[ApplicationsRepository]
   val userPipelineDiscoveryRepository = inject[UserPipelineDiscoveryRepository]
   val pipelineService = inject[PipelineService]
   val visualizerService = inject[VisualizerService]
@@ -71,19 +74,27 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
     }
   }
 
-  def runEvaluation(pipelineId: Long) = RestAction[EmptyRequest] { implicit request => json =>
-    val pipeline = pipelineService.findById(PipelineId(pipelineId))
-    val discovery = pipeline.flatMap(p => pipelineService.discoveryState(p.pipelineDiscovery.get))
-    val userDiscovery = discovery.flatMap(d => userPipelineDiscoveryRepository.findByPipelineDiscovery(request.user, d.id.get))
-
-    userDiscovery match {
-      case Some(_) => {
-        // Run the pipeline
-        val logger = ProgressReporter.props // Use dummy logger
-        pipelineService.evaluate(PipelineId(pipelineId))(logger)
-        Ok(SuccessResponse("Evaluation has started"))
-      }
+  /** Load discovery from given pipeline. The discovery must belong to current user. */
+  private def withDiscovery(id: PipelineId)
+    (func: (Pipeline, PipelineDiscovery, UserPipelineDiscovery) => Result)
+    (implicit request: RestRequest): Result = {
+    (for {
+      pipeline <- pipelineService.findById(id)
+      discovery <- pipelineService.discoveryState(pipeline.pipelineDiscovery.get)
+      userDiscovery <- userPipelineDiscoveryRepository.findByPipelineDiscovery(request.user, discovery.id.get)
+    } yield (pipeline, discovery, userDiscovery)) match {
+      case Some((pipeline, discovery, userDiscovery)) =>
+        func(pipeline, discovery, userDiscovery)
       case None => BadRequest(ErrorResponse("The pipeline does not exist or is not accessible"))
+    }
+  }
+
+  def runEvaluation(pipelineId: Long) = RestAction[EmptyRequest] { implicit request => json =>
+    withDiscovery(PipelineId(pipelineId)) { (pipeline, discovery, userDiscovery) =>
+      // Run the pipeline
+      val logger = ProgressReporter.props // Use dummy logger
+      pipelineService.evaluate(PipelineId(pipelineId))(logger)
+      Ok(SuccessResponse("Evaluation has started"))
     }
   }
 
@@ -100,6 +111,15 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
         Ok(SuccessResponse(data = Seq(
           "evaluations" -> evaluations)))
       case _ => BadRequest(ErrorResponse("Discovery was not found"))
+    }
+  }
+
+  def createApp = RestAction[CreateAppRequest] { implicit request => json =>
+    withDiscovery(PipelineId(json.pipelineId)) { (pipeline, discovery, userDiscovery) =>
+      val id = applicationsRepository save
+        new Application(None, json.name, json.name, None, request.user.id.get, pipeline.id.get, userDiscovery.id.get)
+      Ok(SuccessResponse("Application has been created",
+        data = Seq("id" -> id)))
     }
   }
 }
