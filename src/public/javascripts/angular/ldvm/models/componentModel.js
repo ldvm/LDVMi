@@ -6,8 +6,8 @@ define(['angular', './models'], function (ng) {
             'ComponentsApi',
             function (componentsApi) {
                 return {
-                    createDatasource: function (data) {
-                        return componentsApi.createDatasource(data).$promise;
+                    createSparqlEndpoints: function (data) {
+                        return componentsApi.createSparqlEndpoints(data).$promise;
                     },
                     makePermanent: function(id){
                         return componentsApi.makePermanent({id: id}).$promise;

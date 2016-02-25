@@ -76,11 +76,11 @@ class ComponentTemplateApiController(implicit inj: Injector) extends ApiControll
     }
   }
 
-  def addDatasource = DBAction { implicit rws =>
+  def createSparqlEndpoints = DBAction { implicit rws =>
 
     case class Endpoint(url: String, graphUris: Option[Seq[String]])
     implicit val endpointReads = (
-        (__ \ 'url).read[String] and
+        (__ \ 'endpointUrl).read[String] and
         (__ \ 'graphUris).readNullable[Seq[String]]
       )(Endpoint)
 

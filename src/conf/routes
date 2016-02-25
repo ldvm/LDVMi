@@ -37,7 +37,7 @@ GET         /discover/                                                          
 # API v1
 # Data upload
 POST        /api/v1/ttl/upload                                                            @controllers.api.DataSourceApiController.fromFile
-POST        /api/v1/datasources/add                                                       @controllers.api.ComponentTemplateApiController.addDatasource
+POST        /api/v1/dataSources/createSparqlEndpoints                                     @controllers.api.ComponentTemplateApiController.createSparqlEndpoints
 
 # LDVM components
 POST        /api/v1/components/add/ttl                                                    @controllers.api.LdvmApiController.ttl
