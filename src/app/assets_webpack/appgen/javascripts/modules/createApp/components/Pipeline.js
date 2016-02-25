@@ -3,17 +3,19 @@ import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 import Button from '../../../misc/components/Button'
 import IconButton from '../../../misc/components/IconButton'
-import Dialog from '../../../containers/Dialog';
-
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
-
+import { dialogOpen, dialogClose } from '../../../ducks/dialog'
 import { PipelineWithEvaluations } from '../models'
 import { createStatusSelector } from '../ducks/runEvaluationStatus'
 import { PromiseStatus } from '../../../ducks/promises'
+import CreateAppDialog from '../dialogs/CreateAppDialog'
+import { notification } from '../../../actions/notification'
+import * as api from '../api'
 
-const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus}) => {
+const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus, dispatch}) => {
   const lastEvaluation = pipeline.evaluations.get(0);
+  const createAppDialogName = 'CREATE_APP_DIALOG_' + pipeline.id;
 
   let statusIcon = '';
   if (lastEvaluation != null) {
@@ -23,6 +25,19 @@ const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus}) => {
 
   const isRunning = runEvaluationStatus.isLoading || (lastEvaluation != null && !lastEvaluation.isFinished);
   const isFinished = lastEvaluation != null && lastEvaluation.isFinished && lastEvaluation.isSuccess;
+
+  const handleCreateApp = async (data) => {
+    try {
+      // TODO: const result = await api.createApp(data.name);
+      dispatch(notification('New data application has been created'));
+      dispatch(dialogClose(createAppDialogName));
+      // TODO: redirect
+    }
+    catch (e) {
+      console.log(e);
+      dispatch(notification(e.message));
+    }
+  };
 
   return <TableRow key={pipeline.id}>
     <TableRowColumn>{pipeline.title}</TableRowColumn>
@@ -40,6 +55,13 @@ const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus}) => {
       />
       <Button success raised icon="create" label="Create app"
         disabled={!isFinished}
+        onTouchTap={() => dispatch(dialogOpen(createAppDialogName))}
+      />
+
+      <CreateAppDialog
+        onSubmit={handleCreateApp}
+        dialogName={createAppDialogName}
+        dialogClose={(name) => dispatch(dialogClose(name))}
       />
     </TableRowColumn>
   </TableRow>

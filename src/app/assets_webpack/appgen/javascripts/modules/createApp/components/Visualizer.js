@@ -24,7 +24,7 @@ const iconStyle = {
 };
 
 const Visualizer = ({ visualizer, dialogOpen, dialogClose, runEvaluation }) => {
-  const dialogInstanceName = ShowPipelinesDialog + '_' + visualizer.id;
+  const dialogInstanceName = ShowPipelinesDialog.dialogName + '_' + visualizer.id;
 
   return <Col md={3}>
     <Card style={cardStyle}>
