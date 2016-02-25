@@ -21,21 +21,25 @@ const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus}) => {
       (lastEvaluation.isSuccess ? 'done' : 'error') : 'hourglass_empty'
   }
 
+  const isRunning = runEvaluationStatus.isLoading || (lastEvaluation != null && !lastEvaluation.isFinished);
+  const isFinished = lastEvaluation != null && lastEvaluation.isFinished && lastEvaluation.isSuccess;
+
   return <TableRow key={pipeline.id}>
     <TableRowColumn>{pipeline.title}</TableRowColumn>
     <TableRowColumn width={100}>
       {lastEvaluation != null && <IconButton icon={statusIcon} />}
     </TableRowColumn>
     <TableRowColumn width={400}>
-      <Button warning raised icon="play_arrow" label="Run pipeline"
-        disabled={runEvaluationStatus.isLoading}
+      <Button warning raised icon="play_arrow"
+        label={isRunning ? 'Running...' : 'Run pipeline'}
+        disabled={isRunning}
         onTouchTap={() => runEvaluation(pipeline.id)}
       />
       <Button raised icon="pageview" label="Preview"
-        disabled={!(lastEvaluation != null && lastEvaluation.isFinished && lastEvaluation.isSuccess)}
+        disabled={!isFinished}
       />
       <Button success raised icon="create" label="Create app"
-        disabled={!(lastEvaluation != null && lastEvaluation.isFinished && lastEvaluation.isSuccess)}
+        disabled={!isFinished}
       />
     </TableRowColumn>
   </TableRow>
