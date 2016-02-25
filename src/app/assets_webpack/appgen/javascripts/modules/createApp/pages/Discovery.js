@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 import { getDiscovery, discoverySelector } from '../ducks/discovery'
 import { getEvaluations } from '../ducks/evaluations'
@@ -58,8 +59,12 @@ class Discovery extends Component {
     const {dispatch, isLoading, error, discovery, pipelines, visualizers} = this.props;
 
     return <div>
-      {!discovery && <PromiseResult isLoading={isLoading} error={error} />}
+      {!discovery && <div>
+        <Helmet title="Loading discovery..."  />
+        <PromiseResult isLoading={isLoading} error={error} />
+      </div>}
       {discovery && <div>
+        <Helmet title={"Discovery of " + discovery.name} />
         <DiscoveryStatus discovery={discovery} />
         {visualizers.size > 0 ?
           <Visualizers

@@ -1,9 +1,11 @@
 import { connect } from 'react-redux'
+import Helmet from "react-helmet"
 import React, {Component} from 'react'
 import { Link } from 'react-router'
 
 const Home = ({user}) =>
   <div>
+    <Helmet title="LDVMi Application Generator" titleTemplate="%s" />
     <h1>Welcome to LDVMi generator</h1>
     <ul>
       <li><Link to="/signup">Sign up!</Link></li>

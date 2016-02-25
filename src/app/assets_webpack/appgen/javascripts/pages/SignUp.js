@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import Helmet from "react-helmet"
 import React, {Component} from 'react'
 import Paper from 'material-ui/lib/paper';
 import SignUpForm from '../modules/auth/SignUpForm'
@@ -26,6 +27,7 @@ const SignUp = ({dispatch}) => {
 
   return (
     <div className="signup-container">
+      <Helmet title="Sign up"  />
       <PaperCard title="Sign up" subtitle="Fill in some basic info to get your LDVMi account">
         <SignUpForm onSubmit={onSubmit} />
       </PaperCard>

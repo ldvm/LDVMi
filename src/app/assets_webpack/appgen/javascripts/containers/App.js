@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 import { routeActions } from 'redux-simple-router'
 
@@ -18,6 +19,10 @@ class App extends Component {
     const { dispatch, loading, notifications } = this.props;
     return (
       <div>
+        <Helmet
+          title="Welcome"
+          titleTemplate="%s | LDVMi Application Generator"
+        />
         <AppBar
           className="appbar"
           title={

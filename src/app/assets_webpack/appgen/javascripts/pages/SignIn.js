@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import Helmet from "react-helmet"
 import React, {Component} from 'react'
 import { Link } from 'react-router'
 import SignInForm from '../modules/auth/SignInForm'
@@ -21,6 +22,7 @@ const SignIn = ({dispatch}) => {
 
   return (
     <div className="signup-container">
+      <Helmet title="Sign in"  />
       <PaperCard title="Sign in" subtitle="Enter your credentials for your LDVMi account">
         <div>
           Don't have an account yet? <Link to="/signup">Sign up!</Link>

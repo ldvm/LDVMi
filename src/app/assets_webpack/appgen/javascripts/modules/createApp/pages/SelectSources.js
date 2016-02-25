@@ -1,4 +1,5 @@
 import React from 'react'
+import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 import { reset as resetForm } from 'redux-form';
@@ -54,6 +55,7 @@ const SelectSources = ({ dispatch, dataSources, runDiscoveryStatus }) => {
 
   return (
     <PaperCard title="1. Select data sources" subtitle="Select data sources for your new visualization">
+      <Helmet title="Select data sources"  />
       <PromiseResult isLoading={dataSources.isLoading} error={dataSources.error} />
       <PromiseResult isLoading={runDiscoveryStatus.isLoading} error={runDiscoveryStatus.error} />
 
