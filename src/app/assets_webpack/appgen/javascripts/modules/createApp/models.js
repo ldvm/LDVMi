@@ -35,20 +35,6 @@ export const PipelineWithEvaluations = Record({
   evaluations: new List()
 });
 
-const visualizerProps = {
-  id: 0,
-  title: '',
-  description: '',
-  icon: '',
-  componentTemplateId: 0
-};
-export const Visualizer = Record(visualizerProps);
-
-export const VisualizerWithPipelines = Record({
-  ...visualizerProps,
-  pipelines: new List()
-});
-
 export const Evaluation = Record({
   id: 0,
   isFinished: false,

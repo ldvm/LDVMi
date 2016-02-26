@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { List } from 'immutable'
-import { Visualizer } from '../../createApp/models'
+import { Visualizer } from '../models'
 import { visualizersSelector as reducerSelector } from '../selector'
 import * as api from '../api'
 import prefix from '../../createApp/prefix'

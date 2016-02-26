@@ -20,7 +20,7 @@ class App extends Component {
     return (
       <div>
         <Helmet
-          title="Welcome"
+          title="Loading..."
           titleTemplate="%s | LDVMi Application Generator"
         />
         <AppBar
