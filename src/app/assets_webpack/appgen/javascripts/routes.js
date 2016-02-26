@@ -14,8 +14,8 @@ export default function createRoutes(dispatch) {
       <IndexRoute component={Home} />
       <Route component={SignUp} path='signup' />
       <Route component={SignIn} path='signin' />
-      {createAppRoutes('create-app', dispatch)}
-      {manageAppRoutes('manage-app', dispatch)}
+      {createAppRoutes(dispatch)}
+      {manageAppRoutes(dispatch)}
       <Route component={NotFound} path='*' />
     </Route>
   );
