@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { fromJS, List } from 'immutable'
 import * as api from '../api'
+import prefix from '../prefix'
 import createPromiseReducer, { PRESERVE_STATE } from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
 import { evaluationsSelector as reducerSelector } from '../selector'
@@ -8,13 +9,13 @@ import { Evaluation } from '../models'
 
 // Actions
 
-export const GET_EVALUATIONS_START = 'GET_EVALUATIONS_START';
-export const GET_EVALUATIONS_ERROR = 'GET_EVALUATIONS_ERROR';
-export const GET_EVALUATIONS_SUCCESS = 'GET_EVALUATIONS_SUCCESS';
+export const GET_EVALUATIONS_START = prefix('GET_EVALUATIONS_START');
+export const GET_EVALUATIONS_ERROR = prefix('GET_EVALUATIONS_ERROR');
+export const GET_EVALUATIONS_SUCCESS = prefix('GET_EVALUATIONS_SUCCESS');
 
 export function getEvaluations(userPipelineDiscoveryId) {
   const promise = api.getEvaluations(userPipelineDiscoveryId);
-  return createAction('GET_EVALUATIONS', { promise });
+  return createAction(prefix('GET_EVALUATIONS'), { promise });
 }
 // Reducer
 

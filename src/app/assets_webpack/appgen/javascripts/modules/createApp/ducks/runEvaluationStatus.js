@@ -1,4 +1,5 @@
 import * as api from '../api'
+import prefix from '../prefix'
 import createPromiseReducer from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../../ducks/promises'
@@ -7,7 +8,7 @@ import { getEvaluations } from './evaluations'
 
 // Actions
 
-const RUN_EVALUATION = 'RUN_EVALUATION';
+const RUN_EVALUATION = prefix('RUN_EVALUATION');
 export const RUN_EVALUATION_START = RUN_EVALUATION + '_START';
 export const RUN_EVALUATION_ERROR = RUN_EVALUATION + '_ERROR';
 export const RUN_EVALUATION_SUCCESS = RUN_EVALUATION + '_SUCCESS';

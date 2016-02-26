@@ -1,11 +1,12 @@
 import { Set } from 'immutable'
+import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
 import { ADD_DATA_SOURCE } from './dataSources'
 
 // Actions
 
-export const SELECT_DATA_SOURCE = 'SELECT_DATA_SOURCE';
-export const DESELECT_DATA_SOURCE = 'DESELECT_DATA_SOURCE';
+export const SELECT_DATA_SOURCE = prefix('SELECT_DATA_SOURCE');
+export const DESELECT_DATA_SOURCE = prefix('DESELECT_DATA_SOURCE');
 
 export function selectDataSource(dataSourceId) {
   return createAction(SELECT_DATA_SOURCE, dataSourceId);

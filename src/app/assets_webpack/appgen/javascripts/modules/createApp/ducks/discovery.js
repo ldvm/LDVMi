@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { fromJS, Map, List } from 'immutable'
 import * as api from '../api'
+import prefix from '../prefix'
 import createPromiseReducer, { PRESERVE_STATE } from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
 import { discoverySelector as reducerSelector } from '../selector'
@@ -10,13 +11,13 @@ import { Discovery, PipelineWithEvaluations, VisualizerWithPipelines } from '../
 
 // Actions
 
-export const GET_DISCOVERY_START = 'GET_DISCOVERY_START';
-export const GET_DISCOVERY_ERROR = 'GET_DISCOVERY_ERROR';
-export const GET_DISCOVERY_SUCCESS = 'GET_DISCOVERY_SUCCESS';
+export const GET_DISCOVERY_START = prefix('GET_DISCOVERY_START');
+export const GET_DISCOVERY_ERROR = prefix('GET_DISCOVERY_ERROR');
+export const GET_DISCOVERY_SUCCESS = prefix('GET_DISCOVERY_SUCCESS');
 
 export function getDiscovery(userPipelineDiscoveryId) {
   const promise = api.getDiscovery(userPipelineDiscoveryId);
-  return createAction('GET_DISCOVERY', { promise });
+  return createAction(prefix('GET_DISCOVERY'), { promise });
 }
 
 // Reducer
