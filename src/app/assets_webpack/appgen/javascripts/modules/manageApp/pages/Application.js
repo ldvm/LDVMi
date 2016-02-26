@@ -8,16 +8,16 @@ import { Application as ApplicationModel } from '../models'
 import { Visualizer } from '../../common/models'
 import { PromiseStatus } from '../../../ducks/promises'
 import PromiseResult from '../../../misc/components/PromiseResult'
+import ApplicationHeader from '../components/ApplicationHeader'
 
 const Application = ({ application, visualizer, applicationStatus }) => {
   if (!applicationStatus.done) {
     return <PromiseResult status={applicationStatus} />
   }
   return <div>
-      <Helmet title={application.name} />
-      <h1>{application.name}</h1>
-      <strong>{visualizer.title}</strong>
-    </div>;
+    <Helmet title={application.name} />
+    <ApplicationHeader application={application} visualizer={visualizer} />
+  </div>;
 };
 
 Application.propTypes = {

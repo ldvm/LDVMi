@@ -23,11 +23,14 @@ a:hover {
   text-decoration: none;
 }
 .appbar {
-  margin-bottom: 2 * $gutter;
 }
 .appbar-logo {
   cursor: pointer;
-  font-weight: 300;
+  font-weight: 400;
+  font-size: 1.2 * $fontSize;
+}
+.bodyPadding {
+  padding: 1.5 * $gutter;
 }
 .signup-container {
   width: 500px;
@@ -39,6 +42,7 @@ pre {
 }
 
 /** Paper Card */
+// TODO: make this an inline style
 .paper-card {
   margin: $gutter auto;
 }
