@@ -10,9 +10,10 @@ import promiseMiddleware from 'redux-promise-middleware';
 import loadingReducer from '../reducers/loading'
 import notificationsReducer from '../reducers/notifications'
 import authReducer from '../modules/auth/reducer'
-import createAppReducer from '../modules/createApp/reducer'
 import dialogReducer from '../ducks/dialog'
 import promisesReducer from '../ducks/promises'
+import createAppReducer from '../modules/createApp/reducer'
+import manageAppReducer from '../modules/manageApp/reducer'
 // import rootReducer from '../reducers'
 
 const rootReducer = combineReducers({
@@ -23,7 +24,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   dialog: dialogReducer,
   promises: promisesReducer,
-  createApp: createAppReducer
+  createApp: createAppReducer,
+  manageApp: manageAppReducer
 });
 
 

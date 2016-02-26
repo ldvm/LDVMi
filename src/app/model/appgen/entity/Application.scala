@@ -1,6 +1,6 @@
 package model.appgen.entity
 
-import model.entity.PipelineId
+import model.entity.{ComponentTemplateId, PipelineId}
 import org.virtuslab.unicorn.LongUnicornPlay._
 import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
 import scala.slick.lifted.Tag
@@ -15,7 +15,8 @@ case class Application(
   description: Option[String],
   userId: UserId,
   pipelineId: PipelineId,
-  userPipelineDiscoveryId: UserPipelineDiscoveryId)
+  userPipelineDiscoveryId: UserPipelineDiscoveryId,
+  visualizerComponentTemplateId: ComponentTemplateId)
   extends WithId[ApplicationId]
 
 
@@ -26,6 +27,7 @@ class Applications(tag: Tag) extends IdTable[ApplicationId, Application](tag, "a
   def userId = column[UserId]("user_id", O.NotNull)
   def pipelineId = column[PipelineId]("pipeline_id", O.NotNull)
   def userPipelineDiscoveryId = column[UserPipelineDiscoveryId]("user_pipeline_discovery_id", O.NotNull)
+  def visualizerComponentTemplateId = column[ComponentTemplateId]("visualizer_component_template_id", O.NotNull)
 
-  override def * = (id.?, name, uid, description.?, userId, pipelineId, userPipelineDiscoveryId) <> (Application.tupled, Application.unapply)
+  override def * = (id.?, name, uid, description.?, userId, pipelineId, userPipelineDiscoveryId, visualizerComponentTemplateId) <> (Application.tupled, Application.unapply)
 }

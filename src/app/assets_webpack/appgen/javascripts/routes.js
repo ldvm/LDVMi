@@ -6,6 +6,7 @@ import NotFound from './pages/NotFound'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import createAppRoutes from './modules/createApp/routes'
+import manageAppRoutes from './modules/manageApp/routes'
 
 export default function createRoutes(dispatch) {
   return (
@@ -14,6 +15,7 @@ export default function createRoutes(dispatch) {
       <Route component={SignUp} path='signup' />
       <Route component={SignIn} path='signin' />
       {createAppRoutes('create-app', dispatch)}
+      {manageAppRoutes('manage-app', dispatch)}
       <Route component={NotFound} path='*' />
     </Route>
   );

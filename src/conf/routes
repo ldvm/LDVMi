@@ -105,6 +105,7 @@ POST        /appgen/api/createApp/getDiscovery/:id          @controllers.appgen.
 POST        /appgen/api/createApp/runEvaluation/:id         @controllers.appgen.api.CreateAppApiController.runEvaluation(id: Long)
 POST        /appgen/api/createApp/getEvaluations/:id        @controllers.appgen.api.CreateAppApiController.getEvaluations(id: Long)
 POST        /appgen/api/createApp/createApp                 @controllers.appgen.api.CreateAppApiController.createApp
+POST        /appgen/api/manageApp/getApp/:id                @controllers.appgen.api.ManageAppApiController.getApp(id: Long)
 GET         /appgen$any<.*>                                 @controllers.appgen.ApplicationController.index(any)
 
 # Map static resources from the /public folder to the /assets URL path

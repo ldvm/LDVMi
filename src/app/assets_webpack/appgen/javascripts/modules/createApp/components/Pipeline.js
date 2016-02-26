@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
+import { routeActions } from 'redux-simple-router'
 import Button from '../../../misc/components/Button'
 import IconButton from '../../../misc/components/IconButton'
 import TableRow from 'material-ui/lib/table/table-row';
@@ -30,8 +31,7 @@ const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus, dispatch}) => {
     try {
       const appId = await api.createApp(data.name, pipeline.id);
       dispatch(notification(`New data application (${appId}) has been created`));
-      dispatch(dialogClose(createAppDialogName));
-      // TODO: redirect
+      dispatch(routeActions.push('/manage-app/' + appId));
     }
     catch (e) {
       console.log(e);
