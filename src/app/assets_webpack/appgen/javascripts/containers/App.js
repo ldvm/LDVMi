@@ -47,13 +47,7 @@ class App extends Component {
               </IconMenu>
             </div>} />
 
-        <Grid>
-          <Row>
-            <Col lg={12}>
-              {this.props.children}
-            </Col>
-          </Row>
-        </Grid>
+        {this.props.children}
 
         <Snackbar
           open={notifications.size > 0}
