@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect'
 import { List } from 'immutable'
-import { Visualizer } from '../models'
+import { Visualizer } from '../../createApp/models'
 import { visualizersSelector as reducerSelector } from '../selector'
 import * as api from '../api'
-import prefix from '../prefix'
+import prefix from '../../createApp/prefix'
 import createPromiseReducer, { PRESERVE_STATE } from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
 

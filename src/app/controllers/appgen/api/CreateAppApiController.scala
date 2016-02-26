@@ -23,7 +23,6 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
   val applicationsRepository = inject[ApplicationsRepository]
   val userPipelineDiscoveryRepository = inject[UserPipelineDiscoveryRepository]
   val pipelineService = inject[PipelineService]
-  val visualizerService = inject[VisualizerService]
 
   def addDataSource = RestAction[AddDataSourceRequest] { implicit request => json =>
     val dataSourceTemplateId = dataSourceService.createDataSourceFromUris(json.url, json.graphUris).get
@@ -51,12 +50,6 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
       new UserPipelineDiscovery(None, discoveryName, request.user.id.get, pipelineDiscoveryId)
 
     Ok(SuccessResponse(data = Seq("userPipelineDiscoveryId" -> id)))
-  }
-
-  def getVisualizers = RestAction[EmptyRequest] { implicit request => json =>
-    Ok(SuccessResponse(data = Seq(
-      "visualizers" -> visualizerService.getVisualizers
-    )))
   }
 
   def getDiscovery(id: Long) = RestAction[EmptyRequest] { implicit request => json =>

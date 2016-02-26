@@ -14,6 +14,7 @@ import dialogReducer from '../ducks/dialog'
 import promisesReducer from '../ducks/promises'
 import createAppReducer from '../modules/createApp/reducer'
 import manageAppReducer from '../modules/manageApp/reducer'
+import commonReducer from '../modules/common/reducer'
 // import rootReducer from '../reducers'
 
 const rootReducer = combineReducers({
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   dialog: dialogReducer,
   promises: promisesReducer,
+  common: commonReducer,
   createApp: createAppReducer,
   manageApp: manageAppReducer
 });
