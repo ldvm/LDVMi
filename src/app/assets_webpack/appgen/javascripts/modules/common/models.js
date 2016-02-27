@@ -4,6 +4,7 @@ const visualizerProps = {
   id: 0,
   title: '',
   description: '',
+  uri: '',
   icon: '',
   componentTemplateId: 0
 };

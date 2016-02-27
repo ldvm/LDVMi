@@ -9,22 +9,55 @@ import { Visualizer } from '../../common/models'
 import { PromiseStatus } from '../../../ducks/promises'
 import PromiseResult from '../../../misc/components/PromiseResult'
 import ApplicationHeader from '../components/ApplicationHeader'
+import CenteredMessage from '../../../misc/components/CenteredMessage'
+import { visualizerConfigurator } from '../../visualizerConfigurators/routes'
 
-const Application = ({ application, visualizer, applicationStatus }) => {
-  if (!applicationStatus.done) {
-    return <PromiseResult status={applicationStatus} />
+class Application extends Component {
+  static propTypes = {
+    application: PropTypes.instanceOf(ApplicationModel).isRequired,
+    visualizer: PropTypes.instanceOf(Visualizer).isRequired,
+    applicationStatus: PropTypes.instanceOf(PromiseStatus).isRequired
+  };
+
+  componentWillMount() {
+    this.loadVisualizerConfigurator(this.props);
   }
-  return <div>
-    <Helmet title={application.name} />
-    <ApplicationHeader application={application} visualizer={visualizer} />
-  </div>;
-};
 
-Application.propTypes = {
-  application: PropTypes.instanceOf(ApplicationModel).isRequired,
-  visualizer: PropTypes.instanceOf(Visualizer).isRequired,
-  applicationStatus: PropTypes.instanceOf(PromiseStatus).isRequired
-};
+  componentWillReceiveProps(props) {
+    this.loadVisualizerConfigurator(props);
+  }
+
+  loadVisualizerConfigurator(props) {
+    // If there is no visualizer configurator loaded, we have to chose the right one and redirect
+    // to the appropriate url.
+    const { dispatch, application, visualizer, applicationStatus, children } = props;
+    if (applicationStatus.done && !children) {
+      dispatch(visualizerConfigurator(application.id, visualizer.uri));
+    }
+  }
+
+  render() {
+    const { application, visualizer, applicationStatus, children } = this.props;
+
+    if (!applicationStatus.done) {
+      return <PromiseResult status={applicationStatus} />
+    }
+
+    return <div>
+      <Helmet title={application.name} />
+      <ApplicationHeader application={application} visualizer={visualizer} />
+
+      <br /><br />
+      {!children &&
+        <CenteredMessage>Loading visualizer configurator</CenteredMessage>}
+
+      {children &&
+        <CenteredMessage>
+          {React.cloneElement(children, { application, visualizer })}
+        </CenteredMessage>}
+    </div>;
+  }
+}
 
 const selector = createSelector(
   [applicationSelector, applicationVisualizerSelector, applicationStatusSelector],

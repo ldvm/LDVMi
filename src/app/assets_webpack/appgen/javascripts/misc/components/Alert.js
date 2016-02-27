@@ -22,7 +22,8 @@ const Alert = (props) => {
     color: '#ffffff',
     marginTop: spacing,
     marginBottom: spacing,
-    padding: '12px'
+    padding: '12px',
+    textAlign: 'left'
   };
 
   const iconStyles = {

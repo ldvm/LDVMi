@@ -4,6 +4,7 @@ import { routeActions } from 'redux-simple-router'
 import { getVisualizers } from './../common/ducks/visualizers'
 import { getApplication } from './ducks/application'
 import Application from './pages/Application'
+import visualizerConfiguratorsRoutes from '../visualizerConfigurators/routes'
 
 const MODULE_PATH = 'manage-app';
 
@@ -12,7 +13,9 @@ export default function createRoutes(dispatch) {
     <Route component={Application} path={MODULE_PATH + '/:id'} onEnter={next => {
       dispatch(getVisualizers());
       dispatch(getApplication(next.params.id));
-    }}/>
+    }}>
+      {visualizerConfiguratorsRoutes(dispatch)}
+    </Route>
   );
 }
 
