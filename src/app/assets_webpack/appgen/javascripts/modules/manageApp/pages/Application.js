@@ -49,12 +49,9 @@ class Application extends Component {
 
       <br /><br />
       {!children &&
-        <CenteredMessage>Loading visualizer configurator</CenteredMessage>}
+        <CenteredMessage>Loading visualizer configurator...</CenteredMessage>}
 
-      {children &&
-        <CenteredMessage>
-          {React.cloneElement(children, { application, visualizer })}
-        </CenteredMessage>}
+      {children && React.cloneElement(children, { application, visualizer })}
     </div>;
   }
 }

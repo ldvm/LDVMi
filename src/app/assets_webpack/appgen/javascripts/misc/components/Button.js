@@ -20,7 +20,7 @@ const Button = (props) => {
       newProps.backgroundColor = Theme[type];
       newProps.labelColor = '#ffffff';
     } else {
-      newProps.labelStyle = { color: Theme[type] };
+      newProps.style = { color: Theme[type] };
     }
   }
 
