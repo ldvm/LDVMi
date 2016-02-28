@@ -10,7 +10,8 @@ define(['angular'], function (ng) {
                 visualization: {url: '/api/v1/pipelines/visualization/:id', isArray: false},
                 evaluations: {url: '/api/v1/pipelines/evaluations/:id', isArray: false},
                 discover: {url: '/api/v1/pipelines/discover', isArray: false},
-                makePermanent: {url: '/api/v1/pipelines/makePermanent/:id', isArray: false}
+                makePermanent: {url: '/api/v1/pipelines/makePermanent/:id', isArray: false},
+                getSingle: {url: '/api/v1/pipelines/getSingle/:discoveryId', isArray: false}
             });
         }])
         .factory('DatasourceApi', ['$resource', function ($resource) {
@@ -27,7 +28,8 @@ define(['angular'], function (ng) {
         .factory('ComponentsApi', ['$resource', function ($resource) {
             return $resource(null, null, {
                 createSparqlEndpoints: {url: '/api/v1/dataSources/createSparqlEndpoints', method: 'POST', isArray: true},
-                makePermanent: {url: '/api/v1/component/makePermanent/:id', method: 'GET', isArray: false}
+                makePermanent: {url: '/api/v1/component/makePermanent/:id', method: 'GET', isArray: false},
+                createFromUrls: {url: '/api/v1/dataSources/createFromUrls', method: 'POST', isArray: true}
             });
         }])
         .factory('EvaluationApi', ['$resource', function ($resource) {

@@ -5,9 +5,18 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
         .controller('Index', ['$scope', 'Components', 'Pipelines', '$q', '$connection',
             function ($scope, components, pipelines, $q, $connection) {
 
+                $scope.showInput = true;
+                $scope.redirect = false;
+
                 $scope.runningDiscovery = null;
                 $scope.pipelinesDiscovered = 0;
                 $scope.discoveryId = null;
+                $scope.discoveryFinished = false;
+
+                $scope.evaluatingPipeline = false;
+                $scope.evaluationDuration = 0;
+                $scope.evaluationId = null;
+                $scope.evaluationFinished = false;
 
                 $scope.sources = [
                     {
@@ -18,7 +27,7 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                 ];
 
                 $scope.add = function (type) {
-                    $scope.sources.push({type: type})
+                    $scope.sources.push({type: type});
                 };
 
                 $scope.remove = function (source) {
@@ -44,10 +53,6 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                     });
                 };
 
-                $scope.waiting = function () {
-                    return $scope.runningDiscovery || $scope.runningEvaluation;
-                };
-
                 function runDiscovery(dataSourceIds, feelsLucky) {
                     var uri = "ws://" + window.location.host + "/api/v1/pipelines/discover";
                     var queryString = dataSourceIds.map(function (p) {
@@ -56,9 +61,12 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
 
                     uri += "?" + queryString.join("&");
 
+                    $scope.showInput = false;
                     $scope.runningDiscovery = true;
                     $scope.pipelinesDiscovered = 0;
                     $scope.discoveryId = null;
+                    $scope.discoveryFinished = false;
+                    $scope.pipline = null;
 
                     var connection = $connection(uri);
                     connection.listen(
@@ -68,39 +76,95 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                         function (message) {
 
                             if ("pipelinesDiscoveredCount" in message) {
-                                $scope.pipelinesDiscovered = message.pipelinesDiscoveredCount;
+                                $scope.$apply(function () {
+                                    $scope.pipelinesDiscovered = message.pipelinesDiscoveredCount;
+                                });
                             }
 
                             if ("isFinished" in message) {
                                 if (!$scope.discoveryId) {
-                                    $scope.discoveryId = message.id;
+                                    $scope.$apply(function () {
+                                        $scope.discoveryId = message.id;
+                                    });
                                 }
 
                                 if (message.isFinished) {
                                     if (message.isSuccess) {
                                         discoveryDone(feelsLucky);
                                     } else {
-                                        console.log("failed");
+                                        $scope.$apply(function () {
+                                            $scope.showInput = true;
+                                        });
                                     }
-                                    $scope.runningDiscovery = false;
+                                    $scope.$apply(function () {
+                                        $scope.runningDiscovery = false;
+                                    });
                                 }
                             }
                         }
-                    )
+                    );
                 }
 
                 function discoveryDone(feelsLucky) {
-                    if ($scope.pipelinesDiscovered === 1 || feelsLucky) {
-                        console.log("evaluate pipeline");
+                    $scope.$apply(function () {
+                        $scope.discoveryFinished = true;
+                    });
+
+                    if ($scope.pipelinesDiscovered === 1 || (feelsLucky && $scope.pipelinesDiscovered >= 1)) {
+                        pipelines.getSingle($scope.discoveryId).then(function (pipeline) {
+                            $scope.pipeline = pipeline;
+                            evaluatePipeline(pipeline);
+                        });
                     } else {
-                        window.location.href = "/pipelines#/list?discoveryId=" + $scope.discoveryId;
+                        $scope.$apply(function () {
+                            $scope.redirect = true;
+                        });
+                        window.setTimeout(function () {
+                            window.location.href = "/pipelines#/list?quick=1&discoveryId=" + $scope.discoveryId;
+                        }, 2000);
                     }
+                }
+
+                function evaluatePipeline(pipeline) {
+                    var uri = "ws://" + window.location.host + "/api/v1/pipelines/evaluate/" + pipeline.id;
+
+                    $scope.evaluatingPipeline = true;
+                    $scope.evaluationDuration = 0;
+                    $scope.evaluationId = null;
+                    $scope.evaluationFinished = false;
+
+                    var connection = $connection(uri);
+                    connection.listen(
+                        function () {
+                            return true;
+                        },
+                        function (message) {
+
+                            if (message.id) {
+                                $scope.evaluationId = message.id;
+                            }
+
+                            if (message.message === '==== DONE ====') {
+                                $scope.$apply(function () {
+                                    $scope.redirect = true;
+                                    $scope.evaluationFinished = true;
+                                });
+                                window.setTimeout(function () {
+                                    window.location.href = "/visualize/" + $scope.evaluationId;
+                                }, 2000);
+                            }
+                        }
+                    );
                 }
 
                 function createDataSources(type, dataSources) {
                     switch (type) {
                         case 'sparqlEndpoint':
                             return createSparqlEndpoints(dataSources);
+                        case 'url':
+                            return createFromUrl(source);
+                        case 'file':
+                            return createByFileUpload(source);
                     }
                 }
 
@@ -108,6 +172,10 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                     switch (source.type) {
                         case 'sparqlEndpoint':
                             return isValidSparqlEndpoint(source);
+                        case 'url':
+                            return isValidUrl(source);
+                        case 'file':
+                            return isValidFileUpload(source);
                     }
 
                     return false;
@@ -115,6 +183,14 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
 
                 function isValidSparqlEndpoint(source) {
                     return source.endpointUrl && source.endpointUrl.length > "http://".length;
+                }
+
+                function isValidUrl(source) {
+                    return source.url && source.url.length > "http://";
+                }
+
+                function isValidFileUpload(source) {
+                    return true;
                 }
 
                 function createSparqlEndpoints(sources) {
@@ -126,6 +202,18 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                     });
 
                     return components.createSparqlEndpoints(sourcesForApi);
+                }
+
+                function createFromUrl(sources) {
+                    var urls = sources.map(function (s) {
+                        return s.url;
+                    });
+
+                    return components.createFromUrls(urls);
+                }
+
+                function createByFileUpload(source) {
+
                 }
 
                 window.setTimeout(function () {

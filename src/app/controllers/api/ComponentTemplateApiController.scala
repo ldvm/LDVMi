@@ -100,6 +100,17 @@ class ComponentTemplateApiController(implicit inj: Injector) extends ApiControll
     }.getOrElse(BadRequest)
   }
 
+  def createFromUrls = DBAction { implicit rws =>
+
+    rws.request.body.asJson.flatMap { json =>
+      val urls = json.as[Seq[String]]
+      val id = dataSourceService.createDataSourceFromRemoteTtl(urls)
+
+      id.map(i => Ok(JsArray(Seq(JsObject(Seq("id" -> JsNumber(i.id)))))))
+
+    }.getOrElse(BadRequest)
+  }
+
   private def withComponentTemplate(id: Long)(func: ComponentTemplate => Result)(implicit session: Session): Result = {
     componentTemplateService.findById(ComponentTemplateId(id)).map(func)
   }.getOrElse {

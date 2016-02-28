@@ -9,7 +9,10 @@ define(['angular', './models'], function (ng) {
                     createSparqlEndpoints: function (data) {
                         return componentsApi.createSparqlEndpoints(data).$promise;
                     },
-                    makePermanent: function(id){
+                    createFromUrls: function (urls) {
+                        return componentsApi.createFromUrls(urls).$promise;
+                    },
+                    makePermanent: function (id) {
                         return componentsApi.makePermanent({id: id}).$promise;
                     }
                 };

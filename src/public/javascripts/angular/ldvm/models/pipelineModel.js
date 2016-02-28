@@ -29,6 +29,9 @@ define(['angular', './models'], function (ng) {
                     },
                     get: function (id) {
                         return pipelineApi.get({id: id}).$promise;
+                    },
+                    getSingle: function(discoveryId){
+                        return pipelineApi.getSingle({discoveryId: discoveryId}).$promise;
                     }
                 };
             }
