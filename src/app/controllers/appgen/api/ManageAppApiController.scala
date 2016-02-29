@@ -9,10 +9,9 @@ import model.appgen.rest.EmptyRequest._
 import scaldi.Injector
 import model.appgen.rest.Response._
 
-class ManageAppApiController (implicit inj: Injector) extends RestController {
+class ManageAppApiController(implicit inj: Injector) extends RestController {
   val applicationsRepository = inject[ApplicationsRepository]
 
-  // def getApplication(id: Long)
   private def withApplication(id: ApplicationId)
     (func: Application => Result)
     (implicit request: RestRequest): Result = {
