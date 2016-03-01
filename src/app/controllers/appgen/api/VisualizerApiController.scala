@@ -13,10 +13,32 @@ import play.api.libs.concurrent.Execution.Implicits._
 import utils.PaginationInfo
 import scala.concurrent.Future
 import play.api.libs.json._
+import play.api.Play.current
+import play.api.cache.Cache
+
+import scala.util.Success
 
 abstract class VisualizerApiController(implicit inj: Injector) extends RestController {
   val applicationsRepository = inject[ApplicationsRepository]
   val pipelineService = inject[PipelineService]
+
+  private def cacheKey(implicit request: RestRequest): String = {
+    request.uri + "|user:" + request.user.id.get + "|body=" + Json.toJson(request.body)
+  }
+
+  /** Caches request result */
+  protected def cached(func: () => Future[Result])
+    (implicit request: RestRequest): Future[Result] = {
+    Cache.getAs[Result](cacheKey) match {
+      case Some(result: Result) => Future(result)
+      case None => func() andThen {
+        case Success(result) => {
+          Cache.set(cacheKey, result)
+          result
+        }
+      }
+    }
+  }
 
   protected def withApplication(id: ApplicationId)
     (func: Application => Future[Result])

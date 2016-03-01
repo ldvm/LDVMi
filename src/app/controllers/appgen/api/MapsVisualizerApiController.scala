@@ -14,11 +14,13 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
   val geoService = inject[GeoService]
 
   def getProperties(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
-    withEvaluation(ApplicationId(id)) { evaluation =>
-      geoService.properties(evaluation).map {
-        enumerator => enumeratorToResult("properties", enumerator)
-      }.getOrElse {
-        Future(NotFound(ErrorResponse("Unable to fetch map properties.")))
+    cached { () =>
+      withEvaluation(ApplicationId(id)) { evaluation =>
+        geoService.properties(evaluation).map {
+          enumerator => enumeratorToResult("properties", enumerator)
+        }.getOrElse {
+          Future(NotFound(ErrorResponse("Unable to fetch map properties.")))
+        }
       }
     }
   }
