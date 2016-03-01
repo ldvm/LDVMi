@@ -1,5 +1,10 @@
+import { createSelector } from 'reselect'
 import { List, fromJS } from 'immutable'
+import { _label } from '../../../../misc/lang'
 import prefix from '../prefix'
+import { createPromiseStatusSelector } from '../../../../ducks/promises'
+import { propertiesSelector as reducerSelector } from '../selector'
+import { Property } from '../models'
 
 // Actions
 
@@ -17,3 +22,13 @@ export default function propertiesReducer(state = new List(), action) {
 
   return state;
 };
+
+// Selectors
+
+export const propertiesStatusSelector = createPromiseStatusSelector(GET_PROPERTIES);
+
+export const propertiesSelector = createSelector(
+  [reducerSelector],
+  properties => properties.map(property =>
+    (new Property(property)).set('label', _label(property.get('label'))))
+);

@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { Row, Col } from 'react-flexbox-grid'
 import { Application } from '../../../manageApp/models'
 import { Visualizer } from '../../../common/models'
 import * as api from '../api'
 import { queryDataset } from '../actions'
+import Filters from './Filters'
 
 class Configurator extends Component {
   componentWillMount() {
@@ -12,9 +14,15 @@ class Configurator extends Component {
   }
 
   render() {
-    return <div>
-      Maps Visualizer Configurator!
-    </div>;
+    const { application } = this.props;
+    return <Row>
+      <Col md={3}>
+        <Filters application={application} />
+      </Col>
+      <Col md={9}>
+        Maps Visualizer Configurator!
+      </Col>
+    </Row>;
   }
 }
 
