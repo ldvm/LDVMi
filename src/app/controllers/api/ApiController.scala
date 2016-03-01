@@ -62,7 +62,7 @@ abstract class ApiController(implicit inj: Injector) extends Controller with Inj
         controllers.api.routes.javascript.ComponentTemplateApiController.inputsById,
         controllers.api.routes.javascript.ComponentTemplateApiController.outputById,
         controllers.api.routes.javascript.ComponentTemplateApiController.descriptorsById,
-        controllers.api.routes.javascript.ComponentTemplateApiController.addDatasource,
+        controllers.api.routes.javascript.ComponentTemplateApiController.createSparqlEndpoints,
         controllers.api.routes.javascript.CompatibilityApiController.check
       )
     ).as("text/javascript")

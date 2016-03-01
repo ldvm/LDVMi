@@ -37,7 +37,9 @@ GET         /discover/                                                          
 # API v1
 # Data upload
 POST        /api/v1/ttl/upload                                                            @controllers.api.DataSourceApiController.fromFile
-POST        /api/v1/datasources/add                                                       @controllers.api.ComponentTemplateApiController.addDatasource
+POST        /api/v1/dataSources/createSparqlEndpoints                                     @controllers.api.ComponentTemplateApiController.createSparqlEndpoints
+POST        /api/v1/dataSources/createFromUrls                                            @controllers.api.ComponentTemplateApiController.createFromUrls
+POST        /api/v1/dataSources/createByFileUpload                                        @controllers.api.ComponentTemplateApiController.createByFileUpload
 
 # LDVM components
 POST        /api/v1/components/add/ttl                                                    @controllers.api.LdvmApiController.ttl
@@ -57,6 +59,7 @@ GET         /api/v1/pipelines/discover                                          
 GET         /api/v1/pipelines/evaluations/:id                                             @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
 GET         /api/v1/pipelines/visualization/:id                                           @controllers.api.PipelineApiController.visualizationById(id: Long)
 GET         /api/v1/pipelines/makePermanent/:id                                           @controllers.api.PipelineApiController.makePermanent(id: Long)
+GET         /api/v1/pipelines/getSingle/:discoveryId                                      @controllers.api.PipelineApiController.getSingle(discoveryId: Long)
 GET         /api/v1/pipelines/:id                                                         @controllers.api.PipelineApiController.findById(id: Long)
 
 # LDVM compatibility

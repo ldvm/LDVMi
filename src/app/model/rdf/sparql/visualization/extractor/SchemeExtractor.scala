@@ -1,7 +1,5 @@
 package model.rdf.sparql.visualization.extractor
 
-import java.io.StringWriter
-
 import model.rdf.LocalizedValue
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.visualization.HierarchyNode

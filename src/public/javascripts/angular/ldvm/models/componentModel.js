@@ -6,11 +6,17 @@ define(['angular', './models'], function (ng) {
             'ComponentsApi',
             function (componentsApi) {
                 return {
-                    createDatasource: function (data) {
-                        return componentsApi.createDatasource(data).$promise;
+                    createSparqlEndpoints: function (data) {
+                        return componentsApi.createSparqlEndpoints(data).$promise;
                     },
-                    makePermanent: function(id){
+                    createFromUrls: function (urls) {
+                        return componentsApi.createFromUrls(urls).$promise;
+                    },
+                    makePermanent: function (id) {
                         return componentsApi.makePermanent({id: id}).$promise;
+                    },
+                    createByFileUpload: function(dataArray){
+                        return componentsApi.createByFileUpload(dataArray).$promise;
                     }
                 };
             }

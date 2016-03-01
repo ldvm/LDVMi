@@ -77,6 +77,18 @@ class PipelineApiController(implicit inj: Injector) extends Controller with Inje
     Ok(JsObject(Seq()))
   }
 
+  def getSingle(discoveryId: Long) = DBAction { implicit rws =>
+    val id = PipelineDiscoveryId(discoveryId)
+    val pipelinesPage = pipelineService.findPaginatedFiltered(PaginationInfo(0, 1), Some(id))(
+      e => {
+        val priorities = e.visualizationConfiguration.map(_.priority)
+        val sum = priorities.sum
+        (sum, e.modifiedUtc.desc, e.createdUtc.desc)
+      }
+    )
+    Ok(Json.toJson(pipelinesPage.headOption))
+  }
+
   def pipelineToJson(pipeline: Pipeline)(implicit session: Session) = {
     val set = pipeline.bindingSet
 

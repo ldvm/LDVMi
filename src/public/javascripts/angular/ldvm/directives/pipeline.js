@@ -1,4 +1,4 @@
-define(['angular', 'pipeline-visualizer', './directives'], function (ng, d3LdvmPipeline) {
+define(['angular', 'jquery', 'pipeline-visualizer', './directives'], function (ng, $, d3LdvmPipeline) {
     'use strict';
 
     return ng.module('ldvm.directives')
@@ -24,7 +24,7 @@ define(['angular', 'pipeline-visualizer', './directives'], function (ng, d3LdvmP
 
                         $scope.$watch('data', function (newVal) {
                             if (newVal) {
-                                d3.select(elm.get(0))
+                                d3.select($(elm).get(0))
                                     .datum(newVal)
                                     .call(pipeline);
                             }
