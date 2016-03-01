@@ -57,21 +57,6 @@
                     <div class="media-body">
                         <a ng-href="#/detail/{{pipeline.id}}?autorun={{quick}}" class="lv-title" ng-bind="pipeline.title"></a>
 
-                        <ul class="lv-attrs">
-                            <li>
-                                Last modified:
-                                <span am-time-ago="time(pipeline.modifiedUtc, pipeline.createdUtc)"
-                                    tooltip="{{time(pipeline.modifiedUtc, pipeline.createdUtc) | date : 'medium'}}">
-                                </span>
-                            </li>
-                            <li ng-show="pipeline.isTemporary" class="warning">Temporary</li>
-                            <li>
-                                Compatibility:
-                                <span ng-hide="pipeline.isCompatible">OK</span>
-                                <span ng-show="pipeline.isCompatible">Error</span>
-                            </li>
-                        </ul>
-
                         <div class="lv-actions actions dropdown">
                             <a href="" data-toggle="dropdown" aria-expanded="true">
                                 <i class="md md-more-vert"></i>
@@ -79,10 +64,10 @@
 
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li>
-                                    <a ng-href="#/evaluate/{{pipeline.id}}">Run</a>
+                                    <a ng-href="#/detail/{{pipeline.id}}">Details</a>
                                 </li>
                                 <li>
-                                    <a ng-href="#/compatibility/check/{{pipeline.id}}">Re-check compatibility</a>
+                                    <a ng-href="#/evaluate/{{pipeline.id}}">Run</a>
                                 </li>
                                 <li>
                                     <a ng-href="#/list/?discoveryId={{pipeline.pipelineDiscovery}}" ng-show="pipeline.pipelineDiscovery">Discovery details</a>

@@ -68,6 +68,22 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     }
   }
 
+  def createDataSourceFromStrings(files: Seq[(String, String)], maybeUrn: Option[UUID] = None)(implicit session: Session): Option[DataSourceTemplateId] = {
+    withRandomGraphUri(maybeUrn) { r =>
+      val dataSourceName = files.map(_._1).mkString(", ")
+
+      val dataSourceId = findDataSourceByGraph(r)
+      .flatMap(_.id)
+      .getOrElse(createDataSource(dataSourceName, None, r))
+
+      files.foreach { file =>
+        graphStore.pushToTripleStore(file._2, r.graphUri)
+      }
+
+      Some(dataSourceId)
+    }
+  }
+
   def findDataSourceByGraph(graph: PersistentGraph)(implicit session: Session): Option[DataSourceTemplate] = {
     dataSourceTemplateRepository.findByUri(graph.datasourceUri)
   }

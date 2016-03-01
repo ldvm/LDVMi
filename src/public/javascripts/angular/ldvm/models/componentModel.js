@@ -14,6 +14,9 @@ define(['angular', './models'], function (ng) {
                     },
                     makePermanent: function (id) {
                         return componentsApi.makePermanent({id: id}).$promise;
+                    },
+                    createByFileUpload: function(dataArray){
+                        return componentsApi.createByFileUpload(dataArray).$promise;
                     }
                 };
             }

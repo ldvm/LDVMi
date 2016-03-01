@@ -18,6 +18,9 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                 $scope.evaluationId = null;
                 $scope.evaluationFinished = false;
 
+                $scope.creatingDatasources = false;
+                $scope.datasourcesCreated = false;
+
                 $scope.sources = [
                     {
                         type: 'sparqlEndpoint',
@@ -36,21 +39,29 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                 };
 
                 $scope.visualize = function (feelsLucky) {
-                    var validDataSources = _.filter($scope.sources, function (source) {
+                    $scope.creatingDatasources = true;
+                    $scope.datasourcesCreated = false;
+                    $scope.showInput = false;
+
+                    var validDataSources = $scope.validDataSources = _.filter($scope.sources, function (source) {
                         return isValidDataSource(source);
                     });
 
-                    var dataSourcesByType = _.groupBy(validDataSources, 'type');
-                    var promises = _.map(dataSourcesByType, function (dataSources, type) {
-                        return createDataSources(type, dataSources);
-                    });
-
-                    $q.all(promises).then(function (data) {
-                        var dataSourceIds = _.flatten(data).map(function (d) {
-                            return d.id;
+                    if (validDataSources.length === 0) {
+                        alert('No valid data sources given. Terminating.');
+                        $scope.showInput = true;
+                    } else {
+                        var promises = _.map(validDataSources, function (dataSource) {
+                            return createDataSource(dataSource);
                         });
-                        runDiscovery(dataSourceIds, feelsLucky);
-                    });
+
+                        $q.all(promises).then(function (data) {
+                            var dataSourceIds = _.flatten(data).map(function (d) {
+                                return d.id;
+                            });
+                            runDiscovery(dataSourceIds, feelsLucky);
+                        });
+                    }
                 };
 
                 function runDiscovery(dataSourceIds, feelsLucky) {
@@ -61,7 +72,8 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
 
                     uri += "?" + queryString.join("&");
 
-                    $scope.showInput = false;
+                    $scope.creatingDatasources = false;
+                    $scope.datasourcesCreated = true;
                     $scope.runningDiscovery = true;
                     $scope.pipelinesDiscovered = 0;
                     $scope.discoveryId = null;
@@ -157,10 +169,10 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                     );
                 }
 
-                function createDataSources(type, dataSources) {
-                    switch (type) {
+                function createDataSource(source) {
+                    switch (source.type) {
                         case 'sparqlEndpoint':
-                            return createSparqlEndpoints(dataSources);
+                            return createSparqlEndpoints(source);
                         case 'url':
                             return createFromUrl(source);
                         case 'file':
@@ -186,38 +198,60 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                 }
 
                 function isValidUrl(source) {
-                    return source.url && source.url.length > "http://";
+                    return source.url && source.url.length > "http://".length;
                 }
 
                 function isValidFileUpload(source) {
                     return true;
                 }
 
-                function createSparqlEndpoints(sources) {
-                    var sourcesForApi = sources.map(function (e) {
-                        return {
-                            endpointUrl: e.endpointUrl,
-                            graphUris: e.graphUris ? e.graphUris.split(/\s+/) : undefined
-                        };
-                    });
+                function createSparqlEndpoints(source) {
+                    var sourcesForApi = [{
+                        endpointUrl: source.endpointUrl,
+                        graphUris: source.graphUris ? e.graphUris.split(/\s+/).map(urlTrim) : undefined
+                    }];
 
                     return components.createSparqlEndpoints(sourcesForApi);
                 }
 
-                function createFromUrl(sources) {
-                    var urls = sources.map(function (s) {
-                        return s.url;
-                    });
-
+                function createFromUrl(source) {
+                    var urls = source.url ? source.url.split(/\s+/).map(urlTrim) : undefined;
                     return components.createFromUrls(urls);
                 }
 
                 function createByFileUpload(source) {
-
+                    return components.createByFileUpload(source.files);
                 }
 
                 window.setTimeout(function () {
                     material.initForms();
                 }, 0);
+
+                function urlTrim(str) {
+                    return trim(str, '\n\r\t "\',;');
+                }
+
+                var trim = (function () {
+                    "use strict";
+
+                    function escapeRegex(string) {
+                        return string.replace(/[\[\](){}?*+\^$\\.|\-]/g, "\\$&");
+                    }
+
+                    return function trim(str, characters, flags) {
+                        flags = flags || "g";
+                        if (typeof str !== "string" || typeof characters !== "string" || typeof flags !== "string") {
+                            throw new TypeError("argument must be string");
+                        }
+
+                        if (!/^[gi]*$/.test(flags)) {
+                            throw new TypeError("Invalid flags supplied '" + flags.match(new RegExp("[^gi]*")) + "'");
+                        }
+
+                        characters = escapeRegex(characters);
+
+                        return str.replace(new RegExp("^[" + characters + "]+|[" + characters + "]+$", flags), '');
+                    };
+                }());
             }]);
 });

@@ -16,4 +16,6 @@ trait DataSourceService extends CrudService[DataSourceTemplateId, DataSourceTemp
 
   def createDataSourceFromUris(endpointUrl: String, graphUris: Option[Seq[String]])(implicit session: Session): Option[DataSourceTemplateId]
 
+  def createDataSourceFromStrings(fileContents: Seq[(String, String)], maybeUrn: Option[UUID] = None)(implicit session: Session): Option[DataSourceTemplateId]
+
 }

@@ -29,7 +29,8 @@ define(['angular'], function (ng) {
             return $resource(null, null, {
                 createSparqlEndpoints: {url: '/api/v1/dataSources/createSparqlEndpoints', method: 'POST', isArray: true},
                 makePermanent: {url: '/api/v1/component/makePermanent/:id', method: 'GET', isArray: false},
-                createFromUrls: {url: '/api/v1/dataSources/createFromUrls', method: 'POST', isArray: true}
+                createFromUrls: {url: '/api/v1/dataSources/createFromUrls', method: 'POST', isArray: true},
+                createByFileUpload: {url: '/api/v1/dataSources/createByFileUpload', method: 'POST', isArray: true}
             });
         }])
         .factory('EvaluationApi', ['$resource', function ($resource) {

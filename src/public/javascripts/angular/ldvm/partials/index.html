@@ -6,7 +6,7 @@
             <div class="col-sm-12">
 
                 <div class="card" ng-show="showInput">
-                    <div class="card-header bgm-green">
+                    <div class="card-header bgm-orange">
                         <h2>Select Data Sources
                             <small>LinkedPipes will analyze those sources and try to discover visualizations.</small>
                         </h2>
@@ -31,20 +31,19 @@
                                         <label class="fg-label">Graph URIs</label>
                                     </div>
                                     <div class="text-right">
-                                        <span class="btn btn-xs btn-warning" ng-click="remove(source)">Remove</span>
+                                        <span class="btn btn-xs btn-default" ng-click="remove(source)">Remove</span>
                                     </div>
                                 </div>
 
                                 <div ng-switch-when="url">
                                     <div class="form-group fg-float">
                                         <div class="fg-line">
-                                            <input type="text" ng-model="source.url"
-                                                   class="form-control fg-input"/>
+                                            <textarea ng-model="source.url" class="form-control fg-input"></textarea>
                                         </div>
                                         <label class="fg-label">URL containing RDF</label>
                                     </div>
                                     <div class="text-right">
-                                        <span class="btn btn-xs btn-warning" ng-click="remove(source)">Remove</span>
+                                        <span class="btn btn-xs btn-default" ng-click="remove(source)">Remove</span>
                                     </div>
                                 </div>
 
@@ -54,24 +53,29 @@
                                             <span class="btn btn-primary btn-file m-r-10 waves-effect waves-button">
                                                 <span class="fileinput-new">Select file(s)</span>
                                                 <span class="fileinput-exists">Change</span>
-                                                <input type="file" name="" multiple>
+                                                <input type="file" name="" multiple ng-file-model="source.files">
                                             </span>
                                             <span class="fileinput-filename"></span>
                                             <a href="#" class="close fileinput-exists" data-dismiss="fileinput">×</a>
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <span class="btn btn-xs btn-warning" ng-click="remove(source)">Remove</span>
+                                        <span class="btn btn-xs btn-default" ng-click="remove(source)">Remove</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <br/><br/><br/>
+
+                            <div class="text-center" ng-show="!sources.length">
+                                <br/>
+                                You need to add some data source for the discovery to run.
+                            </div>
+                            <br/><br/>
 
                             <div class="row">
                                 <div class="col-md-6 text-left">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-success dropdown-toggle waves-effect"
+                                        <button type="button" class="btn btn-warning dropdown-toggle waves-effect"
                                                 data-toggle="dropdown" aria-expanded="false">
                                             Add more
                                             <span class="caret"></span>
@@ -93,11 +97,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="text-center" ng-show="!sources.length">
-                                <br/>
-                                You need to add some data source for the discovery to run.
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -118,11 +117,20 @@
                             <div class="lv-body">
                                 <div class="lv-item media">
                                     <div class="checkbox pull-left">
-                                        <label>
-                                            <input type="checkbox" disabled="disabled" ng-checked="discoveryFinished"
-                                                   value="">
-                                            <i class="input-helper"></i>
-                                        </label>
+                                        <i class="md md-query-builder" ng-if="creatingDatasources" style="font-size: 24px"></i>
+                                        <i class="md md-done" ng-if="datasourcesCreated" style="font-size: 24px"></i>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="lv-title">Creating data sources</div>
+                                        <small class="lv-small">
+                                            Data sources to be created: {{sources.length}} ({{validDataSources.length}} valid)
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="lv-item media">
+                                    <div class="checkbox pull-left">
+                                        <i class="md md-query-builder" ng-if="!discoveryFinished" style="font-size: 24px"></i>
+                                        <i class="md md-done" ng-if="discoveryFinished" style="font-size: 24px"></i>
                                     </div>
                                     <div class="media-body">
                                         <div class="lv-title">Running discovery</div>
@@ -136,11 +144,8 @@
                                 </div>
                                 <div class="lv-item media" ng-show="pipeline">
                                     <div class="checkbox pull-left">
-                                        <label>
-                                            <input type="checkbox" disabled="disabled" ng-checked="evaluationFinished"
-                                                   value="">
-                                            <i class="input-helper"></i>
-                                        </label>
+                                        <i class="md md-query-builder" ng-if="!evaluationFinished" style="font-size: 24px"></i>
+                                        <i class="md md-done" ng-if="evaluationFinished" style="font-size: 24px"></i>
                                     </div>
                                     <div class="media-body">
                                         <div class="lv-title">Evaluating pipeline</div>
