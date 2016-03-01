@@ -3,20 +3,12 @@ import { connect } from 'react-redux'
 import { Application } from '../../../manageApp/models'
 import { Visualizer } from '../../../common/models'
 import * as api from '../api'
+import { queryDataset } from '../actions'
 
 class Configurator extends Component {
   componentWillMount() {
-    const { application } = this.props;
-    api.getProperties(application.id)
-      .then(properties => {
-        properties.forEach(property => {
-          api.getSkosConcepts(application.id, [property.schemeUri])
-            .then(skosConcepts => {
-              const conceptUris = skosConcepts[property.schemeUri].map(concept => concept.uri);
-              api.getSkosConceptsCounts(application.id, property.uri, conceptUris);
-            });
-        });
-      });
+    const { dispatch, application } = this.props;
+    dispatch(queryDataset(application.id));
   }
 
   render() {
