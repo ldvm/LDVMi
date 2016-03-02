@@ -5,3 +5,10 @@ export const Property = Record({
   uri: '',
   schemeUri: ''
 });
+
+export const SkosConcept = Record({
+  label: '',
+  uri: '',
+  schemeUri: '',
+  linkUris: List()
+});

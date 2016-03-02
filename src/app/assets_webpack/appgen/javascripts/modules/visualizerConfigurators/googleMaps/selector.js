@@ -12,3 +12,8 @@ export const propertiesSelector = createSelector(
   [moduleSelector],
   state => state.properties
 );
+
+export const skosConceptsSelector = createSelector(
+  [moduleSelector],
+  state => state.skosConcepts
+);

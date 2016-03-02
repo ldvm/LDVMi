@@ -1,5 +1,10 @@
+import { createSelector } from 'reselect'
 import { Map, fromJS } from 'immutable'
+import { _label } from '../../../../misc/lang'
 import prefix from '../prefix'
+import { createPromiseStatusSelector } from '../../../../ducks/promises'
+import { skosConceptsSelector as reducerSelector } from '../selector'
+import { SkosConcept } from '../models'
 
 // Actions
 
@@ -17,3 +22,13 @@ export default function skosConceptsReducer(state = new Map(), action) {
 
   return state;
 };
+
+// Selectors
+export const createSkosConceptsStatusSelector = idExtractor =>
+  createPromiseStatusSelector(GET_SKOS_CONCEPTS, idExtractor);
+
+export const skosConceptsSelector = createSelector(
+  [reducerSelector],
+  schemes => schemes.map(concepts => concepts.map(concept =>
+    (new SkosConcept(concept)).set('label', _label(concept.get('label')))))
+);
