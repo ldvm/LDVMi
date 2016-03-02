@@ -1,19 +1,22 @@
 import React, { PropTypes } from 'react'
+import Tooltip from 'material-ui/lib/tooltip';
 import { Property } from '../models'
+import Padding from '../../../../misc/components/Padding'
 
-// TODO: add padding. Perhaps <Padded /> component?
 // TODO: show the whole value using tooltip
 
 const headerStyle = {
   backgroundColor: '#f7f7f7'
 };
 
-const labelStyle = {
+const h3Style = {
   fontWeight: 'normal',
   fontSize: '1.05rem',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
-  textOverflow: 'ellipsis'
+  textOverflow: 'ellipsis',
+  margin: '0',
+  padding: '0'
 };
 
 const smallStyle = {
@@ -23,10 +26,12 @@ const smallStyle = {
 
 const PropertyHeader = ({ property }) => {
   return <div style={headerStyle}>
-    <h3 style={labelStyle}>
-      {property.label} <br />
-      <small style={smallStyle}>{property.uri}</small>
-    </h3>
+    <Padding space={2}>
+      <h3 style={h3Style}>
+        {property.label} <br />
+        <small style={smallStyle}>{property.uri}</small>
+      </h3>
+    </Padding>
   </div>
 };
 
