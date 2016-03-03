@@ -1,4 +1,4 @@
-define(['angular', '../controllers'], function (ng) {
+define(['angular', 'underscorejs', '../controllers'], function (ng, _) {
     'use strict';
 
     return ng.module('ldvm.controllers')
@@ -32,15 +32,15 @@ define(['angular', '../controllers'], function (ng) {
                         $scope.queryingDataset = false;
                     });
 
-                    $scope.schemeExists = function (uri) {
+                    var schemeExists = $scope.schemeExists = function (uri) {
                         return rdfUtils.resourceExists($scope.schemes, uri);
                     };
 
-                    $scope.linkExists = function (uri) {
+                    var linkValid = $scope.linkValid = function (uri) {
                         return rdfUtils.resourceExists($scope.concepts, uri);
                     };
 
-                    $scope.uri = function (uri) {
+                    var uri = $scope.uri = function (uri) {
                         return encodeURIComponent(uri)
                     };
 
@@ -49,6 +49,45 @@ define(['angular', '../controllers'], function (ng) {
                     conceptsPromise.then(function (concepts) {
                         $scope.concepts = concepts;
                         $scope.queryingDataset = false;
+
+                        validate(concepts);
+                    });
+                }
+
+                $scope.showDetailOfConcept = null;
+
+                $scope.showDetailOf = function (concept) {
+                    $scope.showDetailOfConcept = concept;
+                };
+
+                function validate(concepts) {
+                    $scope.validConcepts = [];
+                    $scope.conceptsWithoutScheme = [];
+                    $scope.conceptsNotMatchingScheme = [];
+                    $scope.conceptsWithBrokenLinks = {};
+
+                    _.each(concepts, function (concept) {
+                        var hasError = false;
+
+                        if (!concept.schemeUri) {
+                            hasError = true;
+                            $scope.conceptsWithoutScheme.push(concept);
+                        } else if (schemeExists(concept)) {
+                            hasError = true;
+                            $scope.conceptsNotMatchingScheme.push(concept);
+                        }
+
+                        _.each(concept.linkUris, function (link, property) {
+                            if (!linkValid(link)) {
+                                hasError = true;
+                                $scope.conceptsWithBrokenLinks[property] = $scope.conceptsWithBrokenLinks[property] || [];
+                                $scope.conceptsWithBrokenLinks[property].push(concept);
+                            }
+                        });
+
+                        if (!hasError) {
+                            $scope.validConcepts.push(concept);
+                        }
                     });
                 }
 
