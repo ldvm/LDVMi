@@ -21,7 +21,11 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                 $scope.creatingDatasources = false;
                 $scope.datasourcesCreated = false;
 
-                $scope.sources = [];
+                $scope.sources = [
+                    {type: 'sparqlEndpoint'},
+                    {type: 'file'},
+                    {type: 'url'}
+                ];
 
                 $scope.add = function (type) {
                     $scope.sources.push({type: type});

@@ -74,17 +74,11 @@
 
                             <div class="row">
                                 <div class="col-md-6 text-left">
+                                    <label>Add more:&nbsp;&nbsp;</label>
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-warning dropdown-toggle waves-effect"
-                                                data-toggle="dropdown" aria-expanded="false">
-                                            Add more
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="" ng-click="add('sparqlEndpoint')">Sparql Endpoint</a></li>
-                                            <li><a href="" ng-click="add('url')">RDF from Web</a></li>
-                                            <li><a href="" ng-click="add('file')">RDF from file</a></li>
-                                        </ul>
+                                        <a href="" class="btn btn-default" ng-click="add('sparqlEndpoint')">Sparql Endpoint</a>
+                                        <a href="" class="btn btn-default" ng-click="add('url')">RDF from URL</a>
+                                        <a href="" class="btn btn-default" ng-click="add('file')">RDF from file</a>
                                     </div>
                                 </div>
                                 <div class="col-md-6 text-right">
@@ -117,19 +111,22 @@
                             <div class="lv-body">
                                 <div class="lv-item media">
                                     <div class="checkbox pull-left">
-                                        <i class="md md-query-builder" ng-if="creatingDatasources" style="font-size: 24px"></i>
+                                        <i class="md md-query-builder" ng-if="creatingDatasources"
+                                           style="font-size: 24px"></i>
                                         <i class="md md-done" ng-if="datasourcesCreated" style="font-size: 24px"></i>
                                     </div>
                                     <div class="media-body">
                                         <div class="lv-title">Creating data sources</div>
                                         <small class="lv-small">
-                                            Data sources to be created: {{sources.length}} ({{validDataSources.length}} valid)
+                                            Data sources to be created: {{sources.length}} ({{validDataSources.length}}
+                                            valid)
                                         </small>
                                     </div>
                                 </div>
                                 <div class="lv-item media">
                                     <div class="checkbox pull-left">
-                                        <i class="md md-query-builder" ng-if="!discoveryFinished" style="font-size: 24px"></i>
+                                        <i class="md md-query-builder" ng-if="!discoveryFinished"
+                                           style="font-size: 24px"></i>
                                         <i class="md md-done" ng-if="discoveryFinished" style="font-size: 24px"></i>
                                     </div>
                                     <div class="media-body">
@@ -144,7 +141,8 @@
                                 </div>
                                 <div class="lv-item media" ng-show="pipeline">
                                     <div class="checkbox pull-left">
-                                        <i class="md md-query-builder" ng-if="!evaluationFinished" style="font-size: 24px"></i>
+                                        <i class="md md-query-builder" ng-if="!evaluationFinished"
+                                           style="font-size: 24px"></i>
                                         <i class="md md-done" ng-if="evaluationFinished" style="font-size: 24px"></i>
                                     </div>
                                     <div class="media-body">

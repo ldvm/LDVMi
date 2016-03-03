@@ -26,10 +26,15 @@ define(['angular', 'underscorejs', './controllers'], function (ng, _) {
                     var promise = visualization.skos.schemes(id);
                     $scope.queryingDataset = true;
                     $scope.loadingSchemesList = true;
+
                     promise.then(function (schemes) {
                         $scope.schemes = schemes;
                         $scope.queryingDataset = false;
                         $scope.loadingSchemesList = false;
+
+                        if (!$routeParams.uri) {
+                            $scope.loadScheme($scope.schemes[0]);
+                        }
                     });
 
                     $scope.uri = function (scheme) {
@@ -45,6 +50,10 @@ define(['angular', 'underscorejs', './controllers'], function (ng, _) {
                     };
 
                     $scope.loadSchemeByUri = function (schemeUri) {
+                        if (!schemeUri) {
+                            return;
+                        }
+
                         $scope.queryingDataset = true;
                         var schemePromise = visualization.skos.scheme(id, schemeUri);
                         schemePromise.then(function (scheme) {
