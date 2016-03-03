@@ -51,10 +51,10 @@
                                                 <br />
                                                 <strong ng-show="concept.linkUris.length">Links validation:</strong>
                                                 <ul>
-                                                    <li ng-repeat="link in concept.linkUris">
-                                                        {{link}}:
+                                                    <li ng-repeat="(property, link) in concept.linkUris">
+                                                        -- ({{property}}) --> ({{link}}):
                                                         <span class="label label-success" ng-show="linkExists(link)">OK</span>
-                                                        <span class="label label-danger" ng-hide="linkExists(link)">Referenced entity not present</span>
+                                                        <span class="label label-danger" ng-hide="linkExists(link)">Referenced resource not present</span>
                                                     </li>
                                                 </ul>
                                                 <span ng-show="concept.linkUris.length < 1">Root scheme</span>

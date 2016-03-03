@@ -29,8 +29,8 @@ class ConceptsExtractor extends QueryExecutionResultExtractor[ConceptsQuery, Seq
 
         val linkUris = Seq(SKOS.broader, SKOS.broaderTransitive, SKOS.narrower, SKOS.narrowerTransitive).flatMap { l =>
           val maybeLinkResource = Option(conceptResource.getProperty(l))
-          maybeLinkResource.map(_.getObject.asResource().getURI)
-        }
+          maybeLinkResource.map(l.getURI -> _.getObject.asResource().getURI)
+        }.toMap
 
         Concept(conceptResource.getURI, Some(LocalizedValue(Seq(("nolang", label)).toMap)), None, schemeUri, linkUris)
       })
