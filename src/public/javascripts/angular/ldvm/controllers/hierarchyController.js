@@ -5,9 +5,11 @@ define(['angular', 'underscorejs', './controllers'], function (ng, _) {
         .controller('Hierarchy',
             [
                 '$scope',
+                '$location',
                 '$routeParams',
                 'Visualization',
                 function ($scope,
+                          $location,
                           $routeParams,
                           visualization) {
 
@@ -53,6 +55,7 @@ define(['angular', 'underscorejs', './controllers'], function (ng, _) {
                         if (!schemeUri) {
                             return;
                         }
+                        $location.search("uri", schemeUri);
 
                         $scope.queryingDataset = true;
                         var schemePromise = visualization.skos.scheme(id, schemeUri);

@@ -200,13 +200,13 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                 }
 
                 function isValidFileUpload(source) {
-                    return true;
+                    return source.files && source.files.length;
                 }
 
                 function createSparqlEndpoints(source) {
                     var sourcesForApi = [{
                         endpointUrl: source.endpointUrl,
-                        graphUris: source.graphUris ? e.graphUris.split(/\s+/).map(urlTrim) : undefined
+                        graphUris: source.graphUris ? source.graphUris.split(/\s+/).map(urlTrim) : undefined
                     }];
 
                     return components.createSparqlEndpoints(sourcesForApi);
