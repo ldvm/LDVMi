@@ -22,8 +22,8 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                 $scope.datasourcesCreated = false;
 
                 $scope.sources = [
-                    {type: 'file'},
                     {type: 'url'},
+                    {type: 'file'},
                     {type: 'sparqlEndpoint'}
                 ];
 
