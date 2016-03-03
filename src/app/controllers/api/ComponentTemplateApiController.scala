@@ -9,9 +9,11 @@ import play.api.Play.current
 import play.api.db.slick.{DBAction, _}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import play.api.mvc.Result
+import play.api.mvc.{Action, Result}
 import scaldi.{Injectable, Injector}
+import scala.concurrent.Future
 import scalaj.http.Base64
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 class ComponentTemplateApiController(implicit inj: Injector) extends ApiController with Injectable {
@@ -117,7 +119,7 @@ class ComponentTemplateApiController(implicit inj: Injector) extends ApiControll
     }.getOrElse(BadRequest)
   }
 
-  def createByFileUpload = DBAction { implicit rws =>
+  def createByFileUpload = Action.async(parse.json(100 * 1024 * 1024)) { implicit request =>
 
     case class File(filename: String, data: String)
     implicit val endpointReads = (
@@ -125,18 +127,20 @@ class ComponentTemplateApiController(implicit inj: Injector) extends ApiControll
         (__ \ 'data).read[String]
       ) (File)
 
-    rws.request.body.asJson.flatMap { json =>
-      val files = json.as[Seq[File]]
+
+    Future {
+      val files = request.body.as[Seq[File]]
       val fileContents = files.map(file => {
         val commaPosition = file.data.indexOf(",")
         val base64Content = file.data.substring(commaPosition + 1)
         (file.filename, Base64.decodeString(base64Content))
       })
 
-      val id = dataSourceService.createDataSourceFromStrings(fileContents, Some(UUID.randomUUID()))
-      id.map(i => Ok(JsArray(Seq(JsObject(Seq("id" -> JsNumber(i.id)))))))
-
-    }.getOrElse(BadRequest)
+      DB.withSession { implicit s =>
+        val id = dataSourceService.createDataSourceFromStrings(fileContents, Some(UUID.randomUUID()))
+        id.map(i => Ok(JsArray(Seq(JsObject(Seq("id" -> JsNumber(i.id))))))).getOrElse(BadRequest)
+      }
+    }
   }
 
   def stripAll(s: String, bad: String): String = {

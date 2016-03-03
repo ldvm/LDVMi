@@ -18,7 +18,7 @@ import scalaj.http.Http
 class DataCubeApiController(implicit inj: Injector) extends ApiController {
 
   def createVisualisation(dataSourceTemplateId: Long) = {
-    val visualizerUri = "http://linked.opendata.cz/resource/ldvm/visualizer/data-cube-simple/DataCubeVisualizerTemplate"
+    val visualizerUri = "http://linked.opendata.cz/resource/ldvm/visualizer/data-cube/DataCubeVisualizerTemplate"
     super.createVisualisation(dataSourceTemplateId, visualizerUri)
   }
 
