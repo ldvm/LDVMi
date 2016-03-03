@@ -5,7 +5,7 @@ import { Application } from '../../../manageApp/models'
 import { Visualizer } from '../../../common/models'
 import * as api from '../api'
 import { queryDataset } from '../actions'
-import Filters from './Filters'
+import Sidebar from './Sidebar'
 
 class Configurator extends Component {
   componentWillMount() {
@@ -17,7 +17,7 @@ class Configurator extends Component {
     const { application } = this.props;
     return <Row>
       <Col md={3}>
-        <Filters application={application} />
+        <Sidebar application={application} />
       </Col>
       <Col md={9}>
         Maps Visualizer Configurator!

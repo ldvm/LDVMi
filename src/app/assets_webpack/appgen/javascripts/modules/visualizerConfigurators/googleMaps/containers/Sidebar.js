@@ -7,9 +7,9 @@ import { propertiesSelector, propertiesStatusSelector } from '../ducks/propertie
 import { PromiseStatus } from '../../../../ducks/promises'
 import { Application } from '../../../manageApp/models'
 import PromiseResult from '../../../../misc/components/PromiseResult'
-import FilterTabs from '../components/FilterTabs'
+import SidebarTabs from '../components/SidebarTabs'
 
-const Filters = ({ properties, propertiesStatus }) => {
+const Sidebar = ({ properties, propertiesStatus }) => {
   return (
     <Paper zDepth={2}>
       {!propertiesStatus.done &&
@@ -17,13 +17,13 @@ const Filters = ({ properties, propertiesStatus }) => {
       }
 
       {propertiesStatus.done &&
-        <FilterTabs properties={properties} />
+        <SidebarTabs properties={properties} />
       }
     </Paper>
   )
 };
 
-Filters.propTypes = {
+Sidebar.propTypes = {
   dispatch: PropTypes.func.isRequired,
   application: PropTypes.instanceOf(Application).isRequired,
   properties: PropTypes.instanceOf(List),
@@ -38,4 +38,4 @@ const selector = createSelector(
   })
 );
 
-export default connect(selector)(Filters);
+export default connect(selector)(Sidebar);

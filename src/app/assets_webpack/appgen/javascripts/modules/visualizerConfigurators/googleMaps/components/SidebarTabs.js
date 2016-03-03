@@ -4,8 +4,9 @@ import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 import PropertyHeader from './PropertyHeader'
 import PropertyFilters from '../containers/PropertyFilters'
+import FillInScreen from '../../../../misc/components/FillInScreen'
 
-const FilterTabs = ({ properties }) => {
+const SidebarTabs = ({ properties }) => {
   return <Tabs inkBarStyle={{ backgroundColor: 'white' }}>
       <Tab label="Configure">
         {properties.map(property =>
@@ -21,8 +22,8 @@ const FilterTabs = ({ properties }) => {
     </Tabs>
 };
 
-FilterTabs.propTypes = {
+SidebarTabs.propTypes = {
   properties: PropTypes.instanceOf(List)
 };
 
-export default FilterTabs;
+export default SidebarTabs;
