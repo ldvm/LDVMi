@@ -7,9 +7,10 @@ import PromiseResult from '../../../../misc/components/PromiseResult'
 import { Property } from '../models'
 import { skosConceptsSelector, createSkosConceptsStatusSelector } from '../ducks/skosConcepts'
 import { skosConceptsCountsSelector, createSkosConceptsCountsStatusSelector } from '../ducks/skosConceptsCounts'
+import { configureFilter } from '../ducks/filterConfigs'
 import FilterConfig from '../components/FilterConfig'
 
-const PropertyFilter = ({ skosConcepts, skosConceptsCounts, status, countsStatus }) => {
+const PropertyFilter = ({ dispatch, property, skosConcepts, skosConceptsCounts, status, countsStatus }) => {
   if (!status.done) {
       return <PromiseResult status={status} />;
   }
@@ -21,6 +22,7 @@ const PropertyFilter = ({ skosConcepts, skosConceptsCounts, status, countsStatus
         skosConcept={skosConcept}
         count={skosConceptsCounts.get(skosConcept.uri)}
         countLoading={countsStatus.isLoading}
+        configureFilter={settings => dispatch(configureFilter(property.uri, skosConcept.uri, settings))}
       />
     )}
   </div>;

@@ -6,6 +6,7 @@ import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import { SkosConcept } from '../models'
 import Padding from '../../../../misc/components/Padding'
+import { settings } from  '../ducks/filterConfigs'
 
 const iconMenuStyle = {
   float: 'right',
@@ -28,7 +29,7 @@ const dividerStyle = {
   clear: 'both'
 };
 
-const FilterConfig = ({ skosConcept, count, countLoading }) => {
+const FilterConfig = ({ skosConcept, count, countLoading, configureFilter }) => {
   const countLabel = countLoading ? '?' :
     (count !== undefined ? count : '-');
 
@@ -40,9 +41,17 @@ const FilterConfig = ({ skosConcept, count, countLoading }) => {
         anchorOrigin={{horizontal: 'left', vertical: 'top'}}
         targetOrigin={{horizontal: 'left', vertical: 'top'}}
       >
-        <MenuItem primaryText="Select always"/>
-        <MenuItem primaryText="Select never"/>
-        <MenuItem primaryText="User defined"/>
+        <MenuItem
+          primaryText="Select always"
+          onTouchTap={() => configureFilter(settings.SELECT_ALWAYS)}
+        />
+        <MenuItem
+          primaryText="Select never"
+          onTouchTap={() => configureFilter(settings.SELECT_NEVER)}
+        />
+        <MenuItem primaryText="User defined"
+          onTouchTap={() => configureFilter(settings.USER_DEFINED)}
+        />
       </IconMenu>
       <div style={labelStyle}>
         {skosConcept.label}{' '}
@@ -56,7 +65,8 @@ const FilterConfig = ({ skosConcept, count, countLoading }) => {
 FilterConfig.propTypes = {
   skosConcept: PropTypes.instanceOf(SkosConcept).isRequired,
   count: PropTypes.number,
-  countLoading: PropTypes.bool.isRequired
+  countLoading: PropTypes.bool.isRequired,
+  configureFilter: PropTypes.func.isRequired
 };
 
 export default FilterConfig;

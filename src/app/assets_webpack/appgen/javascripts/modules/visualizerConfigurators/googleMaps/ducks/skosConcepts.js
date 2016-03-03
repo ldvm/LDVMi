@@ -30,6 +30,7 @@ export const createSkosConceptsStatusSelector = schemeUriExtractor =>
 
 export const skosConceptsSelector = createSelector(
   [reducerSelector],
+  // TODO: to speed up the process this should be done already in the reducer
   schemes => schemes.map(concepts => concepts.map(concept =>
     (new SkosConcept(concept)).set('label', _label(concept.get('label')))))
 );
