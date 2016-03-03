@@ -44,9 +44,9 @@
                                             <div class="media-body">
                                                 <div class="lv-title">{{concept.label.variants['nolang']}}</div>
                                                 <strong>In scheme:</strong> <span ng-bind="concept.schemeUri"></span>
-                                                <small class="lv-small">URI: {{concept.uri}}</small>
+                                                <small class="lv-small">IRI: {{concept.uri}}</small>
                                                 <ul class="lv-attrs">
-                                                    <li ng-show="!schemeExists(concept.schemeUri)" class="danger">Scheme URI does not match any scheme</li>
+                                                    <li ng-show="!schemeExists(concept.schemeUri)" class="danger">Scheme IRI does not match any scheme</li>
                                                 </ul>
                                                 <br />
                                                 <strong ng-show="concept.linkUris.length">Links validation:</strong>
