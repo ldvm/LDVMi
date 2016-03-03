@@ -170,16 +170,7 @@
 
                 <div class="card" ng-show="showInput">
                     <div class="card-header ch-alt m-b-20">
-                        <h2>Recent Saved Pipelines</h2>
-                        <ul class="actions">
-                            <li>
-                                <a href="">
-                                    <i class="md md-cached"></i>
-                                </a>
-                            </li>
-                        </ul>
-
-                        <!--<button class="btn bgm-cyan btn-float waves-effect"><i class="md md-add"></i></button>-->
+                        <h2>Recently Saved Pipelines</h2>
                     </div>
 
                     <div class="card-body">
@@ -196,7 +187,8 @@
                                     </div>
                                 </div>
                             </a>
-                            <a class="lv-footer" href="/pipelines#/list">View All</a>
+                            <span class="lv-item" ng-if="!pipelines.length">No saved pipelines.</span>
+                            <a class="lv-footer" href="/pipelines#/list">View all pipelines</a>
                         </div>
                     </div>
                 </div>
