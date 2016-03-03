@@ -41,7 +41,7 @@ const configStyles = {
   }
 };
 
-const FilterConfig = ({ skosConcept, count, countLoading, configureFilter, config }) => {
+const PropertyFilterConfig = ({ skosConcept, count, countLoading, configureFilter, config }) => {
   const countLabel = countLoading ? '?' :
     (count !== undefined ? count : '-');
 
@@ -77,7 +77,7 @@ const FilterConfig = ({ skosConcept, count, countLoading, configureFilter, confi
   </div>
 };
 
-FilterConfig.propTypes = {
+PropertyFilterConfig.propTypes = {
   skosConcept: PropTypes.instanceOf(SkosConcept).isRequired,
   count: PropTypes.number,
   countLoading: PropTypes.bool.isRequired,
@@ -85,8 +85,8 @@ FilterConfig.propTypes = {
   config: PropTypes.oneOf([settings.SELECT_ALWAYS, settings.SELECT_NEVER, settings.USER_DEFINED])
 };
 
-FilterConfig.defaultProps = {
+PropertyFilterConfig.defaultProps = {
   config: settings.USER_DEFINED
 };
 
-export default FilterConfig;
+export default PropertyFilterConfig;

@@ -27,3 +27,8 @@ export const filterConfigsSelector = createSelector(
   [moduleSelector],
   state => state.filterConfigs
 );
+
+export const propertyConfigsSelector = createSelector(
+  [moduleSelector],
+  state => state.propertyConfigs
+);

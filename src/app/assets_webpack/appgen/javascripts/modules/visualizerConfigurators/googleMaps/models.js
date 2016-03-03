@@ -1,4 +1,5 @@
 import { List, Record } from 'immutable';
+import { types as propertyTypes } from './ducks/propertyConfigs'
 
 export const Property = Record({
   label: '',
@@ -11,4 +12,9 @@ export const SkosConcept = Record({
   uri: '',
   schemeUri: '',
   linkUris: List()
+});
+
+export const PropertyConfig = Record({
+  type: propertyTypes.CHECKBOX,
+  enabled: true
 });

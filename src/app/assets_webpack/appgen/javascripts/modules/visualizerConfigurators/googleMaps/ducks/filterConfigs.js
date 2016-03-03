@@ -49,6 +49,6 @@ export default function filterConfigsReducer(state = initialState, action) {
   return state;
 }
 
-// Selector
+// Selectors
 
 export const filterConfigsSelector = reducerSelector;
