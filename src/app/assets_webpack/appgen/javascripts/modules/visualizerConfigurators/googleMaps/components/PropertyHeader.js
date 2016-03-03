@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import Tooltip from 'material-ui/lib/tooltip';
 import { Property } from '../models'
 import Padding from '../../../../misc/components/Padding'
+import * as theme from '../../../../misc/theme'
 
 // TODO: show the whole value using tooltip
 

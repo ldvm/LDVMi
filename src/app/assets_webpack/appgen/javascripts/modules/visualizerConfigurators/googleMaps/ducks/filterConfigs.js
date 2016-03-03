@@ -1,6 +1,7 @@
 import { Map } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
+import { filterConfigsSelector as reducerSelector } from '../selector'
 
 // Reducer that maintains the configuration of individual filters.
 
@@ -34,3 +35,7 @@ export default function filterConfigsReducer(state = initialState, action) {
 
   return state;
 }
+
+// Selector
+
+export const filterConfigsSelector = reducerSelector;

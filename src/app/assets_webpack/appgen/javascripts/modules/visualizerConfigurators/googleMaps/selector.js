@@ -22,3 +22,8 @@ export const skosConceptsCountsSelector = createSelector(
   [moduleSelector],
   state => state.skosConceptsCounts
 );
+
+export const filterConfigsSelector = createSelector(
+  [moduleSelector],
+  state => state.filterConfigs
+);

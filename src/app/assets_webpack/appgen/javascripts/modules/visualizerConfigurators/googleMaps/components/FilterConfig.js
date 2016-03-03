@@ -29,7 +29,19 @@ const dividerStyle = {
   clear: 'both'
 };
 
-const FilterConfig = ({ skosConcept, count, countLoading, configureFilter }) => {
+const configStyles = {
+  [settings.USER_DEFINED]: {
+  },
+  [settings.SELECT_ALWAYS]: {
+    color: 'rgba(0, 0, 0, 0.3)'
+  },
+  [settings.SELECT_NEVER]: {
+    color: 'rgba(0, 0, 0, 0.3)',
+    textDecoration: 'line-through'
+  }
+};
+
+const FilterConfig = ({ skosConcept, count, countLoading, configureFilter, config }) => {
   const countLabel = countLoading ? '?' :
     (count !== undefined ? count : '-');
 
@@ -43,17 +55,20 @@ const FilterConfig = ({ skosConcept, count, countLoading, configureFilter }) => 
       >
         <MenuItem
           primaryText="Select always"
+          disabled={config == settings.SELECT_ALWAYS}
           onTouchTap={() => configureFilter(settings.SELECT_ALWAYS)}
         />
         <MenuItem
           primaryText="Select never"
+          disabled={config == settings.SELECT_NEVER}
           onTouchTap={() => configureFilter(settings.SELECT_NEVER)}
         />
         <MenuItem primaryText="User defined"
+          disabled={config == settings.USER_DEFINED}
           onTouchTap={() => configureFilter(settings.USER_DEFINED)}
         />
       </IconMenu>
-      <div style={labelStyle}>
+      <div style={Object.assign({}, labelStyle, configStyles[config])}>
         {skosConcept.label}{' '}
         <span style={countStyle}>({countLabel})</span>
       </div>
@@ -66,7 +81,12 @@ FilterConfig.propTypes = {
   skosConcept: PropTypes.instanceOf(SkosConcept).isRequired,
   count: PropTypes.number,
   countLoading: PropTypes.bool.isRequired,
-  configureFilter: PropTypes.func.isRequired
+  configureFilter: PropTypes.func.isRequired,
+  config: PropTypes.oneOf([settings.SELECT_ALWAYS, settings.SELECT_NEVER, settings.USER_DEFINED])
+};
+
+FilterConfig.defaultProps = {
+  config: settings.USER_DEFINED
 };
 
 export default FilterConfig;
