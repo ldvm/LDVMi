@@ -8,18 +8,24 @@ import FillInScreen from '../../../../misc/components/FillInScreen'
 
 const SidebarTabs = ({ properties }) => {
   return <Tabs inkBarStyle={{ backgroundColor: 'white' }}>
-      <Tab label="Configure">
-        {properties.map(property =>
-          <div>
-            <PropertyHeader property={property} />
-            <PropertyFilters property={property} />
-          </div>
-        )}
-      </Tab>
-      <Tab label="Preview">
-        Preview
-      </Tab>
-    </Tabs>
+    <Tab label="Configure">
+      <FillInScreen marginBottom={100}>
+        <div>
+          {properties.map(property =>
+            <div key={property.uri}>
+              <PropertyHeader property={property} />
+              <PropertyFilters property={property} />
+            </div>
+          )}
+        </div>
+      </FillInScreen>
+    </Tab>
+    <Tab label="Preview">
+      <FillInScreen marginBotom={100}>
+        <div>Preview</div>
+      </FillInScreen>
+    </Tab>
+  </Tabs>
 };
 
 SidebarTabs.propTypes = {

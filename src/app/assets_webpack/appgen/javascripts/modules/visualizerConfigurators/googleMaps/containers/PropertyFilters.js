@@ -36,7 +36,7 @@ const selector = createSelector(
   [propertySelector, skosConceptsSelector, skosConceptsStatusSelector],
   (property, skosConcepts, status) => ({
     property,
-    skosConcepts: skosConcepts.get(property.schemeUri),
+    skosConcepts: skosConcepts.get(property.schemeUri) || List(),
     status
   })
 );
