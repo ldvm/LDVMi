@@ -23,7 +23,8 @@
                                             <div class="media-body">
                                                 <div class="lv-title">{{scheme.uri}}</div>
                                                 <small class="lv-small">{{scheme.label.variants['nolang']}}</small>
-                                                <strong><a href="#/hierarchy/tree/{{id}}?uri={{uri(scheme.uri)}}" class="btn btn-success">Visualize</a></strong>
+                                                <br />
+                                                <a href="#/hierarchy/tree/{{id}}?uri={{uri(scheme.uri)}}" class="btn btn-success">Visualize</a>
                                             </div>
                                         </div>
                                     </span>
@@ -39,6 +40,9 @@
                                     Concepts
                                 </div>
                                 <div class="lv-body">
+                                    <div ng-if="!concepts.length" class="text-center lv-item media">
+                                        No concepts in the scheme.
+                                    </div>
                                     <span class="lv-item media" ng-repeat="concept in concepts">
                                         <div class="">
                                             <div class="media-body">
@@ -46,7 +50,8 @@
                                                 <strong>In scheme:</strong> <span ng-bind="concept.schemeUri"></span>
                                                 <small class="lv-small">IRI: {{concept.uri}}</small>
                                                 <ul class="lv-attrs">
-                                                    <li ng-show="!schemeExists(concept.schemeUri)" class="danger">Scheme IRI does not match any scheme</li>
+                                                    <li ng-show="!concept.schemeUri" class="danger">Scheme IRI missing</li>
+                                                    <li ng-show="concept.schemeUri && !schemeExists(concept.schemeUri)" class="danger">Scheme IRI does not match any scheme</li>
                                                 </ul>
                                                 <br />
                                                 <strong ng-show="concept.linkUris.length">Links validation:</strong>
