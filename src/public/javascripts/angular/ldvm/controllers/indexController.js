@@ -21,13 +21,7 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                 $scope.creatingDatasources = false;
                 $scope.datasourcesCreated = false;
 
-                $scope.sources = [
-                    {
-                        type: 'sparqlEndpoint',
-                        endpointUrl: 'http://linked.opendata.cz/sparql',
-                        graphUris: null
-                    }
-                ];
+                $scope.sources = [];
 
                 $scope.add = function (type) {
                     $scope.sources.push({type: type});
