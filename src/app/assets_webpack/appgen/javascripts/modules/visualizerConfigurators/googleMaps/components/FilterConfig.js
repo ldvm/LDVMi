@@ -18,11 +18,20 @@ const labelStyle = {
   color: 'rgba(0, 0, 0, 0.8)'
 };
 
+const countStyle = {
+  fontSize: '0.8rem',
+  color: 'rgba(0, 0, 0, 0.6)',
+  fontWeight: 'bold'
+};
+
 const dividerStyle = {
   clear: 'both'
 };
 
-const FilterConfig = ({ skosConcept }) => {
+const FilterConfig = ({ skosConcept, count, countLoading }) => {
+  const countLabel = countLoading ? '?' :
+    (count !== undefined ? count : '-');
+
   return <div>
     <Padding space={2}>
       <IconMenu
@@ -35,14 +44,19 @@ const FilterConfig = ({ skosConcept }) => {
         <MenuItem primaryText="Select never"/>
         <MenuItem primaryText="User defined"/>
       </IconMenu>
-      <div style={labelStyle}>{skosConcept.label}</div>
+      <div style={labelStyle}>
+        {skosConcept.label}{' '}
+        <span style={countStyle}>({countLabel})</span>
+      </div>
     </Padding>
     <Divider style={dividerStyle} />
   </div>
 };
 
 FilterConfig.propTypes = {
-  skosConcept: PropTypes.instanceOf(SkosConcept).isRequired
+  skosConcept: PropTypes.instanceOf(SkosConcept).isRequired,
+  count: PropTypes.number,
+  countLoading: PropTypes.bool.isRequired
 };
 
 export default FilterConfig;

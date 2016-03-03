@@ -17,3 +17,8 @@ export const skosConceptsSelector = createSelector(
   [moduleSelector],
   state => state.skosConcepts
 );
+
+export const skosConceptsCountsSelector = createSelector(
+  [moduleSelector],
+  state => state.skosConceptsCounts
+);

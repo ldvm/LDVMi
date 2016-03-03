@@ -24,8 +24,9 @@ export default function skosConceptsReducer(state = new Map(), action) {
 };
 
 // Selectors
-export const createSkosConceptsStatusSelector = idExtractor =>
-  createPromiseStatusSelector(GET_SKOS_CONCEPTS, idExtractor);
+
+export const createSkosConceptsStatusSelector = schemeUriExtractor =>
+  createPromiseStatusSelector(GET_SKOS_CONCEPTS, schemeUriExtractor);
 
 export const skosConceptsSelector = createSelector(
   [reducerSelector],
