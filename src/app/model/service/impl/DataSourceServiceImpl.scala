@@ -30,7 +30,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
 
     urls match {
       case u if u.nonEmpty => withRandomGraphUri { r =>
-        val dataSourceName = "Downloaded TTLs"
+        val dataSourceName = "Downloaded RDF"
         val dataSourceDescription = u.mkString(", ")
         val dataSourceId = createDataSource(dataSourceName, Some(dataSourceDescription), r)
 
