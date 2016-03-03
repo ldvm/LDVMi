@@ -11,6 +11,7 @@ module.exports = {
     dir + '/index.js'
   ],
   devtool: 'cheap-module-eval-source-map',
+  // devtool: 'cheap-module-source-map',
   output: {
     path: __dirname + "/../../target/web/public/main/javascripts/appgen/index.js",
     filename: "bundle.js",
@@ -39,6 +40,11 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin('bundle.css', {allChunks: true}),
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+         // NODE_ENV: JSON.stringify("production")
+      }
+    })
   ]
 };
