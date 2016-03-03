@@ -16,9 +16,14 @@ export const settings = {
 // Actions
 
 export const CONFIGURE_FILTER = prefix('CONFIGURE_FILTER');
+export const CONFIGURE_ALL_FILTERS = prefix('CONFIGURE_ALL_FILTERS');
 
 export function configureFilter(propertyUri, skosConceptUri, settings) {
   return createAction(CONFIGURE_FILTER, { propertyUri, skosConceptUri, settings });
+}
+
+export function configureAllFilters(propertyUri, skosConceptUris, settings) {
+  return createAction(CONFIGURE_ALL_FILTERS, { propertyUri, skosConceptUris, settings });
 }
 
 // Reducer
@@ -27,10 +32,18 @@ const initialState = new Map();
 
 export default function filterConfigsReducer(state = initialState, action) {
   switch (action.type) {
-    case (CONFIGURE_FILTER):
-      const { propertyUri, skosConceptUri, settings } = action.payload;
-      return state.update(propertyUri,
-        filters => (filters || new Map()).set(skosConceptUri, settings));
+
+    case CONFIGURE_FILTER: return (() => { // Grrr. Separated scope needed to avoid cont redeclaration
+        const { propertyUri, skosConceptUri, settings } = action.payload;
+        return state.update(propertyUri,
+          filters => (filters || new Map()).set(skosConceptUri, settings));
+      })();
+
+    case CONFIGURE_ALL_FILTERS: return (() => {
+        var { propertyUri, skosConceptUris, settings } = action.payload;
+        return state.update(propertyUri,
+          filters => new Map(skosConceptUris.map(uri => ([uri, settings]))));
+      })();
   }
 
   return state;
