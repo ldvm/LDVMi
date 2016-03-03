@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { Map, fromJS } from 'immutable'
+import { List, Map, fromJS } from 'immutable'
 import { _label } from '../../../../misc/lang'
 import prefix from '../prefix'
 import { createPromiseStatusSelector } from '../../../../ducks/promises'
@@ -17,7 +17,14 @@ export const GET_SKOS_CONCEPTS_SUCCESS = GET_SKOS_CONCEPTS + '_SUCCESS';
 
 export default function skosConceptsReducer(state = new Map(), action) {
   if (action.type == GET_SKOS_CONCEPTS_SUCCESS) {
-    return state.merge(fromJS(action.payload));
+    const payload = (new Map(action.payload)).map(
+      concepts => new List(concepts.map(concept =>
+        new SkosConcept({
+          ...concept,
+          label: _label(concept.label)
+        })
+      )));
+    return state.merge(payload);
   }
 
   return state;
@@ -28,9 +35,4 @@ export default function skosConceptsReducer(state = new Map(), action) {
 export const createSkosConceptsStatusSelector = schemeUriExtractor =>
   createPromiseStatusSelector(GET_SKOS_CONCEPTS, schemeUriExtractor);
 
-export const skosConceptsSelector = createSelector(
-  [reducerSelector],
-  // TODO: to speed up the process this should be done already in the reducer
-  schemes => schemes.map(concepts => concepts.map(concept =>
-    (new SkosConcept(concept)).set('label', _label(concept.get('label')))))
-);
+export const skosConceptsSelector = reducerSelector;
