@@ -4,44 +4,42 @@ import { createSelector } from 'reselect'
 import { List, Map } from 'immutable'
 import { PromiseStatus } from '../../../../ducks/promises'
 import PromiseResult from '../../../../misc/components/PromiseResult'
-import PropertyHeader from '../components/PropertyHeader'
-import PropertyFilter from '../components/PropertyFilter'
+import PropertyHeaderConfig from '../components/PropertyHeaderConfig'
+import PropertyFilterConfig from '../components/PropertyFilterConfig'
 import { Property, PropertyConfig } from '../models'
 import { skosConceptsSelector, createSkosConceptsStatusSelector } from '../ducks/skosConcepts'
 import { skosConceptsCountsSelector, createSkosConceptsCountsStatusSelector } from '../ducks/skosConceptsCounts'
 import { configureFilter, configureAllFilters, filterConfigsSelector } from '../ducks/filterConfigs'
 import { configureProperty, propertyConfigsSelector } from '../ducks/propertyConfigs'
-import { settings } from  '../ducks/filterConfigs'
 
-const PropertyFilters = (props) => {
+const PropertyFiltersConfig = (props) => {
   const { dispatch, property, propertyConfig, filterConfigs, skosConcepts, skosConceptsUris, skosConceptsCounts, status, countsStatus } = props;
 
   if (!status.done) {
       return <PromiseResult status={status} />;
   }
 
-  if (!propertyConfig.enabled) {
-    return <div></div>;
-  }
-
   return <div>
-    <PropertyHeader
+    <PropertyHeaderConfig
       property={property}
       config={propertyConfig}
+      configureAllFilters={settings => dispatch(configureAllFilters(property.uri, skosConceptsUris, settings))}
+      configureProperty={settings => dispatch(configureProperty(property.uri, settings))}
     />
     {propertyConfig.enabled && skosConcepts.map(skosConcept =>
-      <PropertyFilter
+      <PropertyFilterConfig
         key={skosConcept.uri}
         skosConcept={skosConcept}
         count={skosConceptsCounts.get(skosConcept.uri)}
         countLoading={countsStatus.isLoading}
+        configureFilter={settings => dispatch(configureFilter(property.uri, skosConcept.uri, settings))}
         config={filterConfigs.get(skosConcept.uri)}
       />
     )}
   </div>;
 };
 
-PropertyFilters.propTypes = {
+PropertyFiltersConfig.propTypes = {
   dispatch: PropTypes.func.isRequired,
   property: PropTypes.instanceOf(Property).isRequired,
   propertyConfig: PropTypes.instanceOf(PropertyConfig).isRequired,
@@ -61,36 +59,20 @@ const skosConceptsStatusSelector = createSkosConceptsStatusSelector(
 const skosConceptsCountsStatusSelector = createSkosConceptsCountsStatusSelector(
   (state, props) => props.property.uri);
 
-const propertyFilterConfigsSelector = createSelector(
-  [propertySelector, filterConfigsSelector],
-  (property, filterConfigs) => filterConfigs.get(property.uri) || Map()
-);
-
-const propertySkosConceptsSelector = createSelector(
-  [propertySelector, skosConceptsSelector],
-  (property, skosConcepts) => skosConcepts.get(property.schemeUri) || List()
-);
-
-const enabledSkosConceptsSelector = createSelector(
-  [propertySkosConceptsSelector, propertyFilterConfigsSelector],
-  (skosConcepts, filterConfigs) =>
-    skosConcepts.filter(skosConcept => filterConfigs.get(skosConcept.uri) != settings.SELECT_NEVER)
-);
-
 const selector = createSelector(
-  [propertySelector, propertyConfigsSelector, propertyFilterConfigsSelector,
-    enabledSkosConceptsSelector, skosConceptsCountsSelector,
+  [propertySelector, propertyConfigsSelector, filterConfigsSelector,
+    skosConceptsSelector, skosConceptsCountsSelector,
     skosConceptsStatusSelector, skosConceptsCountsStatusSelector],
   (property, propertyConfigs, filterConfigs, skosConcepts, skosConceptsCounts, status, countsStatus) => ({
     property,
     propertyConfig: propertyConfigs.get(property.uri) || new PropertyConfig(),
-    filterConfigs,
-    skosConcepts,
-    skosConceptsUris: skosConcepts.map(concept => concept.uri),
+    filterConfigs: filterConfigs.get(property.uri) || Map(),
+    skosConcepts: skosConcepts.get(property.schemeUri) || List(),
+    skosConceptsUris: (skosConcepts.get(property.schemeUri) || List()).map(concept => concept.uri),
     skosConceptsCounts: skosConceptsCounts.get(property.uri) || Map(),
     status,
     countsStatus
   })
 );
 
-export default connect(selector)(PropertyFilters);
+export default connect(selector)(PropertyFiltersConfig);
