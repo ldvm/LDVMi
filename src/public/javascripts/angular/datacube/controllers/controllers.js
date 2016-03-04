@@ -141,6 +141,9 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                     if ($scope.init && $permanentToken) {
                         $scope.loadByPermanentToken();
+                    } else if(datasets.length === 1) {
+                        $scope.switchDataset(datasets[0]);
+                        $(".tm-chat").click();
                     } else {
                         $(".tm-chat").click();
                     }
