@@ -1,4 +1,4 @@
-define(['angular', 'material', 'underscorejs', 'underscore.string', './controllers'], function (ng, material, _, _s) {
+define(['angular', 'material', 'underscorejs', 'jquery', './controllers'], function (ng, material, _, $) {
     'use strict';
 
     return ng.module('ldvm.controllers')
@@ -34,6 +34,9 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                             url: 'http://visualization.linkedpipes.com/example/datacube.ttl http://visualization.linkedpipes.com/example/dsd.ttl'
                         }
                     ];
+                    window.setTimeout(function(){
+                        $("form").find("input, textarea").eq(0).focus();
+                    });
                 };
 
                 $scope.example02 = function(){
@@ -43,6 +46,10 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                             url: 'http://publications.europa.eu/mdr/resource/authority/eu-programme/skos/eu-programme-skos.rdf'
                         }
                     ];
+
+                    window.setTimeout(function(){
+                        $("form").find("input, textarea").eq(0).focus();
+                    });
                 };
 
                 $scope.example03 = function(){
@@ -52,6 +59,10 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                             endpointUrl: 'http://linked.opendata.cz/sparql'
                         }
                     ];
+
+                    window.setTimeout(function(){
+                        $("form").find("input, textarea").eq(0).focus();
+                    });
                 };
 
                 $scope.add = function (type) {
