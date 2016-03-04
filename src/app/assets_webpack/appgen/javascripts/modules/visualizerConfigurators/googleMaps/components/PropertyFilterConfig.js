@@ -6,6 +6,7 @@ import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import { SkosConcept } from '../models'
 import Padding from '../../../../misc/components/Padding'
+import makePureRender from '../../../../misc/makePureRender'
 import { settings } from  '../ducks/filterConfigs'
 
 const iconMenuStyle = {
@@ -89,4 +90,4 @@ PropertyFilterConfig.defaultProps = {
   config: settings.USER_DEFINED
 };
 
-export default PropertyFilterConfig;
+export default makePureRender(PropertyFilterConfig);
