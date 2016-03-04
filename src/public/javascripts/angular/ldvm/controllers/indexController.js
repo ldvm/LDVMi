@@ -27,6 +27,33 @@ define(['angular', 'material', 'underscorejs', 'underscore.string', './controlle
                     {type: 'sparqlEndpoint'}
                 ];
 
+                $scope.example01 = function(){
+                    $scope.sources = [
+                        {
+                            type: 'url',
+                            url: 'http://visualization.linkedpipes.com/example/datacube.ttl http://visualization.linkedpipes.com/example/dsd.ttl'
+                        }
+                    ];
+                };
+
+                $scope.example02 = function(){
+                    $scope.sources = [
+                        {
+                            type: 'url',
+                            url: 'http://publications.europa.eu/mdr/resource/authority/eu-programme/skos/eu-programme-skos.rdf'
+                        }
+                    ];
+                };
+
+                $scope.example03 = function(){
+                    $scope.sources = [
+                        {
+                            type: 'sparqlEndpoint',
+                            endpointUrl: 'http://linked.opendata.cz/sparql'
+                        }
+                    ];
+                };
+
                 $scope.add = function (type) {
                     $scope.sources.push({type: type});
                 };

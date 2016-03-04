@@ -2,10 +2,10 @@
     <div class="container">
         <br/><br/>
 
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="row" ng-show="showInput">
+            <div class="col-md-8">
 
-                <div class="card" ng-show="showInput">
+                <div class="card">
                     <div class="card-header bgm-orange">
                         <h2>Select Data Sources
                             <small>LinkedPipes will analyze those sources and try to discover visualizations.</small>
@@ -50,7 +50,7 @@
                                 <div ng-switch-when="file">
                                     <div class="form-group fg-float">
                                         <div class="fileinput fileinput-new" data-provides="fileinput">
-                                            <span class="btn btn-primary btn-file m-r-10 waves-effect waves-button">
+                                            <span class="btn btn-default btn-file m-r-10 waves-effect waves-button">
                                                 <span class="fileinput-new">Select file(s)</span>
                                                 <span class="fileinput-exists">Change</span>
                                                 <input type="file" name="" multiple ng-file-model="source.files">
@@ -73,15 +73,19 @@
                             <br/><br/>
 
                             <div class="row">
-                                <div class="col-md-6 text-left">
+                                <div class="col-md-12">
                                     <label>Add more:&nbsp;&nbsp;</label>
                                     <div class="btn-group">
                                         <a href="" class="btn btn-default" ng-click="add('url')">RDF from URL</a>
                                         <a href="" class="btn btn-default" ng-click="add('file')">RDF from file</a>
-                                        <a href="" class="btn btn-default" ng-click="add('sparqlEndpoint')">Sparql Endpoint</a>
+                                        <a href="" class="btn btn-default" ng-click="add('sparqlEndpoint')">Sparql
+                                            Endpoint</a>
                                     </div>
+                                    <br/><br/><br/><br/>
                                 </div>
-                                <div class="col-md-6 text-right">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-right">
                                     <div ng-show="sources.length">
                                         <button class="btn btn-default waves-effect" ng-click="visualize(true)">Feeling
                                             lucky
@@ -95,7 +99,75 @@
                     </div>
                 </div>
 
-                <div class="card" ng-hide="showInput">
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="card" ng-show="showInput">
+                    <div class="card-header bgm-gray">
+                        <h2>Examples
+                            <small>Some examples prepared for you.</small>
+                        </h2>
+                    </div>
+
+                    <div class="card-body card-padding data-source-list">
+                        <div class="listview lv-bordered lv-lg">
+                            <div class="lv-item media">
+                                <div class="media-body">
+                                    <a href="" class="lv-title" ng-click="example01()">DataCube</a>
+                                    <small class="lv-small">CZ Demography with IRI dereference.</small>
+                                </div>
+                            </div>
+                            <div class="lv-item media">
+                                <div class="media-body">
+                                    <a href="" class="lv-title" ng-click="example02()">SKOS</a>
+                                    <small class="lv-small">EU programme</small>
+                                </div>
+                            </div>
+                            <div class="lv-item media">
+                                <div class="media-body">
+                                    <a href="" class="lv-title" ng-click="example03()">LOD.cz</a>
+                                    <small class="lv-small">Linked Opendata CZ endpoint</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-show="showInput">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header ch-alt m-b-20">
+                        <h2>Recently Saved Pipelines</h2>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="listview">
+                            <a class="lv-item" href="/pipelines#/detail/{{pipeline.id}}"
+                               ng-repeat="pipeline in pipelines">
+                                <div class="media">
+                                    <!--<div class="pull-left">
+                                        <img class="lv-img-sm" src="img/profile-pics/1.jpg" alt="">
+                                    </div>-->
+                                    <div class="media-body">
+                                        <div class="lv-title" ng-bind="pipeline.title"></div>
+                                        <small class="lv-small" ng-bind="pipeline.descriptions"></small>
+                                    </div>
+                                </div>
+                            </a>
+                            <span class="lv-item" ng-if="!pipelines.length">No saved pipelines.</span>
+                            <a class="lv-footer" href="/pipelines#/list">View all pipelines</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-hide="showInput">
+            <div class="col-md-12">
+                <div class="card">
                     <div class="card-header bgm-blue">
                         <h2>Visualizations discovery
                             <small>
@@ -164,31 +236,6 @@
                         </div>
                         <div ng-show="redirect" class="text-center">
                             All done! You are being redirected...
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card" ng-show="showInput">
-                    <div class="card-header ch-alt m-b-20">
-                        <h2>Recently Saved Pipelines</h2>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="listview">
-                            <a class="lv-item" href="/pipelines#/detail/{{pipeline.id}}"
-                               ng-repeat="pipeline in pipelines">
-                                <div class="media">
-                                    <!--<div class="pull-left">
-                                        <img class="lv-img-sm" src="img/profile-pics/1.jpg" alt="">
-                                    </div>-->
-                                    <div class="media-body">
-                                        <div class="lv-title" ng-bind="pipeline.title"></div>
-                                        <small class="lv-small" ng-bind="pipeline.descriptions"></small>
-                                    </div>
-                                </div>
-                            </a>
-                            <span class="lv-item" ng-if="!pipelines.length">No saved pipelines.</span>
-                            <a class="lv-footer" href="/pipelines#/list">View all pipelines</a>
                         </div>
                     </div>
                 </div>
