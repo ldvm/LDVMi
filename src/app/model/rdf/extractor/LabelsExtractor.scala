@@ -10,30 +10,63 @@ import scala.collection.JavaConversions._
 
 class LabelsExtractor extends QueryExecutionResultExtractor[LabelsDereferenceQuery, LocalizedValue] {
 
+  case class StringLiteral(value: String, language: String)
+
+  object StringLiteral {
+    def create(literal: Literal) = {
+      val lang = Option(literal.getLanguage).filter(_.trim.nonEmpty).getOrElse("nolang")
+      StringLiteral(literal.getString, lang)
+    }
+  }
+
+  case class RdfLabelResult(
+    rdfsLabel: Option[StringLiteral],
+    skosPrefLabel: Option[StringLiteral],
+    skosNotation: Option[StringLiteral],
+    schemaName: Option[StringLiteral],
+    schemaTitle: Option[StringLiteral],
+    dctermsTitle: Option[StringLiteral]
+  )
+
+  val selectors: Seq[(RdfLabelResult => Option[StringLiteral])] = Seq(
+    r => r.rdfsLabel,
+    r => r.skosPrefLabel,
+    r => r.skosNotation,
+    r => r.schemaName,
+    r => r.schemaTitle,
+    r => r.dctermsTitle
+  )
+
   override def extract(data: QueryExecution): Option[LocalizedValue] = {
     val result = data.execSelect().asInstanceOf[java.util.Iterator[QuerySolution]]
 
-    val map = result.toList.map { qs =>
+    val labelResults = result.toList.map { qs =>
+      RdfLabelResult(
+        Option(qs.get("l")).map(_.asLiteral()).map(StringLiteral.create),
+        Option(qs.get("spl")).map(_.asLiteral()).map(StringLiteral.create),
+        Option(qs.get("sn")).map(_.asLiteral()).map(StringLiteral.create),
+        Option(qs.get("sna")).map(_.asLiteral()).map(StringLiteral.create),
+        Option(qs.get("st")).map(_.asLiteral()).map(StringLiteral.create),
+        Option(qs.get("dct")).map(_.asLiteral()).map(StringLiteral.create)
+      )
+    }
 
-      val l = Option(qs.get("l")).map(_.asLiteral())
-      val spl = Option(qs.get("spl")).map(_.asLiteral())
-      val sn = Option(qs.get("sn")).map(_.asLiteral())
-      val sna = Option(qs.get("sna")).map(_.asLiteral())
-      val st = Option(qs.get("st")).map(_.asLiteral())
+    val allLanguages = labelResults.flatMap(r =>
+      selectors.flatMap(s => s(r)).map(_.language)
+    ).distinct
 
-      (l, spl, sn, sna, st)
-    }.headOption
+    val labels = allLanguages.map(l =>
+      (l, findLabel(l, labelResults))
+    )
 
-    map.flatMap(collectLabels)
+    val map = labels.filter(_._2.isDefined).map {
+      case (lang, maybeValue) => (lang, maybeValue.get.value)
+    }
+
+    Some(LocalizedValue.apply(map.toMap))
   }
 
-  private def collectLabels(labelsList: (Option[Literal], Option[Literal], Option[Literal], Option[Literal], Option[Literal])): Option[LocalizedValue] = {
-    val variants = labelsList match {
-      case (l, spl, sn, sna, st) => Some(Seq(sn, l, spl, sna, st).collect {
-        case Some(lp) => Option(lp.getLanguage).filter(_.trim.nonEmpty).getOrElse("nolang") -> lp.getString
-      })
-      case _ => None
-    }
-    variants.map(v => LocalizedValue(v.toMap))
+  private def findLabel(language: String, available: Seq[RdfLabelResult]) : Option[StringLiteral] = {
+    selectors.flatMap(s => available.flatMap(r => s(r)).find(_.language == language)).headOption
   }
 }
