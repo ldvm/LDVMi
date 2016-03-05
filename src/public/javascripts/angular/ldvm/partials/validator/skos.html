@@ -6,11 +6,28 @@
     <section id="content">
         <div class="container">
 
-            <div class="block-header">
-                <h2>Validate SKOS</h2>
-            </div>
+            <div class="row" ng-hide="id">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bgm-orange">
+                            <h2>Select a Data Source
+                                <small>LinkedPipes will validate your SKOS hierarchy.</small>
+                            </h2>
+                        </div>
+                        <div class="card-body card-padding">
+                            <create-datasource sources="sources" max-sources-count="1"></create-datasource>
 
-            <uploader on-upload-completed="onUploadCompleted" ng-hide="id"></uploader>
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <div ng-show="sources.length">
+                                        <button class="btn btn-primary waves-effect" ng-click="validate()">Validate</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="row" ng-show="id">
                 <div class="col-sm-12">

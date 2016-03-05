@@ -1,4 +1,4 @@
-define(['angular', 'underscorejs', '../controllers'], function (ng, _) {
+define(['angular', 'material', 'underscorejs', '../controllers'], function (ng, material, _) {
     'use strict';
 
     return ng.module('ldvm.controllers')
@@ -8,20 +8,30 @@ define(['angular', 'underscorejs', '../controllers'], function (ng, _) {
             '$location',
             'Visualization',
             'RdfUtils',
+            'Components',
             function ($scope,
                       $routeParams,
                       $location,
                       visualization,
-                      rdfUtils) {
+                      rdfUtils,
+                      components) {
 
                 $scope.id = $routeParams.id;
 
-                $scope.onUploadCompleted = function (lastId) {
-                    if (lastId) {
-                        visualization.skos.create(lastId).then(function (visualisationId) {
-                            $location.path('/validator/skos/' + visualisationId.id);
-                        });
-                    }
+                $scope.sources = [];
+
+                $scope.validate = function () {
+                    var promise = components.createDataSources($scope.sources);
+                    promise.then(
+                        function (result) {
+                            visualization.skos.create(result.sourcesIds[0]).then(function (visualisationId) {
+                                $location.path('/validator/skos/' + visualisationId.id);
+                            });
+                        },
+                        function (errorMessage) {
+                            alert(errorMessage + ' Terminating.');
+                        }
+                    )
                 };
 
                 if ($scope.id) {
@@ -90,6 +100,10 @@ define(['angular', 'underscorejs', '../controllers'], function (ng, _) {
                         }
                     });
                 }
+
+                window.setTimeout(function () {
+                    material.initForms();
+                }, 0);
 
             }]);
 });

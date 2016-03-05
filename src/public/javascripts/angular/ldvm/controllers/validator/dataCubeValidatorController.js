@@ -1,4 +1,4 @@
-define(['angular', '../controllers'], function (ng) {
+define(['angular', 'material', '../controllers'], function (ng, material) {
     'use strict';
 
     return ng.module('ldvm.controllers')
@@ -7,19 +7,31 @@ define(['angular', '../controllers'], function (ng) {
             '$routeParams',
             '$location',
             'Visualization',
-            function ($scope,
-                      $routeParams,
-                      $location,
-                      visualization) {
+            'Components',
+            function (
+                $scope,
+                $routeParams,
+                $location,
+                visualization,
+                components
+            ) {
 
                 var id = $scope.id = $routeParams.id;
 
-                $scope.onUploadCompleted = function (lastId) {
-                    if (lastId) {
-                        visualization.dataCube.create(lastId).then(function (visualisationId) {
-                            $location.path('/validator/dataCube/' + visualisationId.id);
-                        });
-                    }
+                $scope.sources = [];
+
+                $scope.validate = function () {
+                    var promise = components.createDataSources($scope.sources);
+                    promise.then(
+                        function (result) {
+                            visualization.dataCube.create(result.sourcesIds[0]).then(function (visualisationId) {
+                                $location.path('/validator/dataCube/' + visualisationId.id);
+                            });
+                        },
+                        function (errorMessage) {
+                            alert(errorMessage + ' Terminating.');
+                        }
+                    )
                 };
 
                 function query(promise) {
@@ -55,6 +67,10 @@ define(['angular', '../controllers'], function (ng) {
                         }
                     }
                 });
+
+                window.setTimeout(function () {
+                    material.initForms();
+                }, 0);
 
             }]);
 });

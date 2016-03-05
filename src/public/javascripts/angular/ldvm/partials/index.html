@@ -14,76 +14,8 @@
 
                     <div class="card-body card-padding data-source-list">
                         <form name="dataSources">
-                            <div class="data-source" ng-repeat="source in sources" ng-switch="source.type">
-                                <div ng-switch-when="sparqlEndpoint">
-                                    <div class="form-group fg-float">
-                                        <div class="fg-line">
-                                            <input type="text" ng-model="source.endpointUrl"
-                                                   class="form-control fg-input"/>
-                                        </div>
-                                        <label class="fg-label">Endpoint URL</label>
-                                    </div>
-                                    <div class="form-group fg-float">
-                                        <div class="fg-line">
-                                            <textarea ng-model="source.graphUris"
-                                                      class="form-control fg-input"></textarea>
-                                        </div>
-                                        <label class="fg-label">Graph IRIs</label>
-                                    </div>
-                                    <div class="text-right">
-                                        <span class="btn btn-xs btn-default" ng-click="remove(source)">Remove</span>
-                                    </div>
-                                </div>
+                            <create-datasource sources="sources"></create-datasource>
 
-                                <div ng-switch-when="url">
-                                    <div class="form-group fg-float">
-                                        <div class="fg-line">
-                                            <textarea ng-model="source.url" class="form-control fg-input"></textarea>
-                                        </div>
-                                        <label class="fg-label">URL containing RDF</label>
-                                    </div>
-                                    <div class="text-right">
-                                        <span class="btn btn-xs btn-default" ng-click="remove(source)">Remove</span>
-                                    </div>
-                                </div>
-
-                                <div ng-switch-when="file">
-                                    <div class="form-group fg-float">
-                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                            <span class="btn btn-default btn-file m-r-10 waves-effect waves-button">
-                                                <span class="fileinput-new">Select file(s)</span>
-                                                <span class="fileinput-exists">Change</span>
-                                                <input type="file" name="" multiple ng-file-model="source.files">
-                                            </span>
-                                            <span class="fileinput-filename"></span>
-                                            <a href="#" class="close fileinput-exists" data-dismiss="fileinput">×</a>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <span class="btn btn-xs btn-default" ng-click="remove(source)">Remove</span>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="text-center" ng-show="!sources.length">
-                                <br/>
-                                You need to add some data source for the discovery to run.
-                            </div>
-                            <br/><br/>
-
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label>Add more:&nbsp;&nbsp;</label>
-                                    <div class="btn-group">
-                                        <a href="" class="btn btn-default" ng-click="add('url')">RDF from URL</a>
-                                        <a href="" class="btn btn-default" ng-click="add('file')">RDF from file</a>
-                                        <a href="" class="btn btn-default" ng-click="add('sparqlEndpoint')">Sparql
-                                            Endpoint</a>
-                                    </div>
-                                    <br/><br/><br/><br/>
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col-md-12 text-right">
                                     <div ng-show="sources.length">

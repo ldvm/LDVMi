@@ -1,0 +1,68 @@
+<div>
+
+    <div class="alert alert-info" ng-if="maxSourcesCount && sources.length" role="alert">You can add at most
+        {{maxSourcesCount}} data source(s).
+    </div>
+    <div class="alert alert-info" ng-if="!sources.length" role="alert">You need to add at least one data source.</div>
+
+    <div class="data-source" ng-repeat="source in sources">
+        <div ng-switch="source.type">
+            <div ng-switch-when="sparqlEndpoint">
+                <div class="form-group fg-float">
+                    <div class="fg-line">
+                        <input type="text" ng-model="source.endpointUrl"
+                               class="form-control fg-input"/>
+                    </div>
+                    <label class="fg-label">Endpoint URL</label>
+                </div>
+                <div class="form-group fg-float">
+                    <div class="fg-line">
+                        <textarea ng-model="source.graphUris" class="form-control fg-input"></textarea>
+                    </div>
+                    <label class="fg-label">Graph IRIs</label>
+                </div>
+            </div>
+
+            <div ng-switch-when="url">
+                <div class="form-group fg-float">
+                    <div class="fg-line">
+                        <textarea ng-model="source.url" class="form-control fg-input"></textarea>
+                    </div>
+                    <label class="fg-label">URL containing RDF</label>
+                </div>
+            </div>
+
+            <div ng-switch-when="file">
+                <div class="form-group fg-float">
+                    <div class="fileinput fileinput-new" data-provides="fileinput">
+                        <span class="btn btn-default btn-file m-r-10 waves-effect waves-button">
+                            <span class="fileinput-new">Select file(s)</span>
+                            <span class="fileinput-exists">Change</span>
+                            <input type="file" name="" multiple ng-file-model="source.files">
+                        </span>
+                        <span class="fileinput-filename"></span>
+                        <a href="#" class="close fileinput-exists" data-dismiss="fileinput">×</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-source-remove">
+            <span ng-click="remove(source)"><i class="md md-highlight-remove"></i></span>
+        </div>
+    </div>
+    <br/><br/>
+
+    <div class="row" ng-show="canAdd()">
+        <div class="col-md-12 text-center">
+            <hr/>
+            <a href="" class="btn btn-default" ng-click="add('url')"><i class="md md-add"></i> RDF from URL</a>
+            <a href="" class="btn btn-default" ng-click="add('file')"><i class="md md-add"></i> RDF from file</a>
+            <a href="" class="btn btn-default" ng-click="add('sparqlEndpoint')"><i class="md md-add"></i> Sparql
+                Endpoint</a>
+            <hr/>
+            <br/><br/>
+        </div>
+    </div>
+
+</div>

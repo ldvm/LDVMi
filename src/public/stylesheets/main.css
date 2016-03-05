@@ -379,7 +379,7 @@ button.ol-full-screen-true:after {
     counter-reset: data-source-counter;
 }
 
-.data-source-list .data-source{
+.data-source-list .data-source {
     padding-left: 15px;
 }
 
@@ -390,4 +390,21 @@ button.ol-full-screen-true:after {
     display: block;
     margin-left: -15px;
     padding-top: 4px;
+}
+
+.data-source {
+    position: relative;
+}
+
+.data-source-remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    color: lightslategray;
+    cursor: pointer;
+}
+
+.data-source-remove:hover {
+    color: black;
 }

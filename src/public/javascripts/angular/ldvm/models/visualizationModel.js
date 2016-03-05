@@ -5,8 +5,10 @@ define(['angular', './models'], function (ng) {
         .service('Visualization', [
             'SkosApi',
             'DataCubeApi',
+            '$connection',
             function (skosApi,
-                      dataCubeApi) {
+                      dataCubeApi,
+                      $connection) {
                 return {
                     skos: {
                         schemes: function (id, tolerant) {
@@ -31,7 +33,46 @@ define(['angular', './models'], function (ng) {
                         },
                         dataStructureComponents: function (id, uri, isTolerant) {
                             isTolerant = !!isTolerant;
-                            return dataCubeApi.dataStructureComponents({id: id, uri: uri, isTolerant: isTolerant}).$promise;
+                            return dataCubeApi.dataStructureComponents({
+                                id: id,
+                                uri: uri,
+                                isTolerant: isTolerant
+                            }).$promise;
+                        }
+                    },
+                    discovery: {
+                        run: function (dataSourceIds,
+                                       onPipelinesCountChanged,
+                                       onProgress,
+                                       onDone) {
+                            var uri = "ws://" + window.location.host + "/api/v1/pipelines/discover";
+                            var queryString = dataSourceIds.map(function (p) {
+                                return "dataSourceTemplateIds=" + p;
+                            });
+
+                            uri += "?" + queryString.join("&");
+
+                            var filterPredicate = function () {
+                                return true;
+                            };
+
+                            var connection = $connection(uri);
+                            connection.listen(filterPredicate, function (message) {
+
+                                if ("pipelinesDiscoveredCount" in message) {
+                                    onPipelinesCountChanged(message.pipelinesDiscoveredCount);
+                                }
+
+                                if ("isFinished" in message) {
+                                    onProgress(message);
+
+                                    if (message.isFinished) {
+                                        onDone(message.isSuccess);
+                                    }
+                                }
+
+                            });
+
                         }
                     }
                 };
