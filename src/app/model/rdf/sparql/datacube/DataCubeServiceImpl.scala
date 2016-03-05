@@ -34,12 +34,21 @@ class DataCubeServiceImpl(implicit val inj: Injector) extends DataCubeService wi
     sparqlEndpointService.getResult(evaluationToSparqlEndpoint(evaluation), new DataCubeDataStructuresQuery, new DataCubeDataStructuresExtractor).get
   }
 
-  def getDataStructureComponents(evaluation: PipelineEvaluation, uri: String, isTolerant: Boolean = false): Seq[DataCubeComponent] = {
+  def getDataSetComponents(evaluation: PipelineEvaluation, uri: String, isTolerant: Boolean = false): Seq[DataCubeComponent] = {
     List("dimension", "measure", "attribute").par.map { componentType =>
       sparqlEndpointService.getResult(
         evaluationToSparqlEndpoint(evaluation),
         new DataCubeComponentsQuery(uri, componentType, isTolerant),
         new DataCubeComponentsExtractor).get
+    }.toList.distinct.flatten
+  }
+
+  def getDataStructureComponents(evaluation: PipelineEvaluation, uri: String, isTolerant: Boolean = false): Seq[DataCubeComponent] = {
+    List("dimension", "measure", "attribute").par.map { componentType =>
+      sparqlEndpointService.getResult(
+        evaluationToSparqlEndpoint(evaluation),
+        new DataCubeStructureComponentsQuery(uri, componentType, isTolerant),
+        new DataCubeStructureComponentsExtractor).get
     }.toList.distinct.flatten
   }
 

@@ -22,9 +22,23 @@ class DataCubeApiController(implicit inj: Injector) extends ApiController {
     super.createVisualisation(dataSourceTemplateId, visualizerUri)
   }
 
-  def dataStructure(id: Long, uri: String, isTolerant: Boolean = false) = DBAction { implicit rs =>
+  def dataStructures(id: Long) = DBAction { implicit rs =>
+    withEvaluation(id) { evaluation =>
+      Ok(Json.toJson(dataCubeService.getDataStructures(evaluation)))
+    }
+  }
+
+  def dataStructureComponents(id: Long, uri: String, isTolerant: Boolean = false) = DBAction { implicit rs =>
     withEvaluation(id) { evaluation =>
       val components = dataCubeService.getDataStructureComponents(evaluation, uri, isTolerant)
+      val componentsJson = Seq("components" -> components).toMap
+      Ok(Json.toJson(componentsJson))
+    }
+  }
+
+  def dataStructure(id: Long, uri: String, isTolerant: Boolean = false) = DBAction { implicit rs =>
+    withEvaluation(id) { evaluation =>
+      val components = dataCubeService.getDataSetComponents(evaluation, uri, isTolerant)
       val componentsJson = Seq("components" -> components).toMap
       Ok(Json.toJson(componentsJson))
     }

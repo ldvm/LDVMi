@@ -49,7 +49,7 @@
                                             <div class="media-body">
                                                 <div class="lv-title" ng-bind="structure.uri"></div>
                                                 <small class="lv-small" ng-bind="structure | label : lang"></small>
-                                                <strong><a href="#/hierarchy/tree/{{id}}?uri={{uri(structure.uri)}}">Visualize</a></strong>
+                                                <strong><a href="/visualize/datacube#/id/{{id}}" class="btn btn-success">Visualize</a></strong>
                                                 <strong><a href="" ng-click="setDsd(structure)"
                                                            ng-show="structure.uri && dataStructures.length > 1">Validate
                                                     details</a></strong>
