@@ -31,8 +31,8 @@ class LabelsExtractor extends QueryExecutionResultExtractor[LabelsDereferenceQue
   val selectors: Seq[(RdfLabelResult => Option[StringLiteral])] = Seq(
     r => r.rdfsLabel,
     r => r.skosPrefLabel,
-    r => r.skosNotation,
     r => r.schemaName,
+    r => r.skosNotation,
     r => r.schemaTitle,
     r => r.dctermsTitle
   )
@@ -42,12 +42,12 @@ class LabelsExtractor extends QueryExecutionResultExtractor[LabelsDereferenceQue
 
     val labelResults = result.toList.map { qs =>
       RdfLabelResult(
-        Option(qs.get("l")).map(_.asLiteral()).map(StringLiteral.create),
-        Option(qs.get("spl")).map(_.asLiteral()).map(StringLiteral.create),
-        Option(qs.get("sn")).map(_.asLiteral()).map(StringLiteral.create),
-        Option(qs.get("sna")).map(_.asLiteral()).map(StringLiteral.create),
-        Option(qs.get("st")).map(_.asLiteral()).map(StringLiteral.create),
-        Option(qs.get("dct")).map(_.asLiteral()).map(StringLiteral.create)
+        rdfsLabel = Option(qs.get("l")).map(_.asLiteral()).map(StringLiteral.create),
+        skosPrefLabel = Option(qs.get("spl")).map(_.asLiteral()).map(StringLiteral.create),
+        skosNotation = Option(qs.get("sn")).map(_.asLiteral()).map(StringLiteral.create),
+        schemaName = Option(qs.get("sna")).map(_.asLiteral()).map(StringLiteral.create),
+        schemaTitle = Option(qs.get("st")).map(_.asLiteral()).map(StringLiteral.create),
+        dctermsTitle = Option(qs.get("dct")).map(_.asLiteral()).map(StringLiteral.create)
       )
     }
 
