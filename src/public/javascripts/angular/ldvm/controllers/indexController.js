@@ -21,6 +21,8 @@ define(['angular', 'material', 'underscorejs', 'jquery', './controllers'], funct
                 $scope.creatingDatasources = false;
                 $scope.datasourcesCreated = false;
 
+                $scope.$parent.showChatButton = false;
+
                 $scope.sources = [
                     {type: 'url'},
                     {type: 'file'},

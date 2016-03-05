@@ -3,9 +3,7 @@
 define(['angular', './controllers'], function (ng) {
     'use strict';
 
-    ng.module('@(ngAppName).controllers').
-        controller('LayoutController',
-        ['$scope', '$location', function ($scope, $location) {
-        }])
-    ;
+    ng.module('@(ngAppName).controllers').controller('LayoutController', ['$scope', '$location', function ($scope, $location) {
+        $scope.showChatButton = true;
+    }]);
 });
