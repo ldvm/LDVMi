@@ -2,8 +2,8 @@ define(['angular', 'underscorejs'], function (ng, _) {
     'use strict';
 
     ng.module('datacube.controllers', []).controller('DataCube',
-        ['$scope', 'DataCubeService', '$q', '$location', '$routeParams', '$timeout',
-            function ($scope, DataCubeService, $q, $location, $routeParams, $timeout) {
+        ['$scope', 'DataCubeService', '$q', '$location', '$routeParams', '$timeout', '$filter',
+            function ($scope, DataCubeService, $q, $location, $routeParams, $timeout, $filter) {
 
                 var $id = $routeParams.id;
                 var $permanentToken = $routeParams.p;
@@ -16,9 +16,13 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     return;
                 }
 
+                var label = $scope.label = function (entity) {
+                    $filter('label')(entity, $scope.language, $scope.availableLanguages);
+                };
+
                 $scope.datasets = [];
                 $scope.activeDataset = null;
-                $scope.language = $routeParams.language || "cs";
+                $scope.language = $routeParams.language || "nolang";
                 $scope.measuresSelectedCount = 0;
                 $scope.chartVisible = true;
                 $scope.init = true;
@@ -91,22 +95,20 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     }
                 };
 
-                $scope.setLang = function (language, setLanguage) {
+                $scope.onLanguageChange = function (language) {
                     $scope.language = language;
-                    if (setLanguage) {
-                        $location.search("language", language);
-                        $timeout(function () {
-                            $scope.permalink = window.location.href;
-                        });
-                        sortValues();
-                    }
+                    $location.search("language", language);
+                    $timeout(function () {
+                        $scope.permalink = window.location.href;
+                    });
+                    sortValues();
                 };
 
                 function sortValues() {
                     _.forEach($scope.values, function (values, key) {
                         if (!key.startsWith('$')) {
                             $scope.values[key] = _.sortBy(values, function (v) {
-                                return $scope.label(v.label) || v.uri;
+                                return label(v.label);
                             });
                         }
                     });
@@ -132,7 +134,12 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     }
                 }
 
-                $scope.availableLanguages = ["cs", "en"];
+                $scope.availableLanguages = [];
+
+                var registerLanguages = function (entity) {
+                    var languages = _.without(Object.keys(entity.label.variants), 'nolang');
+                    $scope.availableLanguages = _.uniq($scope.availableLanguages.concat(languages));
+                };
 
                 $scope.queryingDataset = "datasets";
                 DataCubeService.getDatasets({visualizationId: $id}, function (datasets) {
@@ -141,7 +148,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                     if ($scope.init && $permanentToken) {
                         $scope.loadByPermanentToken();
-                    } else if(datasets.length === 1) {
+                    } else if (datasets.length === 1) {
                         $scope.switchDataset(datasets[0]);
                         $(".tm-chat").click();
                     } else {
@@ -204,6 +211,9 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     });
                     dataset.isActive = true;
                     $scope.activeDataset = dataset;
+
+                    registerLanguages(dataset);
+
                     $scope.loadDatasetStructure(dataset, function () {
                         $scope.loadComponentsValues(callback);
                     });
@@ -219,7 +229,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.title = function () {
                     var datasetLabel = $scope.activeDataset.label;
-                    return $scope.label(datasetLabel);
+                    return label(datasetLabel);
                 };
 
                 $scope.subtitle = function (activeMeasures) {
@@ -232,7 +242,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 $scope.yAxisTitle = function (activeMeasures) {
                     if (activeMeasures.length == 1) {
-                        return $scope.label(activeMeasures[0].label);
+                        return label(activeMeasures[0]);
                     }
                     return "";
                 };
@@ -250,7 +260,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         })
                         .value();
 
-                    return $scope.label(xAxisComponent.label);
+                    return label(xAxisComponent);
                 };
 
                 $scope.dimension = function (uri) {
@@ -263,14 +273,14 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope.activeDataset.dataStructure.components.forEach(function (c) {
                         ["dimension", "attribute", "measure"].forEach(function (type) {
                             if (c[type]) {
-                                $scope.labelsRegistry[c[type].uri] = $scope.label(c.label);
+                                $scope.labelsRegistry[c[type].uri] = label(c);
 
                                 if ($scope.values) {
                                     var values = $scope.values[c[type].uri];
                                     if (values) {
                                         values.forEach(function (v) {
                                             if (v.uri) {
-                                                $scope.labelsRegistry[v.uri] = $scope.label(v.label);
+                                                $scope.labelsRegistry[v.uri] = label(v);
                                             }
                                         });
                                     }

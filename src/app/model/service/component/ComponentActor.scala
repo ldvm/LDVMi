@@ -27,9 +27,10 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
   private val outgoingBindings = new ArrayBuffer[(ActorRef, String)]()
   private val expectedDataRefSenders = new ArrayBuffer[ActorRef]()
   private val dataReferencesBySender = new ArrayBuffer[(ActorRef, DataReference)]
-  private val allInputUris = withSession { implicit session => component.componentInstance.inputInstances.map(_.dataPortInstance.uri).distinct}
+  private val allInputUris = withSession { implicit session => component.componentInstance.inputInstances.map(_.dataPortInstance.uri).distinct }
   private val logger = Akka.system.actorOf(reporterProps)
   private var resultReceiver: Option[ActorRef] = None
+  private var isRunning = false
 
   def receive = {
     case c: Run => onRun()
@@ -44,7 +45,7 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
     logger ! component.componentInstance.stringDescription + " got dataRef " + dataReference
     setResponse(sender(), dataReference)
 
-    val coveredInputUris = dataReferencesBySender.map { case (_, DataReference(portUri, _, _)) => portUri}.distinct
+    val coveredInputUris = dataReferencesBySender.map { case (_, DataReference(portUri, _, _)) => portUri }.distinct
 
     val allInputsCovered = coveredInputUris.toSet == allInputUris.toSet
     val nothingExpected = expectedDataRefSenders.isEmpty
@@ -53,7 +54,7 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
     val canExecute = allInputsCovered && (nothingExpected || allExpectedReceived)
     if (canExecute) {
       if (component.isVisualizer) {
-        resultReceiver.map { r => r ! Result(dataReferencesBySender.map(_._2))}
+        resultReceiver.map { r => r ! Result(dataReferencesBySender.map(_._2)) }
         logger ! "==== DONE ===="
       } else {
         val eventualDataReference = component.evaluate(dataReferencesBySender.map(_._2).toSeq)
@@ -68,8 +69,8 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
           self ! Failure("Component instance with ID " + component.componentInstance.id.map(_.toString).get + " has failed (" + t.getMessage + ").")
         }
       }
-    }else {
-      logger ! "Cannot exec yet: ((aic: "+allInputsCovered+") && (nex: "+nothingExpected+" || aer: "+allExpectedReceived+"))"
+    } else {
+      logger ! "Cannot exec yet: ((aic: " + allInputsCovered + ") && (nex: " + nothingExpected + " || aer: " + allExpectedReceived + "))"
     }
   }
 
@@ -84,11 +85,15 @@ class ComponentActor(component: InternalComponent, reporterProps: Props) extends
   private def onRequestBindingCommand(requestBindingCommand: RequestBindingCommand) {
     expectedDataRefSenders.append(requestBindingCommand.remoteActor)
     requestBindingCommand.remoteActor ! requestBindingCommand.bindingMessage
+    if (isRunning) {
+      onRun()
+    }
   }
 
   private def onRun() {
     logger ! component.componentInstance.stringDescription + " got Run message "
     if (component.isDataSource) {
+      isRunning = true
       val maybeDsConfig = component.dataSourceConfiguration
       maybeDsConfig.map { dsConfig =>
         outgoingBindings.map { case (acceptor, port) =>

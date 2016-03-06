@@ -18,6 +18,7 @@ define([
         './directives/pipeline',
         './directives/ngFileUpload',
         './directives/createDatasource',
+        './directives/languageSwitch',
         './websocket',
         './utils',
         './filters/labelFilter',

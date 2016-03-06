@@ -1,6 +1,6 @@
 @import model.entity.PipelineEvaluationId
 
-@(evaluationId: PipelineEvaluationId, schemeUri: String)
+@(evaluationId: PipelineEvaluationId, schemeUri: String, language: String)
 
 @scripts = {
     <script src="@routes.WebJarAssets.at(WebJarAssets.locate("d3.js"))"></script>
@@ -42,7 +42,7 @@
 
         function name(node) {
             node.name = node.name || {variants: {}};
-            return node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
+            return node.name.variants["@language"] || node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
         }
 
         var margin = {top: 350, right: 480, bottom: 350, left: 480},

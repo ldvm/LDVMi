@@ -12,15 +12,15 @@ GET         /visualize/map                                                      
 GET         /visualize/openlayers                                                         @controllers.MapController.visualizeOL
 GET         /visualize/:id                                                                @controllers.VisualizationController.visualize(id: Long)
 GET         /visualize                                                                    @controllers.ApplicationController.index
-GET         /visualize/embed/treemap/:id                                                  @controllers.VisualizationController.treemap(id: Long, schemeUri: String)
-GET         /visualize/embed/sunburst/:id                                                 @controllers.VisualizationController.sunburst(id: Long, schemeUri: String)
-GET         /visualize/embed/packLayout/:id                                               @controllers.VisualizationController.packLayout(id: Long, schemeUri: String)
-GET         /visualize/embed/bilevel/:id                                                  @controllers.VisualizationController.bilevel(id: Long, schemeUri: String)
-GET         /visualize/embed/partition/:id                                                @controllers.VisualizationController.partition(id: Long, schemeUri: String)
-GET         /visualize/embed/force/:id                                                    @controllers.VisualizationController.force(id: Long, schemeUri: String)
-GET         /visualize/embed/tree/:id                                                     @controllers.VisualizationController.tree(id: Long, schemeUri: String)
-GET         /visualize/embed/cluster/:id                                                  @controllers.VisualizationController.cluster(id: Long, schemeUri: String)
-GET         /visualize/embed/radialTree/:id                                               @controllers.VisualizationController.radialTree(id: Long, schemeUri: String)
+GET         /visualize/embed/treemap/:id                                                  @controllers.VisualizationController.treemap(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/sunburst/:id                                                 @controllers.VisualizationController.sunburst(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/packLayout/:id                                               @controllers.VisualizationController.packLayout(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/bilevel/:id                                                  @controllers.VisualizationController.bilevel(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/partition/:id                                                @controllers.VisualizationController.partition(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/force/:id                                                    @controllers.VisualizationController.force(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/tree/:id                                                     @controllers.VisualizationController.tree(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/cluster/:id                                                  @controllers.VisualizationController.cluster(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/radialTree/:id                                               @controllers.VisualizationController.radialTree(id: Long, schemeUri: String, language: String)
 
 GET         /components                                                                   @controllers.ComponentTemplateController.index
 

@@ -44,6 +44,8 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
       case _ =>
     }
 
+    Thread.sleep(1000)
+
     instancesById.foreach {
       case (_, (source, _, false)) => source.actor.tell(Run(), controlActor)
       case _ =>

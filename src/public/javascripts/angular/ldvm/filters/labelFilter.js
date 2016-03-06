@@ -1,35 +1,48 @@
-define(['angular', './filters'], function (ng) {
+define(['angular', 'underscorejs', './filters'], function (ng, _) {
     'use strict';
 
     ng.module('ldvm.filters')
-        .filter('label', [function () {
-            return function (resource, languageCode, disableUriFallback) {
+        .filter('label', ['Visualization', function (visualizations) {
+            return function (labelledObject, languageCode, availableLanguages, disableUriFallback) {
 
-                if (!resource) {
-                    return "";
+                if (!labelledObject) {
+                    return undefined;
                 }
 
-                var langCodes = ['nolang', 'cs', 'en'];
-                disableUriFallback = !!disableUriFallback;
+                labelledObject.label = labelledObject.label || {variants: {}};
+                labelledObject.label.variants = labelledObject.label.variants || {};
 
-                if (languageCode) {
-                    langCodes.unshift(languageCode);
+                var label = labelledObject.label;
+
+                // current language needs to be always the first one
+                var languages = _.without(availableLanguages, languageCode);
+                languages.unshift(languageCode);
+                if (languageCode != 'nolang') {
+                    languages.push('nolang');
                 }
 
-                if (resource && 'label' in resource && 'variants' in resource.label) {
-                    for (var k in langCodes) {
-                        var langCode = langCodes[k];
-                        if (langCode in resource.label.variants) {
-                            return resource.label.variants[langCode];
-                        }
+                for (var l in languages) {
+                    var code = languages[l];
+                    if (label.variants[code]) {
+                        return label.variants[code];
                     }
                 }
 
-                if (disableUriFallback) {
-                    return 'No label';
+                var uri = labelledObject.uri;
+
+                if (uri) {
+                    if (!label.dereferenced) {
+                        visualizations.dereference(uri).then(function (data) {
+                            label.variants = _.extend(label.variants, data.variants);
+                        });
+                        label.dereferenced = 1;
+                    }
+                    if (!disableUriFallback) {
+                        return uri;
+                    }
                 }
 
-                return resource.uri || 'Not identified';
+                return 'No label';
             };
         }]);
 });

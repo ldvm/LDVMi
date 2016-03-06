@@ -21,7 +21,7 @@ define(['angular', 'underscorejs', './controllers'], function (ng, _) {
                     $scope.visType = $routeParams.type;
 
                     $scope.schemes = [];
-                    $scope.scheme = null;
+                    $scope.selectedScheme = null;
                     $scope.queryingDataset = null;
                     $scope.loadingSchemesList = false;
 
@@ -39,15 +39,33 @@ define(['angular', 'underscorejs', './controllers'], function (ng, _) {
                         }
                     });
 
+                    $scope.language = $routeParams.language || "nolang";
+                    $scope.availableLanguages = [];
+
+                    var registerLanguages = function (variants) {
+                        var languages = _.without(Object.keys(variants), 'nolang');
+                        $scope.availableLanguages = _.uniq($scope.availableLanguages.concat(languages)).map(function (tag) {
+                            return tag.trim();
+                        });
+                    };
+
+                    $scope.onLanguageChange = function (language) {
+                        $scope.language = language;
+                        $location.search("language", language);
+                    };
+
                     $scope.uri = function (scheme) {
                         return "#/hierarchy/" + $scope.visType + "/" + $scope.id + "/?uri=" + encodeURIComponent(scheme.uri);
                     };
 
                     $scope.embedUrl = function (visType, includeHost) {
-                        return (includeHost ? "http://" + document.location.host : "") + "/visualize/embed/" + visType + "/" + $scope.id + "?schemeUri=" + encodeURIComponent($routeParams.uri);
+                        return (includeHost ? "http://" + document.location.host : "") + "/visualize/embed/"
+                            + visType + "/" + $scope.id + "?schemeUri=" + encodeURIComponent($routeParams.uri)
+                            + "&language=" + $scope.language;
                     };
 
                     $scope.loadScheme = function (scheme) {
+                        registerLanguages(scheme.label.variants);
                         $scope.loadSchemeByUri(scheme.uri);
                     };
 
@@ -61,7 +79,18 @@ define(['angular', 'underscorejs', './controllers'], function (ng, _) {
                         var schemePromise = visualization.skos.scheme(id, schemeUri);
                         schemePromise.then(function (scheme) {
                             $scope.queryingDataset = false;
-                            $scope.scheme = scheme;
+                            $scope.selectedScheme = scheme;
+
+                            scheme.label = scheme.name;
+
+                            var queue = [scheme];
+                            while (queue.length) {
+                                var node = queue.shift();
+                                if (node && node.name) {
+                                    registerLanguages(node.name.variants);
+                                    queue = queue.concat(node.children);
+                                }
+                            }
                         });
                     };
 

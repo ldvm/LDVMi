@@ -39,6 +39,11 @@ define(['angular'], function (ng) {
                 get: {url: '/api/v1/evaluation/:id', method: 'GET', isArray: false}
             });
         }])
+        .factory('VisualizationApi', ['$resource', function($resource){
+            return $resource(null, null, {
+                dereference: {url: '/dereference/labels', method: 'get'}
+            });
+        }])
         .factory('SkosApi', ['$resource', function ($resource) {
             return $resource(null, null, {
                 schemes: {url: '/api/v1/skos/schemes/:id', method: 'GET', isArray: true},

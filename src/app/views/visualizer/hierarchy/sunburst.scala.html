@@ -1,6 +1,6 @@
 @import model.entity.PipelineEvaluationId
 
-@(evaluationId: PipelineEvaluationId, schemeUri: String)
+@(evaluationId: PipelineEvaluationId, schemeUri: String, language: String)
 
 @scripts = {
 
@@ -49,7 +49,7 @@
 
         function name(node) {
             node.name = node.name || {variants: {}};
-            return node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
+            return node.name.variants["@language"] || node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
         }
 
 var width = 840,

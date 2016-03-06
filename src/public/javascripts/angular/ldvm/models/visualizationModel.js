@@ -5,9 +5,11 @@ define(['angular', './models'], function (ng) {
         .service('Visualization', [
             'SkosApi',
             'DataCubeApi',
+            'VisualizationApi',
             '$connection',
             function (skosApi,
                       dataCubeApi,
+                      visualizationApi,
                       $connection) {
                 return {
                     skos: {
@@ -39,6 +41,9 @@ define(['angular', './models'], function (ng) {
                                 isTolerant: isTolerant
                             }).$promise;
                         }
+                    },
+                    dereference: function (uri) {
+                        return visualizationApi.dereference({uri: uri}).$promise;
                     },
                     discovery: {
                         run: function (dataSourceIds,

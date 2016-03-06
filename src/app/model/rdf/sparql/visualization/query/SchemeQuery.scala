@@ -18,7 +18,8 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       |
       | CONSTRUCT {
       |
-      |   <$schemeUri> skos:prefLabel ?label .
+      |   <$schemeUri> skos:prefLabel ?prefLabel ;
+      |                rdfs:label ?label .
       |
       |   ?ca a skos:Concept ;
       |      skos:prefLabel ?name ;
@@ -35,7 +36,9 @@ class SchemeQuery(schemeUri: String) extends SparqlQuery {
       | }
       | WHERE
       | {
-      |  { <$schemeUri> skos:prefLabel ?label . } UNION $broader UNION $broaderTransitive UNION $narrower UNION $narrowerTransitive
+      |   OPTIONAL { <$schemeUri> skos:prefLabel ?prefLabel . }
+      |   OPTIONAL { <$schemeUri> rdfs:label ?label . }
+      |   $broader UNION $broaderTransitive UNION $narrower UNION $narrowerTransitive
       | }
     """.stripMargin
   }

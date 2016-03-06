@@ -32,7 +32,7 @@ define(['angular', 'material', 'underscorejs', 'jquery', './controllers'], funct
                 function example(source) {
                     $scope.sources = [source];
                     window.setTimeout(function () {
-                        $("form").find("input, textarea").eq(0).focus();
+                        $("form").find("input, textarea").focus();
                     });
                 }
 
@@ -54,6 +54,14 @@ define(['angular', 'material', 'underscorejs', 'jquery', './controllers'], funct
                     example({
                         type: 'sparqlEndpoint',
                         endpointUrl: 'http://linked.opendata.cz/sparql'
+                    });
+                };
+
+                $scope.example04 = function () {
+                    example({
+                        type: 'sparqlEndpoint',
+                        endpointUrl: 'http://linked.opendata.cz/sparql',
+                        graphUris: 'http://comsode.eu/resource/dataset/COMSODE_D3.2'
                     });
                 };
 
