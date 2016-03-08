@@ -137,14 +137,25 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 $scope.availableLanguages = [];
 
                 var registerLanguages = function (entity) {
+                    if (!entity || !entity.label) {
+                        return;
+                    }
                     var languages = _.without(Object.keys(entity.label.variants), 'nolang');
                     $scope.availableLanguages = _.uniq($scope.availableLanguages.concat(languages));
+
+                    if ($scope.language === "nolang" && $scope.availableLanguages.length) {
+                        $scope.language = $scope.availableLanguages[0];
+                    }
                 };
 
                 $scope.queryingDataset = "datasets";
                 DataCubeService.getDatasets({visualizationId: $id}, function (datasets) {
                     $scope.datasets = datasets;
                     $scope.queryingDataset = null;
+
+                    _.each(datasets, function (ds) {
+                        registerLanguages(ds);
+                    });
 
                     if ($scope.init && $permanentToken) {
                         $scope.loadByPermanentToken();
