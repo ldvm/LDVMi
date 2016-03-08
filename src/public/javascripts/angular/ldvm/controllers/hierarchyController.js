@@ -47,7 +47,7 @@ define(['angular', 'underscorejs', './controllers'], function (ng, _) {
                         $scope.availableLanguages = _.uniq($scope.availableLanguages.concat(languages)).map(function (tag) {
                             return tag.trim();
                         });
-                        
+
                         if ($scope.language === "nolang" && $scope.availableLanguages.length) {
                             $scope.language = $scope.availableLanguages[0];
                         }

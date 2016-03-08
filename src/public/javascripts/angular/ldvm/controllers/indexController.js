@@ -107,10 +107,13 @@ define(['angular', 'material', 'underscorejs', 'jquery', './controllers'], funct
                         }
                     };
 
+                    var errors = [];
+
                     var onDone = function (isSuccess) {
                         if (isSuccess) {
                             discoveryDone(feelsLucky);
                         } else {
+                            alert('Discovery failed to find a visualization. Please, check that the input is valid and try again.\n\n' + errors.join('\n'));
                             $scope.$apply(function () {
                                 $scope.showInput = true;
                             });
@@ -124,7 +127,8 @@ define(['angular', 'material', 'underscorejs', 'jquery', './controllers'], funct
                         dataSourceIds,
                         onPipelinesCountChanged,
                         onProgress,
-                        onDone
+                        onDone,
+                        errors
                     );
                 }
 

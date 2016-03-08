@@ -49,11 +49,13 @@ define(['angular', './models'], function (ng) {
                         run: function (dataSourceIds,
                                        onPipelinesCountChanged,
                                        onProgress,
-                                       onDone) {
+                                       onDone,
+                                       errors) {
                             var uri = "ws://" + window.location.host + "/api/v1/pipelines/discover";
                             var queryString = dataSourceIds.map(function (p) {
                                 return "dataSourceTemplateIds=" + p;
                             });
+                            errors = errors || []
 
                             uri += "?" + queryString.join("&");
 
@@ -66,6 +68,10 @@ define(['angular', './models'], function (ng) {
 
                                 if ("pipelinesDiscoveredCount" in message) {
                                     onPipelinesCountChanged(message.pipelinesDiscoveredCount);
+                                }
+
+                                if ('message' in message && message.message.indexOf('ERROR') === 0) {
+                                    errors.push(message.message);
                                 }
 
                                 if ("isFinished" in message) {
