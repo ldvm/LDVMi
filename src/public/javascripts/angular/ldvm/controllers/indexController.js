@@ -65,6 +65,14 @@ define(['angular', 'material', 'underscorejs', 'jquery', './controllers'], funct
                     });
                 };
 
+                $scope.example05 = function () {
+                    example({
+                        type: 'sparqlEndpoint',
+                        endpointUrl: 'http://linked.opendata.cz/sparql',
+                        graphUris: 'http://linked.opendata.cz/resource/dataset/coi.cz/kontroly http://linked.opendata.cz/resource/dataset/coi.cz/geocoordinates/google http://linked.opendata.cz/resource/dataset/coi.cz/check-labels'
+                    });
+                };
+
                 $scope.visualize = function (feelsLucky) {
                     $scope.creatingDatasources = true;
                     $scope.datasourcesCreated = false;
