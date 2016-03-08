@@ -36,33 +36,53 @@
             <div class="col-md-4">
 
                 <div class="card" ng-show="showInput">
-                    <div class="card-header bgm-gray">
+                    <div class="card-header bgm-blue">
                         <h2>Examples
                             <small>Some examples prepared for you.</small>
                         </h2>
                     </div>
 
-                    <div class="card-body card-padding data-source-list">
+                    <div class="card-body data-source-list">
                         <div class="listview lv-bordered lv-lg">
                             <div class="lv-item media">
+                                <span class="pull-left">
+                                    <span class="btn btn-warning" ng-click="example01()">
+                                        <i class="md md-fast-rewind"></i>
+                                    </span>
+                                </span>
                                 <div class="media-body">
                                     <a href="" class="lv-title" ng-click="example01()">DataCube</a>
                                     <small class="lv-small">CZ Demography with IRI dereference.</small>
                                 </div>
                             </div>
                             <div class="lv-item media">
+                                <span class="pull-left">
+                                    <span class="btn btn-warning" ng-click="example02()">
+                                        <i class="md md-fast-rewind"></i>
+                                    </span>
+                                </span>
                                 <div class="media-body">
                                     <a href="" class="lv-title" ng-click="example02()">SKOS</a>
                                     <small class="lv-small">EU programme</small>
                                 </div>
                             </div>
                             <div class="lv-item media">
+                                <span class="pull-left">
+                                    <span class="btn btn-warning" ng-click="example03()">
+                                        <i class="md md-fast-rewind"></i>
+                                    </span>
+                                </span>
                                 <div class="media-body">
                                     <a href="" class="lv-title" ng-click="example03()">LOD.cz</a>
                                     <small class="lv-small">Linked Opendata CZ endpoint</small>
                                 </div>
                             </div>
                             <div class="lv-item media">
+                                <span class="pull-left">
+                                    <span class="btn btn-warning" ng-click="example04()">
+                                        <i class="md md-fast-rewind"></i>
+                                    </span>
+                                </span>
                                 <div class="media-body">
                                     <a href="" class="lv-title" ng-click="example04()">COMSODE D3.2</a>
                                     <small class="lv-small">Hierarchies from D3.2 of the COMSODE project</small>
@@ -119,6 +139,13 @@
                     <div class="card-body card-padding">
                         <div class="listview lv-bordered lv-lg">
                             <div class="lv-body">
+                                <div class="lv-item media text-center">
+                                    <div class="preloader pl-sm">
+                                        <svg class="pl-circular" viewBox="25 25 50 50">
+                                            <circle class="plc-path" cx="50" cy="50" r="20"></circle>
+                                        </svg>
+                                    </div>
+                                </div>
                                 <div class="lv-item media">
                                     <div class="checkbox pull-left">
                                         <i class="md md-query-builder" ng-if="creatingDatasources"
@@ -162,18 +189,18 @@
                                         </small>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="text-center" ng-hide="redirect">
-                            <div class="progress progress-striped active">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0"
-                                     aria-valuemax="100" style="width: 100%">
-                                    <span class="sr-only">Waiting to finish...</span>
+                                <div class="lv-item media" ng-show="redirect">
+                                    <div class="checkbox pull-left">
+                                        <i class="md md-rotate-right" ng-if="evaluationFinished" style="font-size: 24px"></i>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="lv-title">All done</div>
+                                        <small class="lv-small">
+                                            You are being redirected directly to the visualizer.
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div ng-show="redirect" class="text-center">
-                            All done! You are being redirected...
                         </div>
                     </div>
                 </div>

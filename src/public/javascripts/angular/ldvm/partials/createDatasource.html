@@ -1,8 +1,5 @@
 <div>
 
-    <div class="alert alert-info" ng-if="maxSourcesCount && sources.length" role="alert">You can add at most
-        {{maxSourcesCount}} data source(s).
-    </div>
     <div class="alert alert-info" ng-if="!sources.length" role="alert">You need to add at least one data source.</div>
 
     <div class="data-source" ng-repeat="source in sources">
@@ -54,7 +51,7 @@
     </div>
     <br/><br/>
 
-    <div class="row">
+    <div class="row" ng-show="canAdd()">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body card-padding text-center data-source-dropzone">
@@ -74,6 +71,10 @@
             <hr/>
             <br/><br/>
         </div>
+    </div>
+
+    <div class="alert alert-info" ng-if="maxSourcesCount && sources.length" role="alert">You can add at most
+        {{maxSourcesCount}} data source(s).
     </div>
 
 </div>

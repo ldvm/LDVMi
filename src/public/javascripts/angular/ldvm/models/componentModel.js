@@ -95,6 +95,8 @@ define(['angular', 'underscorejs', './models'], function (ng, _) {
                                     return d.id;
                                 });
                                 deferred.resolve({validSources: validDataSources, sourcesIds: dataSourceIds});
+                            }, function (error) {
+                                deferred.reject(error.statusText + ".");
                             });
                         }
 

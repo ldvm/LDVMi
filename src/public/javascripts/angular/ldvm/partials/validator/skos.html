@@ -7,7 +7,7 @@
         <div class="container">
 
             <div class="row" ng-hide="id">
-                <div class="col-md-12">
+                <div class="col-md-8">
                     <div class="card">
                         <div class="card-header bgm-orange">
                             <h2>Select a Data Source
@@ -19,8 +19,39 @@
 
                             <div class="row">
                                 <div class="col-md-12 text-right">
-                                    <div ng-show="sources.length">
+                                    <div ng-show="sources.length" ng-hide="showLoader">
                                         <button class="btn btn-primary waves-effect" ng-click="validate()">Validate</button>
+                                    </div>
+
+                                    <div class="preloader pl-sm" ng-if="showLoader">
+                                        <svg class="pl-circular" viewBox="25 25 50 50">
+                                            <circle class="plc-path" cx="50" cy="50" r="20"></circle>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bgm-blue">
+                            <h2>Examples
+                                <small>Exemplary broken SKOS schemes.</small>
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="listview lv-bordered lv-lg">
+                                <div class="lv-item media">
+                                    <span class="pull-left">
+                                        <span class="btn btn-warning" ng-click="example01()">
+                                            <i class="md md-fast-rewind"></i>
+                                        </span>
+                                    </span>
+                                    <div class="media-body">
+                                        <a href="" class="lv-title"ng-click="example01()" >Currencies</a>
+                                        <small class="lv-small">Currencies sample from OpenBudgets.</small>
                                     </div>
                                 </div>
                             </div>

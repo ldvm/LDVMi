@@ -20,15 +20,36 @@ define(['angular', 'material', 'underscorejs', '../controllers'], function (ng, 
 
                 $scope.sources = [];
 
+                function example(source) {
+                    $scope.sources = [source];
+                    window.setTimeout(function () {
+                        material.initForms();
+                        $("form").find("input, textarea").focus();
+                    });
+                }
+
+                $scope.example01 = function () {
+                    example({
+                        type: 'url',
+                        url: 'https://raw.githubusercontent.com/linkedpipes/visualizations/gh-pages/example/broken-skos.ttl'
+                    });
+                };
+
+                $scope.showLoader = false;
+
                 $scope.validate = function () {
+                    $scope.showLoader = true;
                     var promise = components.createDataSources($scope.sources);
                     promise.then(
                         function (result) {
                             visualization.skos.create(result.sourcesIds[0]).then(function (visualisationId) {
                                 $location.path('/validator/skos/' + visualisationId.id);
+                            }, function () {
+                                $scope.showLoader = false;
                             });
                         },
                         function (errorMessage) {
+                            $scope.showLoader = false;
                             alert(errorMessage + ' Terminating.');
                         }
                     )
@@ -50,7 +71,7 @@ define(['angular', 'material', 'underscorejs', '../controllers'], function (ng, 
                         return rdfUtils.resourceExists($scope.concepts, uri);
                     };
 
-                    var uri = $scope.uri = function (uri) {
+                    $scope.uri = function (uri) {
                         return encodeURIComponent(uri)
                     };
 
@@ -100,10 +121,6 @@ define(['angular', 'material', 'underscorejs', '../controllers'], function (ng, 
                         }
                     });
                 }
-
-                window.setTimeout(function () {
-                    material.initForms();
-                }, 0);
 
             }]);
 });
