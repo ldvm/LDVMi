@@ -36,12 +36,13 @@
                 <div class="form-group fg-float">
                     <div class="fileinput fileinput-new" data-provides="fileinput">
                         <span class="btn btn-default btn-file m-r-10 waves-effect waves-button">
-                            <span ng-hide="source.files.length" >Select file(s)</span>
-                            <span ng-show="source.files.length" >Change</span>
+                            <span ng-hide="source.files.length">Select file(s)</span>
+                            <span ng-show="source.files.length">Change</span>
                             <input type="file" name="" multiple ng-file-model="source.files">
                         </span>
-                        <span class="fileinput-filename" ng-show="source.files.length"  ng-repeat="f in source.files">{{f.name}}</span>
-                        <a href="#" class="close" ng-show="source.files.length" ng-click="source.files = []" data-dismiss="fileinput">×</a>
+                        <span class="fileinput-filename" ng-show="source.files.length" ng-repeat="f in source.files">{{f.name}}</span>
+                        <a href="#" class="close" ng-show="source.files.length" ng-click="source.files = []"
+                           data-dismiss="fileinput">×</a>
                     </div>
                 </div>
             </div>
@@ -52,6 +53,16 @@
         </div>
     </div>
     <br/><br/>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body card-padding text-center data-source-dropzone">
+                    ... or you can drop your RDF files here.
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row" ng-show="canAdd()">
         <div class="col-md-12 text-center">

@@ -408,3 +408,11 @@ button.ol-full-screen-true:after {
 .data-source-remove:hover {
     color: black;
 }
+
+.data-source-dropzone {
+    border: 3px dashed gray;
+}
+
+.is-dragover .data-source-dropzone {
+    border: 3px dashed #ff9800;
+}

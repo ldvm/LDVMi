@@ -25,7 +25,18 @@ class GraphStoreProtocol {
     post.addHeader("X-Requested-Auth", "Digest")
     try {
       httpClient.getCredentialsProvider.setCredentials(AuthScope.ANY, credentials)
-      val fileEntity = new FileEntity(file, ContentType.create(contentType.getOrElse("text/turtle")))
+      val rdfLanguage = file.getName match {
+        case n: String if n.matches("\\.ttl") => "text/turtle"
+        case n: String if n.matches("\\.rdf") => "application/rdf+xml"
+        case n: String if n.matches("\\.nt") => "application/n-triples"
+        case n: String if n.matches("\\.jsonld") => "application/ld+json"
+        case n: String if n.matches("\\.owl") => "application/owl+xml"
+        case n: String if n.matches("\\.trig") => "text/trig"
+        case n: String if n.matches("\\.nq") => "application/n-quads"
+        case n: String if n.matches("\\.trix") => "application/trix+xml"
+        case n: String if n.matches("\\.trdf") => "application/rdf+thrift"
+      }
+      val fileEntity = new FileEntity(file, ContentType.create(contentType.getOrElse(rdfLanguage)))
 
       post.setEntity(fileEntity)
       val response = httpClient.execute(post)
