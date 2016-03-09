@@ -6,7 +6,7 @@ define(['angular', 'underscorejs', './filters'], function (ng, _) {
             return function (labelledObject, languageCode, availableLanguages, disableUriFallback) {
 
                 if (!labelledObject) {
-                    return undefined;
+                    return null;
                 }
 
                 labelledObject.label = labelledObject.label || {variants: {}};

@@ -3712,9 +3712,9 @@ button.ol-full-screen-true:after {
 }
 
 .data-source-dropzone {
-    border: 3px dashed gray;
+    border: 2px dashed gray;
 }
 
 .is-dragover .data-source-dropzone {
-    border: 3px dashed #ff9800;
+    border: 2px dashed #ff9800;
 }

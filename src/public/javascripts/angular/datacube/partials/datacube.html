@@ -9,7 +9,8 @@
             <div class="lv-body">
                 <div class="lv-item media">
                     <div class="media-body" style="padding-bottom: 10px;">
-                        <language-switch available-languages="availableLanguages" language="language" language-changed="onLanguageChange(language)"></language-switch>
+                        <language-switch available-languages="availableLanguages" language="language"
+                                         language-changed="onLanguageChange(language)"></language-switch>
                     </div>
                 </div>
             </div>
@@ -111,6 +112,19 @@
         <div ng-if="!queryingDataset">
             <div ng-if="settingsVisible">
                 <div class="container">
+
+                    <div ng-if="activeDataset">
+                        <div ng-if="slicesSelected">
+                            <div class="card">
+                                <div class="card-body card-padding-sm text-center">
+                                    <button class="btn btn-primary" ng-click="disableSettingsAndRefresh()"><i
+                                            class="glyphicon glyphicon-refresh"></i> Refresh
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card">
 
                         <div ng-repeat="component in activeDataset.dataStructure.components | orderBy:'order'"
@@ -186,33 +200,7 @@
                     <div ng-if="slicesSelected">
                         <div class="container">
                             <div class="card">
-                                <div class="card-body card-padding">
-                                    <highchart id="chart1" config="highcharts" class="cubechart"></highchart>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body card-padding">
-                                    <div class="legend">
-                                        <strong>DataCube values fixed to get this chart:</strong>
-                                        <ul ng-repeat="(uri, count) in dimensionValuesActiveCount" ng-if="count == 1">
-                                            <li>
-                                                <span ng-bind="dimension(uri) | label:language:availableLanguages"></span>
-                                                <ul>
-                                                    <li ng-repeat="v in values[uri]" ng-if="v.isActive"
-                                                        ng-bind="v | label:language:availableLanguages"></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-header bgm-bluegray">
-                                    <h2>Display options
-                                        <small>Want to change the type of the chart?</small>
-                                    </h2>
-                                </div>
-                                <div class="card-body card-padding">
+                                <div class="card-body card-padding-sm">
                                     <div class="row">
                                         <div class="col-lg-12 text-center">
                                             <div class="btn-toolbar" style="height: 35px">
@@ -264,6 +252,40 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div class="card" ng-show="currentlyDereferencing > 0">
+                                <div class="card-body card-padding">
+                                    <i class="md md-refresh"></i>
+                                    We are dereferencing {{currentlyDereferencing}} more label(s) for you.
+                                    We will refresh the chart below when it's done.
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body card-padding">
+                                    <highchart id="chart1" config="highcharts" class="cubechart"></highchart>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body card-padding">
+                                    <div class="legend">
+                                        <strong>DataCube values fixed to get this chart:</strong>
+                                        <ul ng-repeat="(uri, count) in dimensionValuesActiveCount" ng-if="count == 1">
+                                            <li>
+                                                <span ng-bind="dimension(uri) | label:language:availableLanguages"></span>
+                                                <ul>
+                                                    <li ng-repeat="v in values[uri]" ng-if="v.isActive"
+                                                        ng-bind="v | label:language:availableLanguages"></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body card-padding">
                                     <div class="row">
                                         <div class="col-lg-1">
                                             Embed link:

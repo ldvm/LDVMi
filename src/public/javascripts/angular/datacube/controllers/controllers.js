@@ -16,8 +16,18 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     return;
                 }
 
-                var label = $scope.label = function (entity) {
-                    $filter('label')(entity, $scope.language, $scope.availableLanguages);
+                var dereferenced = {};
+                var beingDereferenced = 0;
+
+                var label = function (entity) {
+                    var l = $filter('label')(entity, $scope.language, $scope.availableLanguages);
+                    if (l === entity.uri) {
+                        if (entity.uri && !(entity.uri in dereferenced)) {
+                            dereferenced[entity.uri] = 1;
+                            ++beingDereferenced;
+                        }
+                    }
+                    return l;
                 };
 
                 $scope.datasets = [];
@@ -63,7 +73,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     loading: false
                 };
 
-                $scope.labelsRegistry = {};
+                $scope.entityRegistry = {};
 
                 $scope.showMap = function () {
                     $scope.euMapVisible = false;
@@ -108,7 +118,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     _.forEach($scope.values, function (values, key) {
                         if (!key.startsWith('$')) {
                             $scope.values[key] = _.sortBy(values, function (v) {
-                                return label(v.label);
+                                return label(v);
                             });
                         }
                     });
@@ -239,8 +249,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 };
 
                 $scope.title = function () {
-                    var datasetLabel = $scope.activeDataset.label;
-                    return label(datasetLabel);
+                    return label($scope.activeDataset);
                 };
 
                 $scope.subtitle = function (activeMeasures) {
@@ -280,18 +289,18 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     });
                 };
 
-                function fillLabelsRegistry() {
+                function fillEntityRegistry() {
                     $scope.activeDataset.dataStructure.components.forEach(function (c) {
                         ["dimension", "attribute", "measure"].forEach(function (type) {
                             if (c[type]) {
-                                $scope.labelsRegistry[c[type].uri] = label(c);
+                                $scope.entityRegistry[c[type].uri] = label(c);
 
                                 if ($scope.values) {
                                     var values = $scope.values[c[type].uri];
                                     if (values) {
                                         values.forEach(function (v) {
                                             if (v.uri) {
-                                                $scope.labelsRegistry[v.uri] = label(v);
+                                                $scope.entityRegistry[v.uri] = v;
                                             }
                                         });
                                     }
@@ -299,7 +308,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                             }
                         });
                     });
-
                 }
 
                 $scope.loadComponentsValues = function (callback) {
@@ -321,7 +329,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     DataCubeService.getValues({visualizationId: $id}, {uris: uris}, function (data) {
                         $scope.queryingDataset = null;
                         $scope.values = data;
-                        fillLabelsRegistry();
+                        fillEntityRegistry();
 
                         if (callback) {
                             callback();
@@ -331,10 +339,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         $scope.queryingDataset = null;
                     });
                 };
-
-                function labelOrUri(uri) {
-                    return $scope.labelsRegistry[uri] || uri;
-                }
 
                 function newChart() {
                     $scope.highcharts.series = [];
@@ -347,7 +351,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope._series.push(series);
 
                     ng.forEach(series.data, function (value, key) {
-                        var categoryLabel = $scope.labelsRegistry[key] || key;
+                        var categoryLabel = label($scope.entityRegistry[key]) || key;
                         $scope._categories[categoryLabel] = 1;
                     });
                 }
@@ -365,7 +369,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                         var formattedData = {};
 
                         ng.forEach(series.data, function (value, key) {
-                            var categoryLabel = labelOrUri(key);
+                            var categoryLabel = label($scope.entityRegistry[key]) || key;
                             formattedData[$scope._categories[categoryLabel]] = value;
                         });
 
@@ -383,6 +387,11 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope.highcharts.series = $scope._series;
                     $scope.highcharts.xAxis.categories = sortedCategories;
                 }
+
+                $scope.disableSettingsAndRefresh = function () {
+                    $scope.settingsVisible = false;
+                    $scope.refresh();
+                };
 
                 $scope.refresh = function () {
                     if ($scope.slicesSelected) {
@@ -414,15 +423,24 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                     newChart();
 
+                    var snapshot = beingDereferenced;
+
                     if (response.cube && response.cube.slices) {
                         for (var k in response.cube.slices) {
-                            addSeries({name: labelOrUri(k), data: response.cube.slices[k]});
+                            addSeries({name: label($scope.entityRegistry[k]) || k, data: response.cube.slices[k]});
                         }
                     }
-
                     $scope.updateChartDescription();
-
                     pushDataToChart();
+
+                    if (beingDereferenced > snapshot) {
+                        $scope.currentlyDereferencing = beingDereferenced - snapshot;
+                        $timeout(function () {
+                            $scope.currentlyDereferencing = 0;
+                            queryResultsLoaded(response, search);
+                        }, $scope.currentlyDereferencing * 500)
+                    }
+
                 }
 
                 $scope.toggleMeasure = function (measureComponent, isActive) {
@@ -486,46 +504,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     });
 
                     computeSlicing();
-                };
-
-                $scope.label = function (labelledObject) {
-
-                    if (!labelledObject) {
-                        return undefined;
-                    }
-
-                    labelledObject.label = labelledObject.label || {variants: {}};
-                    labelledObject.label.variants = labelledObject.label.variants || {};
-
-                    var label = labelledObject.label;
-
-                    // current language needs to be always the first one
-                    var languages = _.without($scope.availableLanguages, $scope.language);
-                    languages.unshift($scope.language);
-                    if ($scope.language != 'nolang') {
-                        languages.push('nolang');
-                    }
-
-                    for (var l in languages) {
-                        var code = languages[l];
-                        if (label.variants[code]) {
-                            return label.variants[code];
-                        }
-                    }
-
-                    var uri = labelledObject.uri;
-
-                    if (uri) {
-                        if (!label.dereferenced) {
-                            DataCubeService.dereference({uri: uri}, function (data) {
-                                label.variants = _.extend(label.variants, data.variants);
-                            });
-                            label.dereferenced = 1;
-                        }
-                        return uri;
-                    }
-
-                    return undefined;
                 };
 
                 $scope.reorderComponents = function ($index, component, plusMinusOne) {
