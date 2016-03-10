@@ -21,7 +21,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
 
                 var label = function (entity) {
                     var l = $filter('label')(entity, $scope.language, $scope.availableLanguages);
-                    if (l === entity.uri) {
+                    if (entity && l === entity.uri) {
                         if (entity.uri && !(entity.uri in dereferenced)) {
                             dereferenced[entity.uri] = 1;
                             ++beingDereferenced;
@@ -293,7 +293,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope.activeDataset.dataStructure.components.forEach(function (c) {
                         ["dimension", "attribute", "measure"].forEach(function (type) {
                             if (c[type]) {
-                                $scope.entityRegistry[c[type].uri] = label(c);
+                                $scope.entityRegistry[c[type].uri] = c;
 
                                 if ($scope.values) {
                                     var values = $scope.values[c[type].uri];
@@ -546,7 +546,7 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     $scope.slicesSelected = false;
 
                     if ($scope.measuresSelectedCount == 1) {
-                        $scope.slicesSelected = (dimensionsWithMultipleCount > 0 && dimensionsWithMultipleCount <= 2);
+                        $scope.slicesSelected = dimensionsWithMultipleCount <= 2;
                     } else if ($scope.measuresSelectedCount > 1) {
                         $scope.slicesSelected = dimensionsWithMultipleCount == 1;
                     }
