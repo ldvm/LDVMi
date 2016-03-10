@@ -191,6 +191,10 @@ define(['angular', 'material', 'underscorejs', 'jquery', './controllers'], funct
                 window.setTimeout(function () {
                     material.initForms();
                 }, 0);
+                
+                window.setTimeout(function () {
+                    material.initForms();
+                }, 500);
 
             }]);
 });
