@@ -22,7 +22,7 @@ class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointSe
   def dereference[Q <: SparqlQuery, R](uri: String, query: Q, extractor: QueryExecutionResultExtractor[Q, R]): Option[R] = {
     try {
       val request = Http(uri)
-        .timeout(connTimeoutMs = 2000, readTimeoutMs = 5000)
+        .timeout(connTimeoutMs = 10000, readTimeoutMs = 30000)
         .header("Accept", "text/turtle")
         .option(HttpOptions.followRedirects(true))
 
