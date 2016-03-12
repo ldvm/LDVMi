@@ -5,7 +5,7 @@ import { Application } from '../../../manageApp/models'
 import { Visualizer } from '../../../common/models'
 import * as api from '../api'
 import { queryDataset } from '../actions'
-import Sidebar from './Sidebar'
+import ConfiguratorLayout from '../components/ConfiguratorLayout'
 
 class Configurator extends Component {
   componentWillMount() {
@@ -14,15 +14,7 @@ class Configurator extends Component {
   }
 
   render() {
-    const { application } = this.props;
-    return <Row>
-      <Col md={3}>
-        <Sidebar application={application} />
-      </Col>
-      <Col md={9}>
-        Maps Visualizer Configurator!
-      </Col>
-    </Row>;
+    return <ConfiguratorLayout application={this.props.application} />;
   }
 }
 

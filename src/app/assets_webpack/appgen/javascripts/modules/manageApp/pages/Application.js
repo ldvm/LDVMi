@@ -47,7 +47,6 @@ class Application extends Component {
       <Helmet title={application.name} />
       <ApplicationHeader application={application} visualizer={visualizer} />
 
-      <br /><br />
       {!children &&
         <CenteredMessage>Loading visualizer configurator...</CenteredMessage>}
 

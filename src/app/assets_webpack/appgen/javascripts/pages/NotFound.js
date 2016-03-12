@@ -1,8 +1,9 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
+import NarrowedLayout from '../misc/components/NarrowedLayout'
 
 export default class NotFound extends Component {
   render() {
-    return <h1>404 Not Found!</h1>
+    return <NarrowedLayout><h1>404 Not Found!</h1></NarrowedLayout>
   }
 }
 

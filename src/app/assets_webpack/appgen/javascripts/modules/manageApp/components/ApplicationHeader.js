@@ -3,9 +3,7 @@ import FontIcon from 'material-ui/lib/font-icon';
 import { Application } from '../models'
 import { Visualizer } from '../../common/models'
 import Button from '../../../misc/components/Button'
-
-const headerStyle = {
-};
+import BodyPadding from '../../../misc/components/BodyPadding'
 
 const iconStyle = {
   float: 'left',
@@ -28,7 +26,7 @@ const buttonBarStyle = {
 };
 
 const ApplicationHeader = ({application, visualizer}) => {
-  return <div style={headerStyle}>
+  return <BodyPadding>
     <div style={buttonBarStyle}>
       <Button label="General settings" icon="settings" raised />
       <Button label="Preview" icon="find_in_page" raised />
@@ -39,7 +37,7 @@ const ApplicationHeader = ({application, visualizer}) => {
     <FontIcon className="material-icons" style={iconStyle}>{visualizer.icon}</FontIcon>
     <h1 style={appNameStyle}>{application.name}</h1>
     <div style={visualizerNameStyle}>{visualizer.title}</div>
-  </div>
+  </BodyPadding>
 };
 
 ApplicationHeader.propTypes = {

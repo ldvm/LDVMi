@@ -47,9 +47,7 @@ class App extends Component {
               </IconMenu>
             </div>} />
 
-        <div className="bodyPadding">
-          {this.props.children}
-        </div>
+        {this.props.children}
 
         <Snackbar
           open={notifications.size > 0}

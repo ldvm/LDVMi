@@ -6,6 +6,7 @@ import SignUpForm from '../modules/auth/SignUpForm'
 import { signUp } from '../modules/auth/api'
 import { notification } from '../actions/notification'
 import PaperCard from '../misc/components/PaperCard'
+import NarrowedLayout from '../misc/components/NarrowedLayout'
 
 import debugFactory from '../misc/debug'
 const debug = debugFactory('signup');
@@ -26,12 +27,14 @@ const SignUp = ({dispatch}) => {
   };
 
   return (
-    <div className="signup-container">
-      <Helmet title="Sign up"  />
-      <PaperCard title="Sign up" subtitle="Fill in some basic info to get your LDVMi account">
-        <SignUpForm onSubmit={onSubmit} />
-      </PaperCard>
-    </div>
+    <NarrowedLayout>
+      <div className="signup-container">
+        <Helmet title="Sign up"  />
+        <PaperCard title="Sign up" subtitle="Fill in some basic info to get your LDVMi account">
+          <SignUpForm onSubmit={onSubmit} />
+        </PaperCard>
+      </div>
+    </NarrowedLayout>
   )
 };
 

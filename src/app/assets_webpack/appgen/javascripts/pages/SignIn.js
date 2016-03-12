@@ -7,6 +7,7 @@ import { signIn } from '../modules/auth/api'
 import * as authActions from '../modules/auth/actions'
 import { notification } from '../actions/notification'
 import PaperCard from '../misc/components/PaperCard'
+import NarrowedLayout from '../misc/components/NarrowedLayout'
 
 const SignIn = ({dispatch}) => {
 
@@ -21,15 +22,17 @@ const SignIn = ({dispatch}) => {
   };
 
   return (
-    <div className="signup-container">
-      <Helmet title="Sign in"  />
-      <PaperCard title="Sign in" subtitle="Enter your credentials for your LDVMi account">
-        <div>
-          Don't have an account yet? <Link to="/signup">Sign up!</Link>
-        </div>
-        <SignInForm onSubmit={onSubmit} />
-      </PaperCard>
-    </div>
+    <NarrowedLayout>
+      <div className="signup-container">
+        <Helmet title="Sign in"  />
+        <PaperCard title="Sign in" subtitle="Enter your credentials for your LDVMi account">
+          <div>
+            Don't have an account yet? <Link to="/signup">Sign up!</Link>
+          </div>
+          <SignInForm onSubmit={onSubmit} />
+        </PaperCard>
+      </div>
+    </NarrowedLayout>
   )
 };
 
