@@ -1,26 +1,20 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import Paper from 'material-ui/lib/paper';
 import { List } from 'immutable'
 import { propertiesSelector, propertiesStatusSelector } from '../ducks/properties'
 import { PromiseStatus } from '../../../../ducks/promises'
 import { Application } from '../../../manageApp/models'
 import PromiseResult from '../../../../misc/components/PromiseResult'
 import SidebarTabs from '../components/SidebarTabs'
+import PropertiesLoadingStatus from '../components/PropertiesLoadingStatus'
 
 const Sidebar = ({ properties, propertiesStatus }) => {
-  return (
-    <Paper zDepth={2}>
-      {!propertiesStatus.done &&
-        <PromiseResult status={propertiesStatus} />
-      }
-
-      {propertiesStatus.done &&
-        <SidebarTabs properties={properties} />
-      }
-    </Paper>
-  )
+  if (!propertiesStatus.done) {
+    return <PropertiesLoadingStatus status={propertiesStatus} />;
+  } else {
+    return <SidebarTabs properties={properties} />;
+  }
 };
 
 Sidebar.propTypes = {

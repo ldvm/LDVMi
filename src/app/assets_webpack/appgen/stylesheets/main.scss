@@ -44,7 +44,7 @@ pre {
 /** Paper Card */
 // TODO: make this an inline style
 .paper-card {
-  margin: $gutter auto;
+  margin: 0 auto $gutter;
 }
 .paper-card-header {
   background-color: #f7f7f7;
