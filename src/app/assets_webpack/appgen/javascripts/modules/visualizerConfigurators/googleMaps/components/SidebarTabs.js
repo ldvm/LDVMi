@@ -5,11 +5,13 @@ import Tab from 'material-ui/lib/tabs/tab';
 import Paper from 'material-ui/lib/paper';
 import PropertyFiltersConfig from '../containers/PropertyFiltersConfig'
 import PropertyFilters from '../containers/PropertyFilters'
+import RefreshMapButton from '../containers/RefreshMapButton'
 import FillInScreen from '../../../../misc/components/FillInScreen'
 import Button from '../../../../misc/components/Button'
 import Padding from '../../../../misc/components/Padding'
+import { Application } from '../../../manageApp/models'
 
-const SidebarTabs = ({ properties }) => {
+const SidebarTabs = ({ application, properties }) => {
   return <Paper zDepth={2}>
     <Tabs inkBarStyle={{ backgroundColor: 'white' }}>
       <Tab label="Configure">
@@ -37,7 +39,7 @@ const SidebarTabs = ({ properties }) => {
           </div>
         </FillInScreen>
         <Padding space={2}>
-          <Button warning raised fullWidth icon="refresh" label="Refresh map" />
+          <RefreshMapButton application={application} />
         </Padding>
       </Tab>
     </Tabs>
@@ -45,6 +47,7 @@ const SidebarTabs = ({ properties }) => {
 };
 
 SidebarTabs.propTypes = {
+  application: PropTypes.instanceOf(Application).isRequired,
   properties: PropTypes.instanceOf(List)
 };
 

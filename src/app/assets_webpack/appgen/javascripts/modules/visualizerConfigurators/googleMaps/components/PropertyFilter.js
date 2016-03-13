@@ -29,7 +29,7 @@ const configStyles = {
   }
 };
 
-const PropertyFilterConfig = ({ skosConcept, count, countLoading, config }) => {
+const PropertyFilterConfig = ({ skosConcept, count, countLoading, config, onSelect }) => {
   const countLabel = countLoading ? '?' :
     (count !== undefined ? count : '-');
 
@@ -39,6 +39,7 @@ const PropertyFilterConfig = ({ skosConcept, count, countLoading, config }) => {
         <Checkbox
           disabled={config == settings.SELECT_ALWAYS}
           defaultChecked={config == settings.SELECT_ALWAYS}
+          onCheck={(_, isActive) => onSelect(isActive)}
           label={<span>
             {skosConcept.label}{' '}
             <span style={countStyle}>({countLabel})</span>
@@ -54,7 +55,8 @@ PropertyFilterConfig.propTypes = {
   skosConcept: PropTypes.instanceOf(SkosConcept).isRequired,
   count: PropTypes.number,
   countLoading: PropTypes.bool.isRequired,
-  config: PropTypes.oneOf([settings.SELECT_ALWAYS, settings.USER_DEFINED])
+  config: PropTypes.oneOf([settings.SELECT_ALWAYS, settings.USER_DEFINED]),
+  onSelect: PropTypes.func.isRequired
 };
 
 PropertyFilterConfig.defaultProps = {

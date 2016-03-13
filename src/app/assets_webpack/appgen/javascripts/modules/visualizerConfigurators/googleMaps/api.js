@@ -14,3 +14,8 @@ export async function getSkosConceptsCounts(id, propertyUri, conceptUris) {
   const result = await rest('mapsVisualizer/getSkosConceptsCounts/' + id, { propertyUri, conceptUris });
   return result.data.skosConceptsCounts;
 }
+
+export async function getMarkers(id, mapQueryData) {
+  const result = await rest('mapsVisualizer/getMarkers/' + id,  mapQueryData);
+  return result.data.markers;
+}

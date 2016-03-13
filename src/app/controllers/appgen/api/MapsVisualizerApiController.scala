@@ -5,7 +5,7 @@ import model.appgen.entity.ApplicationId
 import model.appgen.rest.EmptyRequest.EmptyRequest
 import model.appgen.rest.SkosConceptsCountsRequest.SkosConceptsCountsRequest
 import model.appgen.rest.SkosConceptsRequest.SkosConceptsRequest
-import model.rdf.sparql.geo.GeoService
+import model.rdf.sparql.geo.{MapQueryData, GeoService}
 import model.rdf.sparql.visualization.VisualizationService
 import play.api.libs.concurrent.Execution.Implicits._
 import scaldi.Injector
@@ -39,6 +39,13 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
     withEvaluation(ApplicationId(id)) { evaluation =>
       val counts = visualizationService.skosConceptsCounts(evaluation, json.propertyUri, json.conceptUris)
       Future(Ok(SuccessResponse(data = Seq("skosConceptsCounts" -> counts))))
+    }
+  }
+
+  def getMarkers(id: Long) = RestAsyncAction[MapQueryData] { implicit request => queryData =>
+    withEvaluation(ApplicationId(id)) { evaluation =>
+      val markers = geoService.markers(evaluation, queryData)
+      Future(Ok(SuccessResponse(data = Seq("markers" -> markers))))
     }
   }
 }

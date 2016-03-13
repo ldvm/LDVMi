@@ -33,7 +33,7 @@ const initialState = new Map();
 export default function filterConfigsReducer(state = initialState, action) {
   switch (action.type) {
 
-    case CONFIGURE_FILTER: return (() => { // Grrr. Separated scope needed to avoid cont redeclaration
+    case CONFIGURE_FILTER: return (() => { // Grrr. Separated scope needed to avoid const redeclaration
         const { propertyUri, skosConceptUri, settings } = action.payload;
         return state.update(propertyUri,
           filters => (filters || new Map()).set(skosConceptUri, settings));

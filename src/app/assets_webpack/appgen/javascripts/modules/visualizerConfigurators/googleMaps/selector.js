@@ -32,3 +32,13 @@ export const propertyConfigsSelector = createSelector(
   [moduleSelector],
   state => state.propertyConfigs
 );
+
+export const selectedFiltersSelector = createSelector(
+  [moduleSelector],
+  state => state.selectedFilters
+);
+
+export const markersSelector = createSelector(
+  [moduleSelector],
+  state => state.markers
+);

@@ -11,6 +11,7 @@ import { skosConceptsSelector, createSkosConceptsStatusSelector } from '../ducks
 import { skosConceptsCountsSelector, createSkosConceptsCountsStatusSelector } from '../ducks/skosConceptsCounts'
 import { configureFilter, configureAllFilters, filterConfigsSelector } from '../ducks/filterConfigs'
 import { configureProperty, propertyConfigsSelector } from '../ducks/propertyConfigs'
+import { selectFilter } from '../ducks/selectedFilters'
 import { settings } from  '../ducks/filterConfigs'
 
 const PropertyFilters = (props) => {
@@ -36,6 +37,7 @@ const PropertyFilters = (props) => {
         count={skosConceptsCounts.get(skosConcept.uri)}
         countLoading={countsStatus.isLoading}
         config={filterConfigs.get(skosConcept.uri)}
+        onSelect={isActive => dispatch(selectFilter(property.uri, skosConcept.uri, isActive))}
       />
     )}
   </div>;

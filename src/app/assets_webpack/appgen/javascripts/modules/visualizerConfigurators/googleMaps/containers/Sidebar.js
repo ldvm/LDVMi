@@ -9,11 +9,11 @@ import PromiseResult from '../../../../misc/components/PromiseResult'
 import SidebarTabs from '../components/SidebarTabs'
 import PropertiesLoadingStatus from '../components/PropertiesLoadingStatus'
 
-const Sidebar = ({ properties, propertiesStatus }) => {
+const Sidebar = ({ application, properties, propertiesStatus }) => {
   if (!propertiesStatus.done) {
     return <PropertiesLoadingStatus status={propertiesStatus} />;
   } else {
-    return <SidebarTabs properties={properties} />;
+    return <SidebarTabs application={application} properties={properties} />;
   }
 };
 
