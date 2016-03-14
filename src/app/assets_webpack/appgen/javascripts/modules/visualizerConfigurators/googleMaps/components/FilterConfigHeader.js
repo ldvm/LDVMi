@@ -4,11 +4,10 @@ import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
-import { Property, PropertyConfig } from '../models'
+import { Filter } from '../models'
 import Padding from '../../../../misc/components/Padding'
 import * as theme from '../../../../misc/theme'
-import { settings } from  '../ducks/filterConfigs'
-import { types } from '../ducks/propertyConfigs'
+import { filterTypes as types, optionModes as modes } from '../models'
 
 // TODO: show the whole value using tooltip
 
@@ -37,7 +36,9 @@ const iconMenuStyle = {
   marginRight: '-12px'
 };
 
-const PropertyHeaderConfig = ({ property, config, configureAllFilters, configureProperty }) => {
+const FilterConfigHeader = ({ filter, configureAllOptions, configureFilter }) => {
+  const { property } = filter;
+
   return <div style={headerStyle}>
     <Padding space={2}>
       <IconMenu
@@ -48,32 +49,32 @@ const PropertyHeaderConfig = ({ property, config, configureAllFilters, configure
       >
         <MenuItem
           primaryText="All select always"
-          onTouchTap={() => configureAllFilters(settings.SELECT_ALWAYS)}
+          onTouchTap={() => configureAllOptions({ mode: modes.SELECT_ALWAYS })}
         />
         <MenuItem
           primaryText="All select never"
-          onTouchTap={() => configureAllFilters(settings.SELECT_NEVER)}
+          onTouchTap={() => configureAllOptions({ mode: modes.SELECT_NEVER })}
         />
         <MenuItem primaryText="All user defined"
-          onTouchTap={() => configureAllFilters(settings.USER_DEFINED)}
+          onTouchTap={() => configureAllOptions({ mode: modes.USER_DEFINED })}
         />
         <Divider />
         <MenuItem primaryText="Enable"
-          disabled={config.enabled}
-          onTouchTap={() => configureProperty({ enabled: true })}
+          disabled={filter.enabled}
+          onTouchTap={() => configureFilter({ enabled: true })}
         />
         <MenuItem primaryText="Disable"
-          disabled={!config.enabled}
-          onTouchTap={() => configureProperty({ enabled: false })}
+          disabled={!filter.enabled}
+          onTouchTap={() => configureFilter({ enabled: false })}
         />
         <Divider />
         <MenuItem primaryText="Checkboxes"
-          disabled={config.type == types.CHECKBOX}
-          onTouchTap={() => configureProperty({ type: types.CHECKBOX })}
+          disabled={filter.type == types.CHECKBOX}
+          onTouchTap={() => configureFilter({ type: types.CHECKBOX })}
         />
         <MenuItem primaryText="Radios"
-          disabled={config.type == types.RADIO}
-          onTouchTap={() => configureProperty({ type: types.RADIO })}
+          disabled={filter.type == types.RADIO}
+          onTouchTap={() => configureFilter({ type: types.RADIO })}
         />
       </IconMenu>
       <h3 style={h3Style}>
@@ -84,11 +85,10 @@ const PropertyHeaderConfig = ({ property, config, configureAllFilters, configure
   </div>
 };
 
-PropertyHeaderConfig.propTypes = {
-  property: PropTypes.instanceOf(Property).isRequired,
-  config: PropTypes.instanceOf(PropertyConfig).isRequired,
-  configureAllFilters: PropTypes.func.isRequired,
-  configureProperty: PropTypes.func.isRequired
+FilterConfigHeader.propTypes = {
+  filter: PropTypes.instanceOf(Filter).isRequired,
+  configureAllOptions: PropTypes.func.isRequired,
+  configureFilter: PropTypes.func.isRequired
 };
 
-export default PropertyHeaderConfig;
+export default FilterConfigHeader;

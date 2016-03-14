@@ -69,11 +69,19 @@ export default function promisesReducer(state = new Map(), action) {
 }
 
 /**
- * Select status of a specifi promise which is defined by its name and its id. The id might
+ * Select status of a specific promise which is defined by its name and its id. The id might
  * dynamically depend on outer state (i. e. props) for which reason it's possible to define
  * an "idExtractor" function that can extrat that information from the state and props.
  */
 export function createPromiseStatusSelector(name, idExtractor = () => DEFAULT_ID) {
   return (state, props) =>
     state.promises.getIn([name, idExtractor(state, props)])  || new PromiseStatus();
+}
+
+/**
+ * Return statuses of all promises of given name.
+ */
+export function createPromiseStatusesSelector(name) {
+  return (state, props) =>
+    state.promises.get(name) || new Map();
 }

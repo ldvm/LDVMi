@@ -1,5 +1,7 @@
 import { List } from 'immutable'
+import { createSelector } from 'reselect'
 import prefix from '../prefix'
+import moduleSelector  from '../selector'
 import createAction from '../../../../misc/createAction'
 import * as api from '../api'
 
@@ -26,3 +28,10 @@ export default function markersReducer(state = initialState, action) {
 
   return state;
 }
+
+// Selectors
+
+export const markersSelector = createSelector(
+  [moduleSelector],
+  state => state.markers
+);

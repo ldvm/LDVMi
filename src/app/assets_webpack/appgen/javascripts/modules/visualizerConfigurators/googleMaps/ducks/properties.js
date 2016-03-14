@@ -3,7 +3,7 @@ import { List, fromJS } from 'immutable'
 import { _label } from '../../../../misc/lang'
 import prefix from '../prefix'
 import { createPromiseStatusSelector } from '../../../../ducks/promises'
-import { propertiesSelector as reducerSelector } from '../selector'
+import { moduleSelector } from '../selector'
 import { Property } from '../models'
 
 // Actions
@@ -28,7 +28,7 @@ export default function propertiesReducer(state = new List(), action) {
 export const propertiesStatusSelector = createPromiseStatusSelector(GET_PROPERTIES);
 
 export const propertiesSelector = createSelector(
-  [reducerSelector],
-  properties => properties.map(property =>
+  [moduleSelector],
+  state => state.properties.map(property =>
     (new Property(property)).set('label', _label(property.get('label'))))
 );

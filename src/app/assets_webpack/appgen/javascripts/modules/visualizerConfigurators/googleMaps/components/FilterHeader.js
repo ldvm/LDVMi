@@ -4,11 +4,9 @@ import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
-import { Property, PropertyConfig } from '../models'
+import { Filter } from '../models'
 import Padding from '../../../../misc/components/Padding'
 import * as theme from '../../../../misc/theme'
-import { settings } from  '../ducks/filterConfigs'
-import { types } from '../ducks/propertyConfigs'
 
 // TODO: show the whole value using tooltip
 
@@ -32,7 +30,7 @@ const iconMenuStyle = {
   marginRight: '-12px'
 };
 
-const PropertyHeaderConfig = ({ property, config }) => {
+const FilterHeader = ({ filter }) => {
   return <div style={headerStyle}>
     <Padding space={2}>
       <IconMenu
@@ -49,15 +47,14 @@ const PropertyHeaderConfig = ({ property, config }) => {
         />
       </IconMenu>
       <h3 style={h3Style}>
-        {property.label} <br />
+        {filter.property.label}
       </h3>
     </Padding>
   </div>
 };
 
-PropertyHeaderConfig.propTypes = {
-  property: PropTypes.instanceOf(Property).isRequired,
-  config: PropTypes.instanceOf(PropertyConfig).isRequired
+FilterHeader.propTypes = {
+  filter: PropTypes.instanceOf(Filter).isRequired
 };
 
-export default PropertyHeaderConfig;
+export default FilterHeader;

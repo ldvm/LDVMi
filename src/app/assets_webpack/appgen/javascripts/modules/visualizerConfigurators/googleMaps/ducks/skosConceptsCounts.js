@@ -1,7 +1,8 @@
 import { Map, fromJS } from 'immutable'
+import { createSelector } from 'reselect'
 import { createPromiseStatusSelector } from '../../../../ducks/promises'
-import { skosConceptsCountsSelector as reducerSelector } from '../selector'
 import prefix from '../prefix'
+import moduleSelector  from '../selector'
 
 // Actions
 
@@ -25,4 +26,7 @@ export default function skosConceptsReducer(state = new Map(), action) {
 export const createSkosConceptsCountsStatusSelector = propertyUriExtractor =>
   createPromiseStatusSelector(GET_SKOS_CONCEPTS_COUNTS, propertyUriExtractor);
 
-export const skosConceptsCountsSelector = reducerSelector;
+export const skosConceptsCountsSelector = createSelector(
+  [moduleSelector],
+  state => state.skosConceptsCounts
+);

@@ -1,5 +1,5 @@
 import { List, Record } from 'immutable';
-import { types as propertyTypes } from './ducks/propertyConfigs'
+import { PromiseStatus } from '../../../ducks/promises'
 
 export const Property = Record({
   label: '',
@@ -14,7 +14,30 @@ export const SkosConcept = Record({
   linkUris: List()
 });
 
-export const PropertyConfig = Record({
-  type: propertyTypes.CHECKBOX,
-  enabled: true
+export const filterTypes = {
+  CHECKBOX: 'CHECKBOX',
+  RADIO: 'RADIO'
+};
+
+export const Filter = Record({
+  property: new Property(),
+  type: filterTypes.CHECKBOX,
+  enabled: true,
+  options: new List(),
+  optionsUris: new List(),
+  optionsStatus: new PromiseStatus()
+});
+
+export const optionModes = {
+  SELECT_ALWAYS: 'SELECT_ALWAYS',
+  SELECT_NEVER: 'SELECT_NEVER',
+  USER_DEFINED: 'USER_DEFINED'
+};
+
+export const Option = Record({
+  skosConcept: new SkosConcept(),
+  count: 0,
+  countLoading: new PromiseStatus(),
+  mode: optionModes.USER_DEFINED,
+  selected: false
 });

@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react'
 import { Map, List } from 'immutable'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { selectedFiltersSelector } from '../ducks/selectedFilters'
 import { getMarkers } from '../ducks/markers'
 import { Application } from '../../../manageApp/models'
 import Button from '../../../../misc/components/Button'
@@ -10,7 +9,7 @@ import { propertiesSelector } from '../ducks/properties'
 import { skosConceptsSelector } from '../ducks/skosConcepts'
 
 const RefreshMapButton = ({ dispatch, application, mapQueryData }) => {
-  console.log(mapQueryData);
+  // console.log(mapQueryData);
   return <Button warning raised
      onTouchTap={() => dispatch(getMarkers(application.id, mapQueryData))}
      fullWidth icon="refresh"
@@ -24,8 +23,8 @@ RefreshMapButton.propTypes = {
 };
 
 const selector = createSelector(
-  [propertiesSelector, skosConceptsSelector, selectedFiltersSelector],
-  (properties, skosConcepts, selectedFilters) => {
+  [propertiesSelector, skosConceptsSelector],
+  (properties, skosConcepts) => {
     // TODO: do something better and smarter
     let emptyFilters = new Map();
     properties.forEach(property => {
@@ -35,7 +34,8 @@ const selector = createSelector(
         ))
     });
 
-    return { mapQueryData: { filters: emptyFilters.mergeDeep(selectedFilters).toJS() } };
+    // return { mapQueryData: { filters: emptyFilters.mergeDeep(selectedFilters).toJS() } };
+    return { mapQueryData: {}};
   }
 );
 
