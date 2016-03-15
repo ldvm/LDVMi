@@ -17,9 +17,12 @@ const Filters = Record({
   filters: new Map()
 });
 
-const buildFilters = (properties, skosConcepts, filtersConfig, optionsConfig) => properties.map(property => {
+const buildFilters = (properties, skosConcepts, skosConceptsCounts, filtersConfig, optionsConfig) => properties.map(property => {
   const options = (skosConcepts.get(property.schemeUri) || new Map()).map(skosConcept =>
-    buildOption(skosConcept, optionsConfig.getIn([property.uri, skosConcept.uri])));
+    buildOption(skosConcept,
+      skosConceptsCounts.getIn([property.uri, skosConcept.uri]),
+      optionsConfig.getIn([property.uri, skosConcept.uri])
+    ));
   return buildFilter(property, options, filtersConfig.get(property.uri));
 });
 
@@ -29,8 +32,8 @@ const buildFilter = (property, options, config = new Map()) =>
     optionsUris: options.map(option => option.skosConcept.uri)
   })).merge(config);
 
-const buildOption = (skosConcept, config = new Map()) =>
-  (new Option({ skosConcept })).merge(config);
+const buildOption = (skosConcept, count = null, config = new Map()) =>
+  (new Option({ skosConcept, count })).merge(config);
 
 
 export default function filtersReducer(state = new Filters(), action) {
@@ -48,7 +51,7 @@ export default function filtersReducer(state = new Filters(), action) {
     case CONFIGURE_FILTER:
     case CONFIGURE_ALL_OPTIONS:
       return state.update('filters', filters => filters.mergeDeep(
-        buildFilters(state.properties, state.skosConcepts, state.filtersConfig, state.optionsConfig)));
+        buildFilters(state.properties, state.skosConcepts, state.skosConceptsCounts, state.filtersConfig, state.optionsConfig)));
 
     // Perform quick little update
     case CONFIGURE_OPTION:
