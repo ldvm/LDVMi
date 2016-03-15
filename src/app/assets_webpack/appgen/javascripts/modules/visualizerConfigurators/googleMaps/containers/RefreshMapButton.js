@@ -1,31 +1,31 @@
 import React, { PropTypes } from 'react'
 import { Map, List } from 'immutable'
 import { connect } from 'react-redux'
-import { createSelector } from 'reselect'
-import { getMarkers } from '../ducks/markers'
+import { createStructuredSelector } from 'reselect'
+import { PromiseStatus } from '../../../../ducks/promises'
 import { Application } from '../../../manageApp/models'
 import Button from '../../../../misc/components/Button'
+import { getMarkers, markersStatusSelector } from '../ducks/markers'
 
-const RefreshMapButton = ({ dispatch, application, mapQueryData }) => {
-  // console.log(mapQueryData);
+const RefreshMapButton = ({ dispatch, application, filters, status }) => {
+  const label = status.isLoading ? 'Refreshing map...' : 'Refresh map';
+
   return <Button warning raised
-     onTouchTap={() => dispatch(getMarkers(application.id, mapQueryData))}
+     onTouchTap={() => dispatch(getMarkers(application.id, filters ))}
+     disabled={status.isLoading}
      fullWidth icon="refresh"
-     label="Refresh map" />
+     label={label} />
 };
 
 RefreshMapButton.propTypes = {
   dispatch: PropTypes.func.isRequired,
   application: PropTypes.instanceOf(Application).isRequired,
-  mapQueryData: PropTypes.object.isRequired
+  filters: PropTypes.instanceOf(Map),
+  status: PropTypes.instanceOf(PromiseStatus).isRequired
 };
 
-const selector = createSelector(
-  [],
-  () => {
-    // TODO: do something better and smarter
-    return { mapQueryData: {}};
-  }
-);
+const selector = createStructuredSelector({
+  status: markersStatusSelector
+});
 
 export default connect(selector)(RefreshMapButton);

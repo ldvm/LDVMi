@@ -21,7 +21,7 @@ const Sidebar = ({ application, filters, status}) => {
 Sidebar.propTypes = {
   dispatch: PropTypes.func.isRequired,
   application: PropTypes.instanceOf(Application).isRequired,
-  filters: PropTypes.instanceOf(List),
+  filters: PropTypes.instanceOf(Map),
   status: PropTypes.instanceOf(PromiseStatus).isRequired
 };
 

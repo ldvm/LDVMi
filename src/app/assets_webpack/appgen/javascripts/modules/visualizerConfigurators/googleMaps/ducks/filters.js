@@ -68,5 +68,5 @@ export default function filtersReducer(state = new Filters(), action) {
 
 export const filtersSelector = createSelector(
   [moduleSelector],
-  state => state.filters.filters.toList() // necessary for iteration in React components
+  state => state.filters.filters
 );

@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { List } from 'immutable'
+import { List, Map } from 'immutable'
 import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 import Paper from 'material-ui/lib/paper';
@@ -18,7 +18,7 @@ const SidebarTabs = ({ application, filters }) => {
       <Tab label="Configure">
         <FillInScreen marginBottom={100}>
           <div>
-            {filters.map(filter =>
+            {filters.toList().map(filter =>
               <div key={filter.property.uri}>
                 <FilterConfig filter={filter} />
               </div>
@@ -32,7 +32,7 @@ const SidebarTabs = ({ application, filters }) => {
       <Tab label="Preview">
         <FillInScreen marginBottom={100}>
           <div>
-            {filters.map(filter =>
+            {filters.toList().map(filter =>
               <div key={filter.property.uri}>
                 <FilterPreview filter={filter} />
               </div>
@@ -40,7 +40,7 @@ const SidebarTabs = ({ application, filters }) => {
           </div>
         </FillInScreen>
         <Padding space={2}>
-          <RefreshMapButton application={application} />
+          <RefreshMapButton application={application} filters={filters} />
         </Padding>
       </Tab>
     </Tabs>
@@ -49,7 +49,7 @@ const SidebarTabs = ({ application, filters }) => {
 
 SidebarTabs.propTypes = {
   application: PropTypes.instanceOf(Application).isRequired,
-  filters: PropTypes.instanceOf(List)
+  filters: PropTypes.instanceOf(Map)
 };
 
 export default SidebarTabs;
