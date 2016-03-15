@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react'
 import Divider from 'material-ui/lib/divider';
 import Checkbox from 'material-ui/lib/checkbox';
+import RadioButton from 'material-ui/lib/radio-button';
 import { Option as OptionModel } from '../models'
 import Padding from '../../../../misc/components/Padding'
 import makePureRender from '../../../../misc/makePureRender'
-import { optionModes as modes } from  '../models'
+import { optionModes as modes, filterTypes as types } from  '../models'
 
 const labelStyle = {
   fontSize: '0.9rem',
@@ -29,21 +30,31 @@ const configStyles = {
   }
 };
 
-const Option = ({ option, onSelect }) => {
+const Option = ({ option, type, onSelect }) => {
   const { count, mode, skosConcept } = option;
+
+  const label = <span>
+    {skosConcept.label}{' '}
+    {count !== null && <span style={countStyle}>({count})</span>}
+  </span>;
 
   return <div>
     <Padding space={2}>
       <div style={Object.assign({}, labelStyle, configStyles[mode])}>
-        <Checkbox
-          disabled={mode == modes.SELECT_ALWAYS}
-          onCheck={(_, isActive) => onSelect(isActive)}
-          checked={option.selected}
-          label={<span>
-            {skosConcept.label}{' '}
-            {count !== null && <span style={countStyle}>({count})</span>}
-          </span>}
-        />
+        {type == types.CHECKBOX ?
+          <Checkbox
+            disabled={mode == modes.SELECT_ALWAYS}
+            onCheck={(_, isActive) => onSelect(isActive)}
+            checked={option.selected}
+            label={label}
+          /> :
+          <RadioButton
+            disabled={mode == modes.SELECT_ALWAYS}
+            value={skosConcept.uri}
+            onCheck={onSelect}
+            label={label}
+            checked={option.selected}
+          />}
       </div>
     </Padding>
     <Divider style={dividerStyle} />
@@ -52,6 +63,7 @@ const Option = ({ option, onSelect }) => {
 
 Option.propTypes = {
   option: PropTypes.instanceOf(OptionModel).isRequired,
+  type: PropTypes.oneOf([types.CHECKBOX, types.RADIO]).isRequired,
   onSelect: PropTypes.func.isRequired
 };
 

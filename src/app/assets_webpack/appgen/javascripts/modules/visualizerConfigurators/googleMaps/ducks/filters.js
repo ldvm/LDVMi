@@ -5,7 +5,7 @@ import propertiesReducer, { GET_PROPERTIES_SUCCESS } from './properties'
 import skosConceptsReducer, { GET_SKOS_CONCEPTS_SUCCESS } from './skosConcepts'
 import skosConceptsCountsReducer, { GET_SKOS_CONCEPTS_COUNTS_SUCCESS } from './skosConceptsCounts'
 import filtersConfigReducer, { CONFIGURE_FILTER } from './filtersConfig'
-import optionsConfigReducer, { CONFIGURE_OPTION, CONFIGURE_ALL_OPTIONS } from './optionsConfig'
+import optionsConfigReducer, { CONFIGURE_OPTION, CONFIGURE_ALL_OPTIONS, validateOptionsUpdate } from './optionsConfig'
 import { Filter, Option } from '../models'
 
 const Filters = Record({
@@ -53,9 +53,9 @@ export default function filtersReducer(state = new Filters(), action) {
       return state.update('filters', filters => filters.mergeDeep(
         buildFilters(state.properties, state.skosConcepts, state.skosConceptsCounts, state.filtersConfig, state.optionsConfig)));
 
-    // Perform quick little update
+    // Perform quick little update on a single option
     case CONFIGURE_OPTION:
-      const update = action.payload.update.map(option => new Map({
+      const update = validateOptionsUpdate(state.optionsConfig, action.payload.update).map(option => new Map({
         options: new Map(option)
       }));
       return state.update('filters', filters => filters.mergeDeep(update));

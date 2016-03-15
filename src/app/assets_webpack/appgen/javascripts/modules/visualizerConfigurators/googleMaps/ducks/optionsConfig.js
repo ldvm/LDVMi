@@ -1,6 +1,32 @@
 import { Map, fromJS } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
+import { CONFIGURE_FILTER } from './filtersConfig'
+import { Option, optionModes as modes } from '../models'
+
+/**
+ * Check the option config update and make sure that the 'selected' property is consistent with
+ * the corresponding option mode.
+ */
+export function validateOptionsUpdate(state, update) {
+  return update.map((options, propertyUri) =>
+    options.map((optionUpdate, skosConceptUri) => {
+      const currentOption = state.getIn([propertyUri, skosConceptUri]) || new Option();
+      let nextMode = optionUpdate.has('mode') ? optionUpdate.get('mode') : currentOption.get('mode');
+      let nextSelected = optionUpdate.has('selected') ? optionUpdate.get('selected') : currentOption.get('selected');
+
+      if (nextMode == modes.SELECT_ALWAYS) {
+        nextSelected = true;
+      }
+      if (nextMode == modes.SELECT_NEVER) {
+        nextSelected = false;
+      }
+
+      return optionUpdate
+        .set('mode', nextMode)
+        .set('selected', nextSelected);
+  }));
+}
 
 // Actions
 
@@ -35,11 +61,21 @@ export function selectAllOptions(propertyUri, skosConceptUris, selected) {
 
 // Reducer
 
-export default function filterConfigsReducer(state = new Map(), action) {
+export default function optionsConfigsReducer(state = new Map(), action) {
+  let update;
+
   switch (action.type) {
     case CONFIGURE_OPTION:
     case CONFIGURE_ALL_OPTIONS:
-      return state.mergeDeep(action.payload.update);
+      update = validateOptionsUpdate(state, action.payload.update);
+      return state.mergeDeep(update);
+
+    case CONFIGURE_FILTER:
+      // Deselect all options in case the whole filter changes.
+      update = state
+        .filter((_, propertyUri) => propertyUri == action.payload.propertyUri)
+        .map(options => options.map(option => option.set('selected', false)));
+      return state.mergeDeep(validateOptionsUpdate(state, update));
   }
 
   return state;

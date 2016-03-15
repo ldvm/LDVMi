@@ -6,16 +6,28 @@ import PromiseResult from '../../../../misc/components/PromiseResult'
 import FilterHeader from '../components/FilterHeader'
 import Option from '../components/Option'
 import { createSkosConceptsStatusSelector } from '../ducks/skosConcepts'
-import { Filter, optionModes as modes } from '../models'
-import { selectOption } from '../ducks/optionsConfig'
+import { Filter, filterTypes as types, optionModes as modes } from '../models'
+import { selectOption, selectAllOptions } from '../ducks/optionsConfig'
 
 const FilterPreview = ({ dispatch, filter, status }) => {
   if (!filter.enabled) {
     return <div></div>;
   }
 
+  const onSelect = filter.type == types.CHECKBOX ?
+    (uri, selected) => dispatch(selectOption(filter.property.uri, uri, selected)) :
+    (uri) => {
+      // In the RADIO mode we first deselect all options and then we select the current one.
+      dispatch(selectAllOptions(filter.property.uri, filter.optionsUris, false));
+      dispatch(selectOption(filter.property.uri, uri, true));
+    };
+
   return <div>
-    <FilterHeader filter={filter} />
+    <FilterHeader
+      filter={filter}
+      selectAllOptions={selected =>
+        dispatch(selectAllOptions(filter.property.uri, filter.optionsUris, selected))}
+    />
 
     {!status.done && <PromiseResult status={status} />}
 
@@ -23,7 +35,8 @@ const FilterPreview = ({ dispatch, filter, status }) => {
       <Option
         key={option.skosConcept.uri}
         option={option}
-        onSelect={selected => dispatch(selectOption(filter.property.uri, option.skosConcept.uri, selected))}
+        type={filter.type}
+        onSelect={selected => onSelect(option.skosConcept.uri, selected)}
       />
     )}
   </div>;

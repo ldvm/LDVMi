@@ -14,7 +14,7 @@ export function configureFilter(propertyUri, settings) {
 
 // Reducer
 
-export default function filtersReducer(state = new Map(), action) {
+export default function filtersConfigReducer(state = new Map(), action) {
   switch (action.type) {
     case CONFIGURE_FILTER:
       return state.mergeDeep(action.payload.update);

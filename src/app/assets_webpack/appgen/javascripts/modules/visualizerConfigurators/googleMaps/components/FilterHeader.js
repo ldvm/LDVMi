@@ -7,6 +7,7 @@ import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import { Filter } from '../models'
 import Padding from '../../../../misc/components/Padding'
 import * as theme from '../../../../misc/theme'
+import { filterTypes as types } from  '../models'
 
 // TODO: show the whole value using tooltip
 
@@ -30,7 +31,7 @@ const iconMenuStyle = {
   marginRight: '-12px'
 };
 
-const FilterHeader = ({ filter }) => {
+const FilterHeader = ({ filter, selectAllOptions }) => {
   return <div style={headerStyle}>
     <Padding space={2}>
       <IconMenu
@@ -41,9 +42,13 @@ const FilterHeader = ({ filter }) => {
       >
         <MenuItem
           primaryText="Select all"
+          onTouchTap={() => selectAllOptions(true)}
+          disabled={filter.type == types.RADIO}
         />
         <MenuItem
           primaryText="Select none"
+          onTouchTap={() => selectAllOptions(false)}
+          disabled={filter.type == types.RADIO}
         />
       </IconMenu>
       <h3 style={h3Style}>
@@ -54,7 +59,8 @@ const FilterHeader = ({ filter }) => {
 };
 
 FilterHeader.propTypes = {
-  filter: PropTypes.instanceOf(Filter).isRequired
+  filter: PropTypes.instanceOf(Filter).isRequired,
+  selectAllOptions: PropTypes.func.isRequired
 };
 
 export default FilterHeader;
