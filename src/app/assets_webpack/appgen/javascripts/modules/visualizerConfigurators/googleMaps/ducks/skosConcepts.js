@@ -30,11 +30,13 @@ export const createSkosConceptsStatusSelector = schemeUriExtractor =>
 
 export const skosConceptsStatusesSelector = createPromiseStatusesSelector(GET_SKOS_CONCEPTS);
 
+const reducerSelector = createSelector([moduleSelector], state => state.skosConcepts); // necessary for memoizing to work
+
 export const skosConceptsSelector = createSelector(
-  [moduleSelector],
+  [reducerSelector],
 
   // Concepts are grouped by scheme.
-  state => state.skosConcepts.map(conceptsForScheme =>
+  skosConcepts => skosConcepts.map(conceptsForScheme =>
     conceptsForScheme.map(concept =>
       new SkosConcept({
         ...concept.toJS(),

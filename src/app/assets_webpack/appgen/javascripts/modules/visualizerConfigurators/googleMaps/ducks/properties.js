@@ -27,8 +27,10 @@ export default function propertiesReducer(state = new List(), action) {
 
 export const propertiesStatusSelector = createPromiseStatusSelector(GET_PROPERTIES);
 
+const reducerSelector = createSelector([moduleSelector], state => state.properties); // necessary for memoizing to work
+
 export const propertiesSelector = createSelector(
-  [moduleSelector],
-  state => state.properties.map(property =>
+  [reducerSelector],
+  properties => properties.map(property =>
     (new Property(property)).set('label', _label(property.get('label'))))
 );

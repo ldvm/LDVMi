@@ -45,13 +45,12 @@ export const defaultFiltersSelector = createSelector(
 
 export const filtersSelector = createSelector(
   [defaultFiltersSelector, skosConceptsStatusesSelector, filtersConfigSelector, optionsConfigSelector],
-  (filters, skosConceptsStatuses, filtersConfig, optionsConfig) => filters.map(filter => {
-    return filter
+  (filters, skosConceptsStatuses, filtersConfig, optionsConfig) => filters.map(filter =>
+    filter
       .merge(filtersConfig.get(filter.property.uri) || new Map())
       .update('optionsStatus', status => skosConceptsStatuses.get(filter.property.schemeUri) || status)
       .update('options', options => options.map(option =>
         option.merge(optionsConfig.getIn([filter.property.uri, option.skosConcept.uri]) || new Map())
       ))
-    }
   )
 );
