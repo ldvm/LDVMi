@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { List } from 'immutable'
+import { List, Map } from 'immutable'
 import { propertiesStatusSelector } from '../ducks/properties'
 import { filtersSelector } from '../ducks/filters'
 import { PromiseStatus } from '../../../../ducks/promises'

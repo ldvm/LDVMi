@@ -43,10 +43,7 @@ const configStyles = {
 };
 
 const OptionConfig = ({ option, configureOption }) => {
-  const { countLoading, count, mode, skosConcept } = option;
-
-  const countLabel = countLoading ? '?' :
-    (count !== undefined ? count : '-');
+  const { count, mode, skosConcept } = option;
 
   return <div>
     <Padding space={2}>
@@ -73,7 +70,7 @@ const OptionConfig = ({ option, configureOption }) => {
       </IconMenu>
       <div style={Object.assign({}, labelStyle, configStyles[mode])}>
         {skosConcept.label}{' '}
-        <span style={countStyle}>({countLabel})</span>
+        {count !== null && <span style={countStyle}>({count})</span>}
       </div>
     </Padding>
     <Divider style={dividerStyle} />

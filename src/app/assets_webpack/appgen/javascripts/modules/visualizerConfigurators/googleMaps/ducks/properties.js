@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { List, fromJS } from 'immutable'
 import { _label } from '../../../../misc/lang'
+import { arrayToObject } from '../../../../misc/utils'
 import prefix from '../prefix'
 import { createPromiseStatusSelector } from '../../../../ducks/promises'
 import { moduleSelector } from '../selector'
@@ -17,7 +18,9 @@ export const GET_PROPERTIES_SUCCESS = GET_PROPERTIES + '_SUCCESS';
 
 export default function propertiesReducer(state = new List(), action) {
   if (action.type == GET_PROPERTIES_SUCCESS) {
-    return fromJS(action.payload);
+    const asObject = arrayToObject(action.payload, property => property.uri);
+    return fromJS(asObject).map(property =>
+      (new Property(property)).set('label', _label(property.get('label'))));
   }
 
   return state;
@@ -26,11 +29,3 @@ export default function propertiesReducer(state = new List(), action) {
 // Selectors
 
 export const propertiesStatusSelector = createPromiseStatusSelector(GET_PROPERTIES);
-
-const reducerSelector = createSelector([moduleSelector], state => state.properties); // necessary for memoizing to work
-
-export const propertiesSelector = createSelector(
-  [reducerSelector],
-  properties => properties.map(property =>
-    (new Property(property)).set('label', _label(property.get('label'))))
-);

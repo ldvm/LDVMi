@@ -1,18 +1,17 @@
 import React, { PropTypes } from 'react'
+import { createSelector } from 'reselect'
 import { connect } from 'react-redux'
+import { PromiseStatus } from '../../../../ducks/promises'
 import PromiseResult from '../../../../misc/components/PromiseResult'
 import { Filter } from '../models'
-import { configureFilter } from '../ducks/filters'
-import { configureOption, configureAllOptions } from '../ducks/options'
+import { configureFilter } from '../ducks/filtersConfig'
+import { createSkosConceptsStatusSelector } from '../ducks/skosConcepts'
+import { configureOption, configureAllOptions } from '../ducks/optionsConfig'
 import FilterConfigHeader from '../components/FilterConfigHeader'
 import OptionConfig from '../components/OptionConfig'
 
-const FilterConfig = ({ dispatch, filter }) => {
+const FilterConfig = ({ dispatch, filter, status }) => {
   const { property } = filter;
-
-  if (!filter.optionsStatus.done) {
-      return <PromiseResult status={filter.optionsStatus} />;
-  }
 
   return <div>
     <FilterConfigHeader
@@ -22,7 +21,10 @@ const FilterConfig = ({ dispatch, filter }) => {
       configureFilter={settings =>
         dispatch(configureFilter(property.uri, settings))}
     />
-    {filter.enabled && filter.options.map(option =>
+
+    {!status.done && <PromiseResult status={status} />}
+
+    {status.done && filter.enabled && filter.options.toList().map(option =>
       <OptionConfig
         key={option.skosConcept.uri}
         option={option}
@@ -35,7 +37,16 @@ const FilterConfig = ({ dispatch, filter }) => {
 
 FilterConfig.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  filter: PropTypes.instanceOf(Filter).isRequired
+  filter: PropTypes.instanceOf(Filter).isRequired,
+  status: PropTypes.instanceOf(PromiseStatus).isRequired
 };
 
-export default connect()(FilterConfig);
+const skosConceptsStatusSelector = createSkosConceptsStatusSelector((_, props) =>
+  props.filter.property.schemeUri);
+
+const selector = createSelector(
+  [skosConceptsStatusSelector],
+  (status) => ({ status })
+);
+
+export default connect(selector)(FilterConfig);

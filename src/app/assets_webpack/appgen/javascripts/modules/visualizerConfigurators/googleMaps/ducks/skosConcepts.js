@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 import { List, Map, fromJS } from 'immutable'
 import { _label } from '../../../../misc/lang'
 import prefix from '../prefix'
+import { arrayToObject } from '../../../../misc/utils'
 import { createPromiseStatusSelector, createPromiseStatusesSelector } from '../../../../ducks/promises'
 import moduleSelector  from '../selector'
 import { SkosConcept } from '../models'
@@ -17,7 +18,15 @@ export const GET_SKOS_CONCEPTS_SUCCESS = GET_SKOS_CONCEPTS + '_SUCCESS';
 
 export default function skosConceptsReducer(state = new Map(), action) {
   if (action.type == GET_SKOS_CONCEPTS_SUCCESS) {
-    return state.merge(fromJS(action.payload));
+    const update = (new Map(action.payload)).map(conceptsForScheme =>
+      (new Map(arrayToObject(conceptsForScheme, concept => concept.uri))).map(concept =>
+        new SkosConcept({
+          ...concept,
+          label: _label(concept.label)
+        })
+      ));
+
+    return state.merge(update);
   }
 
   return state;
@@ -29,18 +38,3 @@ export const createSkosConceptsStatusSelector = schemeUriExtractor =>
   createPromiseStatusSelector(GET_SKOS_CONCEPTS, schemeUriExtractor);
 
 export const skosConceptsStatusesSelector = createPromiseStatusesSelector(GET_SKOS_CONCEPTS);
-
-const reducerSelector = createSelector([moduleSelector], state => state.skosConcepts); // necessary for memoizing to work
-
-export const skosConceptsSelector = createSelector(
-  [reducerSelector],
-
-  // Concepts are grouped by scheme.
-  skosConcepts => skosConcepts.map(conceptsForScheme =>
-    conceptsForScheme.map(concept =>
-      new SkosConcept({
-        ...concept.toJS(),
-        label: _label(concept.get('label'))
-      })
-  ))
-);

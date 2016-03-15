@@ -1,56 +1,69 @@
-import { Map, List, fromJS } from 'immutable'
+import { Record, Map, List } from 'immutable'
 import { createSelector } from 'reselect'
-import prefix from '../prefix'
-import moduleSelector  from '../selector'
-import createAction from '../../../../misc/createAction'
+import moduleSelector from '../selector'
+import propertiesReducer, { GET_PROPERTIES_SUCCESS } from './properties'
+import skosConceptsReducer, { GET_SKOS_CONCEPTS_SUCCESS } from './skosConcepts'
+import skosConceptsCountsReducer, { GET_SKOS_CONCEPTS_COUNTS_SUCCESS } from './skosConceptsCounts'
+import filtersConfigReducer, { CONFIGURE_FILTER } from './filtersConfig'
+import optionsConfigReducer, { CONFIGURE_OPTION, CONFIGURE_ALL_OPTIONS } from './optionsConfig'
 import { Filter, Option } from '../models'
-import { propertiesSelector } from './properties'
-import { skosConceptsSelector, skosConceptsStatusesSelector } from './skosConcepts'
-import { optionsConfigSelector } from './options'
 
-// Actions
+const Filters = Record({
+  properties: new Map(),
+  skosConcepts: new Map(),
+  skosConceptsCounts: new Map(),
+  filtersConfig: new Map(),
+  optionsConfig: new Map(),
+  filters: new Map()
+});
 
-export const CONFIGURE_FILTER = prefix('CONFIGURE_FILTER');
+const buildFilters = (properties, skosConcepts, filtersConfig, optionsConfig) => properties.map(property => {
+  const options = (skosConcepts.get(property.schemeUri) || new Map()).map(skosConcept =>
+    buildOption(skosConcept, optionsConfig.getIn([property.uri, skosConcept.uri])));
+  return buildFilter(property, options, filtersConfig.get(property.uri));
+});
 
-export function configureFilter(propertyUri, settings) {
-  return createAction(CONFIGURE_FILTER, { propertyUri, settings });
-}
+const buildFilter = (property, options, config = new Map()) =>
+  (new Filter({
+    property, options,
+    optionsUris: options.map(option => option.skosConcept.uri)
+  })).merge(config);
 
-// Reducer
+const buildOption = (skosConcept, config = new Map()) =>
+  (new Option({ skosConcept })).merge(config);
 
-export default function filtersReducer(state = new Map(), action) {
+
+export default function filtersReducer(state = new Filters(), action) {
+  state = state
+    .update('properties', properties => propertiesReducer(properties, action))
+    .update('skosConcepts', skosConcepts => skosConceptsReducer(skosConcepts, action))
+    .update('skosConceptsCounts', skosConceptsCounts => skosConceptsCountsReducer(skosConceptsCounts, action))
+    .update('filtersConfig', filtersConfig => filtersConfigReducer(filtersConfig, action))
+    .update('optionsConfig', optionsConfig => optionsConfigReducer(optionsConfig, action))
+
   switch (action.type) {
+    case GET_PROPERTIES_SUCCESS:
+    case GET_SKOS_CONCEPTS_SUCCESS:
+    case GET_SKOS_CONCEPTS_COUNTS_SUCCESS:
     case CONFIGURE_FILTER:
-      const { propertyUri, settings } = action.payload;
-      const update = fromJS({ [propertyUri]: settings });
-      return state.mergeDeep(update);
+    case CONFIGURE_ALL_OPTIONS:
+      return state.update('filters', filters => filters.mergeDeep(
+        buildFilters(state.properties, state.skosConcepts, state.filtersConfig, state.optionsConfig)));
+
+    // Perform quick little update
+    case CONFIGURE_OPTION:
+      const update = action.payload.update.map(option => new Map({
+        options: new Map(option)
+      }));
+      return state.update('filters', filters => filters.mergeDeep(update));
   }
 
   return state;
-};
+}
 
 // Selectors
 
-const filtersConfigSelector = createSelector([moduleSelector], state => state.filters);
-
-export const defaultFiltersSelector = createSelector(
-  [propertiesSelector, skosConceptsSelector],
-  (properties, skosConcepts) => properties.map(property => {
-    const options = (skosConcepts.get(property.schemeUri) || new List()).map(skosConcept =>
-      new Option({ skosConcept }));
-    const optionsUris = options.map(option => option.skosConcept.uri);
-    return new Filter({ property, options, optionsUris });
-  })
-);
-
 export const filtersSelector = createSelector(
-  [defaultFiltersSelector, skosConceptsStatusesSelector, filtersConfigSelector, optionsConfigSelector],
-  (filters, skosConceptsStatuses, filtersConfig, optionsConfig) => filters.map(filter =>
-    filter
-      .merge(filtersConfig.get(filter.property.uri) || new Map())
-      .update('optionsStatus', status => skosConceptsStatuses.get(filter.property.schemeUri) || status)
-      .update('options', options => options.map(option =>
-        option.merge(optionsConfig.getIn([filter.property.uri, option.skosConcept.uri]) || new Map())
-      ))
-  )
+  [moduleSelector],
+  state => state.filters.filters.toList() // necessary for iteration in React components
 );

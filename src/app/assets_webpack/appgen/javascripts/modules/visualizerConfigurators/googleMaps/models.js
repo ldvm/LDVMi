@@ -23,9 +23,8 @@ export const Filter = Record({
   property: new Property(),
   type: filterTypes.CHECKBOX,
   enabled: true,
-  options: new List(),
-  optionsUris: new List(),
-  optionsStatus: new PromiseStatus()
+  options: new Map(),
+  optionsUris: new List()
 });
 
 export const optionModes = {
@@ -36,8 +35,7 @@ export const optionModes = {
 
 export const Option = Record({
   skosConcept: new SkosConcept(),
-  count: 0,
-  countLoading: new PromiseStatus(),
+  count: null,
   mode: optionModes.USER_DEFINED,
   selected: false
 });

@@ -5,8 +5,6 @@ import { createSelector } from 'reselect'
 import { getMarkers } from '../ducks/markers'
 import { Application } from '../../../manageApp/models'
 import Button from '../../../../misc/components/Button'
-import { propertiesSelector } from '../ducks/properties'
-import { skosConceptsSelector } from '../ducks/skosConcepts'
 
 const RefreshMapButton = ({ dispatch, application, mapQueryData }) => {
   // console.log(mapQueryData);
@@ -23,18 +21,9 @@ RefreshMapButton.propTypes = {
 };
 
 const selector = createSelector(
-  [propertiesSelector, skosConceptsSelector],
-  (properties, skosConcepts) => {
+  [],
+  () => {
     // TODO: do something better and smarter
-    let emptyFilters = new Map();
-    properties.forEach(property => {
-      emptyFilters = emptyFilters.set(property.uri,
-        (skosConcepts.get(property.schemeUri) || new List()).map(concept =>
-          new Map({ uri: concept.uri, isActive: false })
-        ))
-    });
-
-    // return { mapQueryData: { filters: emptyFilters.mergeDeep(selectedFilters).toJS() } };
     return { mapQueryData: {}};
   }
 );
