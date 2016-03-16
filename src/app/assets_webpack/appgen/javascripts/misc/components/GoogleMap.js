@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import ScriptjsLoader from 'react-google-maps/lib/async/ScriptjsLoader'
-import _ from 'lodash'
+import throttle from 'lodash/throttle'
 import { GoogleMapLoader, GoogleMap, Marker } from 'react-google-maps'
 import { triggerEvent } from 'react-google-maps/lib/utils'
 import CenteredMessage from './CenteredMessage'
@@ -9,7 +9,9 @@ export default class Map extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.handleWindowResize = _.throttle(::this.handleWindowResize, 500);
+    this.handleWindowResize = throttle(::this.handleWindowResize, 500);
+    this.handleZoomChanged = throttle(::this.handleZoomChanged, 1000);
+    this.handleCenterChanged = throttle(::this.handleCenterChanged, 1000);
   }
 
   componentDidMount() {
@@ -24,6 +26,23 @@ export default class Map extends Component {
     triggerEvent(this._googleMapComponent, `resize`);
   }
 
+  handleZoomChanged() {
+    const zoomLevel = this._googleMapComponent.getZoom();
+    if (this.props.onZoomChanged) {
+      this.props.onZoomChanged(zoomLevel);
+    }
+  }
+
+  handleCenterChanged() {
+    const center = {
+      lat: this._googleMapComponent.getCenter().lat(),
+      lng: this._googleMapComponent.getCenter().lng()
+    };
+    if (this.props.onCenterChanged) {
+      this.props.onCenterChanged(center);
+    }
+  }
+
   renderLoadingBar() {
     return <div style={{ position: 'relative', top: '50%' }}>
         <CenteredMessage>Loading Google Maps...</CenteredMessage>
@@ -31,14 +50,17 @@ export default class Map extends Component {
   }
 
   renderContainer() {
-    return <div {...this.props} style={{ height: `100%` }}></div>;
+    return <div style={{ height: `100%` }}></div>;
   }
 
   renderGoogleMap() {
     return <GoogleMap
       ref={(map) => (this._googleMapComponent = map)}
-      defaultZoom={3}
-      defaultCenter={{ lat: -25.363882, lng: 131.044922 }}
+      defaultZoom={0}
+      defaultCenter={{ lat: 0, lng: 0 }}
+      {...this.props}
+      onZoomChanged={::this.handleZoomChanged}
+      onCenterChanged={::this.handleCenterChanged}
     >
       {this.props.children}
     </GoogleMap>

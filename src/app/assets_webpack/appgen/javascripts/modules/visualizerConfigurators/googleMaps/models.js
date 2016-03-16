@@ -39,3 +39,13 @@ export const Option = Record({
   mode: optionModes.USER_DEFINED,
   selected: false
 });
+
+export const Coordinates = Record({
+  lat: 0,
+  lng: 0
+});
+
+export const MapState = Record({
+  center: new Coordinates(),
+  zoomLevel: 0
+});
