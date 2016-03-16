@@ -1,34 +1,45 @@
 import React, { PropTypes } from 'react'
-import { List } from 'immutable'
-import { createSelector } from 'reselect'
+import { List, Set } from 'immutable'
+import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { Marker } from 'react-google-maps'
+import { Marker, InfoWindow } from 'react-google-maps'
 import MarkerClusterer from "react-google-maps/lib/addons/MarkerClusterer";
 import GoogleMap from '../../../../misc/components/GoogleMap'
+import Label from '../../../../misc/components/Label'
 import makePureRender from '../../../../misc/makePureRender'
 import { updateMapState } from '../ducks/mapState'
 import { markersSelector } from '../ducks/markers'
 import { mapStateSelector } from '../ducks/mapState'
+import { toggleMarker, toggledMarkersSelector } from '../ducks/toggledMarkers'
 import { MapState } from '../models'
 
-const MapContainer = ({ dispatch, markers, mapState }) => {
+const MapContainer = ({ dispatch, markers, mapState, toggledMarkers }, context) => {
   return <GoogleMap
       onZoomChanged={zoomLevel => dispatch(updateMapState({ zoomLevel }))}
       onCenterChanged={center => dispatch(updateMapState({ center }))}
       defaultZoom={mapState.zoomLevel}
-      defaultCenter={mapState.center.toJS()}
-    >
+      defaultCenter={mapState.center.toJS()}>
+
       <MarkerClusterer
         averageCenter
         enableRetinaIcons
-        gridSize={60}
-      >
+        gridSize={60}>
+
         {markers.map((marker, index) =>
           <Marker
             key={marker.uri}
             position={marker.coordinates}
-            defaultAnimation={null}
-          />
+            onClick={() => dispatch(toggleMarker(marker.uri))}
+            defaultAnimation={null}>
+
+            {toggledMarkers.contains(marker.uri) &&
+              <InfoWindow
+                key={marker.uri}
+                onCloseclick={() => dispatch(toggleMarker(marker.uri))}>
+
+                <Label uri={marker.uri} label={marker.title} store={context.store} />
+              </InfoWindow>}
+          </Marker>
         )}
       </MarkerClusterer>
     </GoogleMap>;
@@ -37,12 +48,18 @@ const MapContainer = ({ dispatch, markers, mapState }) => {
 MapContainer.propTypes = {
   dispatch: PropTypes.func.isRequired,
   markers: PropTypes.instanceOf(List).isRequired,
-  mapState: PropTypes.instanceOf(MapState).isRequired
+  mapState: PropTypes.instanceOf(MapState).isRequired,
+  toggledMarkers: PropTypes.instanceOf(Set).isRequired
 };
 
-const selector = createSelector(
-  [markersSelector, mapStateSelector],
-  (markers, mapState) => ({ markers, mapState })
-);
+MapContainer.contextTypes = {
+  store: PropTypes.object.isRequired
+};
+
+const selector = createStructuredSelector({
+  markers: markersSelector,
+  mapState: mapStateSelector,
+  toggledMarkers: toggledMarkersSelector
+});
 
 export default connect(selector)(makePureRender(MapContainer));
