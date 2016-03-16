@@ -7,10 +7,13 @@ import { markersSelector } from '../ducks/markers'
 
 const MapContainer = ({ markers }) => {
   return <GoogleMap>
-    {markers.map((marker, index) => <Marker
-      key={marker.uri}
-      position={marker.coordinates}
-      defaultAnimation={2} /> )}
+    {markers.map((marker, index) =>
+      <Marker
+        key={marker.uri}
+        position={marker.coordinates}
+        defaultAnimation={null}
+      />
+    )}
   </GoogleMap>;
 };
 
