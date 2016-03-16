@@ -4,6 +4,7 @@ import Checkbox from 'material-ui/lib/checkbox';
 import RadioButton from 'material-ui/lib/radio-button';
 import { Option as OptionModel } from '../models'
 import Padding from '../../../../misc/components/Padding'
+import Label from '../../../../misc/components/Label'
 import makePureRender from '../../../../misc/makePureRender'
 import { optionModes as modes, filterTypes as types } from  '../models'
 
@@ -34,8 +35,8 @@ const Option = ({ option, type, onSelect }) => {
   const { count, mode, skosConcept } = option;
 
   const label = <span>
-    {skosConcept.label}{' '}
-    {count !== null && <span style={countStyle}>({count})</span>}
+    <Label uri={skosConcept.uri} label={skosConcept.label} />
+    {count !== null && <span style={countStyle}> ({count})</span>}
   </span>;
 
   return <div>

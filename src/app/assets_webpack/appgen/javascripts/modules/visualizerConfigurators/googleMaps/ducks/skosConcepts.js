@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect'
 import { List, Map, fromJS } from 'immutable'
-import { _label } from '../../../../misc/lang'
 import prefix from '../prefix'
 import { arrayToObject } from '../../../../misc/utils'
 import { createPromiseStatusSelector, createPromiseStatusesSelector } from '../../../../ducks/promises'
@@ -19,12 +18,8 @@ export const GET_SKOS_CONCEPTS_SUCCESS = GET_SKOS_CONCEPTS + '_SUCCESS';
 export default function skosConceptsReducer(state = new Map(), action) {
   if (action.type == GET_SKOS_CONCEPTS_SUCCESS) {
     const update = (new Map(action.payload)).map(conceptsForScheme =>
-      (new Map(arrayToObject(conceptsForScheme, concept => concept.uri))).map(concept =>
-        new SkosConcept({
-          ...concept,
-          label: _label(concept.label)
-        })
-      ));
+      (new Map(arrayToObject(conceptsForScheme, concept => concept.uri)))
+        .map(concept => new SkosConcept(concept)));
 
     return state.merge(update);
   }

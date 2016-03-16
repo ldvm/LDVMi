@@ -6,6 +6,7 @@ import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import FontIcon from 'material-ui/lib/font-icon'
 import { Option } from '../models'
+import Label from '../../../../misc/components/Label'
 import Padding from '../../../../misc/components/Padding'
 import makePureRender from '../../../../misc/makePureRender'
 import MaterialTheme from '../../../../misc/materialTheme';
@@ -95,8 +96,8 @@ const OptionConfig = ({ option, configureOption }) => {
       </IconMenu>
       <div style={Object.assign({}, labelStyle, configStyles[mode])}>
         <FontIcon className="material-icons" style={iconStyle} color={colors[mode]}>{icons[mode]}</FontIcon>
-        {skosConcept.label}{' '}
-        {count !== null && <span style={countStyle}>({count})</span>}
+        <Label uri={skosConcept.uri} label={skosConcept.label} />
+        {count !== null && <span style={countStyle}> ({count})</span>}
       </div>
     </Padding>
     <Divider style={dividerStyle} />
