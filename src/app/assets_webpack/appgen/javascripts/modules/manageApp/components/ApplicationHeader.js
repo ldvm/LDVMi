@@ -25,10 +25,12 @@ const buttonBarStyle = {
   float: 'right'
 };
 
-const ApplicationHeader = ({application, visualizer}) => {
+const ApplicationHeader = ({ application, visualizer, openGeneralSettingsDialog }) => {
   return <BodyPadding>
     <div style={buttonBarStyle}>
-      <Button label="General settings" icon="settings" raised />
+      <Button label="General settings" icon="settings" raised
+        onTouchTap={openGeneralSettingsDialog}
+      />
       <Button label="Preview" icon="find_in_page" raised />
       <Button label="Publish" icon="screen_share" raised success />
       <Button label="Delete" icon="delete" raised danger />
@@ -42,7 +44,8 @@ const ApplicationHeader = ({application, visualizer}) => {
 
 ApplicationHeader.propTypes = {
   application: PropTypes.instanceOf(Application).isRequired,
-  visualizer: PropTypes.instanceOf(Visualizer).isRequired
+  visualizer: PropTypes.instanceOf(Visualizer).isRequired,
+  openGeneralSettingsDialog: PropTypes.func.isRequired
 };
 
 export default ApplicationHeader;

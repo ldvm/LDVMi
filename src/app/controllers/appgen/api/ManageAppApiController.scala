@@ -1,6 +1,7 @@
 package controllers.appgen.api
 
 import model.appgen.rest.SaveAppConfigurationRequest.SaveAppConfigurationRequest
+import model.appgen.rest.UpdateAppSettingsRequest.UpdateAppSettingsRequest
 import play.api.mvc._
 import controllers.appgen.api.JsonImplicits._
 import controllers.api.JsonImplicits._
@@ -27,6 +28,22 @@ class ManageAppApiController(implicit inj: Injector) extends RestController {
       // Let's leave out the configuration, as it might be large. The user can always load it
       // using a separate request.
       Ok(SuccessResponse(data = Seq("application" -> application.copy(configuration = None))))
+    }
+  }
+
+  def updateAppSettings(id: Long) = RestAction[UpdateAppSettingsRequest] { implicit request => json =>
+    withApplication(ApplicationId(id)) { application =>
+      var updated = application.copy(
+        name = json.name,
+        description = if (json.description == "") None else Some(json.description)
+      )
+
+      if (json.updateUrl) {
+        updated = updated.withUpdatedUid
+      }
+
+      applicationsRepository.save(updated)
+      Ok(SuccessResponse("The application has been updated"))
     }
   }
 

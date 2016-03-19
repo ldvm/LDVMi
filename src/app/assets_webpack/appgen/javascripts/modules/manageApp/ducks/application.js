@@ -21,11 +21,22 @@ export function getApplication(id) {
   return createAction(GET_APPLICATION, { promise });
 }
 
+export const UPDATE_APPLICATION = prefix('UPDATE_APPLICATION');
+
+export function updateApplication(update) {
+  return createAction(UPDATE_APPLICATION, update);
+}
+
 // Reducer
 
 export default function applicationReducer(state = new Application(), action) {
-  if (action.type == GET_APPLICATION_SUCCESS) {
-    return new Application(action.payload);
+
+  switch (action.type) {
+    case GET_APPLICATION_SUCCESS:
+      return new Application(action.payload);
+
+    case UPDATE_APPLICATION:
+      return state.mergeDeep(action.payload);
   }
 
   return state;

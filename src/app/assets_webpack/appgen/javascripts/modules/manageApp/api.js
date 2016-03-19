@@ -7,6 +7,11 @@ export async function getApplication(id) {
 }
 
 /**  @returns {Promise<{status, message, data}>} */
+export async function updateSettings(id, values) {
+  return await rest('manageApp/updateAppSettings/' + id, values);
+}
+
+/**  @returns {Promise<{status, message, data}>} */
 export async function saveConfiguration(id, configuration) {
   return await rest('manageApp/saveAppConfiguration/' + id, {
     configuration: JSON.stringify(configuration)

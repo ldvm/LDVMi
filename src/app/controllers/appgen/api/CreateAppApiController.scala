@@ -110,11 +110,11 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
   def createApp = RestAction[CreateAppRequest] { implicit request => json =>
     withDiscovery(PipelineId(json.pipelineId)) { (pipeline, discovery, userDiscovery) =>
       val id = applicationsRepository save
-        new Application(None, json.name, json.name, None,
+        new Application(None, json.name, "", None,
           request.user.id.get,
           pipeline.id.get,
           userDiscovery.id.get,
-          pipeline.visualizerComponentTemplateId, None)
+          pipeline.visualizerComponentTemplateId, None).withUpdatedUid
       Ok(SuccessResponse("Application has been created", data = Seq("id" -> id)))
     }
   }

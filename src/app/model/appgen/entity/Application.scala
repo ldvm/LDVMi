@@ -1,5 +1,7 @@
 package model.appgen.entity
 
+import java.text.Normalizer
+
 import model.entity.{ComponentTemplateId, PipelineId}
 import org.virtuslab.unicorn.LongUnicornPlay._
 import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
@@ -18,7 +20,20 @@ case class Application(
   userPipelineDiscoveryId: UserPipelineDiscoveryId,
   visualizerComponentTemplateId: ComponentTemplateId,
   configuration: Option[String])
-  extends WithId[ApplicationId]
+  extends WithId[ApplicationId] {
+
+  def withUpdatedUid = {
+    val newUid = Normalizer
+      .normalize(name, Normalizer.Form.NFD)
+      .replaceAll("[^\\p{ASCII}]", "")
+      .replaceAll("[^a-zA-Z0-9 ]", "")
+      .replaceAll(" +", " ")
+      .trim().toLowerCase()
+      .replaceAll(" ", "-")
+
+    copy(uid = newUid)
+  }
+}
 
 
 class Applications(tag: Tag) extends IdTable[ApplicationId, Application](tag, "appgen_applications") {

@@ -9,12 +9,16 @@ import { Visualizer } from '../../common/models'
 import { PromiseStatus } from '../../../ducks/promises'
 import PromiseResult from '../../../misc/components/PromiseResult'
 import ApplicationHeader from '../components/ApplicationHeader'
+import GeneralSettings from '../containers/GeneralSettings'
 import CenteredMessage from '../../../misc/components/CenteredMessage'
 import BodyPadding from '../../../misc/components/BodyPadding'
 import { visualizerConfigurator } from '../../visualizerConfigurators/routes'
+import { dialogOpen } from '../../../ducks/dialog'
+import { dialogName as generalSettingsDialogName } from '../dialogs/GeneralSettingsDialog'
 
 class Application extends Component {
   static propTypes = {
+    dispatch: PropTypes.func.isRequired,
     application: PropTypes.instanceOf(ApplicationModel).isRequired,
     visualizer: PropTypes.instanceOf(Visualizer).isRequired,
     applicationStatus: PropTypes.instanceOf(PromiseStatus).isRequired
@@ -38,7 +42,9 @@ class Application extends Component {
   }
 
   render() {
-    const { application, visualizer, applicationStatus, children } = this.props;
+    const { dispatch, application, visualizer, applicationStatus, children } = this.props;
+
+    const openGeneralSettingsDialog = () => dispatch(dialogOpen(generalSettingsDialogName));
 
     if (!applicationStatus.done) {
       return <BodyPadding><PromiseResult status={applicationStatus} /></BodyPadding>
@@ -46,7 +52,12 @@ class Application extends Component {
 
     return <div>
       <Helmet title={application.name} />
-      <ApplicationHeader application={application} visualizer={visualizer} />
+      <ApplicationHeader
+        application={application}
+        visualizer={visualizer}
+        openGeneralSettingsDialog={openGeneralSettingsDialog}
+      />
+      <GeneralSettings application={application} />
 
       {!children &&
         <CenteredMessage>Loading visualizer configurator...</CenteredMessage>}
