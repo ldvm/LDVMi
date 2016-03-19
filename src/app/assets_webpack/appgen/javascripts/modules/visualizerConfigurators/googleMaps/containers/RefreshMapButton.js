@@ -7,20 +7,21 @@ import { Application } from '../../../manageApp/models'
 import Button from '../../../../misc/components/Button'
 import { getMarkers, markersStatusSelector } from '../ducks/markers'
 
-const RefreshMapButton = ({ dispatch, application, filters, status }) => {
+const RefreshMapButton = props => {
+  const { dispatch, status } = props;
   const label = status.isLoading ? 'Refreshing map...' : 'Refresh map';
 
   return <Button warning raised
-     onTouchTap={() => dispatch(getMarkers(application.id, filters ))}
+     onTouchTap={() => dispatch(getMarkers())}
      disabled={status.isLoading}
-     fullWidth icon="refresh"
-     label={label} />
+     icon="refresh"
+     label={label}
+     {...props}
+  />
 };
 
 RefreshMapButton.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  application: PropTypes.instanceOf(Application).isRequired,
-  filters: PropTypes.instanceOf(Map),
   status: PropTypes.instanceOf(PromiseStatus).isRequired
 };
 

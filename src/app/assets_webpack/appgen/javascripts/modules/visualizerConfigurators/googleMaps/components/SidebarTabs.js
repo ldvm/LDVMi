@@ -40,7 +40,7 @@ const SidebarTabs = ({ application, filters }) => {
           </div>
         </FillInScreen>
         <Padding space={2}>
-          <RefreshMapButton application={application} filters={filters} />
+          <RefreshMapButton fullWidth />
         </Padding>
       </Tab>
     </Tabs>

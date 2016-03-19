@@ -6,6 +6,7 @@ import Sidebar from '../containers/Sidebar'
 import FillInScreen from '../../../../misc/components/FillInScreen'
 import BodyPadding from '../../../../misc/components/BodyPadding'
 import MapContainer from '../containers/MapContainer'
+import Toolbar from './Toolbar'
 
 const wrapperStyle = {
   position: 'relative',
@@ -14,6 +15,12 @@ const wrapperStyle = {
 const sidebarStyle = {
   width: '450px',
   position: 'absolute',
+  zIndex: 3
+};
+
+const toolbarStyle = {
+  position: 'absolute',
+  right: 0,
   zIndex: 3
 };
 
@@ -44,14 +51,21 @@ const insetShadowStyle = {
 
 const ConfiguratorLayout = ({ application }) => {
   return <div style={wrapperStyle}>
+
     <div style={insetShadowWrapperStyle}>
       <Paper style={insetShadowStyle} />
     </div>
+
     <div style={sidebarStyle}>
       <BodyPadding>
         <Sidebar application={application} />
       </BodyPadding>
     </div>
+
+    <div style={toolbarStyle}>
+      <Toolbar />
+    </div>
+
     <div style={mapStyle}>
       <FillInScreen forceFill={true}>
         <MapContainer />

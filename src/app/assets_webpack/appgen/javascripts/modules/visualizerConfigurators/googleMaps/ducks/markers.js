@@ -6,6 +6,8 @@ import { createPromiseStatusSelector } from '../../../../ducks/promises'
 import { notification } from '../../../../actions/notification'
 import createAction from '../../../../misc/createAction'
 import * as api from '../api'
+import { filtersSelector } from './filters'
+import { applicationSelector } from './../../../manageApp/ducks/application'
 
 // Actions
 
@@ -14,13 +16,17 @@ export const GET_MARKERS_START = GET_MARKERS + '_START';
 export const GET_MARKERS_ERROR = GET_MARKERS + '_ERROR';
 export const GET_MARKERS_SUCCESS = GET_MARKERS + '_SUCCESS';
 
-export function getMarkers(appId, filters) {
-  return (dispatch) => {
+export function getMarkers() {
+  return (dispatch, getState) => {
+    const appId = applicationSelector(getState()).id;
+    const filters = filtersSelector(getState());
+
     const mapQueryData = {
       filters: filters.filter(filter => filter.enabled).map(filter => filter.options
         .map(option => ({uri: option.skosConcept.uri, isActive: option.selected})).toList()
       ).toJS()
     };
+
     const promise = api.getMarkers(appId, mapQueryData)
       .catch(e => {
         dispatch(notification('Fetching markers for the map failed. Try different filters.'));
