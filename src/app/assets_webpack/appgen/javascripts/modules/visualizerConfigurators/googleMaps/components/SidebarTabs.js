@@ -4,6 +4,7 @@ import Tabs from 'material-ui/lib/tabs/tabs';
 import Tab from 'material-ui/lib/tabs/tab';
 import Paper from 'material-ui/lib/paper';
 import RefreshMapButton from '../containers/RefreshMapButton'
+import SaveButton from '../containers/SaveButton'
 import FillInScreen from '../../../../misc/components/FillInScreen'
 import Button from '../../../../misc/components/Button'
 import Padding from '../../../../misc/components/Padding'
@@ -11,7 +12,7 @@ import FilterConfig from '../containers/FilterConfig'
 import FilterPreview from '../containers/FilterPreview'
 import { Application } from '../../../manageApp/models'
 
-const SidebarTabs = ({ application, filters }) => {
+const SidebarTabs = ({ filters }) => {
 
   return <Paper zDepth={2}>
     <Tabs inkBarStyle={{ backgroundColor: 'white' }}>
@@ -26,7 +27,7 @@ const SidebarTabs = ({ application, filters }) => {
           </div>
         </FillInScreen>
         <Padding space={2}>
-          <Button success raised fullWidth icon="done" label="Save changes" />
+          <SaveButton fullWidth />
         </Padding>
       </Tab>
       <Tab label="Preview">
@@ -48,7 +49,6 @@ const SidebarTabs = ({ application, filters }) => {
 };
 
 SidebarTabs.propTypes = {
-  application: PropTypes.instanceOf(Application).isRequired,
   filters: PropTypes.instanceOf(Map)
 };
 

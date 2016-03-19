@@ -10,17 +10,16 @@ import PromiseResult from '../../../../misc/components/PromiseResult'
 import SidebarTabs from '../components/SidebarTabs'
 import PropertiesLoadingStatus from '../components/PropertiesLoadingStatus'
 
-const Sidebar = ({ application, filters, status}) => {
+const Sidebar = ({ filters, status}) => {
   if (!status.done) {
     return <PropertiesLoadingStatus status={status} />;
   } else {
-    return <SidebarTabs application={application} filters={filters} />;
+    return <SidebarTabs filters={filters} />;
   }
 };
 
 Sidebar.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  application: PropTypes.instanceOf(Application).isRequired,
   filters: PropTypes.instanceOf(Map),
   status: PropTypes.instanceOf(PromiseStatus).isRequired
 };

@@ -5,10 +5,11 @@ import BodyPadding from '../../../../misc/components/BodyPadding'
 import Button from '../../../../misc/components/Button'
 import RefreshMapButton from '../containers/RefreshMapButton'
 import PublishSettingsContainer from '../containers/PublishSettingsContainer'
+import SaveButton from '../containers/SaveButton'
 
 const Toolbar = () => {
   return <BodyPadding>
-    <Button success raised icon="done" label="Save changes" />
+    <SaveButton />
     <RefreshMapButton  />
     <PublishSettingsContainer />
   </BodyPadding>

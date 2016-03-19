@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Row, Col } from 'react-flexbox-grid'
 import Paper from 'material-ui/lib/paper';
-import { Application } from '../../../manageApp/models'
 import Sidebar from '../containers/Sidebar'
 import FillInScreen from '../../../../misc/components/FillInScreen'
 import BodyPadding from '../../../../misc/components/BodyPadding'
@@ -49,7 +48,7 @@ const insetShadowStyle = {
   zIndex: 3
 };
 
-const ConfiguratorLayout = ({ application }) => {
+const ConfiguratorLayout = () => {
   return <div style={wrapperStyle}>
 
     <div style={insetShadowWrapperStyle}>
@@ -58,7 +57,7 @@ const ConfiguratorLayout = ({ application }) => {
 
     <div style={sidebarStyle}>
       <BodyPadding>
-        <Sidebar application={application} />
+        <Sidebar  />
       </BodyPadding>
     </div>
 
@@ -72,10 +71,6 @@ const ConfiguratorLayout = ({ application }) => {
       </FillInScreen>
     </div>
   </div>;
-};
-
-ConfiguratorLayout.propTypes = {
-  application: PropTypes.instanceOf(Application).isRequired
 };
 
 export default ConfiguratorLayout;

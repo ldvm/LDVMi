@@ -14,7 +14,7 @@ class Configurator extends Component {
   }
 
   render() {
-    return <ConfiguratorLayout application={this.props.application} />;
+    return <ConfiguratorLayout />;
   }
 }
 
