@@ -4,6 +4,7 @@ import createAction from '../../../../misc/createAction'
 import { CONFIGURE_FILTER } from './filtersConfig'
 import { Option, optionModes as modes } from '../models'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 
 /**
  * Check the option config update and make sure that the 'selected' property is consistent with
@@ -68,6 +69,9 @@ export default function optionsConfigsReducer(state = initialState, action) {
   let update;
 
   switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
     case GET_CONFIGURATION_SUCCESS:
         if ("optionsConfig" in action.payload) {
           return initialState.mergeDeep(action.payload.optionsConfig);

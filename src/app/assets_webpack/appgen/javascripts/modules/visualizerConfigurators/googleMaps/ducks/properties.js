@@ -5,6 +5,7 @@ import prefix from '../prefix'
 import { createPromiseStatusSelector } from '../../../../ducks/promises'
 import { moduleSelector } from '../selector'
 import { Property } from '../models'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 
 // Actions
 
@@ -15,10 +16,16 @@ export const GET_PROPERTIES_SUCCESS = GET_PROPERTIES + '_SUCCESS';
 
 // Reducer
 
-export default function propertiesReducer(state = new List(), action) {
-  if (action.type == GET_PROPERTIES_SUCCESS) {
-    const asObject = arrayToObject(action.payload, property => property.uri);
-    return fromJS(asObject).map(property => new Property(property));
+const initialState = new List();
+
+export default function propertiesReducer(state = initialState, action) {
+  switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
+    case GET_PROPERTIES_SUCCESS:
+      const asObject = arrayToObject(action.payload, property => property.uri);
+      return fromJS(asObject).map(property => new Property(property));
   }
 
   return state;

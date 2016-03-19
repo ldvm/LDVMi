@@ -3,6 +3,7 @@ import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import { Filter, Option } from '../models'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 
 // Actions
 
@@ -19,6 +20,9 @@ const initialState = new Map();
 
 export default function filtersConfigReducer(state = initialState, action) {
   switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+    
     case GET_CONFIGURATION_SUCCESS:
       if ("filtersConfig" in action.payload) {
         return initialState.mergeDeep(action.payload.filtersConfig);

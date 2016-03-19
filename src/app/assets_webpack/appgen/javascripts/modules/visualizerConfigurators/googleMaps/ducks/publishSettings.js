@@ -4,6 +4,7 @@ import createAction from '../../../../misc/createAction'
 import { PublishSettings } from '../models'
 import moduleSelector from '../selector'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 
 // Actions
 
@@ -19,6 +20,9 @@ const initialState = PublishSettings();
 
 export default function publishSettingsReducer(state = initialState, action) {
   switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
     case GET_CONFIGURATION_SUCCESS:
       if ("publishSettings" in action.payload) {
         return initialState.mergeDeep(action.payload.publishSettings);

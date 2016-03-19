@@ -8,6 +8,7 @@ import createAction from '../../../../misc/createAction'
 import * as api from '../api'
 import { filtersSelector } from './filters'
 import { applicationSelector } from './../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 
 // Actions
 
@@ -41,8 +42,12 @@ export function getMarkers() {
 const initialState = new List();
 
 export default function markersReducer(state = initialState, action) {
-  if (action.type == GET_MARKERS_SUCCESS) {
-    return new List(action.payload);
+  switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
+    case GET_MARKERS_SUCCESS:
+      return new List(action.payload);
   }
 
   return state;

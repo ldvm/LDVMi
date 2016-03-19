@@ -5,6 +5,7 @@ import { arrayToObject } from '../../../../misc/utils'
 import { createPromiseStatusSelector, createPromiseStatusesSelector } from '../../../../ducks/promises'
 import moduleSelector  from '../selector'
 import { SkosConcept } from '../models'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 
 // Actions
 
@@ -15,13 +16,19 @@ export const GET_SKOS_CONCEPTS_SUCCESS = GET_SKOS_CONCEPTS + '_SUCCESS';
 
 // Reducer
 
-export default function skosConceptsReducer(state = new Map(), action) {
-  if (action.type == GET_SKOS_CONCEPTS_SUCCESS) {
-    const update = (new Map(action.payload)).map(conceptsForScheme =>
-      (new Map(arrayToObject(conceptsForScheme, concept => concept.uri)))
-        .map(concept => new SkosConcept(concept)));
+const initialState = new Map();
 
-    return state.merge(update);
+export default function skosConceptsReducer(state = initialState, action) {
+  switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
+    case GET_SKOS_CONCEPTS_SUCCESS:
+      const update = (new Map(action.payload)).map(conceptsForScheme =>
+        (new Map(arrayToObject(conceptsForScheme, concept => concept.uri)))
+          .map(concept => new SkosConcept(concept)));
+
+      return state.merge(update);
   }
 
   return state;

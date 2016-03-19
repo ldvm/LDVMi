@@ -4,7 +4,8 @@ import { CONFIGURE_FILTER } from './filtersConfig'
 import { CONFIGURE_OPTION, CONFIGURE_ALL_OPTIONS } from './optionsConfig'
 import { UPDATE_PUBLISH_SETTINGS } from './publishSettings'
 import { UPDATE_MAP_STATE } from './mapState'
-import { SAVE_CONFIGURATION_START, SAVE_CONFIGURATION_ERROR } from './configuration'
+import { SAVE_CONFIGURATION_START, SAVE_CONFIGURATION_ERROR, GET_CONFIGURATION_SUCCESS } from './configuration'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 
 // Reducer
 
@@ -22,6 +23,8 @@ export default function dirtyReducer(state = false, action) {
     // that has been sent to the server. Any changes that might occur after (but before
     // the request is finished) have to be saved separately using another request.
     case SAVE_CONFIGURATION_START:
+    case GET_APPLICATION_START:
+    case GET_CONFIGURATION_SUCCESS:
       return false;
   }
 

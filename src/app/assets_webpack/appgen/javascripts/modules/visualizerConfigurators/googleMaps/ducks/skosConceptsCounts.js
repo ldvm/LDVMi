@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 import { createPromiseStatusSelector } from '../../../../ducks/promises'
 import prefix from '../prefix'
 import moduleSelector  from '../selector'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 
 // Actions
 
@@ -13,9 +14,15 @@ export const GET_SKOS_CONCEPTS_COUNTS_SUCCESS = GET_SKOS_CONCEPTS_COUNTS + '_SUC
 
 // Reducer
 
-export default function skosConceptsReducer(state = new Map(), action) {
-  if (action.type == GET_SKOS_CONCEPTS_COUNTS_SUCCESS) {
-    return state.merge(fromJS(action.payload));
+const initialState = new Map();
+
+export default function skosConceptsReducer(state = initialState, action) {
+  switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
+    case GET_SKOS_CONCEPTS_COUNTS_SUCCESS:
+      return state.merge(fromJS(action.payload));
   }
 
   return state;

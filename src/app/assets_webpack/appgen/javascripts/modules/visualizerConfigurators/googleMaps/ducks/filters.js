@@ -7,6 +7,9 @@ import skosConceptsCountsReducer, { GET_SKOS_CONCEPTS_COUNTS_SUCCESS } from './s
 import filtersConfigReducer, { CONFIGURE_FILTER } from './filtersConfig'
 import optionsConfigReducer, { CONFIGURE_OPTION, CONFIGURE_ALL_OPTIONS, validateOptionsUpdate } from './optionsConfig'
 import { Filter, Option } from '../models'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+
+// Helping stuff
 
 const Filters = Record({
   properties: new Map(),
@@ -35,6 +38,7 @@ const buildFilter = (property, options, config = new Map()) =>
 const buildOption = (skosConcept, count = null, config = new Map()) =>
   (new Option({ skosConcept, count })).merge(config);
 
+// Reducer
 
 export default function filtersReducer(state = new Filters(), action) {
   state = state
@@ -45,6 +49,9 @@ export default function filtersReducer(state = new Filters(), action) {
     .update('optionsConfig', optionsConfig => optionsConfigReducer(optionsConfig, action))
 
   switch (action.type) {
+    case GET_APPLICATION_START:
+      return new Filters();
+
     case GET_PROPERTIES_SUCCESS:
     case GET_SKOS_CONCEPTS_SUCCESS:
     case GET_SKOS_CONCEPTS_COUNTS_SUCCESS:
