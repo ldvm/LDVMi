@@ -49,3 +49,9 @@ export const MapState = Record({
   center: new Coordinates(),
   zoomLevel: 0
 });
+
+export const PublishSettings = Record({
+  refreshOnStartUp: true,
+  showFilters: true,
+  collapsibleFilters: true
+});
