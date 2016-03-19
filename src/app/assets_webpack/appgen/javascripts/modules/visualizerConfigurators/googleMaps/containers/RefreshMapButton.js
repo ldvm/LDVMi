@@ -4,14 +4,15 @@ import { createStructuredSelector } from 'reselect'
 import { PromiseStatus } from '../../../../ducks/promises'
 import Button from '../../../../misc/components/Button'
 import { getMarkers, markersStatusSelector } from '../ducks/markers'
+import { propertiesStatusSelector } from '../ducks/properties'
 
 const RefreshMapButton = props => {
-  const { dispatch, status } = props;
-  const label = status.isLoading ? 'Refreshing map...' : 'Refresh map';
+  const { dispatch, markersStatus, propertiesStatus} = props;
+  const label = markersStatus.isLoading ? 'Refreshing map...' : 'Refresh map';
 
   return <Button warning raised
      onTouchTap={() => dispatch(getMarkers())}
-     disabled={status.isLoading}
+     disabled={markersStatus.isLoading || propertiesStatus.isLoading}
      icon="refresh"
      label={label}
      {...props}
@@ -20,11 +21,13 @@ const RefreshMapButton = props => {
 
 RefreshMapButton.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  status: PropTypes.instanceOf(PromiseStatus).isRequired
+  markersStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
+  propertiesStatus: PropTypes.instanceOf(PromiseStatus).isRequired
 };
 
 const selector = createStructuredSelector({
-  status: markersStatusSelector
+  markersStatus: markersStatusSelector,
+  propertiesStatus: propertiesStatusSelector
 });
 
 export default connect(selector)(RefreshMapButton);

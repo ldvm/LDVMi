@@ -3,6 +3,8 @@ import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import { Coordinates, MapState } from '../models'
 import moduleSelector from '../selector'
+import { GET_CONFIGURATION_SUCCESS } from './configuration'
+
 
 // Actions
 
@@ -25,6 +27,12 @@ const initialState = new MapState({
 
 export default function mapStateReducer(state = initialState, action) {
   switch (action.type) {
+    case GET_CONFIGURATION_SUCCESS:
+      if ("mapState" in action.payload) {
+        return initialState.mergeDeep(action.payload.mapState);
+      }
+      break;
+
     case UPDATE_MAP_STATE:
       return state.mergeDeep(action.payload.update);
   }

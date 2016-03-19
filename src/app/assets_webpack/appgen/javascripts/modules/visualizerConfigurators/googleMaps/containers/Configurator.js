@@ -5,12 +5,14 @@ import { Application } from '../../../manageApp/models'
 import { Visualizer } from '../../../common/models'
 import * as api from '../api'
 import { queryDataset } from '../actions'
+import { getConfiguration } from '../ducks/configuration'
 import ConfiguratorLayout from '../components/ConfiguratorLayout'
 
 class Configurator extends Component {
   componentWillMount() {
-    const { dispatch, application } = this.props;
-    dispatch(queryDataset(application.id));
+    const { dispatch } = this.props;
+    dispatch(queryDataset());
+    dispatch(getConfiguration());
   }
 
   render() {

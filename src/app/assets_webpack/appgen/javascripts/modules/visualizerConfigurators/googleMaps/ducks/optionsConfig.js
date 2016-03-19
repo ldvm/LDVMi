@@ -3,6 +3,7 @@ import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import { CONFIGURE_FILTER } from './filtersConfig'
 import { Option, optionModes as modes } from '../models'
+import { GET_CONFIGURATION_SUCCESS } from './configuration'
 
 /**
  * Check the option config update and make sure that the 'selected' property is consistent with
@@ -61,10 +62,18 @@ export function selectAllOptions(propertyUri, skosConceptUris, selected) {
 
 // Reducer
 
-export default function optionsConfigsReducer(state = new Map(), action) {
+const initialState = new Map();
+
+export default function optionsConfigsReducer(state = initialState, action) {
   let update;
 
   switch (action.type) {
+    case GET_CONFIGURATION_SUCCESS:
+        if ("optionsConfig" in action.payload) {
+          return initialState.mergeDeep(action.payload.optionsConfig);
+        }
+      break;
+
     case CONFIGURE_OPTION:
     case CONFIGURE_ALL_OPTIONS:
       update = validateOptionsUpdate(state, action.payload.update);

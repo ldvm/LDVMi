@@ -114,7 +114,7 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
           request.user.id.get,
           pipeline.id.get,
           userDiscovery.id.get,
-          pipeline.visualizerComponentTemplateId)
+          pipeline.visualizerComponentTemplateId, None)
       Ok(SuccessResponse("Application has been created", data = Seq("id" -> id)))
     }
   }

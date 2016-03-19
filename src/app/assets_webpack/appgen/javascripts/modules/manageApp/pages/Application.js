@@ -10,6 +10,7 @@ import { PromiseStatus } from '../../../ducks/promises'
 import PromiseResult from '../../../misc/components/PromiseResult'
 import ApplicationHeader from '../components/ApplicationHeader'
 import CenteredMessage from '../../../misc/components/CenteredMessage'
+import BodyPadding from '../../../misc/components/BodyPadding'
 import { visualizerConfigurator } from '../../visualizerConfigurators/routes'
 
 class Application extends Component {
@@ -40,7 +41,7 @@ class Application extends Component {
     const { application, visualizer, applicationStatus, children } = this.props;
 
     if (!applicationStatus.done) {
-      return <PromiseResult status={applicationStatus} />
+      return <BodyPadding><PromiseResult status={applicationStatus} /></BodyPadding>
     }
 
     return <div>

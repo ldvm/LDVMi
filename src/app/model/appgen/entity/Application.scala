@@ -16,7 +16,8 @@ case class Application(
   userId: UserId,
   pipelineId: PipelineId,
   userPipelineDiscoveryId: UserPipelineDiscoveryId,
-  visualizerComponentTemplateId: ComponentTemplateId)
+  visualizerComponentTemplateId: ComponentTemplateId,
+  configuration: Option[String])
   extends WithId[ApplicationId]
 
 
@@ -28,6 +29,8 @@ class Applications(tag: Tag) extends IdTable[ApplicationId, Application](tag, "a
   def pipelineId = column[PipelineId]("pipeline_id", O.NotNull)
   def userPipelineDiscoveryId = column[UserPipelineDiscoveryId]("user_pipeline_discovery_id", O.NotNull)
   def visualizerComponentTemplateId = column[ComponentTemplateId]("visualizer_component_template_id", O.NotNull)
+  def configuration = column[String]("configuration", O.Nullable)
 
-  override def * = (id.?, name, uid, description.?, userId, pipelineId, userPipelineDiscoveryId, visualizerComponentTemplateId) <> (Application.tupled, Application.unapply)
+  override def * = (id.?, name, uid, description.?, userId, pipelineId, userPipelineDiscoveryId,
+    visualizerComponentTemplateId, configuration.?) <> (Application.tupled, Application.unapply)
 }

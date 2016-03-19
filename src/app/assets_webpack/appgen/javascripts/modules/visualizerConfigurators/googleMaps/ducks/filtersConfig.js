@@ -2,6 +2,7 @@ import { Map, List, fromJS } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import { Filter, Option } from '../models'
+import { GET_CONFIGURATION_SUCCESS } from './configuration'
 
 // Actions
 
@@ -14,8 +15,16 @@ export function configureFilter(propertyUri, settings) {
 
 // Reducer
 
-export default function filtersConfigReducer(state = new Map(), action) {
+const initialState = new Map();
+
+export default function filtersConfigReducer(state = initialState, action) {
   switch (action.type) {
+    case GET_CONFIGURATION_SUCCESS:
+      if ("filtersConfig" in action.payload) {
+        return initialState.mergeDeep(action.payload.filtersConfig);
+      }
+      break;
+
     case CONFIGURE_FILTER:
       return state.mergeDeep(action.payload.update);
   }

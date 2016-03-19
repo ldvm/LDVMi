@@ -1,5 +1,6 @@
 package controllers.appgen.api
 
+import model.appgen.rest.SaveAppConfigurationRequest.SaveAppConfigurationRequest
 import play.api.mvc._
 import controllers.appgen.api.JsonImplicits._
 import controllers.api.JsonImplicits._
@@ -23,7 +24,22 @@ class ManageAppApiController(implicit inj: Injector) extends RestController {
 
   def getApp(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
     withApplication(ApplicationId(id)) { application =>
-      Ok(SuccessResponse(data = Seq("application" -> application)))
+      // Let's leave out the configuration, as it might be large. The user can always load it
+      // using a separate request.
+      Ok(SuccessResponse(data = Seq("application" -> application.copy(configuration = None))))
+    }
+  }
+
+  def getAppConfiguration(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
+    withApplication(ApplicationId(id)) { application =>
+      Ok(SuccessResponse(data = Seq("configuration" -> application.configuration)))
+    }
+  }
+
+  def saveAppConfiguration(id: Long) = RestAction[SaveAppConfigurationRequest] { implicit request => json =>
+    withApplication(ApplicationId(id)) { application =>
+      applicationsRepository.save(application.copy(configuration = Some(json.configuration)))
+      Ok(SuccessResponse("The configuration has been saved"))
     }
   }
 }
