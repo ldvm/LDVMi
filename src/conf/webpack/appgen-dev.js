@@ -22,11 +22,13 @@ module.exports = {
         test: /\.js$/,
         loaders: ['react-hot', 'babel'],
         exclude: /node_modules/
-      }, {
-        test: /(\.scss|\.css)$/,
-        loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass?sourceMap'),
-        include: /node_modules/
-      }, {
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css?modules',
+        include: /flexboxgrid/,
+      }
+      , {
         test: /(\.scss|\.css)$/,
         loader: 'style!css!sass',
         exclude: /node_modules/
@@ -35,7 +37,6 @@ module.exports = {
   },
   postcss: [autoprefixer],
   plugins: [
-    new ExtractTextPlugin('bundle.css', {allChunks: true}),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({
