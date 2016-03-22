@@ -1,5 +1,6 @@
 package model.appgen.service
 
+import model.appgen.entity.Application
 import model.appgen.entity.Visualizer._
 import model.entity._
 import CustomUnicornPlay.driver.simple._
@@ -13,4 +14,8 @@ class VisualizerService(implicit inj: Injector) extends Injectable {
       visualizerTemplate <- visualizerTemplatesQuery
       componentTemplate <- componentTemplatesQuery if componentTemplate.id === visualizerTemplate.componentTemplateId
     } yield componentTemplate).list.map(ct => fromComponentTemplate(ct))
+
+  def getVisualizer(application: Application)(implicit session: Session): Option[Visualizer] = {
+    getVisualizers.find(_.componentTemplateId.get == application.visualizerComponentTemplateId)
+  }
 }
