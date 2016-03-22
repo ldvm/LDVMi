@@ -3,8 +3,8 @@ import Divider from 'material-ui/lib/divider';
 import Checkbox from 'material-ui/lib/checkbox';
 import RadioButton from 'material-ui/lib/radio-button';
 import { Option as OptionModel } from '../models'
-import Padding from '../../../../misc/components/Padding'
-import Label from '../../../../misc/components/Label'
+import Padding from '../../../../components/Padding'
+import Label from '../../../core/components/Label'
 import makePureRender from '../../../../misc/makePureRender'
 import { optionModes as modes, filterTypes as types } from  '../models'
 

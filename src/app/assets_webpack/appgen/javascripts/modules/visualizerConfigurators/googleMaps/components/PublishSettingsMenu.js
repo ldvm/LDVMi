@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import IconMenu from 'material-ui/lib/menus/icon-menu'
 import MenuItem from 'material-ui/lib/menus/menu-item'
-import Button from '../../../../misc/components/Button'
+import Button from '../../../../components/Button'
 import { PublishSettings } from '../models'
 import { updatePublishSettings } from '../ducks/publishSettings'
 

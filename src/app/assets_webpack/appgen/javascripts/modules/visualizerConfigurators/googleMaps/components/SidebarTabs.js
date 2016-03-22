@@ -5,9 +5,9 @@ import Tab from 'material-ui/lib/tabs/tab';
 import Paper from 'material-ui/lib/paper';
 import RefreshMapButton from '../containers/RefreshMapButton'
 import SaveButton from '../containers/SaveButton'
-import FillInScreen from '../../../../misc/components/FillInScreen'
-import Button from '../../../../misc/components/Button'
-import Padding from '../../../../misc/components/Padding'
+import FillInScreen from '../../../../components/FillInScreen'
+import Button from '../../../../components/Button'
+import Padding from '../../../../components/Padding'
 import FilterConfig from '../containers/FilterConfig'
 import FilterPreview from '../containers/FilterPreview'
 import { Application } from '../../../manageApp/models'

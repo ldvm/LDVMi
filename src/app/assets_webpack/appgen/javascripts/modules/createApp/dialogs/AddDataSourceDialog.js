@@ -4,8 +4,8 @@ import { reduxForm } from 'redux-form';
 import { makeValidator, errorTextFactory } from '../../../misc/formUtils'
 import { dialogClose } from '../../core/ducks/dialog'
 import TextField from 'material-ui/lib/text-field';
-import Checkbox from '../../../misc/components/Checkbox';
-import Button from '../../../misc/components/Button'
+import Checkbox from '../../../components/Checkbox';
+import Button from '../../../components/Button'
 import Dialog from '../../../containers/Dialog';
 
 export const dialogName = 'ADD_DATA_SOURCE_DIALOG';

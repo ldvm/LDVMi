@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import FontIcon from 'material-ui/lib/font-icon'
 import RaisedButton from 'material-ui/lib/raised-button';
 import FlatButon from 'material-ui/lib/flat-button';
-import * as Theme from '../theme';
-import { getColorType } from '../utils';
+import * as Theme from '../misc/theme';
+import { getColorType } from '../misc/utils';
 
 // Cannot be a stateless component because in some special cases the component needs to accept
 // the 'ref' attribute.

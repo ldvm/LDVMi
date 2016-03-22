@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react'
 import { Row, Col } from 'react-flexbox-grid'
 import Paper from 'material-ui/lib/paper';
 import Sidebar from '../containers/Sidebar'
-import FillInScreen from '../../../../misc/components/FillInScreen'
-import BodyPadding from '../../../../misc/components/BodyPadding'
+import FillInScreen from '../../../../components/FillInScreen'
+import BodyPadding from '../../../../components/BodyPadding'
 import MapContainer from '../containers/MapContainer'
 import Toolbar from './Toolbar'
 

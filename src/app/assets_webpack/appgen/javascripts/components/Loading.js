@@ -1,6 +1,6 @@
 import React from 'react'
 import CircularProgress from 'material-ui/lib/circular-progress';
-import MaterialTheme from '../materialTheme';
+import MaterialTheme from '../misc/materialTheme';
 
 const Loading = (props) => {
   const spacing = MaterialTheme.spacing.desktopGutterLess + 'px';

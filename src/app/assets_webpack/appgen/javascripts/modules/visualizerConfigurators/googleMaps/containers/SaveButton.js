@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { PromiseStatus } from '../../../core/models'
-import Button from '../../../../misc/components/Button'
+import Button from '../../../../components/Button'
 import { saveConfiguration, configurationStatusSelector } from '../ducks/configuration'
 import { dirtySelector } from '../ducks/dirty'
 

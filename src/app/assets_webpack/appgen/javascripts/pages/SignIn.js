@@ -6,8 +6,8 @@ import SignInForm from '../modules/auth/SignInForm'
 import { signIn } from '../modules/auth/api'
 import * as authActions from '../modules/auth/actions'
 import { notification } from '../modules/core/ducks/notifications'
-import PaperCard from '../misc/components/PaperCard'
-import NarrowedLayout from '../misc/components/NarrowedLayout'
+import PaperCard from '../components/PaperCard'
+import NarrowedLayout from '../components/NarrowedLayout'
 
 const SignIn = ({dispatch}) => {
 

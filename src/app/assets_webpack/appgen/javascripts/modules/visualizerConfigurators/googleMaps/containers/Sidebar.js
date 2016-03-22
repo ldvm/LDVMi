@@ -6,7 +6,7 @@ import { propertiesStatusSelector } from '../ducks/properties'
 import { filtersSelector } from '../ducks/filters'
 import { PromiseStatus } from '../../../core/models'
 import { Application } from '../../../manageApp/models'
-import PromiseResult from '../../../../misc/components/PromiseResult'
+import PromiseResult from '../../../core/components/PromiseResult'
 import SidebarTabs from '../components/SidebarTabs'
 import PropertiesLoadingStatus from '../components/PropertiesLoadingStatus'
 

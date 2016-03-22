@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react'
 import { List } from 'immutable';
 import Paper from 'material-ui/lib/paper';
 import Divider from 'material-ui/lib/divider';
-import Button from '../../../misc/components/Button';
-import IconButton from '../../../misc/components/IconButton';
+import Button from '../../../components/Button';
+import IconButton from '../../../components/IconButton';
 import MaterialTheme from '../../../misc/materialTheme';
 
 const spacing = MaterialTheme.spacing.desktopGutterLess + 'px';

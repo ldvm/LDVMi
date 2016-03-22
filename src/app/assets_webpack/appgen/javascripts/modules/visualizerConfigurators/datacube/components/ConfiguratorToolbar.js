@@ -9,7 +9,7 @@ import Toolbar from 'material-ui/lib/toolbar/toolbar';
 import ToolbarGroup from 'material-ui/lib/toolbar/toolbar-group';
 import ToolbarSeparator from 'material-ui/lib/toolbar/toolbar-separator';
 import ToolbarTitle from 'material-ui/lib/toolbar/toolbar-title';
-import Button from '../../../../misc/components/Button'
+import Button from '../../../../components/Button'
 
 // To vertically center the button on toolbar
 const Padding = ({ children }) => <div style={{ margin: '10px 0 '}}>{children}</div>;

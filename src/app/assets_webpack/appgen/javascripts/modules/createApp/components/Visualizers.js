@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { List } from 'immutable'
-import PaperCard from '../../../misc/components/PaperCard'
+import PaperCard from '../../../components/PaperCard'
 import Visualizer from './Visualizer'
 import {Grid, Row} from 'react-flexbox-grid'
 

@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import FontIcon from 'material-ui/lib/font-icon';
 import { Application } from '../models'
 import { Visualizer } from '../../core/models'
-import Button from '../../../misc/components/Button'
-import BodyPadding from '../../../misc/components/BodyPadding'
+import Button from '../../../components/Button'
+import BodyPadding from '../../../components/BodyPadding'
 
 const iconStyle = {
   float: 'left',

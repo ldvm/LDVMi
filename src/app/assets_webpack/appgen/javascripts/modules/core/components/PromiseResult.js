@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
-import Loading from './Loading'
-import Alert from './Alert'
-import { PromiseStatus } from '../../modules/core/models'
+import Loading from './../../../components/Loading'
+import Alert from './../../../components/Alert'
+import { PromiseStatus } from '../models'
 
 const PromiseResult = ({error, isLoading}) => {
   if (isLoading === true) {

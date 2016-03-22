@@ -3,7 +3,7 @@ import { Route, IndexRoute } from 'react-router'
 import { getDataSources } from './ducks/dataSources'
 import { getVisualizers } from './../core/ducks/visualizers'
 
-import NarrowedLayout from '../../misc/components/NarrowedLayout'
+import NarrowedLayout from '../../components/NarrowedLayout'
 import SelectSources from './pages/SelectSources'
 import Discovery from './pages/Discovery'
 

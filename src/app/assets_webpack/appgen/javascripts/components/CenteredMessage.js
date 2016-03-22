@@ -1,5 +1,5 @@
 import React from 'react'
-import MaterialTheme from '../materialTheme';
+import MaterialTheme from '../misc/materialTheme';
 
 const CenteredMessage = ({children}) => {
   const spacing = MaterialTheme.spacing.desktopGutterLess + 'px';

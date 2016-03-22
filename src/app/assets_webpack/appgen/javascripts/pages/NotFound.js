@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import NarrowedLayout from '../misc/components/NarrowedLayout'
+import NarrowedLayout from '../components/NarrowedLayout'
 
 export default class NotFound extends Component {
   render() {

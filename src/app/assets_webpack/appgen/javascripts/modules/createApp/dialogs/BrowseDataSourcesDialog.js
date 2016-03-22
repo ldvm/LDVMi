@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react'
 import { List } from 'immutable';
 import { dialogClose } from '../../core/ducks/dialog'
-import Button from '../../../misc/components/Button'
+import Button from '../../../components/Button'
 import Dialog from '../../../containers/Dialog';
-import CenteredMessage from '../../../misc/components/CenteredMessage'
+import CenteredMessage from '../../../components/CenteredMessage'
 
 import Table from 'material-ui/lib/table/table';
 import TableHeaderColumn from 'material-ui/lib/table/table-header-column';

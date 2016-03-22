@@ -5,8 +5,8 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import { Filter } from '../models'
-import Padding from '../../../../misc/components/Padding'
-import Label from '../../../../misc/components/Label'
+import Padding from '../../../../components/Padding'
+import Label from '../../../core/components/Label'
 import * as theme from '../../../../misc/theme'
 import { filterTypes as types, optionModes as modes } from '../models'
 

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import Button from '../../../misc/components/Button'
-import IconButton from '../../../misc/components/IconButton'
+import Button from '../../../components/Button'
+import IconButton from '../../../components/IconButton'
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
 import { dialogOpen, dialogClose } from '../../core/ducks/dialog'

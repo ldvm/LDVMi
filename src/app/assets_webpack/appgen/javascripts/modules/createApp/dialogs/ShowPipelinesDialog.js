@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import { List } from 'immutable';
 import { dialogClose } from '../../core/ducks/dialog'
-import Button from '../../../misc/components/Button'
-import IconButton from '../../../misc/components/IconButton'
+import Button from '../../../components/Button'
+import IconButton from '../../../components/IconButton'
 import Dialog from '../../../containers/Dialog';
 
 import Table from 'material-ui/lib/table/table';

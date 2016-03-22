@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react'
 import Paper from 'material-ui/lib/paper';
-import Alert from '../../../../misc/components/Alert'
-import LinearProgress from '../../../../misc/components/LinearProgress'
-import Padding from '../../../../misc/components/Padding'
-import PaperCard from '../../../../misc/components/PaperCard'
+import Alert from '../../../../components/Alert'
+import LinearProgress from '../../../../components/LinearProgress'
+import Padding from '../../../../components/Padding'
+import PaperCard from '../../../../components/PaperCard'
 import { PromiseStatus } from '../../../core/models'
 
 const PropertiesLoadingStatus = ({ status }) => {

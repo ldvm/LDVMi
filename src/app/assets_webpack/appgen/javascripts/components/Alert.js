@@ -1,9 +1,9 @@
 import React from 'react'
 import FontIcon from 'material-ui/lib/font-icon'
 import Paper from 'material-ui/lib/paper';
-import * as Theme from '../theme';
-import MaterialTheme from '../materialTheme';
-import { getColorType } from '../utils';
+import * as Theme from '../misc/theme';
+import MaterialTheme from '../misc/materialTheme';
+import { getColorType } from '../misc/utils';
 
 const icons = {
   success: 'check',

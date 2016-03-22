@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import Helmet from "react-helmet"
 import React, {Component} from 'react'
 import { Link } from 'react-router'
-import NarrowedLayout from '../misc/components/NarrowedLayout'
+import NarrowedLayout from '../components/NarrowedLayout'
 
 const Home = ({user}) =>
   <NarrowedLayout>

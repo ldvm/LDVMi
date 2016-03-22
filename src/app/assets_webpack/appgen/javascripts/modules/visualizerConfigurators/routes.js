@@ -2,7 +2,7 @@ import React from 'react'
 import { Route } from 'react-router'
 import { routeActions } from 'redux-simple-router'
 import { applicationUrl } from '../manageApp/routes'
-import Alert from '../../misc/components/Alert'
+import Alert from '../../components/Alert'
 import validateVisualizer from './validateVisualizer'
 
 import dataCubeRoutes from './datacube/routes'

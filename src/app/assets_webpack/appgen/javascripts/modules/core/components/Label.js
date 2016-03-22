@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import { Map } from 'immutable'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import makePureRender from '../makePureRender'
-import { langSelector } from '../../modules/core/ducks/lang'
+import makePureRender from '../../../misc/makePureRender'
+import { langSelector } from '../ducks/lang'
 
 function extractLabel(label, lang) {
   const NOLANG = 'nolang';
