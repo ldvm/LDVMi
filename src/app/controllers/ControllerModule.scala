@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.appgen.AppController
 import controllers.appgen.api._
 import controllers.util.AngularController
 import scaldi.Module
@@ -12,7 +13,8 @@ class ControllerModule extends Module {
   binding to new VisualizationController
   binding to new AngularController
 
-  binding to new appgen.ApplicationController
+  binding to new appgen.PlatformController
+  binding to new AppController
   binding to new AuthApiController
   binding to new CreateAppApiController
   binding to new ManageAppApiController
