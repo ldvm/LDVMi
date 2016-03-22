@@ -7,21 +7,23 @@ import scaldi.{Injector, Injectable}
 import play.api.mvc.{Action, Controller}
 import play.api.db.slick._
 import play.api.Play.current
-import views.appgen.AppView
 
-class AppController(implicit inj: Injector) extends Controller with Injectable {
+class ApplicationController(implicit inj: Injector) extends Controller with Injectable {
   val applicationsRepository = inject[ApplicationsRepository]
   val visualizerService = inject[VisualizerService]
 
   def index(id: Long, uid: String, any: Any) = Action {
     DB.withSession { implicit session =>
       // TODO: check for the user
+
+      val baseUrl = routes.ApplicationController.index(id, uid, null).url
+
       (for {
         application <- applicationsRepository.findById(ApplicationId(id))
         visualizer <- visualizerService.getVisualizer(application)
-        view <- AppView.get(visualizer.uri)
-      } yield (application, visualizer, view)) match {
-        case Some((application, visualizer, view)) => Ok(view)
+      } yield (application, visualizer)) match {
+        case Some((application, visualizer))
+          => Ok(views.html.appgen.application(visualizer.name, baseUrl))
         case _ => Redirect("/appgen/app-not-found")
       }
     }

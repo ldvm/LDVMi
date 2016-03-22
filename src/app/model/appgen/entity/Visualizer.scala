@@ -10,6 +10,7 @@ object Visualizer {
     id: Option[ComponentTemplateId],
     uri: String,
     title: String,
+    name: String,
     icon: String,
     description: Option[String] = None,
     componentTemplateId: Option[ComponentTemplateId])
@@ -25,6 +26,14 @@ object Visualizer {
       case "http://linked.opendata.cz/resource/ldvm/visualizer/concept/ConceptVisualizerTemplate" => "library_books"
       case _ => "help"
     }
-    Visualizer(ct.id, ct.uri, ct.title, icon, ct.description, ct.id)
+
+    // Hard-coded name
+    val name = ct.uri match {
+      case "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate" => "googleMaps"
+      case "http://linked.opendata.cz/resource/ldvm/visualizer/data-cube/DataCubeVisualizerTemplate" => "dataCube"
+      case "http://linked.opendata.cz/resource/ldvm/visualizer/concept/ConceptVisualizerTemplate" => "concepts"
+      case _ => "platform"
+    }
+    Visualizer(ct.id, ct.uri, ct.title, name, icon, ct.description, ct.id)
   }
 }

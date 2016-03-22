@@ -5,6 +5,7 @@ import scaldi.{Injectable, Injector}
 
 class PlatformController(implicit inj: Injector) extends Controller with Injectable {
   def index(any: Any) = Action {
-    Ok(views.html.appgen.platform())
+    val baseUrl = routes.PlatformController.index("").url
+    Ok(views.html.appgen.platform(baseUrl))
   }
 }
