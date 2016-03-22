@@ -1,7 +1,7 @@
 import React from 'react'
 import { Route, IndexRoute } from 'react-router'
 import { getDataSources } from './ducks/dataSources'
-import { getVisualizers } from './../common/ducks/visualizers'
+import { getVisualizers } from './../core/ducks/visualizers'
 
 import NarrowedLayout from '../../misc/components/NarrowedLayout'
 import SelectSources from './pages/SelectSources'

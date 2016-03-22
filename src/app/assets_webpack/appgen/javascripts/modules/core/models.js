@@ -15,3 +15,10 @@ export const VisualizerWithPipelines = Record({
   pipelines: new List()
 });
 
+/** Representation of a single promise status */
+export const PromiseStatus = Record({
+  error: "",
+  isLoading: false,
+  done: false
+});
+

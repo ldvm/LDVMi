@@ -1,4 +1,7 @@
 import { Map, Record } from 'immutable'
+import { createSelector } from 'reselect'
+import moduleSelector from '../selector'
+import { PromiseStatus } from '../models'
 
 const DEFAULT_ID = 0;
 
@@ -6,12 +9,7 @@ const START = 'START';
 const SUCCESS = 'SUCCESS';
 const ERROR = 'ERROR';
 
-/** Representation of a single promise status */
-export const PromiseStatus = Record({
-  error: "",
-  isLoading: false,
-  done: false
-});
+// Reducer
 
 const parseType = actionType => {
   for (let status of [START, SUCCESS, ERROR]) {
@@ -68,20 +66,25 @@ export default function promisesReducer(state = new Map(), action) {
   return state;
 }
 
+// Selectors
+
+const selector = createSelector([moduleSelector], state => state.promises);
+const propsSelector = (_, props) => props;
+
 /**
  * Select status of a specific promise which is defined by its name and its id. The id might
  * dynamically depend on outer state (i. e. props) for which reason it's possible to define
- * an "idExtractor" function that can extrat that information from the state and props.
+ * an "idExtractor" function that can extract that information from the state and props.
  */
 export function createPromiseStatusSelector(name, idExtractor = () => DEFAULT_ID) {
-  return (state, props) =>
-    state.promises.getIn([name, idExtractor(state, props)])  || new PromiseStatus();
+  return createSelector([selector, propsSelector], (state, props) =>
+    state.getIn([name, idExtractor(state, props)])  || new PromiseStatus());
 }
 
 /**
  * Return statuses of all promises of given name.
  */
 export function createPromiseStatusesSelector(name) {
-  return (state, props) =>
-    state.promises.get(name) || new Map();
+  return createSelector([selector], state =>
+    state.get(name) || new Map());
 }

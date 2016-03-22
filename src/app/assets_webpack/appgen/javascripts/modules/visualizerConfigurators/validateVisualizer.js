@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Application } from '../manageApp/models'
-import { Visualizer } from '../common/models'
+import { Visualizer } from '../core/models'
 import * as routes from '../manageApp/routes'
 import { getVisualizerConfiguratorPath } from './routes'
 

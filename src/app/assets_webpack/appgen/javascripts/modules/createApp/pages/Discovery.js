@@ -3,7 +3,7 @@ import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 import { getDiscovery, discoverySelector } from '../ducks/discovery'
 import { getEvaluations } from '../ducks/evaluations'
-import { dialogOpen, dialogClose } from '../../../ducks/dialog'
+import { dialogOpen, dialogClose } from '../../core/ducks/dialog'
 import { runEvaluation } from '../ducks/runEvaluationStatus'
 import PromiseResult from '../../../misc/components/PromiseResult'
 import CenteredMessage from '../../../misc/components/CenteredMessage'

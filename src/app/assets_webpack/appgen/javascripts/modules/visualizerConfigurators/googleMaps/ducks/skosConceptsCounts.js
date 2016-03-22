@@ -1,6 +1,6 @@
 import { Map, fromJS } from 'immutable'
 import { createSelector } from 'reselect'
-import { createPromiseStatusSelector } from '../../../../ducks/promises'
+import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import prefix from '../prefix'
 import moduleSelector  from '../selector'
 import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'

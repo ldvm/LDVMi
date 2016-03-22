@@ -1,5 +1,5 @@
 import { List, Record } from 'immutable';
-import { PromiseStatus } from '../../../ducks/promises'
+import { PromiseStatus } from '../../core/models'
 
 export const Property = Record({
   label: '',

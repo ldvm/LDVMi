@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import FontIcon from 'material-ui/lib/font-icon';
 import { Application } from '../models'
-import { Visualizer } from '../../common/models'
+import { Visualizer } from '../../core/models'
 import Button from '../../../misc/components/Button'
 import BodyPadding from '../../../misc/components/BodyPadding'
 

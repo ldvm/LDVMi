@@ -5,10 +5,10 @@ import Button from '../../../misc/components/Button'
 import IconButton from '../../../misc/components/IconButton'
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
-import { dialogOpen, dialogClose } from '../../../ducks/dialog'
+import { dialogOpen, dialogClose } from '../../core/ducks/dialog'
 import { PipelineWithEvaluations } from '../models'
 import { createStatusSelector } from '../ducks/runEvaluationStatus'
-import { PromiseStatus } from '../../../ducks/promises'
+import { PromiseStatus } from '../../core/models'
 import CreateAppDialog from '../dialogs/CreateAppDialog'
 import { notification } from '../../../actions/notification'
 import * as api from '../api'

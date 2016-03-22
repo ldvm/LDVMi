@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { PromiseStatus } from '../../../../ducks/promises'
+import { PromiseStatus } from '../../../core/models'
 import Button from '../../../../misc/components/Button'
 import { getMarkers, markersStatusSelector } from '../ducks/markers'
 import { propertiesStatusSelector } from '../ducks/properties'

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form';
 import { makeValidator, errorTextFactory } from '../../../misc/formUtils'
-import { dialogClose } from '../../../ducks/dialog'
+import { dialogClose } from '../../core/ducks/dialog'
 import TextField from 'material-ui/lib/text-field';
 import Checkbox from '../../../misc/components/Checkbox';
 import Button from '../../../misc/components/Button'

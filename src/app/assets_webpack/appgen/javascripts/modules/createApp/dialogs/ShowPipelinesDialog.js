@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { List } from 'immutable';
-import { dialogClose } from '../../../ducks/dialog'
+import { dialogClose } from '../../core/ducks/dialog'
 import Button from '../../../misc/components/Button'
 import IconButton from '../../../misc/components/IconButton'
 import Dialog from '../../../containers/Dialog';

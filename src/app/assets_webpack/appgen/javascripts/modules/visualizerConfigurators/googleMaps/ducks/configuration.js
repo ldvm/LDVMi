@@ -5,7 +5,7 @@ import createAction from '../../../../misc/createAction'
 import { notification } from '../../../../actions/notification'
 import * as api from '../../../manageApp/api'
 import { applicationSelector } from '../../../manageApp/ducks/application'
-import { createPromiseStatusSelector } from '../../../../ducks/promises'
+import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 
 // Actions
 

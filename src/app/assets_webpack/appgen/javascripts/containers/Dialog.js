@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import MaterialDialog from 'material-ui/lib/dialog';
-import { dialogClose } from '../ducks/dialog'
+import { dialogClose, dialogSelector } from '../modules/core/ducks/dialog'
 
 const Dialog = (props) => {
   const {store, name, children, dispatch} = props;
@@ -16,6 +17,8 @@ const Dialog = (props) => {
   );
 };
 
-export default connect(state => ({
-  store: state.dialog
-}))(Dialog);
+const selector = createStructuredSelector({
+  store: dialogSelector
+});
+
+export default connect(selector)(Dialog);

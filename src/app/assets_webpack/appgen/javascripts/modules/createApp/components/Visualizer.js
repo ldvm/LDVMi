@@ -6,7 +6,7 @@ import CardText from 'material-ui/lib/card/card-text';
 import CardActions from 'material-ui/lib/card/card-actions';
 import FontIcon from 'material-ui/lib/font-icon';
 import Button from '../../../misc/components/Button'
-import { VisualizerWithPipelines } from '../models'
+import { VisualizerWithPipelines } from '../../core/models'
 import MaterialTheme from '../../../misc/materialTheme';
 import ShowPipelinesDialog from '../dialogs/ShowPipelinesDialog'
 

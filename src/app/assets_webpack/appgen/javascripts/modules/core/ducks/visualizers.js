@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { List } from 'immutable'
 import { Visualizer } from '../models'
-import { visualizersSelector as reducerSelector } from '../selector'
+import moduleSelector from '../selector'
 import * as api from '../api'
 import prefix from '../../createApp/prefix'
 import createPromiseReducer, { PRESERVE_STATE } from '../../../misc/promiseReducer'
@@ -29,7 +29,9 @@ export default createPromiseReducer(initialState, [
 
 // Selectors
 
+const selector = createSelector([moduleSelector], state => state.visualizers);
+
 export const visualizersSelector = createSelector(
-  [reducerSelector], ({ data }) =>
-    data.map(visualizer => new Visualizer(visualizer))
+  [selector],
+  ({ data }) => data.map(visualizer => new Visualizer(visualizer))
 );

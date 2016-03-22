@@ -3,11 +3,11 @@ import * as api from '../api'
 import prefix from '../prefix'
 import createPromiseReducer from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
-import { createPromiseStatusSelector } from '../../../ducks/promises'
+import { createPromiseStatusSelector } from '../../core/ducks/promises'
 import { Application } from '../models'
-import { Visualizer } from '../../common/models'
+import { Visualizer } from '../../core/models'
 import { applicationSelector as reducerSelector } from '../selector'
-import { visualizersSelector } from '../../common/ducks/visualizers'
+import { visualizersSelector } from '../../core/ducks/visualizers'
 
 // Actions
 

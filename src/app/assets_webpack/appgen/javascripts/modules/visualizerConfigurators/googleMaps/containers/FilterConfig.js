@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { createSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { PromiseStatus } from '../../../../ducks/promises'
+import { PromiseStatus } from '../../../core/models'
 import PromiseResult from '../../../../misc/components/PromiseResult'
 import { Filter } from '../models'
 import { configureFilter } from '../ducks/filtersConfig'

@@ -2,7 +2,7 @@ import * as api from '../api'
 import prefix from '../prefix'
 import createPromiseReducer from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
-import { createPromiseStatusSelector } from '../../../ducks/promises'
+import { createPromiseStatusSelector } from '../../core/ducks/promises'
 import { notification } from '../../../actions/notification'
 import { getEvaluations } from './evaluations'
 

@@ -3,7 +3,7 @@ import { Map } from 'immutable'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 import makePureRender from '../makePureRender'
-import { langSelector } from '../../ducks/lang'
+import { langSelector } from '../../modules/core/ducks/lang'
 
 function extractLabel(label, lang) {
   const NOLANG = 'nolang';

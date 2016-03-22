@@ -1,12 +1,14 @@
 import { Map, fromJS } from 'immutable'
 import { combineReducers } from 'redux'
 import { createSelector } from 'reselect'
-import createAction from '../misc/createAction'
+import moduleSelector from '../selector'
+import createAction from '../../../misc/createAction'
+import prefix from '../prefix'
 
 // Actions
 
-export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';
-export const SET_AVAILABLE_LANGUAGES = 'SET_AVAILABLE_LANGUAGE';
+export const CHANGE_LANGUAGE = prefix('CHANGE_LANGUAGE');
+export const SET_AVAILABLE_LANGUAGES = prefix('SET_AVAILABLE_LANGUAGE');
 
 export function changeLanguage(lang) {
   return createAction(CHANGE_LANGUAGE, { lang });
@@ -41,7 +43,7 @@ export default combineReducers({
 
 // Selectors
 
-const selector = state => state.lang;
+const selector = createSelector([moduleSelector], state => state.lang);
 
 export const langSelector = createSelector([selector], state => state.current);
 export const availableLangsSelector = createSelector([selector], state => state.available);
