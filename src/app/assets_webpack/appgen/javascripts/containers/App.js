@@ -3,7 +3,6 @@ import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 import { routeActions } from 'redux-simple-router'
 import { createStructuredSelector } from 'reselect'
-
 import AppBar from 'material-ui/lib/app-bar'
 import IconButton from 'material-ui/lib/icon-button'
 import NavigationClose from 'material-ui/lib/svg-icons/navigation/close'
@@ -16,6 +15,7 @@ import Snackbar from 'material-ui/lib/snackbar'
 import {Grid, Row, Col} from 'react-flexbox-grid'
 import { loadingSelector } from '../modules/core/ducks/loading'
 import { notificationsSelector } from '../modules/core/ducks/notifications'
+import { signIn, signUp } from '../modules/auth/routes'
 
 class App extends Component {
   render() {
@@ -45,8 +45,8 @@ class App extends Component {
                 iconButtonElement={ <IconButton><MoreVertIcon color="white" /></IconButton> }
                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
                 anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-                <MenuItem primaryText="Sign up" onTouchTap={() => dispatch(routeActions.push('/signup'))} />
-                <MenuItem primaryText="Sign in" onTouchTap={() => dispatch(routeActions.push('/signin'))} />
+                <MenuItem primaryText="Sign up" onTouchTap={() => dispatch(signUp())} />
+                <MenuItem primaryText="Sign in" onTouchTap={() => dispatch(signIn())} />
               </IconMenu>
             </div>} />
 

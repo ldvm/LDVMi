@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {reduxForm} from 'redux-form';
 import TextField from 'material-ui/lib/text-field';
 import RaisedButton from 'material-ui/lib/raised-button';
-import { makeValidator, errorText } from '../../misc/formUtils'
+import { makeValidator, errorText } from '../../../misc/formUtils'
 
 const SignUpForm = (props) => {
   const {fields: {name, email, password, confirmPassword}, handleSubmit, submitting} = props;

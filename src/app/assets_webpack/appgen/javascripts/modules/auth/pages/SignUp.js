@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
 import Helmet from "react-helmet"
 import React, {Component} from 'react'
-import Paper from 'material-ui/lib/paper';
-import SignUpForm from '../modules/auth/SignUpForm'
-import { signUp } from '../modules/auth/api'
-import { notification } from '../modules/core/ducks/notifications'
-import PaperCard from '../components/PaperCard'
-import NarrowedLayout from '../components/NarrowedLayout'
+import Paper from '../../../../../../../node_modules/material-ui/lib/paper';
+import SignUpForm from '../forms/SignUpForm'
+import { signUp } from '../api'
+import { notification } from '../../core/ducks/notifications'
+import PaperCard from '../../../components/PaperCard'
+import NarrowedLayout from '../../../components/NarrowedLayout'
 
-import debugFactory from '../misc/debug'
+import debugFactory from '../../../misc/debug'
 const debug = debugFactory('signup');
 
 const SignUp = ({dispatch}) => {
