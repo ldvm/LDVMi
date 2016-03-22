@@ -3,7 +3,7 @@ import prefix from '../prefix'
 import createPromiseReducer from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../core/ducks/promises'
-import { notification } from '../../../actions/notification'
+import { notification } from '../../core/ducks/notifications'
 import { getEvaluations } from './evaluations'
 
 // Actions

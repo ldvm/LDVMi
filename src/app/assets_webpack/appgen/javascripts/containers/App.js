@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 import { routeActions } from 'redux-simple-router'
+import { createStructuredSelector } from 'reselect'
 
 import AppBar from 'material-ui/lib/app-bar'
 import IconButton from 'material-ui/lib/icon-button'
@@ -13,6 +14,8 @@ import FontIcon from 'material-ui/lib/font-icon'
 import CircularProgress from 'material-ui/lib/circular-progress'
 import Snackbar from 'material-ui/lib/snackbar'
 import {Grid, Row, Col} from 'react-flexbox-grid'
+import { loadingSelector } from '../modules/core/ducks/loading'
+import { notificationsSelector } from '../modules/core/ducks/notifications'
 
 class App extends Component {
   render() {
@@ -62,4 +65,9 @@ App.propTypes = {
   children: PropTypes.node
 };
 
-export default connect(state => state)(App)
+const selector = createStructuredSelector({
+  loading: loadingSelector,
+  notifications: notificationsSelector
+});
+
+export default connect(selector)(App)

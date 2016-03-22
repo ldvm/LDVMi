@@ -10,7 +10,7 @@ import { PipelineWithEvaluations } from '../models'
 import { createStatusSelector } from '../ducks/runEvaluationStatus'
 import { PromiseStatus } from '../../core/models'
 import CreateAppDialog from '../dialogs/CreateAppDialog'
-import { notification } from '../../../actions/notification'
+import { notification } from '../../core/ducks/notifications'
 import * as api from '../api'
 import * as routes from '../../manageApp/routes'
 

@@ -5,7 +5,7 @@ import { Link } from 'react-router'
 import SignInForm from '../modules/auth/SignInForm'
 import { signIn } from '../modules/auth/api'
 import * as authActions from '../modules/auth/actions'
-import { notification } from '../actions/notification'
+import { notification } from '../modules/core/ducks/notifications'
 import PaperCard from '../misc/components/PaperCard'
 import NarrowedLayout from '../misc/components/NarrowedLayout'
 

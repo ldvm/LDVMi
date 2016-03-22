@@ -1,5 +1,8 @@
 import { actionTypes as formActions } from 'redux-form'
+import { createSelector } from 'reselect'
+import moduleSelector from '../selector'
 
+// Actions
 /** Maintains the number of running background tasks (i. e. AJAX calls) */
 export default function loadingReducer(state = 0, action) {
   switch (action.type) {
@@ -12,3 +15,7 @@ export default function loadingReducer(state = 0, action) {
       return 0;
   }
 }
+
+// Selectors
+
+export const loadingSelector = createSelector([moduleSelector], state => state.loading);

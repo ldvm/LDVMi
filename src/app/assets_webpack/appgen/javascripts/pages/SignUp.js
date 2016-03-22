@@ -4,7 +4,7 @@ import React, {Component} from 'react'
 import Paper from 'material-ui/lib/paper';
 import SignUpForm from '../modules/auth/SignUpForm'
 import { signUp } from '../modules/auth/api'
-import { notification } from '../actions/notification'
+import { notification } from '../modules/core/ducks/notifications'
 import PaperCard from '../misc/components/PaperCard'
 import NarrowedLayout from '../misc/components/NarrowedLayout'
 
