@@ -1,11 +1,9 @@
 import React, { PropTypes } from 'react'
 import { Row, Col } from 'react-flexbox-grid'
 import Paper from 'material-ui/lib/paper';
-import Sidebar from '../containers/Sidebar'
 import FillInScreen from '../../../../components/FillInScreen'
 import BodyPadding from '../../../../components/BodyPadding'
 import MapContainer from '../containers/MapContainer'
-import Toolbar from './Toolbar'
 
 const wrapperStyle = {
   position: 'relative',
@@ -48,22 +46,22 @@ const insetShadowStyle = {
   zIndex: 3
 };
 
-const ConfiguratorLayout = () => {
+const ConfiguratorLayout = ({ sidebar, toolbar, insetShadow }) => {
   return <div style={wrapperStyle}>
 
-    <div style={insetShadowWrapperStyle}>
+    {insetShadow && <div style={insetShadowWrapperStyle}>
       <Paper style={insetShadowStyle} />
-    </div>
+    </div>}
 
-    <div style={sidebarStyle}>
+    {sidebar && <div style={sidebarStyle}>
       <BodyPadding>
-        <Sidebar  />
+        {sidebar}
       </BodyPadding>
-    </div>
+    </div>}
 
-    <div style={toolbarStyle}>
-      <Toolbar />
-    </div>
+    {toolbar && <div style={toolbarStyle}>
+      {toolbar}
+    </div>}
 
     <div style={mapStyle}>
       <FillInScreen forceFill={true}>
@@ -71,6 +69,12 @@ const ConfiguratorLayout = () => {
       </FillInScreen>
     </div>
   </div>;
+};
+
+ConfiguratorLayout.propTypes = {
+  sidebar: PropTypes.node,
+  toolbar: PropTypes.node,
+  insetShadow: PropTypes.bool
 };
 
 export default ConfiguratorLayout;

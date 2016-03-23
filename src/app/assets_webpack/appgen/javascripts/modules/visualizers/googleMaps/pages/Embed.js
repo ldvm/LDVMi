@@ -1,3 +1,4 @@
 import React from 'react'
+import Application from '../containers/Application'
 
-export default () => <strong>Embed map!</strong>
+export default () => <Application embed />

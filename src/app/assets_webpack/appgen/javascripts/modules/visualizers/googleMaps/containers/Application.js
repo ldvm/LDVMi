@@ -1,16 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Row, Col } from 'react-flexbox-grid'
-import { Application } from '../../../manageApp/models'
 import { Visualizer } from '../../../core/models'
 import * as api from '../api'
 import { queryDataset } from '../actions'
 import { getConfiguration } from '../ducks/configuration'
 import Layout from '../components/Layout'
-import Toolbar from '../components/Toolbar'
-import Sidebar from './Sidebar'
 
-class Configurator extends Component {
+class Application extends Component {
   componentWillMount() {
     const { dispatch } = this.props;
     dispatch(queryDataset());
@@ -18,18 +15,17 @@ class Configurator extends Component {
   }
 
   render() {
+    const { embed } = this.props;
+
     return <Layout
-        sidebar={<Sidebar />}
-        toolbar={<Toolbar />}
-        insetShadow
-      />;
+      insetShadow={!embed}
+    />;
   }
 }
 
-Configurator.propTypes = {
-  application: PropTypes.instanceOf(Application).isRequired,
-  visualizer: PropTypes.instanceOf(Visualizer).isRequired,
-  dispatch: PropTypes.func.isRequired
+Application.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  embed: PropTypes.bool
 };
 
-export default connect()(Configurator);
+export default connect()(Application);
