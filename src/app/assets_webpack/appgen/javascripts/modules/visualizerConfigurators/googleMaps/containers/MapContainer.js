@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Marker, InfoWindow } from 'react-google-maps'
 import MarkerClusterer from "react-google-maps/lib/addons/MarkerClusterer";
 import GoogleMap from '../../../../components/GoogleMap'
-import Label from '../../../core/components/Label'
+import Label from '../../../core/containers/Label'
 import makePureRender from '../../../../misc/makePureRender'
 import { updateMapState } from '../ducks/mapState'
 import { markersSelector } from '../ducks/markers'

@@ -6,7 +6,7 @@ import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import FontIcon from 'material-ui/lib/font-icon'
 import { Option } from '../models'
-import Label from '../../../core/components/Label'
+import Label from '../../../core/containers/Label'
 import Padding from '../../../../components/Padding'
 import makePureRender from '../../../../misc/makePureRender'
 import MaterialTheme from '../../../../misc/materialTheme';

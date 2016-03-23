@@ -6,7 +6,7 @@ import { dialogClose } from '../../core/ducks/dialog'
 import TextField from 'material-ui/lib/text-field';
 import Checkbox from '../../../components/Checkbox';
 import Button from '../../../components/Button'
-import Dialog from '../../../containers/Dialog';
+import Dialog from '../../core/containers/Dialog';
 
 export const formName = 'general-settings';
 export const dialogName = 'GENERAL_SETTINGS_DIALOG';

@@ -3,7 +3,7 @@ import { List } from 'immutable';
 import { dialogClose } from '../../core/ducks/dialog'
 import Button from '../../../components/Button'
 import IconButton from '../../../components/IconButton'
-import Dialog from '../../../containers/Dialog';
+import Dialog from '../../core/containers/Dialog';
 
 import Table from 'material-ui/lib/table/table';
 import TableHeader from 'material-ui/lib/table/table-header';

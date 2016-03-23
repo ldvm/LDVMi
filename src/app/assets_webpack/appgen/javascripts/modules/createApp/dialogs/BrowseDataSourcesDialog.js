@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { List } from 'immutable';
 import { dialogClose } from '../../core/ducks/dialog'
 import Button from '../../../components/Button'
-import Dialog from '../../../containers/Dialog';
+import Dialog from '../../core/containers/Dialog';
 import CenteredMessage from '../../../components/CenteredMessage'
 
 import Table from 'material-ui/lib/table/table';

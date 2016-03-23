@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import MaterialDialog from 'material-ui/lib/dialog';
-import { dialogClose, dialogSelector } from '../modules/core/ducks/dialog'
+import { dialogClose, dialogSelector } from '../ducks/dialog'
 
 const Dialog = (props) => {
   const {store, name, children, dispatch} = props;

@@ -2,10 +2,10 @@ import { connect } from 'react-redux'
 import Helmet from "react-helmet"
 import React, {Component} from 'react'
 import { Link } from 'react-router'
-import { signUpUrl } from '../modules/auth/routes'
-import NarrowedLayout from '../components/NarrowedLayout'
+import { signUpUrl } from '../../auth/routes'
+import NarrowedLayout from '../../../components/NarrowedLayout'
 
-const Home = ({user}) =>
+const Home = ({ user }) =>
   <NarrowedLayout>
     <Helmet title="LDVMi Application Generator" titleTemplate="%s" />
     <h1>Welcome to LDVMi generator</h1>
