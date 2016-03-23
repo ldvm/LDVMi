@@ -1,11 +1,11 @@
 import React from 'react'
 import { Route, IndexRoute } from 'react-router'
-import createAppRoutes from './modules/createApp/routes'
-import manageAppRoutes from './modules/manageApp/routes'
-import authRoutes from './modules/auth/routes'
-import Platform from './modules/platform/containers/Platform'
-import Home from './modules/platform/pages/Home'
-import NotFound from './modules/platform/pages/NotFound'
+import createAppRoutes from './../createApp/routes'
+import manageAppRoutes from './../manageApp/routes'
+import authRoutes from './../auth/routes'
+import Platform from './containers/Platform'
+import Home from './pages/Home'
+import NotFound from './pages/NotFound'
 
 export default function createRoutes(dispatch) {
   return (
