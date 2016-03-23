@@ -16,4 +16,5 @@ const Home = ({ user }) =>
     {user ? ' Signed in ' + user.name : 'No user signed in'}
   </NarrowedLayout>
 
+// TODO: make a selector
 export default connect(state => ({user: state.auth.user}))(Home);

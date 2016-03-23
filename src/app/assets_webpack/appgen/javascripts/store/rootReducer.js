@@ -1,18 +1,12 @@
 import { combineReducers } from 'redux'
 import { routeReducer } from 'redux-simple-router'
 import { reducer as formReducer } from 'redux-form';
-import authReducer from '../modules/auth/reducer'
-import createAppReducer from '../modules/createApp/reducer'
-import manageAppReducer from '../modules/manageApp/reducer'
-import coreReducer from '../modules/core/reducer'
-import visualizerConfiguratorsReducer from '../modules/visualizerConfigurators/reducer'
+import modulesReducers from '../modules/reducers'
 
-export default combineReducers({
+// To avoid another level of nesting, the module reducers with the "system" reducers are merged.
+// That might potentially cause a conflict but given the existing names it's rather unlikely.
+
+export default combineReducers(Object.assign({}, {
   routing: routeReducer,
-  form: formReducer,
-  auth: authReducer,
-  core: coreReducer,
-  createApp: createAppReducer,
-  manageApp: manageAppReducer,
-  visualizerConfigurators: visualizerConfiguratorsReducer
-});
+  form: formReducer
+}, modulesReducers));
