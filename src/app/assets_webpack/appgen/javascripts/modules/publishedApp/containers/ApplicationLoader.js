@@ -11,6 +11,7 @@ import CenteredMessage from '../../../components/CenteredMessage'
 import BodyPadding from '../../../components/BodyPadding'
 import { getVisualizers } from '../../core/ducks/visualizers'
 import { getApplication } from '../../manageApp/ducks/application'
+import { getApplicationId } from '../../../window'
 
 class ApplicationLoader extends Component {
   static propTypes = {
@@ -23,7 +24,7 @@ class ApplicationLoader extends Component {
   componentWillMount() {
     const { dispatch } = this.props;
     dispatch(getVisualizers());
-    dispatch(getApplication(4)); // TODO: actual id
+    dispatch(getApplication(getApplicationId()));
   }
 
   render() {

@@ -1,4 +1,4 @@
-@(title: String, bundleName: String, baseUrl: String)
+@(title: String, bundleName: String, baseUrl: String, applicationId: Long = 0)
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -12,7 +12,8 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <script>
             window.appgen = {
-                baseUrl: '@baseUrl'
+                baseUrl: '@baseUrl',
+                applicationId: @applicationId
             }
         </script>
 	</head>

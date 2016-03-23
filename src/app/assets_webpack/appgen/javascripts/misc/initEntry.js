@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin' // dependency for material-ui
 import browserHistory from './../misc/browserHistory'
 import styles from '../../stylesheets/main.scss'
-import createRoot from '../containers/createRoot.dev'
+import createRoot from '../containers/createRoot'
 import configureStore from '../store/configureStore'
 
 export default function initEntry(createRoutes)  {

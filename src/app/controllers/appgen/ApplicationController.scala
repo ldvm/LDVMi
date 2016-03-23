@@ -23,7 +23,7 @@ class ApplicationController(implicit inj: Injector) extends Controller with Inje
         visualizer <- visualizerService.getVisualizer(application)
       } yield (application, visualizer)) match {
         case Some((application, visualizer))
-          => Ok(views.html.appgen.application(visualizer.name, baseUrl))
+          => Ok(views.html.appgen.application(visualizer.name, baseUrl, application.id.get.id))
         case _ => Redirect("/appgen/app-not-found")
       }
     }
