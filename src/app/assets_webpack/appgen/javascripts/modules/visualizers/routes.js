@@ -6,7 +6,7 @@ import Alert from '../../components/Alert'
 import validateVisualizer from './validateVisualizer'
 
 import dataCubeRoutes from './datacube/routes'
-import googleMapsRoutes from './googleMaps/routes'
+import googleMapsRoutes from './googleMaps/configuratorRoutes'
 
 // TODO: use the visualizers model?
 const mappings = {
