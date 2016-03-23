@@ -12,7 +12,7 @@ import ApplicationHeader from '../components/ApplicationHeader'
 import GeneralSettings from '../containers/GeneralSettings'
 import CenteredMessage from '../../../components/CenteredMessage'
 import BodyPadding from '../../../components/BodyPadding'
-import { visualizerConfigurator } from '../../visualizerConfigurators/routes'
+import { visualizerConfigurator } from '../../visualizers/routes'
 import { dialogOpen } from '../../core/ducks/dialog'
 import { dialogName as generalSettingsDialogName } from '../dialogs/GeneralSettingsDialog'
 

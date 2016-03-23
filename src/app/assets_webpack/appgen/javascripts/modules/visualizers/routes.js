@@ -8,6 +8,7 @@ import validateVisualizer from './validateVisualizer'
 import dataCubeRoutes from './datacube/routes'
 import googleMapsRoutes from './googleMaps/routes'
 
+// TODO: use the visualizers model?
 const mappings = {
   'http://linked.opendata.cz/resource/ldvm/visualizer/data-cube/DataCubeVisualizerTemplate': dataCubeRoutes.path,
   'http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate': googleMapsRoutes.path

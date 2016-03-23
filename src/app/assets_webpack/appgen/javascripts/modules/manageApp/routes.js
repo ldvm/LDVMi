@@ -4,7 +4,7 @@ import { routeActions } from 'redux-simple-router'
 import { getVisualizers } from './../core/ducks/visualizers'
 import { getApplication } from './ducks/application'
 import Application from './pages/Application'
-import visualizerConfiguratorsRoutes from '../visualizerConfigurators/routes'
+import visualizerConfiguratorsRoutes from '../visualizers/routes'
 
 const MODULE_PATH = 'manage-app';
 
