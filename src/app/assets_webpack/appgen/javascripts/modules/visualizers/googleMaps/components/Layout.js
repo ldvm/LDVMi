@@ -46,7 +46,7 @@ const insetShadowStyle = {
   zIndex: 3
 };
 
-const ConfiguratorLayout = ({ sidebar, toolbar, insetShadow }) => {
+const Layout = ({ sidebar, toolbar, insetShadow }) => {
   return <div style={wrapperStyle}>
 
     {insetShadow && <div style={insetShadowWrapperStyle}>
@@ -71,10 +71,10 @@ const ConfiguratorLayout = ({ sidebar, toolbar, insetShadow }) => {
   </div>;
 };
 
-ConfiguratorLayout.propTypes = {
+Layout.propTypes = {
   sidebar: PropTypes.node,
   toolbar: PropTypes.node,
   insetShadow: PropTypes.bool
 };
 
-export default ConfiguratorLayout;
+export default Layout;

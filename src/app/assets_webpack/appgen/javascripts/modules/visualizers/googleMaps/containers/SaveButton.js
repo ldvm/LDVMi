@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { PromiseStatus } from '../../../core/models'
 import Button from '../../../../components/Button'
-import { saveConfiguration, configurationStatusSelector } from '../ducks/configuration'
+import { saveConfiguration, saveConfigurationStatusSelector } from '../ducks/configuration'
 import { dirtySelector } from '../ducks/dirty'
 
 const SaveButton = props => {
@@ -28,7 +28,7 @@ SaveButton.propTypes = {
 };
 
 const selector = createStructuredSelector({
-  status: configurationStatusSelector,
+  status: saveConfigurationStatusSelector,
   dirty: dirtySelector
 });
 

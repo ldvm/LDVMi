@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react'
+import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { Row, Col } from 'react-flexbox-grid'
-import { Application } from '../../../manageApp/models'
-import { Visualizer } from '../../../core/models'
-import * as api from '../api'
 import { queryDataset } from '../actions'
 import { getConfiguration } from '../ducks/configuration'
+import { filtersSelector } from '../ducks/filters'
+import { propertiesStatusSelector } from '../ducks/properties'
+import { PromiseStatus } from "../../../core/models";
 import Layout from '../components/Layout'
 import Toolbar from '../components/Toolbar'
-import Sidebar from './Sidebar'
+import SidebarTabs from '../components/SidebarTabs'
+import PropertiesLoadingStatus from '../components/PropertiesLoadingStatus'
 
 class Configurator extends Component {
   componentWillMount() {
@@ -18,18 +19,32 @@ class Configurator extends Component {
   }
 
   render() {
-    return <Layout
-        sidebar={<Sidebar />}
-        toolbar={<Toolbar />}
+    const { filters, status } = this.props;
+
+    if (!status.done) {
+      return <Layout
         insetShadow
+        sidebar={<PropertiesLoadingStatus status={status} />}
       />;
+    }
+
+    return <Layout
+      insetShadow
+      toolbar={<Toolbar />}
+      sidebar={<SidebarTabs filters={filters} />}
+    />;
   }
 }
 
 Configurator.propTypes = {
-  application: PropTypes.instanceOf(Application).isRequired,
-  visualizer: PropTypes.instanceOf(Visualizer).isRequired,
+  filters: PropTypes.instanceOf(Map),
+  status: PropTypes.instanceOf(PromiseStatus).isRequired,
   dispatch: PropTypes.func.isRequired
 };
 
-export default connect()(Configurator);
+const selector = createStructuredSelector({
+  filters: filtersSelector,
+  status: propertiesStatusSelector
+});
+
+export default connect(selector)(Configurator);

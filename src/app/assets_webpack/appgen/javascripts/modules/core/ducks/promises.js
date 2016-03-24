@@ -1,4 +1,4 @@
-import { Map, Record } from 'immutable'
+import { Map, List } from 'immutable'
 import { createSelector } from 'reselect'
 import moduleSelector from '../selector'
 import { PromiseStatus } from '../models'
@@ -81,10 +81,50 @@ export function createPromiseStatusSelector(name, idExtractor = () => DEFAULT_ID
     state.getIn([name, idExtractor(state, props)])  || new PromiseStatus());
 }
 
-/**
- * Return statuses of all promises of given name.
- */
+/** Return statuses of all promises of given name. */
 export function createPromiseStatusesSelector(name) {
   return createSelector([selector], state =>
     state.get(name) || new Map());
+}
+
+/**
+ * Aggregates a list of statues into one.
+ * @param statuses
+ */
+const aggregateStatuses = statuses => new PromiseStatus({
+    error: (statuses.filter(status => status.error != "").get(0) || new PromiseStatus()).error,
+    isLoading: statuses.some(status => status.isLoading),
+    done: statuses.every(status => status.done)
+  });
+
+/** Returns an aggregated status for all promises of given name */
+export function createAllPromiseStatusSelector(name) {
+  return createSelector(
+    [createPromiseStatusesSelector([name])],
+    statuses => aggregateStatuses(statuses)
+  )
+}
+
+/**
+ * Takes an arbitrary number of selectors and creates an aggregated promise status. Each selector
+ * has to either either promise status or a map of promise statuses.
+ */
+export function createAggregatedPromiseStatusSelector(selectors) {
+  return (status, props) => {
+    const statuses = (new List(selectors))
+      .map(selector => selector(status, props))
+      .flatMap((result, i) => {
+        if (result instanceof PromiseStatus) {
+          return new List([result]);
+        } else if (result instanceof Map && result.every(status => (status instanceof PromiseStatus))) {
+          return result.toList()
+        } else {
+          throw Error('The selector ' + i + ' (zero based) provided invalid input. The given'
+            + ' result is neither a PromiseStatus nor a Map of PromiseStatus.');
+        }
+      })
+      .filter(status => status != null && status != undefined);
+
+    return aggregateStatuses(statuses);
+  }
 }

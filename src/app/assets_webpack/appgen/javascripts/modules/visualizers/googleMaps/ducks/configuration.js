@@ -49,7 +49,8 @@ export function getConfiguration() {
 
 // Selectors
 
-export const configurationStatusSelector = createPromiseStatusSelector(SAVE_CONFIGURATION);
+export const saveConfigurationStatusSelector = createPromiseStatusSelector(SAVE_CONFIGURATION);
+export const getConfigurationStatusSelector = createPromiseStatusSelector(GET_CONFIGURATION);
 
 export const configurationSelector = createSelector(
   [moduleSelector],
