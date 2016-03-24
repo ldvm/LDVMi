@@ -22,14 +22,12 @@ class Configurator extends Component {
     const { filters, status } = this.props;
 
     if (!status.done) {
-      return <Layout
-        insetShadow
+      return <Layout insetShadow
         sidebar={<PropertiesLoadingStatus status={status} />}
       />;
     }
 
-    return <Layout
-      insetShadow
+    return <Layout insetShadow
       toolbar={<Toolbar />}
       sidebar={<SidebarTabs filters={filters} />}
     />;

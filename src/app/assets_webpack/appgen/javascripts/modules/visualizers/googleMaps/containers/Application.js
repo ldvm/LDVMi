@@ -38,14 +38,17 @@ class Application extends Component {
   }
 
   render() {
-    const { filters, embed, status } = this.props;
+    const { filters, publishSettings, embed, status } = this.props;
+
+    if (!status.done) {
+      return <Layout insetShadow={!embed}
+        sidebar={<PropertiesLoadingStatus status={status} />}
+      />;
+    }
 
     return <Layout
       insetShadow={!embed}
-      sidebar={status.done ?
-        <ApplicationFilters filters={filters} /> :
-        <PropertiesLoadingStatus status={status} />
-      }
+      sidebar={publishSettings.showFilters && <ApplicationFilters filters={filters} />}
     />;
   }
 }
