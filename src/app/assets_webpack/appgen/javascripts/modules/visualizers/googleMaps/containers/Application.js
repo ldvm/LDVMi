@@ -2,23 +2,39 @@ import React, { Component, PropTypes } from 'react'
 import { Map } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import { createAggregatedPromiseStatusSelector } from '../../../core/ducks/promises'
 import { queryDataset } from '../actions'
 import { getConfiguration } from '../ducks/configuration'
-import Layout from '../components/Layout'
-import { createAggregatedPromiseStatusSelector } from '../../../core/ducks/promises'
+import { getMarkers } from '../ducks/markers'
 import { filtersSelector } from '../ducks/filters'
+import { publishSettingsSelector } from '../ducks/publishSettings'
 import { propertiesStatusSelector } from '../ducks/properties'
 import { skosConceptsStatusesSelector } from '../ducks/skosConcepts'
 import { getConfigurationStatusSelector } from '../ducks/configuration'
 import { PromiseStatus } from "../../../core/models";
+import Layout from '../components/Layout'
 import PropertiesLoadingStatus from '../components/PropertiesLoadingStatus'
 import ApplicationFilters from '../components/ApplicationFilters'
+import { PublishSettings } from "../models";
 
 class Application extends Component {
   componentWillMount() {
     const { dispatch } = this.props;
     dispatch(queryDataset());
     dispatch(getConfiguration());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { dispatch } = this.props;
+
+    // This is the very moment when the filters and configuration are loaded into the state. A
+    // cleaner solution would probably be chain queryDataset() and getConfiguration() into a single
+    // promise and call .then() on it but at this point this is the simplest way to go.
+    if (!this.props.status.done && nextProps.status.done) {
+      if (nextProps.publishSettings.refreshOnStartUp) {
+        dispatch(getMarkers());
+      }
+    }
   }
 
   render() {
@@ -36,7 +52,8 @@ class Application extends Component {
 
 Application.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  filters: PropTypes.instanceOf(Map),
+  filters: PropTypes.instanceOf(Map).isRequired,
+  publishSettings: PropTypes.instanceOf(PublishSettings).isRequired,
   status: PropTypes.instanceOf(PromiseStatus).isRequired,
   embed: PropTypes.bool
 };
@@ -49,6 +66,7 @@ const statusSelector = createAggregatedPromiseStatusSelector(
 
 const selector = createStructuredSelector({
   filters: filtersSelector,
+  publishSettings: publishSettingsSelector,
   status: statusSelector
 });
 
