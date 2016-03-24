@@ -48,7 +48,11 @@ class Application extends Component {
 
     return <Layout
       insetShadow={!embed}
-      sidebar={publishSettings.showFilters && <ApplicationFilters filters={filters} />}
+      sidebar={publishSettings.showFilters &&
+        <ApplicationFilters
+          filters={filters}
+          expandable={publishSettings.collapsibleFilters}
+        />}
     />;
   }
 }
