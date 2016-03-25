@@ -5,6 +5,7 @@ import { Visualizer } from '../../core/models'
 import Button from '../../../components/Button'
 import BodyPadding from '../../../components/BodyPadding'
 import PublishButton from '../containers/PublishButton'
+import PreviewButton from './PreviewButton'
 
 const iconStyle = {
   float: 'left',
@@ -32,7 +33,7 @@ const ApplicationHeader = ({ application, visualizer, openGeneralSettingsDialog 
       <Button label="General settings" icon="settings" raised
         onTouchTap={openGeneralSettingsDialog}
       />
-      <Button label="Preview" icon="find_in_page" raised />
+      <PreviewButton application={application} />
       <PublishButton />
       <Button label="Delete" icon="delete" raised danger />
     </div>
