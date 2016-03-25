@@ -1,6 +1,7 @@
 package controllers
 
 import controllers.appgen.api._
+import controllers.appgen.api.visualizers.MapsVisualizerApiController
 import controllers.util.AngularController
 import scaldi.Module
 
@@ -16,6 +17,7 @@ class ControllerModule extends Module {
   binding to new appgen.ApplicationController
   binding to new AuthApiController
   binding to new CreateAppApiController
+  binding to new AppApiController
   binding to new ManageAppApiController
   binding to new CommonApiController
   binding to new MapsVisualizerApiController

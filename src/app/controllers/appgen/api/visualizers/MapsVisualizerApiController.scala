@@ -1,15 +1,16 @@
-package controllers.appgen.api
+package controllers.appgen.api.visualizers
 
 import controllers.api.JsonImplicits._
 import model.appgen.entity.ApplicationId
 import model.appgen.rest.EmptyRequest.EmptyRequest
+import model.appgen.rest.Response._
 import model.appgen.rest.SkosConceptsCountsRequest.SkosConceptsCountsRequest
 import model.appgen.rest.SkosConceptsRequest.SkosConceptsRequest
-import model.rdf.sparql.geo.{MapQueryData, GeoService}
+import model.rdf.sparql.geo.{GeoService, MapQueryData}
 import model.rdf.sparql.visualization.VisualizationService
 import play.api.libs.concurrent.Execution.Implicits._
 import scaldi.Injector
-import model.appgen.rest.Response._
+
 import scala.concurrent.Future
 
 class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiController {

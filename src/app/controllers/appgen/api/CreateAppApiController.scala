@@ -111,7 +111,7 @@ class CreateAppApiController(implicit inj: Injector) extends SecuredRestControll
   def createApp = RestAction[CreateAppRequest] { implicit request => json =>
     withDiscovery(PipelineId(json.pipelineId)) { (pipeline, discovery, userDiscovery) =>
       val id = applicationsRepository save
-        new Application(None, json.name, "", None,
+        new Application(None, json.name, "", None, false,
           request.user.id.get,
           pipeline.id.get,
           userDiscovery.id.get,

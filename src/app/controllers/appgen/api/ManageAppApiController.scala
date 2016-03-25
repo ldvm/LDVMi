@@ -3,15 +3,14 @@ package controllers.appgen.api
 import model.appgen.rest.SaveAppConfigurationRequest.SaveAppConfigurationRequest
 import model.appgen.rest.UpdateAppSettingsRequest.UpdateAppSettingsRequest
 import play.api.mvc._
-import controllers.appgen.api.JsonImplicits._
 import controllers.appgen.api.rest.SecuredRestController
 import model.appgen.entity._
 import model.appgen.repository.ApplicationsRepository
-import model.appgen.rest.EmptyRequest._
 import scaldi.Injector
 import model.appgen.rest.Response._
 import model.appgen.rest.RestRequestWithUser
 
+/** Basic API for general application management */
 class ManageAppApiController(implicit inj: Injector) extends SecuredRestController {
   val applicationsRepository = inject[ApplicationsRepository]
 
@@ -21,14 +20,6 @@ class ManageAppApiController(implicit inj: Injector) extends SecuredRestControll
     applicationsRepository.findById(request.user, id) match {
       case Some(application: Application) => func(application)
       case None => BadRequest(ErrorResponse("The application does not exist or is not accessible"))
-    }
-  }
-
-  def getApp(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
-    withApplication(ApplicationId(id)) { application =>
-      // Let's leave out the configuration, as it might be large. The user can always load it
-      // using a separate request.
-      Ok(SuccessResponse(data = Seq("application" -> application.copy(configuration = None))))
     }
   }
 
@@ -45,12 +36,6 @@ class ManageAppApiController(implicit inj: Injector) extends SecuredRestControll
 
       applicationsRepository.save(updated)
       Ok(SuccessResponse("The application has been updated"))
-    }
-  }
-
-  def getAppConfiguration(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
-    withApplication(ApplicationId(id)) { application =>
-      Ok(SuccessResponse(data = Seq("configuration" -> application.configuration)))
     }
   }
 

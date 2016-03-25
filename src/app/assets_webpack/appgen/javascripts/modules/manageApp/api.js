@@ -2,7 +2,7 @@ import rest from '../../misc/rest'
 
 /**  @returns {Promise<object>} application */
 export async function getApplication(id) {
-  const result = await rest('manageApp/getApp/' + id, {});
+  const result = await rest('app/getApp/' + id, {});
   return result.data.application;
 }
 
@@ -20,6 +20,6 @@ export async function saveConfiguration(id, configuration) {
 
 /**  @returns {Promise<object>} */
 export async function getConfiguration(id) {
-  const result = await rest('manageApp/getAppConfiguration/' + id, {});
+  const result = await rest('app/getAppConfiguration/' + id, {});
   return JSON.parse(result.data.configuration) || {};
 }
