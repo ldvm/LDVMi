@@ -1,5 +1,6 @@
 package controllers.appgen.api
 
+import controllers.appgen.api.rest.RestController
 import model.appgen.service.VisualizerService
 import model.appgen.rest.EmptyRequest._
 import scaldi.Injector

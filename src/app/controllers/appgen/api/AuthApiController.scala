@@ -1,5 +1,6 @@
 package controllers.appgen.api
 
+import controllers.appgen.api.rest.SecuredRestController
 import model.appgen.entity.User
 import model.appgen.rest.SignUpRequest._
 import model.appgen.rest.SignInRequest._
@@ -10,8 +11,9 @@ import scaldi.Injector
 import play.api.db.slick._
 import play.api.Play.current
 import model.appgen.rest.Response._
+import model.appgen.rest.RestRequestWithUser
 
-class AuthApiController(implicit inj: Injector) extends RestController {
+class AuthApiController(implicit inj: Injector) extends SecuredRestController {
 
   def signUp = Action(BodyParsers.parse.json) { request => DB.withSession { implicit session =>
     request.body.validate[SignUpRequest].fold(
@@ -40,7 +42,7 @@ class AuthApiController(implicit inj: Injector) extends RestController {
     )
   }}
 
-  def getUser = RestAction[EmptyRequest] { implicit request => json =>
+  def getUser = RestAction[EmptyRequest] { implicit request: RestRequestWithUser => json =>
     request.user match {
       case User(id, name, email, password) =>
         Ok(SuccessResponse(data = Seq("id" -> id, "name" -> name, "email" -> email)))

@@ -4,19 +4,20 @@ import model.appgen.rest.SaveAppConfigurationRequest.SaveAppConfigurationRequest
 import model.appgen.rest.UpdateAppSettingsRequest.UpdateAppSettingsRequest
 import play.api.mvc._
 import controllers.appgen.api.JsonImplicits._
-import controllers.api.JsonImplicits._
+import controllers.appgen.api.rest.SecuredRestController
 import model.appgen.entity._
 import model.appgen.repository.ApplicationsRepository
 import model.appgen.rest.EmptyRequest._
 import scaldi.Injector
 import model.appgen.rest.Response._
+import model.appgen.rest.RestRequestWithUser
 
-class ManageAppApiController(implicit inj: Injector) extends RestController {
+class ManageAppApiController(implicit inj: Injector) extends SecuredRestController {
   val applicationsRepository = inject[ApplicationsRepository]
 
   private def withApplication(id: ApplicationId)
     (func: Application => Result)
-    (implicit request: RestRequest): Result = {
+    (implicit request: RestRequestWithUser): Result = {
     applicationsRepository.findById(request.user, id) match {
       case Some(application: Application) => func(application)
       case None => BadRequest(ErrorResponse("The application does not exist or is not accessible"))

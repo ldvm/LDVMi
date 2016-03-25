@@ -1,16 +1,19 @@
 package controllers.appgen.api
 
+import controllers.appgen.api.rest.SecuredRestController
 import model.entity.PipelineEvaluation
 import model.service.PipelineService
-import play.api.libs.iteratee.{Enumerator, Enumeratee, Iteratee}
-import play.api.libs.json.{Writes, JsValue}
+import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
+import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc._
 import model.appgen.entity._
 import model.appgen.repository.ApplicationsRepository
 import scaldi.Injector
 import model.appgen.rest.Response._
+import model.appgen.rest.RestRequestWithUser
 import play.api.libs.concurrent.Execution.Implicits._
 import utils.PaginationInfo
+
 import scala.concurrent.Future
 import play.api.libs.json._
 import play.api.Play.current
@@ -18,17 +21,17 @@ import play.api.cache.Cache
 
 import scala.util.Success
 
-abstract class VisualizerApiController(implicit inj: Injector) extends RestController {
+abstract class VisualizerApiController(implicit inj: Injector) extends SecuredRestController {
   val applicationsRepository = inject[ApplicationsRepository]
   val pipelineService = inject[PipelineService]
 
-  private def cacheKey(implicit request: RestRequest): String = {
+  private def cacheKey(implicit request: RestRequestWithUser): String = {
     request.uri + "|user:" + request.user.id.get + "|body=" + Json.toJson(request.body)
   }
 
   /** Caches request result */
   protected def cached(func: () => Future[Result])
-    (implicit request: RestRequest): Future[Result] = {
+    (implicit request: RestRequestWithUser): Future[Result] = {
     Cache.getAs[Result](cacheKey) match {
       case Some(result: Result) => Future(result)
       case None => func() andThen {
@@ -42,7 +45,7 @@ abstract class VisualizerApiController(implicit inj: Injector) extends RestContr
 
   protected def withApplication(id: ApplicationId)
     (func: Application => Future[Result])
-    (implicit request: RestRequest): Future[Result] = {
+    (implicit request: RestRequestWithUser): Future[Result] = {
 
     applicationsRepository.findById(request.user, id) match {
       case Some(application: Application) => func(application)
@@ -52,7 +55,7 @@ abstract class VisualizerApiController(implicit inj: Injector) extends RestContr
 
   protected def withEvaluation(id: ApplicationId)
     (func: PipelineEvaluation => Future[Result])
-    (implicit request: RestRequest): Future[Result] = {
+    (implicit request: RestRequestWithUser): Future[Result] = {
 
     withApplication(id) { application =>
       (for {

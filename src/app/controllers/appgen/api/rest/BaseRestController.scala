@@ -1,23 +1,16 @@
-package controllers.appgen.api
+package controllers.appgen.api.rest
 
 import model.appgen.entity.User
-import model.appgen.service.UserService
-import play.api.libs.json.{Reads, JsValue}
-import play.api.mvc._
-import play.api.db.slick.Session
-import play.api.db.slick._
-import play.api.Play.current
-import scaldi.{Injectable, Injector}
 import model.appgen.rest.Response._
-import play.api.libs.concurrent.Execution.Implicits._
-import scala.concurrent.Future
+import model.appgen.rest.RestRequest
+import model.appgen.service.UserService
+import play.api.Play.current
+import play.api.db.slick.{Session, _}
+import play.api.libs.json.{JsValue, Reads}
+import play.api.mvc._
+import scaldi.{Injectable, Injector}
 
-sealed case class RestRequest(val dbSession: Session,
-                              val user: User,
-                              private val request: Request[JsValue])
-  extends WrappedRequest(request)
-
-abstract class RestController(implicit inj: Injector) extends Controller with Injectable {
+abstract class BaseRestController(implicit inj: Injector) extends Controller with Injectable {
 
   val userService = inject[UserService]
 
@@ -46,7 +39,7 @@ abstract class RestController(implicit inj: Injector) extends Controller with In
     * @tparam U result type, either Result or Future
     * @return the actual result of the result.
     */
-  private def BaseRestAction[T, U]
+  protected def BaseRestAction[T, U]
     (request: Request[JsValue])
     (convert: Result => U)
     (action: RestRequest => T => U)
@@ -57,21 +50,8 @@ abstract class RestController(implicit inj: Injector) extends Controller with In
       errors => convert(BadRequest(InvalidJsonResponse(errors))),
       json => {
         DB.withSession { implicit dbSession =>
-          authenticate(request) match {
-            case Some(user: User) => action(RestRequest(dbSession, user, request))(json)
-            case None => convert(Unauthorized(ErrorResponse("Forbidden access. Please sign in.")))
-          }
+          action(RestRequest(dbSession, authenticate(request), request))(json)
         }
       })
-  }
-
-  def RestAction[T](action: RestRequest => T => Result)(implicit jsonReads: Reads[T])
-    = Action(BodyParsers.parse.json) { request =>
-    BaseRestAction[T, Result](request)(result => result)(action)
-  }
-
-  def RestAsyncAction[T](action: RestRequest => T => Future[Result])(implicit jsonReads: Reads[T])
-    = Action.async(BodyParsers.parse.json) { request =>
-    BaseRestAction[T, Future[Result]](request)(result => Future(result))(action)
   }
 }

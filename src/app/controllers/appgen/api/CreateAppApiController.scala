@@ -4,20 +4,21 @@ import play.api.mvc._
 import controllers.api.ProgressReporter
 import controllers.appgen.api.JsonImplicits._
 import controllers.api.JsonImplicits._
+import controllers.appgen.api.rest.SecuredRestController
 import model.appgen.entity._
-import model.appgen.repository.{ApplicationsRepository, UserPipelineDiscoveryRepository, UserDataSourcesRepository}
+import model.appgen.repository.{ApplicationsRepository, UserDataSourcesRepository, UserPipelineDiscoveryRepository}
 import model.appgen.rest.AddDataSourceRequest._
 import model.appgen.rest.EmptyRequest._
 import model.appgen.rest.RunDiscoveryRequest._
 import model.appgen.rest.CreateAppRequest._
-import model.appgen.service.VisualizerService
-import model.entity.{PipelineDiscovery, Pipeline, PipelineId}
-import model.service.{PipelineService, DataSourceService}
+import model.entity.{Pipeline, PipelineDiscovery, PipelineId}
+import model.service.{DataSourceService, PipelineService}
 import scaldi.Injector
 import model.appgen.rest.Response._
+import model.appgen.rest.RestRequestWithUser
 import utils.PaginationInfo
 
-class CreateAppApiController(implicit inj: Injector) extends RestController {
+class CreateAppApiController(implicit inj: Injector) extends SecuredRestController {
   val dataSourceService = inject[DataSourceService]
   val userDataSourceRepository = inject[UserDataSourcesRepository]
   val applicationsRepository = inject[ApplicationsRepository]
@@ -70,7 +71,7 @@ class CreateAppApiController(implicit inj: Injector) extends RestController {
   /** Load discovery from given pipeline. The discovery must belong to current user. */
   private def withDiscovery(id: PipelineId)
     (func: (Pipeline, PipelineDiscovery, UserPipelineDiscovery) => Result)
-    (implicit request: RestRequest): Result = {
+    (implicit request: RestRequestWithUser): Result = {
     (for {
       pipeline <- pipelineService.findById(id)
       discovery <- pipelineService.discoveryState(pipeline.pipelineDiscovery.get)
