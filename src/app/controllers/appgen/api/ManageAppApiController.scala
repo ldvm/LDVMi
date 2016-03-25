@@ -6,6 +6,7 @@ import play.api.mvc._
 import controllers.appgen.api.rest.SecuredRestController
 import model.appgen.entity._
 import model.appgen.repository.ApplicationsRepository
+import model.appgen.rest.PublishAppRequest.PublishAppRequest
 import scaldi.Injector
 import model.appgen.rest.Response._
 import model.appgen.rest.RestRequestWithUser
@@ -43,6 +44,16 @@ class ManageAppApiController(implicit inj: Injector) extends SecuredRestControll
     withApplication(ApplicationId(id)) { application =>
       applicationsRepository.save(application.copy(configuration = Some(json.configuration)))
       Ok(SuccessResponse("The configuration has been saved"))
+    }
+  }
+
+  def publishApp(id: Long) = RestAction[PublishAppRequest] { implicit request => json =>
+    withApplication(ApplicationId(id)) { application =>
+      applicationsRepository.save(application.copy(published = json.published))
+      json.published match {
+        case true => Ok(SuccessResponse("The application has been published"))
+        case false => Ok(SuccessResponse("The application is no longer published"))
+      }
     }
   }
 }

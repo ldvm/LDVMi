@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import GeneralSettingsDialog, { dialogName} from '../dialogs/GeneralSettingsDialog'
+import GeneralSettingsDialog, { dialogName } from '../dialogs/GeneralSettingsDialog'
 import { dialogClose } from '../../core/ducks/dialog'
 import { Application } from '../models'
 import { notification } from '../../core/ducks/notifications'

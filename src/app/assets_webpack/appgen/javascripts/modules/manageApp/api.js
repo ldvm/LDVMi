@@ -18,6 +18,11 @@ export async function saveConfiguration(id, configuration) {
   });
 }
 
+/**  @returns {Promise<{status, message, data}>} */
+export async function publishApp(id, published) {
+  return await rest('manageApp/publishApp/' + id, { published });
+}
+
 /**  @returns {Promise<object>} */
 export async function getConfiguration(id) {
   const result = await rest('app/getAppConfiguration/' + id, {});

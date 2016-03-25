@@ -27,6 +27,16 @@ export function updateApplication(update) {
   return createAction(UPDATE_APPLICATION, update);
 }
 
+export const PUBLISH_APPLICATION = prefix('PUBLISH_APPLICATION');
+export const PUBLISH_APPLICATION_START = PUBLISH_APPLICATION + '_START';
+export const PUBLISH_APPLICATION_ERROR = PUBLISH_APPLICATION + '_ERROR';
+export const PUBLISH_APPLICATION_SUCCESS = PUBLISH_APPLICATION + '_SUCCESS';
+
+export function publishApplication(id, published) {
+  const promise = api.publishApp(id, published);
+  return createAction(PUBLISH_APPLICATION, { promise }, { published });
+}
+
 // Reducer
 
 export default function applicationReducer(state = new Application(), action) {
@@ -37,6 +47,9 @@ export default function applicationReducer(state = new Application(), action) {
 
     case UPDATE_APPLICATION:
       return state.mergeDeep(action.payload);
+
+    case PUBLISH_APPLICATION_SUCCESS:
+      return state.mergeDeep({ published: action.meta.published });
   }
 
   return state;
@@ -47,6 +60,7 @@ export default function applicationReducer(state = new Application(), action) {
 export const applicationSelector = reducerSelector;
 
 export const applicationStatusSelector = createPromiseStatusSelector(GET_APPLICATION);
+export const publishStatusSelector = createPromiseStatusSelector(PUBLISH_APPLICATION);
 
 export const applicationVisualizerSelector = createSelector(
   [applicationSelector, visualizersSelector],

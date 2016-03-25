@@ -5,6 +5,7 @@ export const Application = Record({
   name: '',
   uid: '',
   description: '',
+  published: false,
   userId: 0,
   pipelineId: 0,
   userPipelineDiscoveryId: 0,
