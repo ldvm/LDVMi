@@ -5,6 +5,10 @@ define([
         './directives',
         './filters',
         './services',
+        '../ldvm/filters/labelFilter',
+        '../ldvm/models/visualizationModel',
+        '../ldvm/directives/languageSwitch',
+        '../ldvm/websocket',
         'angular-resource',
         'angular-route',
         'angular-ui',
@@ -25,6 +29,10 @@ define([
             'ngResource',
             'ui.bootstrap',
             'highcharts-ng',
-            'angular-loading-bar'
+            'angular-loading-bar',
+            'ldvm.filters',
+            'ldvm.models',
+            'ldvm.websocket',
+            'ldvm.directives'
         ]);
     });

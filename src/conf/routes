@@ -12,15 +12,15 @@ GET         /visualize/map                                                      
 GET         /visualize/openlayers                                                         @controllers.MapController.visualizeOL
 GET         /visualize/:id                                                                @controllers.VisualizationController.visualize(id: Long)
 GET         /visualize                                                                    @controllers.ApplicationController.index
-GET         /visualize/embed/treemap/:id                                                  @controllers.VisualizationController.treemap(id: Long, schemeUri: String)
-GET         /visualize/embed/sunburst/:id                                                 @controllers.VisualizationController.sunburst(id: Long, schemeUri: String)
-GET         /visualize/embed/packLayout/:id                                               @controllers.VisualizationController.packLayout(id: Long, schemeUri: String)
-GET         /visualize/embed/bilevel/:id                                                  @controllers.VisualizationController.bilevel(id: Long, schemeUri: String)
-GET         /visualize/embed/partition/:id                                                @controllers.VisualizationController.partition(id: Long, schemeUri: String)
-GET         /visualize/embed/force/:id                                                    @controllers.VisualizationController.force(id: Long, schemeUri: String)
-GET         /visualize/embed/tree/:id                                                     @controllers.VisualizationController.tree(id: Long, schemeUri: String)
-GET         /visualize/embed/cluster/:id                                                  @controllers.VisualizationController.cluster(id: Long, schemeUri: String)
-GET         /visualize/embed/radialTree/:id                                               @controllers.VisualizationController.radialTree(id: Long, schemeUri: String)
+GET         /visualize/embed/treemap/:id                                                  @controllers.VisualizationController.treemap(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/sunburst/:id                                                 @controllers.VisualizationController.sunburst(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/packLayout/:id                                               @controllers.VisualizationController.packLayout(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/bilevel/:id                                                  @controllers.VisualizationController.bilevel(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/partition/:id                                                @controllers.VisualizationController.partition(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/force/:id                                                    @controllers.VisualizationController.force(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/tree/:id                                                     @controllers.VisualizationController.tree(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/cluster/:id                                                  @controllers.VisualizationController.cluster(id: Long, schemeUri: String, language: String)
+GET         /visualize/embed/radialTree/:id                                               @controllers.VisualizationController.radialTree(id: Long, schemeUri: String, language: String)
 
 GET         /components                                                                   @controllers.ComponentTemplateController.index
 
@@ -37,7 +37,9 @@ GET         /discover/                                                          
 # API v1
 # Data upload
 POST        /api/v1/ttl/upload                                                            @controllers.api.DataSourceApiController.fromFile
-POST        /api/v1/datasources/add                                                       @controllers.api.ComponentTemplateApiController.addDatasource
+POST        /api/v1/dataSources/createSparqlEndpoints                                     @controllers.api.ComponentTemplateApiController.createSparqlEndpoints
+POST        /api/v1/dataSources/createFromUrls                                            @controllers.api.ComponentTemplateApiController.createFromUrls
+POST        /api/v1/dataSources/createByFileUpload                                        @controllers.api.ComponentTemplateApiController.createByFileUpload
 
 # LDVM components
 POST        /api/v1/components/add/ttl                                                    @controllers.api.LdvmApiController.ttl
@@ -57,6 +59,7 @@ GET         /api/v1/pipelines/discover                                          
 GET         /api/v1/pipelines/evaluations/:id                                             @controllers.api.PipelineApiController.evaluations(id: Long, skip: Int ?= 0, pageSize: Int ?= 10)
 GET         /api/v1/pipelines/visualization/:id                                           @controllers.api.PipelineApiController.visualizationById(id: Long)
 GET         /api/v1/pipelines/makePermanent/:id                                           @controllers.api.PipelineApiController.makePermanent(id: Long)
+GET         /api/v1/pipelines/getSingle/:discoveryId                                      @controllers.api.PipelineApiController.getSingle(discoveryId: Long)
 GET         /api/v1/pipelines/:id                                                         @controllers.api.PipelineApiController.findById(id: Long)
 
 # LDVM compatibility
@@ -88,6 +91,8 @@ GET         /api/v1/datacube/custom/:id/:permalinkToken                         
 GET         /api/v1/datacube/create/:dataSourceTemplateId                                 @controllers.api.DataCubeApiController.createVisualisation(dataSourceTemplateId: Long)
 GET         /api/v1/datacube/datasets/:id                                                 @controllers.api.DataCubeApiController.datasets(id: Long)
 GET         /api/v1/datacube/datastructure                                                @controllers.api.DataCubeApiController.dataStructure(id: Long, uri: String, isTolerant: Boolean ?= false)
+GET         /api/v1/datacube/datastructure-components                                     @controllers.api.DataCubeApiController.dataStructureComponents(id: Long, uri: String, isTolerant: Boolean ?= false)
+GET         /api/v1/datacube/datastructures/:id                                           @controllers.api.DataCubeApiController.dataStructures(id: Long)
 POST        /api/v1/datacube/values/:id                                                   @controllers.api.DataCubeApiController.values(id: Long)
 POST        /api/v1/datacube/slices/:id                                                   @controllers.api.DataCubeApiController.sliceCube(id: Long)
 

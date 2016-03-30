@@ -40,12 +40,14 @@ class PipelineEvaluationAlgorithm(evaluation: PipelineEvaluation, reporterProps:
     val controlActor = Akka.system.actorOf(Props(new ControlActor(evaluation, reporterProps, visualizerInstance)))
 
     instancesById.foreach {
-      case (_, (c, false, _)) => c.actor.tell(ResultRequest(), controlActor)
+      case (_, (vis, false, _)) => vis.actor.tell(ResultRequest(), controlActor)
       case _ =>
     }
 
+    Thread.sleep(1000)
+
     instancesById.foreach {
-      case (_, (c, _, false)) => c.actor.tell(Run(), controlActor)
+      case (_, (source, _, false)) => source.actor.tell(Run(), controlActor)
       case _ =>
     }
   }

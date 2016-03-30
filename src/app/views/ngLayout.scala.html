@@ -15,6 +15,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@title</title>
+        <meta name="theme-color" content="#2196f3"/>
+        <link rel='stylesheet' href='@routes.Assets.versioned("stylesheets/flag-icon.min.css")'>
 
         @scripts
 
@@ -99,36 +101,8 @@
                         <a href="/">LinkedPipes Visualization</a>
                     </li>
 
-                    <li class="pull-right">
+                    <li class="pull-right" ng-show="showChatButton">
                         <ul class="top-menu">
-                            <li id="toggle-width">
-                                <div class="toggle-switch">
-                                    <input id="tw-switch" type="checkbox" hidden="hidden">
-                                    <label for="tw-switch" class="ts-helper"></label>
-                                </div>
-                            </li>
-                            <li id="top-search">
-                                <a class="tm-search" href=""></a>
-                            </li>
-                            <li class="dropdown">
-                                <a data-toggle="dropdown" class="tm-settings" href=""></a>
-                                <ul class="dropdown-menu dm-icon pull-right">
-                                    <li>
-                                        <a data-action="fullscreen" href=""><i class="md md-fullscreen"></i>
-                                            Toggle Fullscreen</a>
-                                    </li>
-                                    <li>
-                                        <a data-action="clear-localstorage" href=""><i class="md md-delete"></i>
-                                            Clear Local Storage</a>
-                                    </li>
-                                    <li>
-                                        <a href=""><i class="md md-person"></i> Privacy Settings</a>
-                                    </li>
-                                    <li>
-                                        <a href=""><i class="md md-settings"></i> Other Settings</a>
-                                    </li>
-                                </ul>
-                            </li>
                             <li id="chat-trigger" data-trigger="#chat">
                                 <a class="tm-chat" href=""></a>
                             </li>
@@ -147,35 +121,6 @@
                 <aside id="sidebar">
                     <div class="sidebar-inner">
                         <div class="si-inner">
-                            <div class="profile-menu">
-                                <a href="">
-                                    <div class="profile-pic">
-                                        <img src="@routes.Assets.versioned("stylesheets/material/img/profile-pics/4.jpg")" alt="" />
-                                    </div>
-
-                                    <div class="profile-info">
-                                        LDVM user
-
-                                        <i class="md md-arrow-drop-down"></i>
-                                    </div>
-                                </a>
-
-                                <ul class="main-menu">
-                                    <li>
-                                        <a href=""><i class="md md-person"></i> View Profile</a>
-                                    </li>
-                                    <li>
-                                        <a href=""><i class="md md-settings-input-antenna"></i> Privacy Settings</a>
-                                    </li>
-                                    <li>
-                                        <a href=""><i class="md md-settings"></i> Settings</a>
-                                    </li>
-                                    <li>
-                                        <a href=""><i class="md md-history"></i> Logout</a>
-                                    </li>
-                                </ul>
-                            </div>
-
                             <ul class="main-menu">
                                 <li class="active"><a href="/"><i class="md md-home"></i> Home</a></li>
                                 <li>

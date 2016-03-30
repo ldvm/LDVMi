@@ -1,49 +1,200 @@
-define(['angular', 'material', 'underscore.string', './controllers'], function (ng, material, _s) {
+define(['angular', 'material', 'underscorejs', 'jquery', './controllers'], function (ng, material, _, $) {
     'use strict';
 
     return ng.module('ldvm.controllers')
-        .controller('Index', ['$scope', 'Components', 'Pipelines', function ($scope, components, pipelines) {
+        .controller('Index', ['$scope', 'Components', 'Visualization', 'Pipelines', '$timeout',
+            function ($scope, components, visualization, pipelines, $timeout) {
 
-            $scope.showMore = false;
-            $scope.endpoints = [{}];
-            $scope.pipelines = [];
+                $scope.showInput = true;
+                $scope.redirect = false;
 
-            $scope.visualize = function (feelsLucky) {
+                $scope.runningDiscovery = null;
+                $scope.pipelinesDiscovered = 0;
+                $scope.discoveryId = null;
+                $scope.discoveryFinished = false;
 
-                var data = $scope.endpoints.splice(0, $scope.endpoints.length - 1).map(function (e) {
-                    return {
-                        url: e.url,
-                        graphUris: e.graphUris ? e.graphUris.split(/\s+/) : undefined
-                    };
-                });
+                $scope.evaluatingPipeline = false;
+                $scope.evaluationDuration = 0;
+                $scope.evaluationId = null;
+                $scope.evaluationFinished = false;
 
-                components.createDatasource(data).then(function (results) {
-                    var uri = "/discover/?";
-                    var params = results.map(function (r) {
-                        return "dataSourceTemplateIds=" + r.id;
+                $scope.creatingDatasources = false;
+                $scope.datasourcesCreated = false;
+
+                $scope.$parent.showChatButton = false;
+
+                $scope.sources = [
+                    {type: 'url'},
+                    {type: 'file'},
+                    {type: 'sparqlEndpoint'}
+                ];
+
+                function example(source) {
+                    $scope.sources = [source];
+                    window.setTimeout(function () {
+                        $("form").find("input, textarea").focus();
                     });
-                    uri += params.join('&');
-                    if ($scope.showMore && $scope.combine) {
-                        uri += "&combine=true";
-                    }
-                    if (feelsLucky) {
-                        uri += "&lucky=1";
-                    }
-                    window.location.href = uri;
-                });
-            };
-
-            var promise = pipelines.findPaginated(1, 10, { onlyPermanent: true });
-            promise.then(function (data) {
-                $scope.pipelines = data.data;
-            });
-
-            $scope.$watch('endpoints', function (newVal) {
-                var lastIndex = newVal.length - 1;
-                if (!(!newVal[lastIndex].url || newVal[lastIndex].url == "")) {
-                    $scope.endpoints.push({});
-                    material.initForms();
                 }
-            }, true);
-        }]);
+
+                $scope.example01 = function () {
+                    example({
+                        type: 'url',
+                        url: 'http://visualization.linkedpipes.com/example/datacube.ttl http://visualization.linkedpipes.com/example/dsd.ttl'
+                    });
+                };
+
+                $scope.example02 = function () {
+                    example({
+                        type: 'url',
+                        url: 'http://publications.europa.eu/mdr/resource/authority/eu-programme/skos/eu-programme-skos.rdf'
+                    });
+                };
+
+                $scope.example03 = function () {
+                    example({
+                        type: 'sparqlEndpoint',
+                        endpointUrl: 'http://linked.opendata.cz/sparql'
+                    });
+                };
+
+                $scope.example04 = function () {
+                    example({
+                        type: 'sparqlEndpoint',
+                        endpointUrl: 'http://linked.opendata.cz/sparql',
+                        graphUris: 'http://comsode.eu/resource/dataset/COMSODE_D3.2'
+                    });
+                };
+
+                $scope.example05 = function () {
+                    example({
+                        type: 'sparqlEndpoint',
+                        endpointUrl: 'http://linked.opendata.cz/sparql',
+                        graphUris: 'http://linked.opendata.cz/resource/dataset/coi.cz/kontroly http://linked.opendata.cz/resource/dataset/coi.cz/geocoordinates/google http://linked.opendata.cz/resource/dataset/coi.cz/check-labels'
+                    });
+                };
+
+                $scope.visualize = function (feelsLucky) {
+                    $scope.creatingDatasources = true;
+                    $scope.datasourcesCreated = false;
+                    $scope.showInput = false;
+
+                    var promise = components.createDataSources($scope.sources);
+                    promise.then(
+                        function (result) {
+                            $scope.validDataSources = result.validSources;
+                            runDiscovery(result.sourcesIds, feelsLucky);
+                        },
+                        function (errorMessage) {
+                            alert(errorMessage + ' Terminating.');
+                            $scope.showInput = true;
+                        }
+                    )
+                };
+
+                function runDiscovery(dataSourceIds, feelsLucky) {
+
+                    $scope.creatingDatasources = false;
+                    $scope.datasourcesCreated = true;
+                    $scope.runningDiscovery = true;
+                    $scope.pipelinesDiscovered = 0;
+                    $scope.discoveryId = null;
+                    $scope.discoveryFinished = false;
+                    $scope.pipline = null;
+
+                    var onPipelinesCountChanged = function (count) {
+                        $scope.$apply(function () {
+                            $scope.pipelinesDiscovered = count;
+                        });
+                    };
+
+                    var onProgress = function (message) {
+                        if (!$scope.discoveryId) {
+                            $scope.$apply(function () {
+                                $scope.discoveryId = message.id;
+                            });
+                        }
+                    };
+
+                    var errors = [];
+
+                    var onDone = function (isSuccess) {
+                        if (isSuccess) {
+                            discoveryDone(feelsLucky);
+                        } else {
+                            alert('Discovery failed to find a visualization. Please, check that the input is valid and try again.\n\n' + errors.join('\n'));
+                            $scope.$apply(function () {
+                                $scope.showInput = true;
+                            });
+                        }
+                        $scope.$apply(function () {
+                            $scope.runningDiscovery = false;
+                        });
+                    };
+
+                    visualization.discovery.run(
+                        dataSourceIds,
+                        onPipelinesCountChanged,
+                        onProgress,
+                        onDone,
+                        errors
+                    );
+                }
+
+                function discoveryDone(feelsLucky) {
+                    $scope.$apply(function () {
+                        $scope.discoveryFinished = true;
+                    });
+
+                    if ($scope.pipelinesDiscovered === 1 || (feelsLucky && $scope.pipelinesDiscovered >= 1)) {
+                        pipelines.getSingle($scope.discoveryId).then(function (pipeline) {
+                            $scope.pipeline = pipeline;
+                            evaluatePipeline(pipeline);
+                        });
+                    } else {
+                        $scope.$apply(function () {
+                            $scope.redirect = true;
+                        });
+                        window.setTimeout(function () {
+                            window.location.href = "/pipelines#/list?quick=1&discoveryId=" + $scope.discoveryId;
+                        }, 2000);
+                    }
+                }
+
+                function evaluatePipeline(pipeline) {
+
+                    $scope.evaluatingPipeline = true;
+                    $scope.evaluationDuration = 0;
+                    $scope.evaluationId = null;
+                    $scope.evaluationFinished = false;
+
+                    var onEvaluationIdAssigned = function (evaluationId) {
+                        $scope.$apply(function () {
+                            $scope.evaluationId = evaluationId;
+                        });
+                    };
+
+                    var onDone = function () {
+                        $scope.$apply(function () {
+                            $scope.redirect = true;
+                            $scope.evaluationFinished = true;
+                        });
+                        if ($scope.evaluationId) {
+                            window.setTimeout(function () {
+                                window.location.href = "/visualize/" + $scope.evaluationId;
+                            }, 2000);
+                        }
+                    };
+
+                    pipelines.evaluate(pipeline, onEvaluationIdAssigned, onDone);
+                }
+
+                window.setTimeout(function () {
+                    material.initForms();
+                }, 0);
+                
+                window.setTimeout(function () {
+                    material.initForms();
+                }, 500);
+
+            }]);
 });

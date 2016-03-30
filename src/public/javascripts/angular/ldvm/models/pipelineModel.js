@@ -5,8 +5,10 @@ define(['angular', './models'], function (ng) {
         .service('Pipelines', [
             'PipelineApi',
             'PaginationUtils',
+            '$connection',
             function (pipelineApi,
-                      paginationUtils) {
+                      paginationUtils,
+                      $connection) {
                 return {
                     findPaginated: function (page, pageSize, filters) {
                         filters = filters || {};
@@ -29,6 +31,29 @@ define(['angular', './models'], function (ng) {
                     },
                     get: function (id) {
                         return pipelineApi.get({id: id}).$promise;
+                    },
+                    getSingle: function (discoveryId) {
+                        return pipelineApi.getSingle({discoveryId: discoveryId}).$promise;
+                    },
+                    evaluate: function (pipeline, onEvaluationIdAssigned, onDone) {
+                        var uri = "ws://" + window.location.host + "/api/v1/pipelines/evaluate/" + pipeline.id;
+
+                        var connection = $connection(uri);
+                        connection.listen(
+                            function () {
+                                return true;
+                            },
+                            function (message) {
+
+                                if (message.id) {
+                                    onEvaluationIdAssigned(message.id);
+                                }
+
+                                if (message.message === '==== DONE ====') {
+                                    onDone();
+                                }
+                            }
+                        );
                     }
                 };
             }

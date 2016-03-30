@@ -2,78 +2,125 @@
     <div class="container">
         <br/><br/>
 
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="row" ng-show="showInput">
+            <div class="col-md-8">
 
                 <div class="card">
-                    <div class="card-header bgm-green">
-                        <h2>Visualize
-                            <small>Want to see data from your own endpoint?</small>
+                    <div class="card-header bgm-orange">
+                        <h2>Select Data Sources
+                            <small>LinkedPipes will analyze those sources and try to discover visualizations.</small>
                         </h2>
                     </div>
 
-                    <div class="card-body card-padding">
-                        <form>
+                    <div class="card-body card-padding data-source-list">
+                        <form name="dataSources">
+                            <create-datasource sources="sources"></create-datasource>
 
-                            <div ng-repeat="endpoint in endpoints">
-                                <div class="form-group fg-float">
-                                    <div class="fg-line">
-                                        <input type="text" ng-model="endpoint.url" class="form-control fg-input"/>
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <div ng-show="sources.length">
+                                        <button class="btn btn-default waves-effect" ng-click="visualize(true)">Feeling
+                                            lucky
+                                        </button>
+                                        <button class="btn btn-primary waves-effect" ng-click="visualize()">Visualize
+                                        </button>
                                     </div>
-                                    <label class="fg-label">Endpoint {{$index+1}} URL</label>
-                                </div>
-
-                                <div class="form-group fg-float" ng-show="showMore">
-                                    <div class="fg-line">
-                                        <textarea ng-model="endpoint.graphUris" class="form-control auto-size"></textarea>
-                                    </div>
-                                    <label class="fg-label">Graph URIs (line separated)</label>
                                 </div>
                             </div>
-
-                            <div class="form-group" ng-show="showMore">
-                                <div class="toggle-switch">
-                                    <label for="ts2" class="ts-label">Combine with other datasources</label>
-                                    <input id="ts2" type="checkbox" hidden="hidden" ng-model="combine" />
-                                    <label for="ts2" class="ts-helper"></label>
-                                </div>
-                            </div>
-
-                            <button class="btn btn-info waves-effect" ng-click="visualize()">Visualize</button>
-                            <button class="btn btn-default waves-effect" ng-click="visualize(true)">Feeling lucky</button>
-                            <button class="btn btn-link waves-effect" ng-show="!showMore"
-                                    ng-click="showMore = !showMore">More settings
-                            </button>
-                            <button class="btn btn-link waves-effect" ng-show="showMore"
-                                    ng-click="showMore = !showMore">Less settings
-                            </button>
                         </form>
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-body card-padding">
-                        Want to upload TTL or combine more types of data sources? No SPARQL endpoint? <a href="/multisource">Yes, you can!</a>
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="card" ng-show="showInput">
+                    <div class="card-header bgm-blue">
+                        <h2>Examples
+                            <small>Some examples prepared for you.</small>
+                        </h2>
+                    </div>
+
+                    <div class="card-body data-source-list">
+                        <div class="listview lv-bordered lv-lg">
+                            <div class="lv-item media">
+                                <span class="pull-left">
+                                    <span class="btn btn-warning" ng-click="example01()">
+                                        <i class="md md-fast-rewind"></i>
+                                    </span>
+                                    <i class="md md-trending-up" style="font-size: 23px;"></i>
+                                </span>
+                                <div class="media-body">
+                                    <a href="" class="lv-title" ng-click="example01()">DataCube</a>
+                                    <small class="lv-small">CZ Demography with IRI dereference.</small>
+                                </div>
+                            </div>
+                            <div class="lv-item media">
+                                <span class="pull-left">
+                                    <span class="btn btn-warning" ng-click="example02()">
+                                        <i class="md md-fast-rewind"></i>
+                                    </span>
+                                    <i class="md md-format-list-bulleted" style="font-size: 23px;"></i>
+                                </span>
+                                <div class="media-body">
+                                    <a href="" class="lv-title" ng-click="example02()">SKOS</a>
+                                    <small class="lv-small">EU programme</small>
+                                </div>
+                            </div>
+                            <div class="lv-item media">
+                                <span class="pull-left">
+                                    <span class="btn btn-warning" ng-click="example03()">
+                                        <i class="md md-fast-rewind"></i>
+                                    </span>
+                                    <i class="md md-view-carousel" style="font-size: 23px;"></i>
+                                </span>
+                                <div class="media-body">
+                                    <a href="" class="lv-title" ng-click="example03()">LOD.cz</a>
+                                    <small class="lv-small">Linked Opendata CZ endpoint</small>
+                                </div>
+                            </div>
+                            <div class="lv-item media">
+                                <span class="pull-left">
+                                    <span class="btn btn-warning" ng-click="example04()">
+                                        <i class="md md-fast-rewind"></i>
+                                    </span>
+                                    <i class="md md-format-list-bulleted" style="font-size: 23px;"></i>
+                                </span>
+                                <div class="media-body">
+                                    <a href="" class="lv-title" ng-click="example04()">COMSODE D3.2</a>
+                                    <small class="lv-small">Hierarchies from D3.2 of the COMSODE project</small>
+                                </div>
+                            </div>
+                            <div class="lv-item media">
+                                <span class="pull-left">
+                                    <span class="btn btn-warning" ng-click="example05()">
+                                        <i class="md md-fast-rewind"></i>
+                                    </span>
+                                    <i class="md md-place" style="font-size: 23px;"></i>
+                                </span>
+                                <div class="media-body">
+                                    <a href="" class="lv-title" ng-click="example05()">CTIA checks</a>
+                                    <small class="lv-small">Czech Trade Inspection Authority inspections on a map</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
+        <div class="row" ng-show="showInput">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header ch-alt m-b-20">
-                        <h2>Recent Saved Pipelines</h2>
-                        <ul class="actions">
-                            <li>
-                                <a href="">
-                                    <i class="md md-cached"></i>
-                                </a>
-                            </li>
-                        </ul>
-
-                        <!--<button class="btn bgm-cyan btn-float waves-effect"><i class="md md-add"></i></button>-->
+                        <h2>Recently Saved Pipelines</h2>
                     </div>
 
                     <div class="card-body">
                         <div class="listview">
-                            <a class="lv-item" href="/pipelines#/detail/{{pipeline.id}}" ng-repeat="pipeline in pipelines">
+                            <a class="lv-item" href="/pipelines#/detail/{{pipeline.id}}"
+                               ng-repeat="pipeline in pipelines">
                                 <div class="media">
                                     <!--<div class="pull-left">
                                         <img class="lv-img-sm" src="img/profile-pics/1.jpg" alt="">
@@ -84,7 +131,92 @@
                                     </div>
                                 </div>
                             </a>
-                            <a class="lv-footer" href="/pipelines#/list">View All</a>
+                            <span class="lv-item" ng-if="!pipelines.length">No saved pipelines.</span>
+                            <a class="lv-footer" href="/pipelines#/list">View all pipelines</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-hide="showInput">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bgm-blue">
+                        <h2>Visualizations discovery
+                            <small>
+                                LinkedPipes is analyzing your data sources. Those are examined to find a well-known data
+                                patterns
+                                in order to automatically provide you with a suitable visualization.
+                            </small>
+                        </h2>
+                    </div>
+
+                    <div class="card-body card-padding">
+                        <div class="listview lv-bordered lv-lg">
+                            <div class="lv-body">
+                                <div class="lv-item media text-center">
+                                    <div class="preloader pl-sm">
+                                        <svg class="pl-circular" viewBox="25 25 50 50">
+                                            <circle class="plc-path" cx="50" cy="50" r="20"></circle>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="lv-item media">
+                                    <div class="checkbox pull-left">
+                                        <i class="md md-query-builder" ng-if="creatingDatasources"
+                                           style="font-size: 24px"></i>
+                                        <i class="md md-done" ng-if="datasourcesCreated" style="font-size: 24px"></i>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="lv-title">Creating data sources</div>
+                                        <small class="lv-small">
+                                            Data sources to be created: {{sources.length}} ({{validDataSources.length}}
+                                            valid)
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="lv-item media">
+                                    <div class="checkbox pull-left">
+                                        <i class="md md-query-builder" ng-if="!discoveryFinished"
+                                           style="font-size: 24px"></i>
+                                        <i class="md md-done" ng-if="discoveryFinished" style="font-size: 24px"></i>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="lv-title">Running discovery</div>
+                                        <small class="lv-small">
+                                            Pipelines discovered so far: {{pipelinesDiscovered}}.
+                                            <a class="pull-right" ng-if="discoveryId && pipelinesDiscovered"
+                                               href="/pipelines#/list?discoveryId={{discoveryId}}">See discovered
+                                                pipelines</a>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="lv-item media" ng-show="pipeline">
+                                    <div class="checkbox pull-left">
+                                        <i class="md md-query-builder" ng-if="!evaluationFinished"
+                                           style="font-size: 24px"></i>
+                                        <i class="md md-done" ng-if="evaluationFinished" style="font-size: 24px"></i>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="lv-title">Evaluating pipeline</div>
+                                        <small class="lv-small">
+                                            {{pipeline.title}}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="lv-item media" ng-show="redirect">
+                                    <div class="checkbox pull-left">
+                                        <i class="md md-rotate-right" style="font-size: 24px"></i>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="lv-title">All done</div>
+                                        <small class="lv-small">
+                                            You are being redirected directly to the visualizer.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

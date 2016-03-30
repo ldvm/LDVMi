@@ -1,7 +1,5 @@
 package model.rdf.sparql.visualization.extractor
 
-import java.io.StringWriter
-
 import model.rdf.LocalizedValue
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.visualization.HierarchyNode
@@ -9,7 +7,8 @@ import model.rdf.sparql.visualization.query.SchemeQuery
 import model.rdf.vocabulary.SKOS
 import org.apache.jena.query.QueryExecution
 import org.apache.jena.rdf.model.{Literal, Model, Resource}
-import org.apache.jena.vocabulary.RDF
+import org.apache.jena.vocabulary.{RDF, RDFS}
+
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
@@ -25,7 +24,7 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
     Some(buildHierarchy(schemeResource, concepts, model))
   }
 
-  private def buildHierarchy(schemeResource: Resource, concepts: Seq[Resource], model: Model) : HierarchyNode = {
+  private def buildHierarchy(schemeResource: Resource, concepts: Seq[Resource], model: Model): HierarchyNode = {
     val rootUris = concepts.flatMap { n =>
       val nodeResource = n.asResource()
       conceptsByUri.put(nodeResource.getURI, getNode(model, nodeResource))
@@ -37,23 +36,31 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
         hierarchyLinksByUri.put(b.getURI, hierarchyLinksByUri.getOrElse(b.getURI, Seq()) ++ Seq(nodeResource.getURI))
       }
 
-      val hasBroader = maybeBroader.isDefined
-      if(hasBroader) {
-        None
-      }else{
-        Some(nodeResource.getURI) // URI of root
+      maybeBroader.isDefined match {
+        case true => None
+        case false => Some(nodeResource.getURI)
       }
     }
 
     val roots = rootUris.flatMap(buildSubtree)
 
     val maybeResource = Option(schemeResource)
-    val labels = maybeResource.map(r => r.listProperties(SKOS.prefLabel).toSeq.map(l => l.getLiteral)).getOrElse(Seq())
 
-    val schemeLabel = labels.size match {
-      case 0 => LocalizedValue.create(("nolang", schemeUri.split("[/#]").lastOption.getOrElse(schemeUri)))
-      case _ => LocalizedValue.create(labels)
+    val possibleLabels = Seq(SKOS.prefLabel, RDFS.label)
+    val literals = maybeResource.map { r =>
+      possibleLabels.flatMap { labelProperty =>
+        val properties = r.listProperties(labelProperty).toList
+        properties.map(_.getObject.asLiteral())
+      }
     }
+
+    val map = literals.map { l => l.reverse.map(l => (l.getLanguage, l.getString)).toMap }
+    val modifiedMap = if (map.isDefined && map.get.nonEmpty) {
+      map
+    } else {
+      None
+    }
+    val schemeLabel = modifiedMap.map(LocalizedValue(_)).getOrElse {LocalizedValue.create(("nolang", schemeUri.split("[/#]").lastOption.getOrElse(schemeUri)))}
 
     HierarchyNode(schemeLabel, schemeUri, Some(1), Some(roots))
   }
@@ -72,7 +79,7 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
     }
   }
 
-  private def getNode(model: Model, nodeResource: Resource) : HierarchyNode = {
+  private def getNode(model: Model, nodeResource: Resource): HierarchyNode = {
     val nameNodes = model.listObjectsOfProperty(nodeResource, SKOS.prefLabel).toSeq.map(o => o.asLiteral())
     val name = nameNodes.size match {
       case 0 => LocalizedValue.create(("nolang", nodeResource.getURI))
@@ -81,7 +88,7 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
 
     val value = model.getProperty(nodeResource, RDF.value)
     val intValue = Option(value).map(_.getInt)
-    HierarchyNode(name, nodeResource.getURI, if(intValue.isDefined){ intValue } else { Some(1) })
+    HierarchyNode(name, nodeResource.getURI, if (intValue.isDefined) {intValue} else {Some(1)})
   }
 
   private def buildSubtree(rootUri: String): Option[HierarchyNode] = {
@@ -94,7 +101,7 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
         childrenList.map(buildSubtree).collect { case Some(t) => t }
       }
 
-      val size = if(maybeChildren.isEmpty) { Some(1) } else { None }
+      val size = if (maybeChildren.isEmpty) {Some(1)} else {None}
       HierarchyNode(n.name, n.uri, size, maybeChildren)
     }
 

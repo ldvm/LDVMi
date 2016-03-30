@@ -12,8 +12,7 @@ define(['angular'], function (ng) {
                 slices: {url: '/api/v1/datacube/slices/:visualizationId', method: 'post'},
                 getQuery: {url: '/api/v1/visualization/queries/:visualizationId', method: 'get'},
                 getCached: {url: '/api/v1/visualization/cached/:visualizationId/:token', method: 'get'},
-                getStructure: {url: '/api/v1/datacube/datastructure', method: 'get'},
-                dereference: {url: '/dereference/labels', method: 'get'}
+                getStructure: {url: '/api/v1/datacube/datastructure', method: 'get'}
             });
         }]);
 });

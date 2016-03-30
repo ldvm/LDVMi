@@ -11,6 +11,8 @@ trait DataCubeService {
 
   def getDataStructures(evaluation: PipelineEvaluation): Seq[DataCubeDataStructure]
 
+  def getDataSetComponents(evaluation: PipelineEvaluation, uri: String, isTolerant: Boolean = false): Seq[DataCubeComponent]
+
   def getDataStructureComponents(evaluation: PipelineEvaluation, uri: String, isTolerant: Boolean = false): Seq[DataCubeComponent]
 
   def getValues(evaluation: PipelineEvaluation, uris: List[String]): Map[String, Option[Seq[DataCubeComponentValue]]]

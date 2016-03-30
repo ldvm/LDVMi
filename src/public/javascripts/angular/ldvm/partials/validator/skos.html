@@ -6,10 +6,152 @@
     <section id="content">
         <div class="container">
 
-            <uploader on-upload-completed="onUploadCompleted" ng-hide="id"></uploader>
+            <div class="row" ng-hide="id">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bgm-orange">
+                            <h2>Select a Data Source
+                                <small>LinkedPipes will validate your SKOS hierarchy.</small>
+                            </h2>
+                        </div>
+                        <div class="card-body card-padding">
+                            <create-datasource sources="sources" max-sources-count="1"></create-datasource>
+
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <div ng-show="sources.length" ng-hide="showLoader">
+                                        <button class="btn btn-primary waves-effect" ng-click="validate()">Validate</button>
+                                    </div>
+
+                                    <div class="preloader pl-sm" ng-if="showLoader">
+                                        <svg class="pl-circular" viewBox="25 25 50 50">
+                                            <circle class="plc-path" cx="50" cy="50" r="20"></circle>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bgm-blue">
+                            <h2>Examples
+                                <small>Exemplary broken SKOS schemes.</small>
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="listview lv-bordered lv-lg">
+                                <div class="lv-item media">
+                                    <span class="pull-left">
+                                        <span class="btn btn-warning" ng-click="example01()">
+                                            <i class="md md-fast-rewind"></i>
+                                        </span>
+                                    </span>
+                                    <div class="media-body">
+                                        <a href="" class="lv-title"ng-click="example01()" >Currencies</a>
+                                        <small class="lv-small">Currencies sample from OpenBudgets.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="row" ng-show="id">
                 <div class="col-sm-12">
+
+                    <div class="card">
+                        <div class="card-body card-padding">
+                            <div class="listview lv-bordered">
+                                <div class="lv-header">
+                                    Validation results
+                                </div>
+                                <div class="lv-body">
+                                    <span class="lv-item media">
+                                        <span class="label label-success" ng-class="{'label-warning': validConcepts.length < concepts.length, 'label-danger': validConcepts.length == 0}">{{validConcepts.length}} of {{concepts.length}}</span> concepts valid.
+                                        <span class="pull-right" ng-show="validConcepts.length > 0">
+                                            <span class="btn-group">
+                                                <a href="" class="btn btn-xs btn-default" ng-click="showValid = !showValid">Toggle</a>
+                                            </span>
+                                        </span>
+                                        <ul ng-if="showValid">
+                                            <li ng-repeat="concept in validConcepts"><a href="" ng-click="showDetailOf(concept)">{{concept.uri}}</a></li>
+                                        </ul>
+                                    </span>
+                                    <span class="lv-item media">
+                                        <span class="label label-success" ng-class="{'label-danger': conceptsWithoutScheme.length > 0}">{{conceptsWithoutScheme.length}}</span> Missing scheme IRI
+                                        <span class="pull-right" ng-show="conceptsWithoutScheme.length > 0">
+                                            <span class="btn-group">
+                                                <a href="" class="btn btn-xs btn-default" ng-click="showWithoutScheme = !showWithoutScheme">Toggle</a>
+                                            </span>
+                                        </span>
+                                        <ul ng-if="showWithoutScheme">
+                                            <li ng-repeat="concept in conceptsWithoutScheme"><a href="" ng-click="showDetailOf(concept)">{{concept.uri}}</a></li>
+                                        </ul>
+                                    </span>
+                                    <span class="lv-item media">
+                                        <span class="label label-success" ng-class="{'label-danger': conceptsNotMatchingScheme.length > 0}">{{conceptsNotMatchingScheme.length}}</span> Scheme IRI not matches any resource
+                                        <span class="pull-right" ng-show="showNotMatchingScheme.length > 0">
+                                            <span class="btn-group">
+                                                <a href="" class="btn btn-xs btn-default" ng-click="showNotMatchingScheme = !showNotMatchingScheme">Toggle</a>
+                                            </span>
+                                        </span>
+                                        <ul ng-if="showNotMatchingScheme">
+                                            <li ng-repeat="concept in conceptsNotMatchingScheme"><a href="" ng-click="showDetailOf(concept)">{{concept.uri}}</a></li>
+                                        </ul>
+                                    </span>
+                                    <span class="lv-item media" ng-repeat="(property, concepts) in conceptsWithBrokenLinks">
+                                        <span class="label label-danger">{{concepts.length}}</span> broken hierarchy link(s): <{{property}}>
+                                        <span class="pull-right">
+                                            <span class="btn-group">
+                                                <a href="" class="btn btn-xs btn-default" ng-click="showWithBrokenLinks[property] = !showWithBrokenLinks[property]">Toggle</a>
+                                            </span>
+                                        </span>
+                                        <ul ng-if="showWithBrokenLinks[property]">
+                                            <li ng-repeat="concept in concepts"><a href="" ng-click="showDetailOf(concept)">{{concept.uri}}</a></li>
+                                        </ul>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" ng-if="showDetailOfConcept != null">
+                        <div class="card-body card-padding">
+                            <div class="listview lv-bordered">
+                                <div class="lv-header">
+                                    Concept detail
+                                </div>
+                                <div class="lv-body">
+                                    <span class="lv-item media">
+                                        <div class="">
+                                            <div class="media-body">
+                                                <div class="lv-title">{{showDetailOfConcept.label.variants['nolang'] || showDetailOfConcept.label.variants['en']}}</div>
+                                                <strong>In scheme:</strong> <span ng-bind="concept.schemeUri"></span>
+                                                <small class="lv-small">IRI: {{showDetailOfConcept.uri}}</small>
+                                                <ul class="lv-attrs">
+                                                    <li ng-show="!showDetailOfConcept.schemeUri" class="danger">Scheme IRI missing</li>
+                                                    <li ng-show="showDetailOfConcept.schemeUri && !schemeExists(showDetailOfConcept.schemeUri)" class="danger">Scheme IRI does not match any scheme</li>
+                                                </ul>
+                                                <br />
+                                                <strong ng-show="showDetailOfConcept.linkUris.length">Links validation:</strong>
+                                                <ul>
+                                                    <li ng-repeat="(property, link) in showDetailOfConcept.linkUris">
+                                                        -- ({{property}}) -- > ({{link}}):
+                                                        <span class="label label-success" ng-show="linkValid(link)">OK</span>
+                                                        <span class="label label-danger" ng-hide="linkValid(link)">Referenced resource not present</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="card">
                         <div class="card-body card-padding">
@@ -23,41 +165,9 @@
                                             <div class="media-body">
                                                 <div class="lv-title">{{scheme.uri}}</div>
                                                 <small class="lv-small">{{scheme.label.variants['nolang']}}</small>
-                                                <strong><a href="#/hierarchy/tree/{{id}}?uri={{uri(scheme.uri)}}">Visualize</a></strong>
-                                            </div>
-                                        </div>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-body card-padding">
-                            <div class="listview lv-bordered">
-                                <div class="lv-header">
-                                    Concepts
-                                </div>
-                                <div class="lv-body">
-                                    <span class="lv-item media" ng-repeat="concept in concepts">
-                                        <div class="">
-                                            <div class="media-body">
-                                                <div class="lv-title">{{concept.label.variants['nolang']}}</div>
-                                                <strong>In scheme:</strong> <span ng-bind="concept.schemeUri"></span>
-                                                <small class="lv-small">URI: {{concept.uri}}</small>
-                                                <ul class="lv-attrs">
-                                                    <li ng-show="!schemeExists(concept.schemeUri)" class="danger">Scheme URI does not match any scheme</li>
-                                                </ul>
-                                                <br />
-                                                <strong ng-show="concept.linkUris.length">Links validation:</strong>
-                                                <ul>
-                                                    <li ng-repeat="link in concept.linkUris">
-                                                        {{link}}:
-                                                        <span class="label label-success" ng-show="linkExists(link)">OK</span>
-                                                        <span class="label label-danger" ng-hide="linkExists(link)">Referenced entity not present</span>
-                                                    </li>
-                                                </ul>
-                                                <span ng-show="concept.linkUris.length < 1">Root scheme</span>
+                                                <br/>
+                                                <a href="#/hierarchy/tree/{{id}}?uri={{uri(scheme.uri)}}"
+                                                   class="btn btn-success">Visualize</a>
                                             </div>
                                         </div>
                                     </span>

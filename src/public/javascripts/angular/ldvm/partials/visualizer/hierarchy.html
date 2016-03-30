@@ -1,25 +1,37 @@
 <div>
     <aside id="chat">
-        <div class="listview lv-bordered lv-lg" ng-if="!queryingDataset">
+        <div class="listview lv-bordered lv-lg">
             <div class="lv-header-alt">
                 <h2 class="lvh-label hidden-xs">Available schemes</h2>
             </div>
 
-            <div class="lv-body">
+            <div class="lv-body" ng-hide="loadingSchemesList">
                 <div class="lv-item media" ng-repeat="scheme in schemes">
+                    <div class="checkbox pull-left">
+                        <label>
+                            <input type="checkbox" ng-checked="selectedScheme.uri === scheme.uri" ng-click="loadScheme(scheme)"/>
+                            <i class="input-helper"></i>
+                        </label>
+                    </div>
                     <div class="media-body">
                         <div class="lv-title">
-                            <a href="{{uri(scheme)}}" ng-click="loadScheme(scheme)">
-                                {{ scheme | label }}
+                            <a href="" ng-click="loadScheme(scheme)" title="{{ scheme | label:language:availableLanguages }}">
+                                {{ scheme | label:language:availableLanguages }}
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div ng-if="queryingDataset">
-            Loading ...
+            <div class="lv-body" ng-show="loadingSchemesList">
+                <div class="lv-item media">
+                    <div class="media-body">
+                        <div class="lv-title">
+                            Loading ...
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </aside>
 
@@ -48,7 +60,7 @@
         </div>
 
         <div class="container" ng-if="!queryingDataset">
-            <div class="card" ng-hide="scheme">
+            <div class="card" ng-hide="selectedScheme">
                 <div class="card-header bgm-blue">
                     <h2>Select a scheme.</h2>
                 </div>
@@ -60,19 +72,31 @@
         </div>
 
         <div class="container-fluid" ng-if="!queryingDataset">
-            <div class="card" ng-show="scheme">
+            <div class="card" ng-if="selectedScheme">
+                <div class="card-header bgm-blue">
+                    <h2>
+                        {{selectedScheme | label:language:availableLanguages}}
+                    </h2>
+                </div>
                 <div class="card-body card-padding">
 
-                    <div class="btn-group">
-                        <button class="btn btn-default" ng-repeat="t in visualizations" ng-click="switch(t.key)" ng-class="{'btn-primary': visType == t.key}">{{t.label}}</button>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <button class="btn btn-default" ng-repeat="t in visualizations" ng-click="switch(t.key)"
+                                    ng-class="{'btn-primary': visType == t.key}">{{t.label}}
+                            </button>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <language-switch available-languages="availableLanguages" language="language" language-changed="onLanguageChange(language)"></language-switch>
+                        </div>
                     </div>
 
-                    <div ng-repeat="t in visualizations" ng-show="visType == t.key">
-                        <div style="padding: 10px">
-                            Embed link: <input type="text" value="{{embedUrl(t.key, true)}}" class="form-control" />
-                        </div>
-
+                    <div ng-repeat="t in visualizations" ng-if="visType == t.key">
                         <iframe width="100%" height="800" ng-src="{{embedUrl(t.key)}}" frameborder="0"></iframe>
+
+                        <div style="padding: 10px">
+                            Embed link: <input type="text" value="{{embedUrl(t.key, true)}}" class="form-control"/>
+                        </div>
                     </div>
 
                 </div>

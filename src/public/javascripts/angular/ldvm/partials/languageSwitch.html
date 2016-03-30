@@ -1,0 +1,8 @@
+<div>
+    <span class="btn btn-default btn-xs" ng-repeat="l in availableLanguages" ng-class="{'btn-primary': l == language}" ng-click="setLang(l)">
+        <i class="flag-icon flag-icon-{{l}}"></i>
+    </span>
+    <span class="btn btn-default btn-xs" ng-class="{'btn-primary': 'nolang' == language}" ng-click="setLang('nolang')">
+        <i class="md-highlight-remove"></i>
+    </span>
+</div>

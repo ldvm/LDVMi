@@ -1,6 +1,6 @@
 @import model.entity.PipelineEvaluationId
 
-@(evaluationId: PipelineEvaluationId, schemeUri: String)
+@(evaluationId: PipelineEvaluationId, schemeUri: String, language: String)
 
 @scripts = {
 
@@ -48,7 +48,8 @@
         var uri = "/api/v1/skos/scheme/@evaluationId.id?schemeUri=" + encodeURIComponent('@schemeUri');
 
         function name(node) {
-            return node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
+            node.name = node.name || {variants: {}};
+            return node.name.variants["@language"] || node.name.variants["en"] || node.name.variants["cs"] || node.name.variants["nolang"] || "";
         }
 
 var width = 840,

@@ -6,7 +6,50 @@
     <section id="content">
         <div class="container">
 
-            <uploader on-upload-completed="onUploadCompleted" ng-hide="id"></uploader>
+            <div class="row" ng-hide="id">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bgm-orange">
+                            <h2>Select a Data Source
+                                <small>LinkedPipes will validate your DataCube.</small>
+                            </h2>
+                        </div>
+                        <div class="card-body card-padding">
+                            <create-datasource sources="sources" max-sources-count="1"></create-datasource>
+
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <div ng-show="sources.length" ng-hide="showLoader">
+                                        <button class="btn btn-primary waves-effect" ng-click="validate()">Validate</button>
+                                    </div>
+
+                                    <div class="preloader pl-sm" ng-if="showLoader">
+                                        <svg class="pl-circular" viewBox="25 25 50 50">
+                                            <circle class="plc-path" cx="50" cy="50" r="20"></circle>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header bgm-blue">
+                            <h2>Examples
+                                <small>Exemplary broken cubes.</small>
+                            </h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="listview lv-bordered lv-lg">
+                                <div class="lv-item media">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="row" ng-show="id">
                 <div class="col-sm-12">
@@ -28,8 +71,10 @@
                                             <div class="media-body">
                                                 <div class="lv-title" ng-bind="structure.uri"></div>
                                                 <small class="lv-small" ng-bind="structure | label : lang"></small>
-                                                <strong><a href="#/hierarchy/tree/{{id}}?uri={{uri(structure.uri)}}">Visualize</a></strong>
-                                                <strong><a href="" ng-click="setDsd(structure)" ng-show="structure.uri && dataStructures.length > 1">Validate details</a></strong>
+                                                <strong><a href="/visualize/datacube#/id/{{id}}" class="btn btn-success">Visualize</a></strong>
+                                                <strong><a href="" ng-click="setDsd(structure)"
+                                                           ng-show="structure.uri && dataStructures.length > 1">Validate
+                                                    details</a></strong>
                                                 <ul class="lv-attrs">
                                                     <li class="warning" ng-if="!structure.label">No label</li>
                                                     <li class="danger" ng-if="!structure.uri">No URI</li>
@@ -63,11 +108,16 @@
                                                     <li class="info" ng-if="component.dimension">Dimension</li>
                                                     <li class="info" ng-if="component.attribute">Attribute</li>
                                                     <li class="info" ng-if="component.measure">Measure</li>
-                                                    <li class="danger" ng-if="!component.measure && !component.dimension && !component.measure">Unknown component type</li>
+                                                    <li class="danger"
+                                                        ng-if="!component.measure && !component.dimension && !component.measure">
+                                                        Unknown component type
+                                                    </li>
                                                     <li class="warning" ng-if="!component.label">No label</li>
                                                     <li class="warning" ng-if="!component.uri">No URI</li>
                                                     <li class="warning" ng-if="!component.order">No order specified</li>
-                                                    <li class="info" ng-if="component.order">Order: {{component.order}}</li>
+                                                    <li class="info" ng-if="component.order">Order:
+                                                        {{component.order}}
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>

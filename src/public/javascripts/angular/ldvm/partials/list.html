@@ -16,36 +16,11 @@
         <div class="listview lv-bordered lv-lg">
             <div class="lv-header-alt">
                 <h2 class="lvh-label hidden-xs">Available visualization pipelines</h2>
-
-                <ul class="lv-actions actions">
-                    <li>
-                        <a href="">
-                            <i class="md md-access-time"></i>
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="" data-toggle="dropdown" aria-expanded="true">
-                            <i class="md md-sort"></i>
-                        </a>
-
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            <li>
-                                <a href="">Last Modified</a>
-                            </li>
-                            <li>
-                                <a href="">Name</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href=""><i class="md md-cached"></i></a>
-                    </li>
-                </ul>
             </div>
 
             <div class="lv-body">
                 <div class="lv-item media" ng-hide="pipelines.length">
-                    No pipelines discovered.
+                    No pipelines discovered. <a href="#/">Start over.</a>
                 </div>
                 <div class="lv-item media" ng-repeat="pipeline in pipelines">
                     <div class="checkbox pull-left">
@@ -55,22 +30,7 @@
                         </label>
                     </div>
                     <div class="media-body">
-                        <a ng-href="#/detail/{{pipeline.id}}" class="lv-title" ng-bind="pipeline.title"></a>
-
-                        <ul class="lv-attrs">
-                            <li>
-                                Last modified:
-                                <span am-time-ago="time(pipeline.modifiedUtc, pipeline.createdUtc)"
-                                    tooltip="{{time(pipeline.modifiedUtc, pipeline.createdUtc) | date : 'medium'}}">
-                                </span>
-                            </li>
-                            <li ng-show="pipeline.isTemporary" class="warning">Temporary</li>
-                            <li>
-                                Compatibility:
-                                <span ng-hide="pipeline.isCompatible">OK</span>
-                                <span ng-show="pipeline.isCompatible">Error</span>
-                            </li>
-                        </ul>
+                        <a ng-href="#/detail/{{pipeline.id}}?autorun={{quick}}" class="lv-title" ng-bind="pipeline.title"></a>
 
                         <div class="lv-actions actions dropdown">
                             <a href="" data-toggle="dropdown" aria-expanded="true">
@@ -79,10 +39,10 @@
 
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li>
-                                    <a ng-href="#/evaluate/{{pipeline.id}}">Run</a>
+                                    <a ng-href="#/detail/{{pipeline.id}}">Details</a>
                                 </li>
                                 <li>
-                                    <a ng-href="#/compatibility/check/{{pipeline.id}}">Re-check compatibility</a>
+                                    <a ng-href="#/evaluate/{{pipeline.id}}">Run</a>
                                 </li>
                                 <li>
                                     <a ng-href="#/list/?discoveryId={{pipeline.pipelineDiscovery}}" ng-show="pipeline.pipelineDiscovery">Discovery details</a>

@@ -14,8 +14,10 @@ import play.api.Play.current
 import play.api.db
 import play.api.db.slick.Session
 import play.api.libs.concurrent.Akka
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Future, Promise}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future, Promise}
 
 
 object EndpointConfig {
@@ -37,7 +39,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
   val actor = Akka.system.actorOf(props)
 
   def evaluate(dataReferences: Seq[DataReference]): Future[(String, Seq[String])] = {
-    plugin.map{ p =>
+    plugin.map { p =>
       p.run(dataReferences, reporterProps)
     }.getOrElse {
       throw new NotImplementedError()
@@ -73,7 +75,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
 
   def check(context: BindingContext)(implicit session: Session) = {
     val features = componentInstance.componentTemplate.features
-    val featuresWithDescriptors = features.map { f => (f, f.descriptors)}
+    val featuresWithDescriptors = features.map { f => (f, f.descriptors) }
 
     val eventualComponentInstanceCompatibility = featuresWithDescriptors.map {
       case (feature, descriptors) => {
@@ -116,7 +118,7 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
     }.get
 
     val future = (checker ask CheckCompatibilityRequest(descriptor)).mapTo[CheckCompatibilityResponse]
-    future.onSuccess{
+    future.onSuccess {
       case r: CheckCompatibilityResponse => reporter ! r
     }
 
@@ -138,18 +140,18 @@ class InternalComponent(val componentInstance: ComponentInstance, pluginFactory:
       }
 
       eventualResponses.foreach(_.onFailure {
-        case e : org.apache.jena.query.QueryException if e.getMessage.matches(".+returned Content(.+)which is not currently.+") => p.tryFailure(e)
+        case e: org.apache.jena.query.QueryException if e.getMessage.matches(".+returned Content(.+)which is not currently.+") => p.tryFailure(e)
         case _ => p.trySuccess(false)
       })
       Future.sequence(eventualResponses)
-        .map { x => x.forall(_.isCompatible.getOrElse(false))}
+        .map { x => x.forall(_.isCompatible.getOrElse(false)) }
         .foreach { x =>
-        reporter ! "Port <" + portUri + "> compatibility with <" + componentToAsk.componentInstance.uri + "> result: " + x
-        p.trySuccess(x)
-      }
+          reporter ! "Port <" + portUri + "> compatibility with <" + componentToAsk.componentInstance.uri + "> result: " + x
+          p.trySuccess(x)
+        }
     }
 
-    if(maybeInputTemplate.isEmpty) {
+    if (maybeInputTemplate.isEmpty) {
       p.tryFailure(new UnsupportedOperationException)
     }
 

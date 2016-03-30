@@ -30,7 +30,7 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
 
     urls match {
       case u if u.nonEmpty => withRandomGraphUri { r =>
-        val dataSourceName = "Downloaded TTLs"
+        val dataSourceName = "Downloaded RDF"
         val dataSourceDescription = u.mkString(", ")
         val dataSourceId = createDataSource(dataSourceName, Some(dataSourceDescription), r)
 
@@ -65,6 +65,22 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
         Some(dataSourceId)
       }
       case _ => None
+    }
+  }
+
+  def createDataSourceFromStrings(files: Seq[(String, String)], maybeUrn: Option[UUID] = None)(implicit session: Session): Option[DataSourceTemplateId] = {
+    withRandomGraphUri(maybeUrn) { r =>
+      val dataSourceName = files.map(_._1).mkString(", ")
+
+      val dataSourceId = findDataSourceByGraph(r)
+      .flatMap(_.id)
+      .getOrElse(createDataSource(dataSourceName, None, r))
+
+      files.foreach { file =>
+        graphStore.pushToTripleStore(file._2, r.graphUri)
+      }
+
+      Some(dataSourceId)
     }
   }
 

@@ -11108,7 +11108,7 @@ a.waves-effect .waves-ripple {
   background-color: #2196f3 !important;
 }
 .c-blue {
-  color: #2196f3 !important;
+  color: #2196F3 !important;
 }
 .bgm-purple {
   background-color: #9c27b0 !important;
@@ -11350,7 +11350,7 @@ body #content {
   }
 }
 #header {
-  background: #4285F4;
+  background: #2196F3;
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
   height: 65px;
   position: fixed;

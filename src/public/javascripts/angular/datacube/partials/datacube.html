@@ -8,12 +8,9 @@
 
             <div class="lv-body">
                 <div class="lv-item media">
-                    <div class="media-body">
-                        <ul class="list-unstyled" style="margin-bottom: 0px; display: inline-block;">
-                            <li ng-repeat="l in availableLanguages" style="display: inline; margin-right: 3px;"><span
-                                    ng-click="setLang(l, true)" class="flag-icon flag-icon-{{l}}"></span></li>
-                            <li style="margin-bottom: 0px; display: inline-block;"><i ng-click="setLang('nolang', true)" class="md-highlight-remove"></i></li>
-                        </ul>
+                    <div class="media-body" style="padding-bottom: 10px;">
+                        <language-switch available-languages="availableLanguages" language="language"
+                                         language-changed="onLanguageChange(language)"></language-switch>
                     </div>
                 </div>
             </div>
@@ -53,7 +50,7 @@
                          ng-repeat="component in activeDataset.dataStructure.components | orderBy:'order'"
                          ng-if="component[type.key]"
                          ng-class="{'lv-item-danger': values[component[type.key].uri].length == 0}"
-                        >
+                    >
                         <div class="pull-left">
                             <i class="glyphicon glyphicon-chevron-up" ng-if="type.key == 'dimension'"
                                ng-click="reorderComponents($index, component, -1)" ng-if="component.order > 1"></i>
@@ -69,7 +66,8 @@
                         </div>
                         <div class="pull-left checkbox" ng-if="type.key == 'measure'">
                             <label>
-                                <input type="checkbox" ng-click="toggleMeasure(component)" ng-checked="component.isActive"/>
+                                <input type="checkbox" ng-click="toggleMeasure(component)"
+                                       ng-checked="component.isActive"/>
                                 <i class="input-helper"></i>
                             </label>
                         </div>
@@ -96,7 +94,8 @@
                 </div>
 
                 <div class="card-body card-padding">
-                    Right now, we are querying the dataset for <strong>{{queryingDataset}}</strong>. It may take a few minutes
+                    Right now, we are querying the dataset for <strong>{{queryingDataset}}</strong>. It may take a few
+                    minutes
                     based on the size of the result and/or size of the graph the query is running against.
                     <br/><br/>
 
@@ -113,13 +112,29 @@
         <div ng-if="!queryingDataset">
             <div ng-if="settingsVisible">
                 <div class="container">
+
+                    <div ng-if="activeDataset">
+                        <div ng-if="slicesSelected">
+                            <div class="card">
+                                <div class="card-body card-padding-sm text-center">
+                                    <button class="btn btn-primary" ng-click="disableSettingsAndRefresh()"><i
+                                            class="glyphicon glyphicon-refresh"></i> Refresh
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="card">
 
-                        <div ng-repeat="component in activeDataset.dataStructure.components | orderBy:'order'" ng-if="component['dimension']">
+                        <div ng-repeat="component in activeDataset.dataStructure.components | orderBy:'order'"
+                             ng-if="component['dimension']">
 
-                            <div class="listview lv-bordered lv-lg" ng-show="settingsVisible == component.dimension.uri">
+                            <div class="listview lv-bordered lv-lg"
+                                 ng-show="settingsVisible == component.dimension.uri">
                                 <div class="lv-header-alt">
-                                    <h2 class="lvh-label hidden-xs">Values settings for <{{component.dimension.uri}}></h2>
+                                    <h2 class="lvh-label hidden-xs">Values settings for
+                                        <{{component.dimension.uri}}></h2>
 
                                     <ul class="lv-actions actions">
                                         <li>
@@ -133,13 +148,16 @@
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-right">
                                                 <li>
-                                                    <a href="" ng-click="toggleValues(component.dimension.uri)">Toggle</a>
+                                                    <a href=""
+                                                       ng-click="toggleValues(component.dimension.uri)">Toggle</a>
                                                 </li>
                                                 <li>
-                                                    <a href="" ng-click="selectAllValues(component.dimension.uri)">Select all</a>
+                                                    <a href="" ng-click="selectAllValues(component.dimension.uri)">Select
+                                                        all</a>
                                                 </li>
                                                 <li>
-                                                    <a href="" ng-click="deselectAllValues(component.dimension.uri)">Deselect all</a>
+                                                    <a href="" ng-click="deselectAllValues(component.dimension.uri)">Deselect
+                                                        all</a>
                                                 </li>
                                                 <li>
                                                     <a href="" ng-click="displayUris=!displayUris">Display URIs</a>
@@ -153,13 +171,15 @@
                                     <div class="lv-item media" ng-repeat="v in values[component.dimension.uri]">
                                         <div class="checkbox pull-left">
                                             <label>
-                                                <input type="checkbox" ng-click="toggleDimensionValue(v)" ng-checked="v.isActive" />
+                                                <input type="checkbox" ng-click="toggleDimensionValue(v)"
+                                                       ng-checked="v.isActive"/>
                                                 <i class="input-helper"></i>
                                             </label>
                                         </div>
                                         <div class="media-body">
                                             <div class="lv-title">
-                                                <span ng-bind="label(v)" ng-hide="displayUris"></span>
+                                                <span ng-bind="v | label:language:availableLanguages"
+                                                      ng-hide="displayUris"></span>
                                                 <span ng-bind="v.uri" ng-show="displayUris"></span>
                                             </div>
                                         </div>
@@ -180,30 +200,7 @@
                     <div ng-if="slicesSelected">
                         <div class="container">
                             <div class="card">
-                                <div class="card-body card-padding">
-                                    <highchart id="chart1" config="highcharts" class="cubechart"></highchart>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-body card-padding">
-                                    <div class="legend">
-                                        <strong>DataCube values fixed to get this chart:</strong>
-                                        <ul ng-repeat="(uri, count) in dimensionValuesActiveCount" ng-if="count == 1">
-                                            <li>
-                                                <span ng-bind="label(dimension(uri))"></span>
-                                                <ul>
-                                                    <li ng-repeat="v in values[uri]" ng-if="v.isActive" ng-bind="label(v)"></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-header bgm-bluegray">
-                                    <h2>Display options <small>Want to change the type of the chart?</small></h2>
-                                </div>
-                                <div class="card-body card-padding">
+                                <div class="card-body card-padding-sm">
                                     <div class="row">
                                         <div class="col-lg-12 text-center">
                                             <div class="btn-toolbar" style="height: 35px">
@@ -255,14 +252,49 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div class="card" ng-show="currentlyDereferencing > 0">
+                                <div class="card-body card-padding">
+                                    <i class="md md-refresh"></i>
+                                    We are dereferencing {{currentlyDereferencing}} more label(s) for you.
+                                    We will refresh the chart below when it's done.
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body card-padding">
+                                    <highchart id="chart1" config="highcharts" class="cubechart"></highchart>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body card-padding">
+                                    <div class="legend">
+                                        <strong>DataCube values fixed to get this chart:</strong>
+                                        <ul ng-repeat="(uri, count) in dimensionValuesActiveCount" ng-if="count == 1">
+                                            <li>
+                                                <span ng-bind="dimension(uri) | label:language:availableLanguages"></span>
+                                                <ul>
+                                                    <li ng-repeat="v in values[uri]" ng-if="v.isActive"
+                                                        ng-bind="v | label:language:availableLanguages"></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body card-padding">
                                     <div class="row">
                                         <div class="col-lg-1">
-                                            Permalink:
+                                            Embed link:
                                         </div>
                                         <div class="col-lg-11 text-center">
                                             <div class="form-group">
                                                 <div class="fg-line">
-                                                    <input type="text" class="form-control" style="padding-left: 5px;" ng-model="permalink" readonly ng-if="permalink" />
+                                                    <input type="text" class="form-control" style="padding-left: 5px;"
+                                                           ng-model="permalink" readonly ng-if="permalink"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -281,9 +313,11 @@
                             </div>
 
                             <div class="card-body card-padding">
-                                To make slices, you have to select exactly one value on each dimension.
-                                If you choose to display just one measure, you are able to select more values on up to 2
-                                dimensions. With more measures, you are able to select more values just on one dimension.
+                                To create slices for charts:
+                                <ul>
+                                    <li>with multiple measures selected, you are able to select more values just on one dimension;</li>
+                                    <li>with a single measure selected, you are able to select more values on up to 2 dimensions.</li>
+                                </ul>
                             </div>
                         </div>
 
