@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Application } from '../manageApp/models'
-import { Visualizer } from '../core/models'
-import * as routes from '../manageApp/routes'
-import { getVisualizerConfiguratorPath } from './routes'
+import { Application } from '../../manageApp/models'
+import { Visualizer } from '../../core/models'
+import * as routes from '../../manageApp/routes'
+import { getVisualizerConfiguratorPath } from './../routes'
 
 /**
  * High-order component verifying that the visualizer passed through props corresponds to the
@@ -33,7 +33,7 @@ export default function validateVisualizer(VisualizerConfiguratorComponent, path
       // If the selected application visualizer path doesn't match current path, then redirect
       // back to the main application component which should make the right decision now.
       const { dispatch, application, visualizer}  = props;
-      if (getVisualizerConfiguratorPath(visualizer.uri) != path) {
+      if (getVisualizerConfiguratorPath(visualizer) != path) {
         dispatch(routes.application(application.id));
       }
     }

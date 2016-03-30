@@ -1,7 +1,5 @@
 import React from 'react'
 import { Route, IndexRoute } from 'react-router'
-import validateVisualizer from '../validateVisualizer'
-import Configurator from './containers/Configurator'
 import ApplicationLoader from '../../publishedApp/containers/ApplicationLoader'
 import NotFound from '../../platform/pages/NotFound'
 import Standalone from './pages/Standalone'

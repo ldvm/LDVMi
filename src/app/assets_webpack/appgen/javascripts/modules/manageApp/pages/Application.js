@@ -37,7 +37,7 @@ class Application extends Component {
     // to the appropriate url.
     const { dispatch, application, visualizer, applicationStatus, children } = props;
     if (applicationStatus.done && !children) {
-      dispatch(visualizerConfigurator(application.id, visualizer.uri));
+      dispatch(visualizerConfigurator(application.id, visualizer));
     }
   }
 
