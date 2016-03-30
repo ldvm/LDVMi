@@ -14,7 +14,7 @@ class ApplicationController(implicit inj: Injector) extends Controller with Inje
 
   def index(id: Long, uid: String, any: Any) = Action {
     DB.withSession { implicit session =>
-      // TODO: check for the user
+      // The user is verified on the client side.
 
       val baseUrl = routes.ApplicationController.index(id, uid, null).url
 
@@ -22,8 +22,13 @@ class ApplicationController(implicit inj: Injector) extends Controller with Inje
         application <- applicationsRepository.findById(ApplicationId(id))
         visualizer <- visualizerService.getVisualizer(application)
       } yield (application, visualizer)) match {
-        case Some((application, visualizer))
-          => Ok(views.html.appgen.application(visualizer.name, baseUrl, application.id.get.id))
+        case Some((application, visualizer)) =>
+          // If the app's uid has changed, let's redirect it to the correct url.
+          if (application.uid != uid) {
+            val url = routes.ApplicationController.index(id, application.uid, if (any != null) any.toString else null).url
+            MovedPermanently(url)
+          } else
+            Ok(views.html.appgen.application(visualizer.name, baseUrl, application.id.get.id))
         case _ => Redirect("/appgen/app-not-found")
       }
     }
