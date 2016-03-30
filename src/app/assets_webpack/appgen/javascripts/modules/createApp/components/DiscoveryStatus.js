@@ -1,9 +1,9 @@
 import React, { PropTypes, Component } from 'react'
 import { PureComponent } from 'react-pure-render'
 import { Discovery } from '../models'
-import PaperCard from '../../../misc/components/PaperCard'
-import LinearProgress from '../../../misc/components/LinearProgress'
-import Alert from '../../../misc/components/Alert'
+import PaperCard from '../../../components/PaperCard'
+import LinearProgress from '../../../components/LinearProgress'
+import Alert from '../../../components/Alert'
 
 class DiscoveryStatus extends PureComponent {
   // Because of the animated <LinearProgress /> component, the number of re-renders should be

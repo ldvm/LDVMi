@@ -1,10 +1,10 @@
 import React from 'react'
 import { Route, IndexRoute } from 'react-router'
 import { routeActions } from 'redux-simple-router'
-import { getVisualizers } from './../common/ducks/visualizers'
+import { getVisualizers } from './../core/ducks/visualizers'
 import { getApplication } from './ducks/application'
 import Application from './pages/Application'
-import visualizerConfiguratorsRoutes from '../visualizerConfigurators/routes'
+import visualizerConfiguratorsRoutes from '../visualizers/routes'
 
 const MODULE_PATH = 'manage-app';
 

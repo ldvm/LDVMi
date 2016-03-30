@@ -1,9 +1,10 @@
 import { createSelector } from 'reselect'
 import { List } from 'immutable'
 import { DataSource } from './models'
+import parentSelector from '../selector'
+import { MODULE_PREFIX } from './prefix'
 
-/** Select state of this module */
-export const moduleSelector = state => state.createApp;
+export const moduleSelector = createSelector([parentSelector], parentState => parentState[MODULE_PREFIX]);
 export default moduleSelector;
 
 // TODO: move this to the appropriate duck

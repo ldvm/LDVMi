@@ -1,6 +1,6 @@
 package model.appgen.repository
 
-import model.appgen.service.{VisualizerService, UserService}
+import model.appgen.service.{ApplicationsService, UserService, VisualizerService}
 import scaldi.Module
 
 class AppgenRepositoryModule extends Module {
@@ -10,4 +10,5 @@ class AppgenRepositoryModule extends Module {
   binding to new UserPipelineDiscoveryRepository
   binding to new VisualizerService
   binding to new ApplicationsRepository
+  binding to new ApplicationsService
 }

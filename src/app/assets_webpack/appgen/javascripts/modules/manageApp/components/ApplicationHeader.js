@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import FontIcon from 'material-ui/lib/font-icon';
 import { Application } from '../models'
-import { Visualizer } from '../../common/models'
-import Button from '../../../misc/components/Button'
-import BodyPadding from '../../../misc/components/BodyPadding'
+import { Visualizer } from '../../core/models'
+import Button from '../../../components/Button'
+import BodyPadding from '../../../components/BodyPadding'
+import PublishButton from '../containers/PublishButton'
+import PreviewButton from './PreviewButton'
 
 const iconStyle = {
   float: 'left',
@@ -31,8 +33,8 @@ const ApplicationHeader = ({ application, visualizer, openGeneralSettingsDialog 
       <Button label="General settings" icon="settings" raised
         onTouchTap={openGeneralSettingsDialog}
       />
-      <Button label="Preview" icon="find_in_page" raised />
-      <Button label="Publish" icon="screen_share" raised success />
+      <PreviewButton application={application} />
+      <PublishButton />
       <Button label="Delete" icon="delete" raised danger />
     </div>
 

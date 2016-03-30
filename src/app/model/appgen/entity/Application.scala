@@ -15,6 +15,7 @@ case class Application(
   name: String,
   uid: String,
   description: Option[String],
+  published: Boolean,
   userId: UserId,
   pipelineId: PipelineId,
   userPipelineDiscoveryId: UserPipelineDiscoveryId,
@@ -40,12 +41,13 @@ class Applications(tag: Tag) extends IdTable[ApplicationId, Application](tag, "a
   def name = column[String]("name", O.NotNull)
   def uid = column[String]("uid", O.NotNull)
   def description = column[String]("description", O.Nullable)
+  def published = column[Boolean]("published", O.Default(false))
   def userId = column[UserId]("user_id", O.NotNull)
   def pipelineId = column[PipelineId]("pipeline_id", O.NotNull)
   def userPipelineDiscoveryId = column[UserPipelineDiscoveryId]("user_pipeline_discovery_id", O.NotNull)
   def visualizerComponentTemplateId = column[ComponentTemplateId]("visualizer_component_template_id", O.NotNull)
   def configuration = column[String]("configuration", O.Nullable)
 
-  override def * = (id.?, name, uid, description.?, userId, pipelineId, userPipelineDiscoveryId,
+  override def * = (id.?, name, uid, description.?, published, userId, pipelineId, userPipelineDiscoveryId,
     visualizerComponentTemplateId, configuration.?) <> (Application.tupled, Application.unapply)
 }

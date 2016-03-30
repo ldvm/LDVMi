@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import Button from '../../../misc/components/Button'
-import IconButton from '../../../misc/components/IconButton'
+import Button from '../../../components/Button'
+import IconButton from '../../../components/IconButton'
 import TableRow from 'material-ui/lib/table/table-row';
 import TableRowColumn from 'material-ui/lib/table/table-row-column';
-import { dialogOpen, dialogClose } from '../../../ducks/dialog'
+import { dialogOpen, dialogClose } from '../../core/ducks/dialog'
 import { PipelineWithEvaluations } from '../models'
 import { createStatusSelector } from '../ducks/runEvaluationStatus'
-import { PromiseStatus } from '../../../ducks/promises'
+import { PromiseStatus } from '../../core/models'
 import CreateAppDialog from '../dialogs/CreateAppDialog'
-import { notification } from '../../../actions/notification'
+import { notification } from '../../core/ducks/notifications'
 import * as api from '../api'
 import * as routes from '../../manageApp/routes'
 

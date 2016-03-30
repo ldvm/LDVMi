@@ -1,0 +1,25 @@
+@(title: String, bundleName: String, baseUrl: String, applicationId: Long = 0)
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingHeader())
+        <title>@title</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("../../../public/images/favicon.png")">
+        <script>
+            window.appgen = {
+                baseUrl: '@baseUrl',
+                applicationId: @applicationId
+            }
+        </script>
+	</head>
+	<body>
+		<div id="approot"></div>
+		@Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
+
+		<script src="http://localhost:9090/webpack-dev-server.js"></script>
+		<script src="http://localhost:9090/build/@{bundleName}.bundle.js"></script>
+	</body>
+</html>

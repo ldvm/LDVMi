@@ -1,2 +1,2 @@
-export const baseUrl = "/appgen";
-export const apiEndpoint = baseUrl + "/api";
+export const platformUrl = "/appgen";
+export const apiEndpoint = platformUrl + "/api";

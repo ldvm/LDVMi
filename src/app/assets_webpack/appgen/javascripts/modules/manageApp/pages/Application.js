@@ -5,15 +5,15 @@ import Helmet from 'react-helmet'
 import { Link } from 'react-router'
 import { applicationSelector, applicationStatusSelector, applicationVisualizerSelector } from '../ducks/application'
 import { Application as ApplicationModel } from '../models'
-import { Visualizer } from '../../common/models'
-import { PromiseStatus } from '../../../ducks/promises'
-import PromiseResult from '../../../misc/components/PromiseResult'
+import { Visualizer } from '../../core/models'
+import { PromiseStatus } from '../../core/models'
+import PromiseResult from '../../core/components/PromiseResult'
 import ApplicationHeader from '../components/ApplicationHeader'
 import GeneralSettings from '../containers/GeneralSettings'
-import CenteredMessage from '../../../misc/components/CenteredMessage'
-import BodyPadding from '../../../misc/components/BodyPadding'
-import { visualizerConfigurator } from '../../visualizerConfigurators/routes'
-import { dialogOpen } from '../../../ducks/dialog'
+import CenteredMessage from '../../../components/CenteredMessage'
+import BodyPadding from '../../../components/BodyPadding'
+import { visualizerConfigurator } from '../../visualizers/routes'
+import { dialogOpen } from '../../core/ducks/dialog'
 import { dialogName as generalSettingsDialogName } from '../dialogs/GeneralSettingsDialog'
 
 class Application extends Component {
@@ -37,7 +37,7 @@ class Application extends Component {
     // to the appropriate url.
     const { dispatch, application, visualizer, applicationStatus, children } = props;
     if (applicationStatus.done && !children) {
-      dispatch(visualizerConfigurator(application.id, visualizer.uri));
+      dispatch(visualizerConfigurator(application.id, visualizer));
     }
   }
 
