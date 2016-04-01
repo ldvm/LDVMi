@@ -47,8 +47,10 @@ class ChordServiceImpl(implicit val inj: Injector) extends ChordService with Inj
         // We have to be careful to maintain the order.
 
         // Too many items, just for testing, let's print ministry of financies and its partners
+        // (take the first 25 with highest counts)
         val mfcrUri = "http://linked.opendata.cz/resource/business-entity/CZ00006947"
-        val uris = mfcrUri :: matrix.get(mfcrUri).get.keys.toList
+        // val uris = mfcrUri :: matrix.get(mfcrUri).get.keys.toList
+        val uris = mfcrUri :: matrix.get(mfcrUri).get.toList.sortBy(- _._2).map(_._1).take(25)
         Some(uris.map(source =>
           uris.map(target =>
             matrix.get(source).get.getOrElse(target, 0)
