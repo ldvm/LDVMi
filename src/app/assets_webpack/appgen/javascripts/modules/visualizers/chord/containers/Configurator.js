@@ -13,7 +13,7 @@ class Configurator extends Component {
 
   componentWillMount() {
     const { application } = this.props;
-    api.getEdges(application.id);
+    api.getMatrix(application.id);
   }
 
 

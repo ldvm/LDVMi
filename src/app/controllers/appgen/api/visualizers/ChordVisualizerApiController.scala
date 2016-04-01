@@ -20,4 +20,11 @@ class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApi
       Future(Ok(SuccessResponse(data = Seq("edges" -> edges))))
     }
   }
+
+  def getMatrix(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
+    withEvaluation(ApplicationId(id)) { evaluation =>
+      val matrix = chordService.matrix(evaluation)
+      Future(Ok(SuccessResponse(data = Seq("matrix" -> matrix))))
+    }
+  }
 }
