@@ -58,7 +58,7 @@ class PipelineServiceImpl(implicit inj: Injector) extends PipelineService with I
       pipeline.uri.getOrElse("Unlabeled pipeline"),
       pipeline.title.getOrElse("Unlabeled pipeline"),
       description = None,
-      componentTemplatesQuery.filter(_.uri === pipeline.componentInstances.last.componentInstance.uri).first.id.get,
+      componentTemplatesQuery.filter(_.uri === pipeline.componentInstances.last.componentInstance.templateUri).first.id.get,
       isTemporary = false,
       pipelineDiscovery = None
     ))
