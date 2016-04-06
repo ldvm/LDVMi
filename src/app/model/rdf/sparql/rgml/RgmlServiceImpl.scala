@@ -1,16 +1,15 @@
-package model.rdf.sparql.chord;
+package model.rdf.sparql.rgml
 
 import model.entity.PipelineEvaluation
-import model.rdf.sparql.chord.extractor.EdgesExtractor
-import model.rdf.sparql.chord.query.EdgesQuery
+import model.rdf.sparql.rgml.extractor.EdgesExtractor
+import model.rdf.sparql.rgml.query.EdgesQuery
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 
 import scala.collection.mutable
-import scala.collection.mutable.Map
 
-class ChordServiceImpl(implicit val inj: Injector) extends ChordService with Injectable {
+class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injectable {
   var sparqlEndpointService = inject[SparqlEndpointService]
 
   override def edges(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Edge]] = {

@@ -25,9 +25,9 @@ define(['angular', './controllers'], function (ng) {
                             $scope.info.unshift({message: "Pipeline evaluation is done. You are being redirected."});
 
                             if (parseInt($routeParams.autorun) === 1) {
-                                window.location.href = "/visualize/" + id;
+                                // window.location.href = "/visualize/" + id;
                             } else {
-                                window.location.href = "/pipelines#/detail/" + $routeParams.id;
+                                // window.location.href = "/pipelines#/detail/" + $routeParams.id;
                             }
                         }
 

@@ -4,7 +4,7 @@ import akka.actor.Props
 import model.actor.CheckCompatibilityResponse
 import model.entity._
 import model.rdf.sparql.ValueFilter
-import model.rdf.sparql.chord.Edge
+import model.rdf.sparql.rgml.Edge
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.geo._
 import model.rdf.sparql.visualization.{Concept, HierarchyNode, Scheme}
