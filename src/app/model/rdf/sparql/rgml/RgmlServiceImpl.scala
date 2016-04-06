@@ -1,8 +1,8 @@
 package model.rdf.sparql.rgml
 
 import model.entity.PipelineEvaluation
-import model.rdf.sparql.rgml.extractor.EdgesExtractor
-import model.rdf.sparql.rgml.query.EdgesQuery
+import model.rdf.sparql.rgml.extractor.{EdgesExtractor, GraphExtractor}
+import model.rdf.sparql.rgml.query.{EdgesQuery, GraphQuery}
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
@@ -11,6 +11,13 @@ import scala.collection.mutable
 
 class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injectable {
   var sparqlEndpointService = inject[SparqlEndpointService]
+
+  override def graph(evaluation: PipelineEvaluation)(implicit session: Session): Option[Graph] = {
+    sparqlEndpointService.getResult(
+      evaluationToSparqlEndpoint(evaluation),
+      new GraphQuery(),
+      new GraphExtractor())
+  }
 
   override def edges(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Edge]] = {
     sparqlEndpointService.getResult(

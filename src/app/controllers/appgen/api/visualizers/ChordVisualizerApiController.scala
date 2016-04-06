@@ -13,6 +13,12 @@ import scala.concurrent.Future
 class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApiController {
   val rgmlService = inject[RgmlService]
 
+  def getGraph(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
+    withEvaluation(ApplicationId(id)) { evaluation =>
+      val graph = rgmlService.graph(evaluation)
+      Future(Ok(SuccessResponse(data = Seq("graph" -> graph))))
+    }
+  }
 
   def getEdges(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>

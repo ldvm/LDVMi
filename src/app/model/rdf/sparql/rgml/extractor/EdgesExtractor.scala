@@ -5,6 +5,7 @@ import model.rdf.sparql.rgml.Edge
 import model.rdf.sparql.rgml.query.EdgesQuery
 import model.rdf.vocabulary.RGML
 import org.apache.jena.query.QueryExecution
+import org.apache.jena.vocabulary.RDF
 
 import scala.collection.JavaConversions._
 
@@ -14,7 +15,7 @@ class EdgesExtractor extends QueryExecutionResultExtractor[EdgesQuery, Seq[Edge]
 
     try {
       val model = input.execConstruct()
-      val edgeStatements = model.listResourcesWithProperty(RGML.source).toList
+      val edgeStatements = model.listResourcesWithProperty(RDF.`type`, RGML.Edge).toList
 
       Some(edgeStatements.map { e =>
         val edgeResource = e.asResource()

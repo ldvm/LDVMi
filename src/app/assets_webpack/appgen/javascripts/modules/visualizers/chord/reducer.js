@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
+import graph from './ducks/graph'
 
 const rootReducer = combineReducers({
-  stub: () => 0
+  graph
 });
 
 export default rootReducer;

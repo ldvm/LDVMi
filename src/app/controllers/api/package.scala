@@ -4,7 +4,7 @@ import akka.actor.Props
 import model.actor.CheckCompatibilityResponse
 import model.entity._
 import model.rdf.sparql.ValueFilter
-import model.rdf.sparql.rgml.Edge
+import model.rdf.sparql.rgml.{Edge, Graph}
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.geo._
 import model.rdf.sparql.visualization.{Concept, HierarchyNode, Scheme}
@@ -98,6 +98,7 @@ package object api {
     implicit val visualizerWrites = Json.writes[ComponentTemplate]
     implicit val coordWrites = Json.writes[Coordinates]
     implicit val markerWrites = Json.writes[Marker]
+    implicit val graphWrites = Json.writes[Graph]
     implicit val edgeWrites = Json.writes[Edge]
 
     /*implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
