@@ -14,3 +14,8 @@ export async function getMatrix(id) {
   const result = await rest('chordVisualizer/getMatrix/' + id, {});
   return result.data.matrix;
 }
+
+export async function getSearchableLens(id) {
+  const result = await rest('chordVisualizer/getSearchableLens/' + id, {});
+  return result.data.lens;
+}

@@ -5,3 +5,10 @@ export const Graph = Record({
   nodeCount: 0,
   edgeCount: 0
 });
+
+export const Lens = Record({
+  uri: '',
+  purpose: '',
+  domain: '',
+  showProperties: new List()
+})

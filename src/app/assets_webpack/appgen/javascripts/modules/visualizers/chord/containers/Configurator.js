@@ -17,11 +17,6 @@ class Configurator extends Component {
     graphStatus: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
-
-  componentWillMount() {
-    const { dispatch, application } = this.props;
-  }
-
   render() {
     const { application, visualizer, graph, graphStatus } = this.props;
 
