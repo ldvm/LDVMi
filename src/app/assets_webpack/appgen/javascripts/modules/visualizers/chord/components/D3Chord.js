@@ -1,31 +1,17 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
 import d3 from 'd3'
-import { Application } from '../../../manageApp/models'
-import { Visualizer } from '../../../core/models'
-import * as api from '../api'
 
-class Configurator extends Component {
+class D3Chord extends Component {
   static propTypes = {
-    application: PropTypes.instanceOf(Application).isRequired,
-    visualizer: PropTypes.instanceOf(Visualizer).isRequired,
-    dispatch: PropTypes.func.isRequired
+    matrix: PropTypes.array.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {};
+  componentDidMount() {
+    this.renderChord();
   }
 
-  componentWillMount() {
-    const { application } = this.props;
-    api.getMatrix(application.id).then(matrix => {
-      this.setState({matrix});
-      this.renderChord(matrix);
-    });
-  }
-
-  renderChord(matrix) {
+  renderChord() {
+    const matrix = this.props.matrix;
 
     // Source: http://bl.ocks.org/mbostock/4062006
 
@@ -128,16 +114,9 @@ class Configurator extends Component {
 
   }
 
-
   render() {
-    const { application, visualizer } = this.props;
-    return <div>
-      {application.name} <br />
-      {visualizer.title} <br />
-      {this.state.matrix && "Matrix was loaded!"}
-      <div id="chord"></div>
-    </div>;
+    return <div id="chord"></div>
   }
 }
 
-export default connect()(Configurator);
+export default D3Chord;

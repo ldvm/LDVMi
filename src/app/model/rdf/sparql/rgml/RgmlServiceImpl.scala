@@ -1,8 +1,8 @@
 package model.rdf.sparql.rgml
 
 import model.entity.PipelineEvaluation
-import model.rdf.sparql.rgml.extractor.{EdgesExtractor, GraphExtractor}
-import model.rdf.sparql.rgml.query.{EdgesQuery, GraphQuery}
+import model.rdf.sparql.rgml.extractor.{EdgesExtractor, GraphExtractor, NodesExtractor}
+import model.rdf.sparql.rgml.query.{EdgesQuery, GraphQuery, NodesQuery}
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
@@ -26,40 +26,48 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
       new EdgesExtractor())
   }
 
-  def matrix(evaluation: PipelineEvaluation)(implicit session: Session): Option[List[List[Int]]] = {
-    edges(evaluation) match {
-      case Some(edges) =>
+  override def nodes(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Node]] = {
+    sparqlEndpointService.getResult(
+      evaluationToSparqlEndpoint(evaluation),
+      new NodesQuery(),
+      new NodesExtractor())
+  }
 
-        // Count number of edges between nodes. The edges are treated as undirected which means
-        // that the result will be a symmetrical matrix indexed by node uris.
+  def matrix(evaluation: PipelineEvaluation, nodeUris: Seq[String])(implicit session: Session): Option[Seq[Seq[Double]]] = {
+    (for {
+      graph <- graph(evaluation)
+      edges <- edges(evaluation)
+    } yield (graph, edges)) match {
+      case Some((graph, edges)) =>
+        val urisSet = nodeUris.toSet
 
-        val matrix: mutable.Map[String, mutable.Map[String, Int]] = mutable.Map()
+        // Adjacency matrix of the graph that takes into account weight of the edges.
+        val matrix: mutable.Map[String, mutable.Map[String, Double]] = mutable.Map()
 
-        def updateCount(source: String, target: String) {
+        // Update the adjacency matrix using an edge going from source to target.
+        def addEdge(source: String, target: String, weight: Double) {
           val counts = matrix.getOrElse(source, mutable.Map())
-          counts.put(target, counts.getOrElse(target, 0) + 1)
+          counts.put(target, counts.getOrElse(target, 0.0) + weight)
           matrix.put(source, counts)
         }
 
+        // Go through all edges and take only those that are between selected nodes.
         edges.foreach(edge => {
-          updateCount(edge.source, edge.target)
+          if (urisSet.contains(edge.source) && urisSet.contains(edge.target)) {
+            addEdge(edge.source, edge.target, edge.weight)
 
-          if (edge.target != edge.source) {
-            updateCount(edge.target, edge.source)
+            if (!graph.directed) {
+              addEdge(edge.target, edge.source, edge.weight)
+            }
           }
         })
 
-        // Let's remove the uris and create a pure matrix of integers (two-dimensional array/list).
+        // Let's remove the uris and create a pure matrix of doubles (two-dimensional array/list).
         // We have to be careful to maintain the order.
 
-        // Too many items, just for testing, let's print ministry of financies and its partners
-        // (take the first 25 with highest counts)
-        val mfcrUri = "http://linked.opendata.cz/resource/business-entity/CZ00006947"
-        // val uris = mfcrUri :: matrix.get(mfcrUri).get.keys.toList
-        val uris = mfcrUri :: matrix.get(mfcrUri).get.toList.sortBy(- _._2).map(_._1).take(25)
-        Some(uris.map(source =>
-          uris.map(target =>
-            matrix.get(source).get.getOrElse(target, 0)
+        Some(nodeUris.map(source =>
+          nodeUris.map(target =>
+            matrix.getOrElse(source, mutable.Map()).getOrElse(target, 0.0)
           )
         ))
 

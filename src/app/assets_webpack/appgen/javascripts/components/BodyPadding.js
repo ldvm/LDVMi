@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react'
 import Padding from './Padding'
 
 const BodyPadding = ({ children }) => {
@@ -6,3 +6,11 @@ const BodyPadding = ({ children }) => {
 };
 
 export default BodyPadding;
+
+export function addBodyPadding(ComposedComponent) {
+  return class WithBodyPadding extends Component {
+    render() {
+      return <BodyPadding><ComposedComponent {...this.props} /></BodyPadding>
+    }
+  }
+}

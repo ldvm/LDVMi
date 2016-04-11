@@ -22,7 +22,7 @@ export function getSearchableLens(id) {
 
 // Reducer
 
-const initialState = null;
+const initialState = new Lens();
 
 export default function searchableLensReducer(state = initialState, action) {
   switch (action.type) {
@@ -40,4 +40,4 @@ export default function searchableLensReducer(state = initialState, action) {
 
 export const searchableLensStatusSelector = createPromiseStatusSelector(GET_SEARCHABLE_LENS);
 
-export const searchableLens = createSelector([moduleSelector], state => state.searchableLens);
+export const searchableLensSelector = createSelector([moduleSelector], state => state.searchableLens);

@@ -11,4 +11,8 @@ export const Lens = Record({
   purpose: '',
   domain: '',
   showProperties: new List()
-})
+});
+
+Lens.prototype.isEmpty = function() {
+  return this.showProperties.size == 0;
+};

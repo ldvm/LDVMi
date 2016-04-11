@@ -110,6 +110,10 @@ export function createAllPromiseStatusSelector(name) {
  * has to either either promise status or a map of promise statuses.
  */
 export function createAggregatedPromiseStatusSelector(selectors) {
+  if (!Array.isArray(selectors)) {
+    throw new Error('First argument should be an array of selectors');
+  }
+
   return (status, props) => {
     const statuses = (new List(selectors))
       .map(selector => selector(status, props))
@@ -119,7 +123,7 @@ export function createAggregatedPromiseStatusSelector(selectors) {
         } else if (result instanceof Map && result.every(status => (status instanceof PromiseStatus))) {
           return result.toList()
         } else {
-          throw Error('The selector ' + i + ' (zero based) provided invalid input. The given'
+          throw new Error('The selector ' + i + ' (zero based) provided invalid input. The given'
             + ' result is neither a PromiseStatus nor a Map of PromiseStatus.');
         }
       })

@@ -10,7 +10,7 @@ import { getSearchableLens } from './ducks/searchableLens'
 const createRoutes = dispatch => (
   <Route component={validateVisualizer(Configurator, path)} path={path} key={name}
     onEnter={ next => {
-      dispatch(getGraph(next.params.id))
+      dispatch(getGraph(next.params.id));
       dispatch(getSearchableLens(next.params.id))
     }} />
 );
