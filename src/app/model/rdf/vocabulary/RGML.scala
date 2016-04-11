@@ -12,6 +12,9 @@ object RGML extends Vocabulary {
   lazy val target: Property = m.createProperty(PREFIX_URL, "target")
   lazy val weight: Property = m.createProperty(PREFIX_URL, "weight")
 
+  lazy val inDegree: Property = m.createProperty(PREFIX_URL, "inDegree")
+  lazy val outDegree: Property = m.createProperty(PREFIX_URL, "outDegree")
+
   lazy val Graph: Resource = m.createResource(PREFIX_URL + "Graph")
   lazy val Node: Resource = m.createResource(PREFIX_URL + "Node")
   lazy val Edge: Resource = m.createResource(PREFIX_URL + "Edge")

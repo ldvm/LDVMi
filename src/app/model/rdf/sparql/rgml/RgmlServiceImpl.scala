@@ -27,10 +27,12 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
   }
 
   override def nodes(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Node]] = {
-    sparqlEndpointService.getResult(
-      evaluationToSparqlEndpoint(evaluation),
-      new NodesQuery(),
-      new NodesExtractor())
+    graph(evaluation) flatMap { graph =>
+      sparqlEndpointService.getResult(
+        evaluationToSparqlEndpoint(evaluation),
+        new NodesQuery(),
+        new NodesExtractor(graph))
+    }
   }
 
   def matrix(evaluation: PipelineEvaluation, nodeUris: Seq[String])(implicit session: Session): Option[Seq[Seq[Double]]] = {

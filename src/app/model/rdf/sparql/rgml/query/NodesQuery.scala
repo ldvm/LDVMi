@@ -10,14 +10,23 @@ class NodesQuery extends SparqlQuery {
       | PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 		  | PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
       |
-      |	CONSTRUCT {
+      | CONSTRUCT {
       |	  ?node	rdf:type rgml:Node ;
-      |     rdfs:label ?label .
+      |     rdfs:label ?label ;
+      |     rgml:inDegree ?inDegree ;
+      |     rgml:outDegree ?outDegree.
       |	}
       |	WHERE {
-      |	  ?node	rdf:type rgml:Node .
-      |
-      |   OPTIONAL { ?node rdfs:label ?label }
+      |   SELECT ?node ?label
+      |     (COUNT(?edgeOut) AS ?outDegree)
+      |     (COUNT(?edgeIn) AS ?inDegree)
+      |   WHERE {
+      |	    ?node	rdf:type rgml:Node .
+      |     OPTIONAL { ?node rdfs:label ?label }
+      |     OPTIONAL { ?edgeOut rgml:source ?node . }
+      |     OPTIONAL { ?edgeIn rgml:target ?node . }
+      |   }
+      |   GROUP BY ?node ?label
       |	}
     """
       .stripMargin

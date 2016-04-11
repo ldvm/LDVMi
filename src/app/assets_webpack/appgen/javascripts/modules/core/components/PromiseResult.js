@@ -21,7 +21,7 @@ PromiseResult.propTypes = {
 
 // This way we support both prop formats, the actual PromiseStatus object or status destructed
 // into individual isLoading and error props.
-export default ({ status, isLoading, loadingMessage }) => {
+export default ({ status, isLoading, error, loadingMessage }) => {
   if (status instanceof PromiseStatus) {
     return <PromiseResult isLoading={status.isLoading} error={status.error} loadingMessage={loadingMessage} />;
   } else {
