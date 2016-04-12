@@ -48,8 +48,7 @@ class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApi
 
   def getSearchableLens(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      // TODO: change back to "searchable"
-      val lens = fresnelService.lensesByPurpose(evaluation, "searchabl").getOrElse(Seq.empty).headOption
+      val lens = fresnelService.lensesByPurpose(evaluation, "searchable").getOrElse(Seq.empty).headOption
       Future(Ok(SuccessResponse(data = Seq("lens" -> lens))))
     }
   }

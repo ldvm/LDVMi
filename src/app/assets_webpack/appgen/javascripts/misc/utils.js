@@ -24,3 +24,8 @@ export function getColorType(props) {
     default: return 'default';
   }
 }
+
+export function randomString(length) {
+  // http://stackoverflow.com/a/19964557/576997
+  return (Math.random().toString(36) + '00000000000000000').slice(2, length + 2)
+}

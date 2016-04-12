@@ -16,3 +16,9 @@ export const Lens = Record({
 Lens.prototype.isEmpty = function() {
   return this.showProperties.size == 0;
 };
+
+export const NodeList = Record({
+  id: '',
+  name: 'Unlabeled list',
+  uris: List()
+});

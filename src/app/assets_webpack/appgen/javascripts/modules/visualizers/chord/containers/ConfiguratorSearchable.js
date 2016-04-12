@@ -1,8 +1,14 @@
 import React from 'react'
+import Layout from '../components/Layout'
+import ListsManagerContainer from './ListsManagerContainer'
 
 const ConfiguratorSearchable = () => {
-  // TODO: if no list is selected, let's display sample visualization
-  return <div>Configurator with search!</div>
+  return (
+    <Layout
+      sidebar={<ListsManagerContainer />}
+      toolbar={<div>toolbar</div>}
+      visualization={<div>visualization</div>} />
+  );
 };
 
 export default ConfiguratorSearchable;
