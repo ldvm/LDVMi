@@ -24,14 +24,11 @@ export const getConfigurationStatusSelector = createPromiseStatusSelector(GET_CO
 export const configurationSelector = createSelector(
   [moduleSelector],
   state => ({
-    filtersConfig: state.filters.filtersConfig.toJS(),
-    optionsConfig: state.filters.optionsConfig.toJS(),
-    mapState: state.mapState.toJS(),
-    publishSettings: state.publishSettings.toJS()
+    lists: state.lists.toJS(),
+    selectedList: state.selectedList
   })
 );
 
 // Actual actions created using factories
 export const saveConfiguration = createSaveConfiguration(SAVE_CONFIGURATION, configurationSelector);
 export const getConfiguration = createGetConfiguration(GET_CONFIGURATION);
-

@@ -3,6 +3,8 @@ import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import moduleSelector from '../selector'
 import { listsSelector, ADD_LIST, REMOVE_LIST } from './lists'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_CONFIGURATION_SUCCESS } from './configuration'
 
 // Actions
 
@@ -18,6 +20,15 @@ const initialState = "";
 export default function selectedListReducer(state = initialState, action) {
 
   switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
+    case GET_CONFIGURATION_SUCCESS:
+      if ("selectedList" in action.payload) {
+        return action.payload.selectedList;
+      }
+      break;
+
     case SELECT_LIST:
     case ADD_LIST:
       return action.payload.id;

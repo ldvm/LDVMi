@@ -6,12 +6,15 @@ import { name, path } from './definition'
 import createConfiguratorRoutes from '../utils/createConfiguratorRoutes'
 import { getGraph } from './ducks/graph'
 import { getSearchableLens } from './ducks/searchableLens'
+import { getConfiguration } from './ducks/configuration'
 
 const createRoutes = dispatch => (
   <Route component={validateVisualizer(Configurator, path)} path={path} key={name}
     onEnter={ next => {
-      dispatch(getGraph(next.params.id));
-      dispatch(getSearchableLens(next.params.id))
+      const id = next.params.id;
+      dispatch(getGraph(id));
+      dispatch(getSearchableLens(id));
+      dispatch(getConfiguration(id));
     }} />
 );
 

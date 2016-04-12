@@ -5,6 +5,7 @@ import sampleNodeUris from './ducks/sampleNodeUris'
 import matrix from './ducks/matrix'
 import lists from './ducks/lists'
 import selectedList from './ducks/selectedList'
+import dirty from './ducks/dirty'
 
 const rootReducer = combineReducers({
   graph,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   sampleNodeUris,
   matrix,
   lists,
-  selectedList
+  selectedList,
+  dirty
 });
 
 export default rootReducer;

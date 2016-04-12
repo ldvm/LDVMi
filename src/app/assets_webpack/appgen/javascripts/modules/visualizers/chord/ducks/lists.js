@@ -5,6 +5,8 @@ import createAction from '../../../../misc/createAction'
 import moduleSelector from '../selector'
 import { randomString } from '../../../../misc/utils'
 import { NodeList } from '../models'
+import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_CONFIGURATION_SUCCESS } from './configuration'
 
 // Actions
 
@@ -32,6 +34,16 @@ export default function listsReducer(state = initialState, action) {
   const { payload } = action;
 
   switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
+    case GET_CONFIGURATION_SUCCESS:
+      if ("lists" in action.payload) {
+        const configuration = (new OrderedMap(action.payload.lists)).map(list => new NodeList(list));
+        return initialState.mergeDeep(configuration);
+      }
+      break;
+
     case ADD_LIST:
       return state.set(payload.id, new NodeList({ id: payload.id }));
 
@@ -40,8 +52,7 @@ export default function listsReducer(state = initialState, action) {
 
     case UPDATE_LIST:
       return state.update(payload.id, list => list.mergeDeep(payload.update));
-    
-  } 
+  }
   
   return state;
 }
