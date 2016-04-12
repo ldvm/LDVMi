@@ -14,6 +14,7 @@ class EditListDialog extends Component {
 
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    renderButton: PropTypes.func.isRequired,
     list: PropTypes.instanceOf(NodeList).isRequired,
     updateList: PropTypes.func.isRequired
   };
@@ -25,7 +26,7 @@ class EditListDialog extends Component {
   }
 
   render() {
-    const { dispatch, list } = this.props;
+    const { dispatch, renderButton, list } = this.props;
 
     const actions = [
       <Button label="Cancel" onTouchTap={() => dispatch(dialogClose(dialogName))} />,
@@ -34,9 +35,7 @@ class EditListDialog extends Component {
     
     return (
       <span>
-        <IconButton icon='edit'
-          iconStyle={{ color: 'white '}}
-          onTouchTap={() => dispatch(dialogOpen(dialogName))} />
+        {renderButton('edit', () => dispatch(dialogOpen(dialogName)), 'Edit list')}
         <Dialog name={dialogName} title="Edit list" actions={actions}>
           <TextField
             ref="name"

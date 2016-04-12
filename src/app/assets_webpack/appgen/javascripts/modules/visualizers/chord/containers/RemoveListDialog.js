@@ -8,12 +8,10 @@ import { NodeList } from '../models'
 
 export const dialogName = prefix('REMOVE_LIST_DIALOG');
 
-const RemoveListDialog = ({ dispatch, list, removeList }) => {
+const RemoveListDialog = ({ dispatch, renderButton, list, removeList }) => {
   return (
     <span>
-      <IconButton icon='delete'
-        iconStyle={{ color: 'white '}}
-        onTouchTap={() => dispatch(dialogOpen(dialogName))} />
+      {renderButton('delete', () => dispatch(dialogOpen(dialogName)), 'Remove list')}
       <ConfirmDialog
         dialogName={dialogName}
         message="Do you wish to remove this list?"
@@ -26,6 +24,7 @@ const RemoveListDialog = ({ dispatch, list, removeList }) => {
 
 RemoveListDialog.propTypes = {
   dispatch: PropTypes.func.isRequired,
+  renderButton: PropTypes.func.isRequired,
   list: PropTypes.instanceOf(NodeList).isRequired,
   removeList: PropTypes.func.isRequired
 };

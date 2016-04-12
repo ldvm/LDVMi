@@ -1,4 +1,4 @@
-import { OrderedMap } from 'immutable'
+import { OrderedMap, fromJS } from 'immutable'
 import { createSelector } from 'reselect'
 import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
@@ -39,7 +39,7 @@ export default function listsReducer(state = initialState, action) {
 
     case GET_CONFIGURATION_SUCCESS:
       if ("lists" in action.payload) {
-        const configuration = (new OrderedMap(action.payload.lists)).map(list => new NodeList(list));
+        const configuration = (new OrderedMap(action.payload.lists)).map(list => new NodeList(fromJS(list)));
         return initialState.mergeDeep(configuration);
       }
       break;

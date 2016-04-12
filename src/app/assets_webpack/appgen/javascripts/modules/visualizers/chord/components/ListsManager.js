@@ -9,34 +9,75 @@ import ListsSwitch from './ListsSwitch'
 import EditListDialog from '../containers/EditListDialog'
 import RemoveListDialog from '../containers/RemoveListDialog'
 
-const headerStyle = {
+const managerStyle = {
   backgroundColor: theme.primary,
   color: 'white',
-  textAlign: 'center',
   fontSize: '14px',
   fontWeight: 500,
+  textAlign: 'right'
+};
+
+const headerStyle = {
+  float: 'left',
   padding: materialTheme.spacing.desktopGutterLess + 'px',
-  position: 'relative'
+  paddingRight: 0,
+  maxWidth: '230px',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap'
+};
+
+const switchStyle = {
+  float: 'left'
+};
+
+const toolbarStyle = {
+};
+
+const iconStyle = {
+  color: 'white'
 };
 
 const ListsManager = props => {
   const { lists, selectedList, addList, removeList, updateList, selectList} = props;
 
+  const renderButton = (icon, action, tooltip) => {
+    return <IconButton
+      tooltip={tooltip}
+      icon={icon}
+      iconStyle={iconStyle}
+      onTouchTap={action}
+    />
+  };
+
   return (
-    <div style={headerStyle}>
-      <ListHeader list={selectedList} />
-      <IconButton icon='add' iconStyle={{ color: 'white '}} onTouchTap={addList} />
-      {selectedList && <span>
-        <EditListDialog
-          list={selectedList}
-          updateList={updateList}
-        />
-        <RemoveListDialog
-          list={selectedList}
-          removeList={removeList}
-        /></span>
-      }
-      <ListsSwitch lists={lists} selectedList={selectedList} selectList={selectList} />
+    <div style={managerStyle}>
+      <div style={headerStyle}>
+        <ListHeader list={selectedList} />
+      </div>
+      <div style={switchStyle}>
+        <ListsSwitch
+          renderButton={renderButton}
+          lists={lists}
+          selectedList={selectedList}
+          selectList={selectList} />
+      </div>
+
+      <div style={toolbarStyle}>
+        {renderButton('add', addList, 'Add new list')}
+        {selectedList && <EditListDialog
+            renderButton={renderButton}
+            list={selectedList}
+            updateList={updateList}
+          />
+        }
+        {selectedList && <RemoveListDialog
+            renderButton={renderButton}
+            list={selectedList}
+            removeList={removeList}
+          />
+        }
+      </div>
     </div>
   );
 };

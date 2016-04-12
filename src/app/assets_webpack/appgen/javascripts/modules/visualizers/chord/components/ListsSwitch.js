@@ -2,16 +2,14 @@ import React, { PropTypes } from 'react'
 import { List } from 'immutable'
 import IconMenu from 'material-ui/lib/menus/icon-menu'
 import MenuItem from 'material-ui/lib/menus/menu-item'
-import IconButton from 'material-ui/lib/icon-button'
-import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert'
 import { NodeList } from '../models'
 
-const ListsSwitch = ({ lists, selectedList, selectList }) => {
+const ListsSwitch = ({ renderButton, lists, selectedList, selectList }) => {
   return <span>
     <IconMenu
-      iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-      anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-      targetOrigin={{horizontal: 'left', vertical: 'top'}}
+      iconButtonElement={renderButton('keyboard_arrow_down')}
+      anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+      targetOrigin={{horizontal: 'right', vertical: 'top'}}
     >
       {lists.size > 0 ? lists.map(list =>
         <MenuItem
@@ -30,6 +28,7 @@ const ListsSwitch = ({ lists, selectedList, selectList }) => {
 };
 
 ListsSwitch.propTypes = {
+  renderButton: PropTypes.func.isRequired,
   lists: PropTypes.instanceOf(List).isRequired,
   selectedList: PropTypes.instanceOf(NodeList),
   selectList: PropTypes.func.isRequired
