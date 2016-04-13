@@ -6,6 +6,14 @@ export const Graph = Record({
   edgeCount: 0
 });
 
+export const NodeList = Record({
+  id: '',
+  name: 'Unlabeled list',
+  uris: List()
+});
+
+// Fresnel stuff (TODO: move to the core module?)
+
 export const Lens = Record({
   uri: '',
   purpose: '',
@@ -17,8 +25,8 @@ Lens.prototype.isEmpty = function() {
   return this.showProperties.size == 0;
 };
 
-export const NodeList = Record({
-  id: '',
-  name: 'Unlabeled list',
-  uris: List()
+export const ResourceThroughLens = Record({
+  uri: '',
+  properties: new Map()
 });
+

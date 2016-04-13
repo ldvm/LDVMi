@@ -10,6 +10,7 @@ const textFieldStyle = {
 class SearchInput extends Component {
 
   static propTypes = {
+    disabled: PropTypes.bool.isRequired,
     onSearch: PropTypes.func.isRequired
   };
 
@@ -22,17 +23,20 @@ class SearchInput extends Component {
   }
 
   render() {
+    const { disabled } = this.props;
     return (
       <div>
         <TextField
           ref="needle"
           hintText="Název, DIČ..."
           style={textFieldStyle}
+          disabled={disabled}
         />
         <Button warning raised
           label="Search"
           icon="search"
           onTouchTap={this.search.bind(this)}
+          disabled={disabled}
         />
       </div>
     );

@@ -6,6 +6,7 @@ import matrix from './ducks/matrix'
 import lists from './ducks/lists'
 import selectedList from './ducks/selectedList'
 import dirty from './ducks/dirty'
+import search from './ducks/search'
 
 const rootReducer = combineReducers({
   graph,
@@ -14,7 +15,8 @@ const rootReducer = combineReducers({
   matrix,
   lists,
   selectedList,
-  dirty
+  dirty,
+  search
 });
 
 export default rootReducer;

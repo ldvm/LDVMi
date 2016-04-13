@@ -24,7 +24,9 @@ class LensesByPurposeExtractor extends QueryExecutionResultExtractor[LensesByPur
       val property = querySolution.getResource("showProperty").getURI
 
       val updated = lenses.get(uri) match {
-        case Some(lens) => lens.copy(showProperties = lens.showProperties ::: List(property))
+        // TODO: Test whether the order in which the properties are selected from the triple store
+        // is completely arbitrary (at this moment it seems that it's in reversed order)
+        case Some(lens) => lens.copy(showProperties = List(property) ::: lens.showProperties)
         case None => new Lens(uri, purpose, domain, List(property))
       }
 

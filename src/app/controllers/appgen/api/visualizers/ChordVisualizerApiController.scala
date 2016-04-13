@@ -59,7 +59,7 @@ class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApi
   def searchNodes(id: Long) = RestAsyncAction[SearchRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
       val result = findSearchableLens(evaluation) map { lens =>
-        fresnelService.searchThroughLens(evaluation, lens, json.needle)
+        fresnelService.searchThroughLens(evaluation, lens, json.needle.trim)
       }
       Future(Ok(SuccessResponse(data = Seq("result" -> result))))
     }
