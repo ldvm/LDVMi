@@ -6,9 +6,12 @@ import { selectedListSelector } from '../ducks/selectedList'
 import { NodeList } from '../models'
 import ListContent from '../components/ListContent'
 import CenteredMessage from '../../../../components/CenteredMessage'
-import { listsSelector } from "../ducks/lists";
+import { listsSelector } from '../ducks/lists'
+import OpenSearchDialogButton from '../components/OpenSearchDialogButton'
+import SearchDialog from '../containers/SearchDialog'
+import Padding from '../../../../components/Padding'
 
-const ListContentContainer = ({ dispatch, lists, selectedList }) => {
+const ListContentContainer = ({ lists, selectedList }) => {
   if (lists.size == 0) {
     return <CenteredMessage>
       Start by clicking the 'plus' button to add first list.
@@ -21,7 +24,13 @@ const ListContentContainer = ({ dispatch, lists, selectedList }) => {
     </CenteredMessage>
   }
 
-  return <ListContent list={selectedList} />
+  return <div>
+    <ListContent list={selectedList} />
+    <SearchDialog />
+    <Padding space={2}>
+      <OpenSearchDialogButton fullWidth />
+    </Padding>
+  </div>
 };
 
 ListContentContainer.propTypes = {

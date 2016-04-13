@@ -6,7 +6,7 @@ const ListContent = ({ list }) => {
 
   if (list.uris.size == 0) {
     return <CenteredMessage>
-      Click the green button bellow to add items to this list.
+      Click the green button bellow to add items.
     </CenteredMessage>
   }
 

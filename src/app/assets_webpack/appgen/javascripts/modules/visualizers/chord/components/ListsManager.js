@@ -12,7 +12,7 @@ import RemoveListDialog from '../containers/RemoveListDialog'
 const managerStyle = {
   backgroundColor: theme.primary,
   color: 'white',
-  fontSize: '14px',
+  fontSize: '15px',
   fontWeight: 500,
   textAlign: 'right'
 };
@@ -21,7 +21,7 @@ const headerStyle = {
   float: 'left',
   padding: materialTheme.spacing.desktopGutterLess + 'px',
   paddingRight: 0,
-  maxWidth: '230px',
+  maxWidth: '180px',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap'

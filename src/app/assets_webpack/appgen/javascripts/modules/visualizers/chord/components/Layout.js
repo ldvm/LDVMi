@@ -6,7 +6,7 @@ const wrapperStyle = {
   width: '100%'
 };
 const sidebarStyle = {
-  width: '450px',
+  width: '400px',
   position: 'absolute',
   zIndex: 3
 };
@@ -20,7 +20,7 @@ const toolbarStyle = {
 const visualizationStyle = {
   width: '100%',
   position: 'absolute',
-  marginLeft: '450px',
+  marginLeft: '400px',
   zIndex: 2
 };
 
