@@ -8,10 +8,10 @@ import PromiseResult from '../../../core/components/PromiseResult'
 import { Graph } from "../models";
 import D3ChordContainer from './D3ChordContainer'
 import Alert from '../../../../components/Alert'
-import { graphSelector } from "../ducks/graph";
-import { sampleNodeUrisSelector, sampleNodeUrisStatusSelector } from "../ducks/sampleNodeUris";
-import { applicationSelector } from "../../../manageApp/ducks/application";
-import { Application } from "../../../manageApp/models";
+import { graphSelector } from '../ducks/graph'
+import { sampleNodeUrisSelector, sampleNodeUrisStatusSelector } from '../ducks/sampleNodeUris'
+import { applicationSelector } from '../../../manageApp/ducks/application'
+import { Application } from '../../../manageApp/models'
 
 class SampleVisualization extends Component {
   static propTypes = {

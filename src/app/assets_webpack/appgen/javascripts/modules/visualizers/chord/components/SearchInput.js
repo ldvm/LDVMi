@@ -15,9 +15,9 @@ class SearchInput extends Component {
 
   search() {
     const { onSearch } = this.props;
-    const value = this.refs.text.getValue();
-    if (value) {
-      onSearch(value);
+    const needle = this.refs.needle.getValue();
+    if (needle) {
+      onSearch(needle);
     }
   }
 
@@ -25,7 +25,7 @@ class SearchInput extends Component {
     return (
       <div>
         <TextField
-          ref="text"
+          ref="needle"
           hintText="Název, DIČ..."
           style={textFieldStyle}
         />

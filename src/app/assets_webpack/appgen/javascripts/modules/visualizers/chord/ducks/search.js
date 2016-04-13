@@ -1,5 +1,6 @@
 import createAction from '../../../../misc/createAction'
 import prefix from '../prefix'
+import * as api from '../api'
 
 // Actions
 
@@ -8,7 +9,7 @@ export const SEARCH_START = SEARCH + '_START';
 export const SEARCH_ERROR = SEARCH + '_ERROR';
 export const SEARCH_SUCCESS = SEARCH + '_SUCCESS';
 
-export function search(text) {
-  // const promise = api.getMatrix(id, nodeUris);
-  return createAction(SEARCH, { text });
+export function search(id, needle) {
+  const promise = api.searchNodes(id, needle);
+  return createAction(SEARCH, { promise });
 }

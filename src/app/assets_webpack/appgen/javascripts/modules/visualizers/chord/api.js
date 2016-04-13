@@ -24,3 +24,8 @@ export async function getSearchableLens(id) {
   const result = await rest('chordVisualizer/getSearchableLens/' + id, {});
   return result.data.lens;
 }
+
+export async function searchNodes(id, needle) {
+  const result = await rest('chordVisualizer/searchNodes/' + id, { needle });
+  return result.data.result;
+}
