@@ -3,9 +3,10 @@ import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import Button from '../../../../components/Button'
 import { PromiseStatus } from '../../../core/models'
-import { addToList, removeFromList } from '../ducks/lists'
+import { addToList, addWithRelatedToList, removeFromList } from '../ducks/lists'
 import { selectedListSelector } from '../ducks/selectedList'
 import { NodeList } from '../models'
+import { createAddWithRelatedStatusSelector } from '../ducks/lists'
 
 const AddToListButtons = ({ dispatch, status, selectedList, uri }) => {
   return (
@@ -14,17 +15,21 @@ const AddToListButtons = ({ dispatch, status, selectedList, uri }) => {
         <Button primary
           label="Remove"
           icon="remove_circle"
+          disabled={status.isLoading}
           onTouchTap={() => dispatch(removeFromList(selectedList.id, uri))}
         /> :
         <Button success
           label="Add"
           icon="add_circle"
+          disabled={status.isLoading}
           onTouchTap={() => dispatch(addToList(selectedList.id, uri))}
         />
       }
       <Button success
         label="Add with related"
         icon="add_circle"
+        disabled={status.isLoading}
+        onTouchTap={() => dispatch(addWithRelatedToList(selectedList.id, uri))}
       />
     </span>
   );
@@ -38,6 +43,8 @@ AddToListButtons.propTypes = {
 };
 
 const selector = createStructuredSelector({
+  // Status of the "getRelatedNodes" request. It's separated for each node.
+  status: createAddWithRelatedStatusSelector((state, props) => props.uri),
   selectedList: selectedListSelector
 });
 

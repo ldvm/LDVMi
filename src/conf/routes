@@ -125,6 +125,7 @@ POST		/appgen/api/chordVisualizer/getEdges/:id		@controllers.appgen.api.visualiz
 POST		/appgen/api/chordVisualizer/getMatrix/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.getMatrix(id: Long)
 POST		/appgen/api/chordVisualizer/getSearchableLens/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.getSearchableLens(id: Long)
 POST		/appgen/api/chordVisualizer/searchNodes/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.searchNodes(id: Long)
+POST		/appgen/api/chordVisualizer/getRelatedNodes/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.getRelatedNodes(id: Long)
 GET         /appgen$any<.*>                                 @controllers.appgen.PlatformController.index(any)
 GET         /app/:id/:uid                                   @controllers.appgen.ApplicationController.index(id: Long, uid: String, any = null)
 GET         /app/:id/:uid/$any<.*>                          @controllers.appgen.ApplicationController.index(id: Long, uid: String, any)

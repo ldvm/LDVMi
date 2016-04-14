@@ -29,3 +29,8 @@ export async function searchNodes(id, needle) {
   const result = await rest('chordVisualizer/searchNodes/' + id, { needle });
   return result.data.result;
 }
+
+export async function getRelatedNodes(id, nodeUri) {
+  const result = await rest('chordVisualizer/getRelatedNodes/' + id, { nodeUri });
+  return result.data.relatedNodes;
+}

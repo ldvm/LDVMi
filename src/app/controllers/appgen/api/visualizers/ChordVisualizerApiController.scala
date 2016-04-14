@@ -4,6 +4,7 @@ import controllers.api.JsonImplicits._
 import model.appgen.entity.ApplicationId
 import model.appgen.rest.EmptyRequest.EmptyRequest
 import model.appgen.rest.NodeUrisRequest.NodeUrisRequest
+import model.appgen.rest.RelatedNodesRequest.RelatedNodesRequest
 import model.appgen.rest.Response._
 import model.appgen.rest.SearchRequest.SearchRequest
 import model.entity.PipelineEvaluation
@@ -62,6 +63,13 @@ class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApi
         fresnelService.searchThroughLens(evaluation, lens, json.needle.trim)
       }
       Future(Ok(SuccessResponse(data = Seq("result" -> result))))
+    }
+  }
+
+  def getRelatedNodes(id: Long) = RestAsyncAction[RelatedNodesRequest] { implicit request => json =>
+    withEvaluation(ApplicationId(id)) { evaluation =>
+      val relatedNodes = rgmlService.relatedNodes(evaluation, json.nodeUri)
+      Future(Ok(SuccessResponse(data = Seq("relatedNodes" -> relatedNodes))))
     }
   }
 

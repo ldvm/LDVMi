@@ -1,8 +1,8 @@
 package model.rdf.sparql.rgml
 
 import model.entity.PipelineEvaluation
-import model.rdf.sparql.rgml.extractor.{EdgesExtractor, GraphExtractor, NodesExtractor}
-import model.rdf.sparql.rgml.query.{EdgesQuery, GraphQuery, NodesQuery}
+import model.rdf.sparql.rgml.extractor.{EdgesExtractor, GraphExtractor, NodesExtractor, RelatedNodesExtractor}
+import model.rdf.sparql.rgml.query.{EdgesQuery, GraphQuery, NodesQuery, RelatedNodesQuery}
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
@@ -74,6 +74,15 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
         ))
 
       case None => None
+    }
+  }
+
+  override def relatedNodes(evaluation: PipelineEvaluation, nodeUri: String)(implicit session: Session): Option[Seq[String]] = {
+    graph(evaluation) flatMap { graph =>
+      sparqlEndpointService.getResult(
+        evaluationToSparqlEndpoint(evaluation),
+        new RelatedNodesQuery(graph, nodeUri),
+        new RelatedNodesExtractor)
     }
   }
 
