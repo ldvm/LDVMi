@@ -26,6 +26,7 @@ const SearchResult = ({ searchableLens, result }) => {
                 {propertyUri}
               </TableHeaderColumn>
             )}
+            <TableHeaderColumn />
           </TableRow>
         </TableHeader>
         <TableBody displayRowCheckbox={false} allowMultiselect>

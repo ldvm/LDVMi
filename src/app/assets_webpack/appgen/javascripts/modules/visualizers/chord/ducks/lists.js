@@ -26,6 +26,16 @@ export function updateList(id, update) {
   return createAction(UPDATE_LIST, { id, update });
 }
 
+export const ADD_TO_LIST = prefix('ADD_TO_LIST');
+export function addToList(id, uri) {
+  return createAction(ADD_TO_LIST, { id , uri });
+}
+
+export const REMOVE_FROM_LIST = prefix('REMOVE_FROM_LIST');
+export function removeFromList(id, uri) {
+  return createAction(REMOVE_FROM_LIST, { id , uri });
+}
+
 // Reducer
 
 const initialState = new OrderedMap();
@@ -51,10 +61,29 @@ export default function listsReducer(state = initialState, action) {
       return state.remove(payload.id);
 
     case UPDATE_LIST:
-      return state.update(payload.id, list => list.mergeDeep(payload.update));
+    case ADD_TO_LIST:
+    case REMOVE_FROM_LIST:
+      return state.update(payload.id, list => listReducer(list, action));
   }
   
   return state;
+}
+
+function listReducer(list, action) {
+  switch (action.type)  {
+    case UPDATE_LIST:
+      return list.mergeDeep(action.payload.update);
+
+    case ADD_TO_LIST:
+      const uri = action.payload.uri;
+      return list.uris.includes(uri) ?
+        list : list.update('uris', uris => uris.push(uri));
+
+    case REMOVE_FROM_LIST:
+      return list.update('uris', uris => uris.filter(uri => uri != action.payload.uri));
+  }
+
+  return list;
 }
 
 // Selectors

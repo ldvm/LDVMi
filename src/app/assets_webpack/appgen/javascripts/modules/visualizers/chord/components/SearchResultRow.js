@@ -3,6 +3,7 @@ import TableRow from 'material-ui/lib/table/table-row'
 import TableRowColumn from 'material-ui/lib/table/table-row-column'
 import { Lens, ResourceThroughLens } from '../models'
 import LocalizedValue from '../../../core/containers/LocalizedValue'
+import AddToListButtons from '../containers/AddToListButtons'
 
 const SearchResultRow = ({ searchableLens, resource }) => {
   return (
@@ -12,6 +13,9 @@ const SearchResultRow = ({ searchableLens, resource }) => {
           <LocalizedValue value={resource.properties.get(propertyUri)} silent />
         </TableRowColumn>
       )}
+      <TableRowColumn>
+        <AddToListButtons uri={resource.uri} />
+      </TableRowColumn>
     </TableRow>
   );
 };

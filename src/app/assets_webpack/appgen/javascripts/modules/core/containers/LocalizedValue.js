@@ -41,7 +41,7 @@ const LocalizedValue = ({ lang, value, defaultValue, silent }) => (
 
 LocalizedValue.propTypes = {
   lang: PropTypes.string.isRequired,
-  value: PropTypes.any.isRequired,
+  value: PropTypes.any,
   defaultValue: PropTypes.string,
   silent: PropTypes.bool
 };

@@ -23,7 +23,7 @@ const SearchDialog = ({ dispatch, application, searchableLens, searchResult, sea
   const actions = [ <Button label="Close" onTouchTap={() => dispatch(dialogClose(dialogName))} /> ];
 
   return (
-    <Dialog name={dialogName} title="Search graph data" actions={actions}>
+    <Dialog name={dialogName} title="Search graph data" actions={actions} width={1000}>
       <SearchInput
         disabled={searchStatus.isLoading}
         onSearch={needle => dispatch(search(application.id, needle))} />
