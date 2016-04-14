@@ -31,6 +31,7 @@ class SearchInput extends Component {
           hintText="Název, DIČ..."
           style={textFieldStyle}
           disabled={disabled}
+          onEnterKeyDown={this.search.bind(this)}
         />
         <Button warning raised
           label="Search"
