@@ -7,6 +7,7 @@ import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 import * as api from '../api'
 import moduleSelector from '../selector'
 import { ResourceThroughLens } from '../models'
+import storageReducerFactory from '../../../../misc/storageReducerFactory'
 
 // Actions
 
@@ -22,21 +23,15 @@ export function search(id, needle) {
 
 // Reducer
 
-const initialState = new List();
-
-export default function searchReducer(state = initialState, action) {
-  switch (action.type) {
-    case GET_APPLICATION_START:
-      return initialState;
-
-    case SEARCH_SUCCESS:
-      return (new List(action.payload)).map(resource =>
-        new ResourceThroughLens(fromJS(resource)));
-  }
-
-  return state;
-
-};
+export default storageReducerFactory()
+  .setInitialState(new List())
+  .setResetAction(GET_APPLICATION_START)
+  .setUpdateAction(SEARCH_SUCCESS)
+  .setUpdate(payload => {
+    return (new List(payload))
+      .map(resource => new ResourceThroughLens(fromJS(resource)))
+  })
+  .create();
 
 // Selectors
 
