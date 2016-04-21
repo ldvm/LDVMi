@@ -3,6 +3,7 @@ import { List } from 'immutable'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import prefix from '../prefix'
+import CenteredMessage from '../../../../components/CenteredMessage'
 import Button from '../../../../components/Button'
 import Dialog from '../../../core/containers/Dialog';
 import { dialogClose } from '../../../core/ducks/dialog'
@@ -29,10 +30,18 @@ const SearchDialog = ({ dispatch, searchableLens, searchResult, searchStatus }) 
       {searchStatus.error &&
         <Alert danger>{searchStatus.error}</Alert>}
 
-      <SearchResult
-        searchableLens={searchableLens}
-        result={searchResult}
-      />
+      {searchResult.size > 0 ?
+        <SearchResult
+          searchableLens={searchableLens}
+          result={searchResult}
+        /> :
+        <CenteredMessage>
+          <br />
+          {searchStatus.done ?
+            <span>Nothing found. Try different search phrase.</span> :
+            <span>No results available. Start searching.</span>}
+        </CenteredMessage>
+      }
     </Dialog>
   );
 };

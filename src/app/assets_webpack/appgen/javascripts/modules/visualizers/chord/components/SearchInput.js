@@ -28,7 +28,7 @@ class SearchInput extends Component {
       <div>
         <TextField
           ref="needle"
-          hintText="Název, DIČ..."
+          hintText="Identificator, part of the name..."
           style={textFieldStyle}
           disabled={disabled}
           onEnterKeyDown={this.search.bind(this)}
