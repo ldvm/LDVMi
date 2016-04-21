@@ -27,7 +27,7 @@ export default storageReducerFactory()
   .setInitialState(new List())
   .setResetAction(GET_APPLICATION_START)
   .setUpdateAction(SEARCH_SUCCESS)
-  .setUpdate(payload => {
+  .setUpdate((state, payload) => {
     return (new List(payload))
       .map(resource => new ResourceThroughLens(fromJS(resource)))
   })

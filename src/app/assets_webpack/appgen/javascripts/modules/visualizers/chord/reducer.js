@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import graph from './ducks/graph'
+import nodes from './ducks/nodes'
 import searchableLens from './ducks/searchableLens'
 import sampleNodeUris from './ducks/sampleNodeUris'
 import matrix from './ducks/matrix'
@@ -10,6 +11,7 @@ import search from './ducks/search'
 
 const rootReducer = combineReducers({
   graph,
+  nodes,
   searchableLens,
   sampleNodeUris,
   matrix,

@@ -1,6 +1,20 @@
 import React, { PropTypes } from 'react'
 import { NodeList } from '../models'
 import CenteredMessage from '../../../../components/CenteredMessage'
+import loadNodes from '../containers/loadNodes'
+import PromiseResult from '../../../core/components/PromiseResult'
+import Label from '../../../core/containers/Label'
+
+const Nodes = loadNodes(({ nodes, status }) => (
+  <div>
+    <PromiseResult status={status} />
+    {nodes.map(node =>
+      <div>
+        <Label label={node.label} uri={node.uri} />
+      </div>
+    )}
+  </div>
+));
 
 const ListContent = ({ list }) => {
 
@@ -10,7 +24,7 @@ const ListContent = ({ list }) => {
     </CenteredMessage>
   }
 
-  return <div>{list.uris.size}</div>
+  return <Nodes nodeUris={list.uris} />
 };
 
 ListContent.propTypes = {

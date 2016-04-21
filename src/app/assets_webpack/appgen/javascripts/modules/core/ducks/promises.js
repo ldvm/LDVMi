@@ -107,7 +107,7 @@ export function createAllPromiseStatusSelector(name) {
 
 /**
  * Takes an arbitrary number of selectors and creates an aggregated promise status. Each selector
- * has to either either promise status or a map of promise statuses.
+ * has to be either a promise status or a map of promise statuses.
  */
 export function createAggregatedPromiseStatusSelector(selectors) {
   if (!Array.isArray(selectors)) {

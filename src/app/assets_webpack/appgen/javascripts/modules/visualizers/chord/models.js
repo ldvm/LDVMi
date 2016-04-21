@@ -6,6 +6,13 @@ export const Graph = Record({
   edgeCount: 0
 });
 
+export const Node = Record({
+  uri: '',
+  label: '',
+  inDegree: '',
+  outDegree: ''
+});
+
 export const NodeList = Record({
   id: '',
   name: 'Unlabeled list',

@@ -44,7 +44,7 @@ class StorageReducerFactory {
           return this.initialState;
 
         case this.updateAction:
-          return this.update(action.payload);
+          return this.update(state, action.payload);
       }
       return state;
     }
