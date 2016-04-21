@@ -10,6 +10,7 @@ import { GET_CONFIGURATION_SUCCESS } from './configuration'
 import { applicationSelector } from '../../../manageApp/ducks/application'
 import * as api from '../api.js'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
+import withApplicationId from '../../../manageApp/misc/withApplicationId'
 
 // Actions
 
@@ -63,6 +64,24 @@ export function removeFromList(id, uri) {
   return createAction(REMOVE_FROM_LIST, { id , uri });
 }
 
+export const REMOVE_WITH_RELATED_FROM_LIST = prefix('REMOVE_WITH_RELATED_FROM_LIST');
+export const REMOVE_WITH_RELATED_FROM_LIST_START = REMOVE_WITH_RELATED_FROM_LIST + '_START';
+export const REMOVE_WITH_RELATED_FROM_LIST_ERROR = REMOVE_WITH_RELATED_FROM_LIST + '_ERROR';
+export const REMOVE_WITH_RELATED_FROM_LIST_SUCCESS = REMOVE_WITH_RELATED_FROM_LIST + '_SUCCESS';
+
+export function removeWithRelatedFromList(id, uri) {
+  return withApplicationId(appId => {
+    const promise = api.getRelatedNodes(appId, uri).then(related => {
+      related.unshift(uri); // Append the actual uri to the end
+      return related;
+    });
+    return createAction(REMOVE_WITH_RELATED_FROM_LIST,
+      { promise },
+      { listId: id, id: uri } // The id property here is identifying the promise request.
+    );
+  });
+}
+
 // Reducer
 
 const reviveList = list => {
@@ -100,6 +119,7 @@ export default function listsReducer(state = initialState, action) {
       return state.update(payload.id, list => listReducer(list, action));
 
     case ADD_WITH_RELATED_TO_LIST_SUCCESS:
+    case REMOVE_WITH_RELATED_FROM_LIST_SUCCESS:
       return state.update(action.meta.listId, list => listReducer(list, action));
   }
   
@@ -129,6 +149,11 @@ function listReducer(list, action) {
       return list
         .update('uris', uris => uris.delete(uri))
         .update('selected', selected => selected.delete(uri));
+
+    case REMOVE_WITH_RELATED_FROM_LIST_SUCCESS:
+      return list
+        .update('uris', uris => uris.subtract(action.payload))
+        .update('selected', selected => selected.subtract(action.payload));
 
     case SELECT_NODE:
       uri = action.payload.uri;

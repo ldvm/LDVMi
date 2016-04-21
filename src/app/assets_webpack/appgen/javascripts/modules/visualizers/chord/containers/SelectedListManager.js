@@ -6,7 +6,7 @@ import Padding from '../../../../components/Padding'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import FillInScreen from '../../../../components/FillInScreen'
 import { selectedListSelector } from '../ducks/selectedList'
-import { selectNode, listsSelector } from '../ducks/lists'
+import { selectNode, removeFromList, removeWithRelatedFromList, listsSelector } from '../ducks/lists'
 import { NodeList } from '../models'
 import OpenSearchDialogButton from '../components/OpenSearchDialogButton'
 import SearchDialog from '../containers/SearchDialog'
@@ -25,9 +25,6 @@ const SelectedListManager = ({ dispatch, lists, selectedList }) => {
     </CenteredMessage>
   }
   
-  const onSelect = (uri, selected) =>
-    dispatch(selectNode(selectedList.id, uri, selected));
-
   return <div>
     <FillInScreen marginBottom={100}>
       {selectedList.uris.size == 0 ?
@@ -35,7 +32,9 @@ const SelectedListManager = ({ dispatch, lists, selectedList }) => {
         <SelectedList
           nodeUris={selectedList.uris}
           list={selectedList}
-          onSelect={onSelect}
+          onSelect={(uri, selected) => dispatch(selectNode(selectedList.id, uri, selected))}
+          remove={uri => dispatch(removeFromList(selectedList.id, uri))}
+          removeWithRelated={uri => dispatch(removeWithRelatedFromList(selectedList.id, uri))}
         />
       }
     </FillInScreen>

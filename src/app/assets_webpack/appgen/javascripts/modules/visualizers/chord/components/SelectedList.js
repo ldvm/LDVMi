@@ -6,7 +6,7 @@ import { NodeList } from '../models'
 import loadNodes from '../containers/loadNodes'
 import NodeCheckbox from './NodeCheckbox'
 
-const SelectedList = ({ list, nodes, status, onSelect }) => (
+const SelectedList = ({ list, nodes, status, onSelect, remove, removeWithRelated }) => (
   <div>
     {status.isLoading && <LinearProgress />}
 
@@ -16,6 +16,8 @@ const SelectedList = ({ list, nodes, status, onSelect }) => (
         node={node}
         selected={list.selected.includes(node.uri)}
         onSelect={selected => onSelect(node.uri, selected)}
+        remove={() => remove(node.uri)}
+        removeWithRelated={() => removeWithRelated(node.uri)}
       />
     )}
   </div>
@@ -25,7 +27,9 @@ SelectedList.propTypes = {
   list: PropTypes.instanceOf(NodeList).isRequired,
   nodes: PropTypes.instanceOf(List).isRequired,
   status: PropTypes.instanceOf(PromiseStatus).isRequired,
-  onSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired,
+  remove: PropTypes.func.isRequired,
+  removeWithRelated: PropTypes.func.isRequired
 };
 
 export default loadNodes(SelectedList);
