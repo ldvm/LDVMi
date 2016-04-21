@@ -121,6 +121,7 @@ POST        /appgen/api/mapsVisualizer/getSkosConceptsCounts/:id    @controllers
 POST        /appgen/api/mapsVisualizer/getMarkers/:id       @controllers.appgen.api.visualizers.MapsVisualizerApiController.getMarkers(id: Long)
 POST		/appgen/api/chordVisualizer/getGraph/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.getGraph(id: Long)
 POST		/appgen/api/chordVisualizer/getSampleNodes/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.getSampleNodes(id: Long)
+POST		/appgen/api/chordVisualizer/getNodes/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.getNodes(id: Long)
 POST		/appgen/api/chordVisualizer/getEdges/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.getEdges(id: Long)
 POST		/appgen/api/chordVisualizer/getMatrix/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.getMatrix(id: Long)
 POST		/appgen/api/chordVisualizer/getSearchableLens/:id		@controllers.appgen.api.visualizers.ChordVisualizerApiController.getSearchableLens(id: Long)

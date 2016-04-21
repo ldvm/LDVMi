@@ -27,6 +27,13 @@ class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApi
     }
   }
 
+  def getNodes(id: Long) = RestAsyncAction[NodeUrisRequest] { implicit  request => json =>
+    withEvaluation(ApplicationId(id)) { evaluation =>
+      val nodes = rgmlService.nodes(evaluation, json.nodeUris)
+      Future(Ok(SuccessResponse(data = Seq("nodes" -> nodes))))
+    }
+  }
+
   def getSampleNodes(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
       // Get 30 nodes with the highest out degree and lets hope there will be something to visualize

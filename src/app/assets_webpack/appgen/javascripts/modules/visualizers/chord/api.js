@@ -5,6 +5,11 @@ export async function getGraph(id) {
   return result.data.graph;
 }
 
+export async function getNodes(id, nodeUris) {
+  const result = await rest('chordVisualizer/getNodes/' + id, { nodeUris });
+  return result.data.nodes;
+}
+
 export async function getSampleNodes(id) {
   const result = await rest('chordVisualizer/getSampleNodes/' + id, {});
   return result.data.nodes;
