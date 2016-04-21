@@ -78,6 +78,7 @@ const ListsManager = props => {
           />
         }
       </div>
+      <div style={{ clear: 'both '}}></div>
     </div>
   );
 };

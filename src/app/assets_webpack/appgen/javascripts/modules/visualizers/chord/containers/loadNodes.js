@@ -25,7 +25,7 @@ const selector = createSelector(
       .filter(node => node != null)
       .toList();
     const missingNodeUris = new Set(nodeUris
-      .filter(uri => nodes.get(uri) == null));
+      .filter(uri => !nodes.has(uri)));
     const completed = missingNodeUris.size === 0;
 
     // For simplicity, the injected status is aggregated for all GET_NODES requests. Therefore
@@ -52,6 +52,7 @@ export default function loadNodes(ComposedComponent) {
   class NodeLoader extends Component {
     static propTypes = {
       dispatch: PropTypes.func.isRequired,
+      nodeUris: PropTypes.instanceOf(Set).isRequired,
       nodes: PropTypes.instanceOf(List).isRequired,
       missingNodeUris: PropTypes.instanceOf(Set).isRequired,
       status: PropTypes.instanceOf(PromiseStatus).isRequired

@@ -53,6 +53,11 @@ export function addWithRelatedToList(id, uri) {
   }
 }
 
+export const SELECT_NODE = prefix('SELECT_NODE');
+export function selectNode(id, uri, selected) {
+  return createAction(SELECT_NODE, { id, uri, selected });
+}
+
 export const REMOVE_FROM_LIST = prefix('REMOVE_FROM_LIST');
 export function removeFromList(id, uri) {
   return createAction(REMOVE_FROM_LIST, { id , uri });
@@ -91,6 +96,7 @@ export default function listsReducer(state = initialState, action) {
     case UPDATE_LIST:
     case ADD_TO_LIST:
     case REMOVE_FROM_LIST:
+    case SELECT_NODE:
       return state.update(payload.id, list => listReducer(list, action));
 
     case ADD_WITH_RELATED_TO_LIST_SUCCESS:
@@ -123,6 +129,11 @@ function listReducer(list, action) {
       return list
         .update('uris', uris => uris.delete(uri))
         .update('selected', selected => selected.delete(uri));
+
+    case SELECT_NODE:
+      uri = action.payload.uri;
+      return list.update('selected', selected =>
+        action.payload.selected ? selected.add(uri) : selected.delete(uri));
   }
 
   return list;
