@@ -43,7 +43,7 @@ export function addWithRelatedToList(id, uri) {
   return (dispatch, getState) => {
     const appId = applicationSelector(getState()).id;
     const promise = api.getRelatedNodes(appId, uri).then(related => {
-      related.unshift(uri);
+      related.unshift(uri); // Append the actual uri to the end
       return related;
     });
     dispatch(createAction(ADD_WITH_RELATED_TO_LIST,
@@ -60,6 +60,12 @@ export function removeFromList(id, uri) {
 
 // Reducer
 
+const reviveList = list => {
+  return new NodeList(fromJS(list)
+    .update('uris', uris => new Set(uris))
+    .update('selected', selected => new Set(selected)));
+};
+
 const initialState = new OrderedMap();
 
 export default function listsReducer(state = initialState, action) {
@@ -71,7 +77,7 @@ export default function listsReducer(state = initialState, action) {
 
     case GET_CONFIGURATION_SUCCESS:
       if ("lists" in action.payload) {
-        const configuration = (new OrderedMap(action.payload.lists)).map(list => new NodeList(fromJS(list)));
+        const configuration = (new OrderedMap(action.payload.lists)).map(list => reviveList(list));
         return initialState.mergeDeep(configuration);
       }
       break;
@@ -95,25 +101,28 @@ export default function listsReducer(state = initialState, action) {
 }
 
 function listReducer(list, action) {
+  let uri;
+
   switch (action.type)  {
     case UPDATE_LIST:
       return list.mergeDeep(action.payload.update);
 
     case ADD_TO_LIST:
-      const uri = action.payload.uri;
-      return list.uris.includes(uri) ?
-        list : list.update('uris', uris => uris.push(uri));
+      uri = action.payload.uri;
+      return list
+        .update('uris', uris => uris.add(uri))
+        .update('selected', selected => selected.add(uri));
 
     case ADD_WITH_RELATED_TO_LIST_SUCCESS:
-      // Okay, this is not exactly beautiful. The uris property should be a Set from the very
-      // beginning which would save us some work (but we would have to be careful when loading
-      // the saved configuration). Perhaps in the future...
-      return list.update('uris', uris =>
-        (new Set(uris)).union(action.payload).toList()
-      );
+      return list
+        .update('uris', uris => uris.union(action.payload))
+        .update('selected', selected => selected.union(action.payload));
 
     case REMOVE_FROM_LIST:
-      return list.update('uris', uris => uris.filter(uri => uri != action.payload.uri));
+      uri = action.payload.uri;
+      return list
+        .update('uris', uris => uris.delete(uri))
+        .update('selected', selected => selected.delete(uri));
   }
 
   return list;
