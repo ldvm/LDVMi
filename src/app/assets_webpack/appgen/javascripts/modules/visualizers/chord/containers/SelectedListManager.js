@@ -32,7 +32,7 @@ const SelectedListManager = ({ dispatch, lists, selectedList }) => {
         <SelectedList
           nodeUris={selectedList.uris}
           list={selectedList}
-          onSelect={(uri, selected) => dispatch(selectNode(selectedList.id, uri, selected))}
+          select={(uri, selected) => dispatch(selectNode(selectedList.id, uri, selected))}
           remove={uri => dispatch(removeFromList(selectedList.id, uri))}
           removeWithRelated={uri => dispatch(removeWithRelatedFromList(selectedList.id, uri))}
         />

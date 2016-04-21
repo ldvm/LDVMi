@@ -25,7 +25,7 @@ const labelStyle = {
   width: '80%'
 };
 
-const Option = ({ node, selected, onSelect, remove, removeWithRelated }) => {
+const Option = ({ node, selected, select, remove, removeWithRelated }) => {
   return <div>
     <Padding space={2}>
       <IconMenu
@@ -45,7 +45,7 @@ const Option = ({ node, selected, onSelect, remove, removeWithRelated }) => {
       </IconMenu>
       <div style={labelStyle}>
         <Checkbox
-          onCheck={(_, isActive) => onSelect(isActive)}
+          onCheck={(_, isActive) => select(isActive)}
           checked={selected}
           label={<Label uri={node.uri} label={node.label} />}
         />
@@ -59,7 +59,7 @@ const Option = ({ node, selected, onSelect, remove, removeWithRelated }) => {
 Option.propTypes = {
   node: PropTypes.instanceOf(Node).isRequired,
   selected: PropTypes.bool.isRequired,
-  onSelect: PropTypes.func.isRequired,
+  select: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
   removeWithRelated: PropTypes.func.isRequired
 };

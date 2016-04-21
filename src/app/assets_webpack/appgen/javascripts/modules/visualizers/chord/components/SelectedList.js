@@ -5,17 +5,18 @@ import { PromiseStatus } from '../../../core/models'
 import { NodeList } from '../models'
 import loadNodes from '../containers/loadNodes'
 import NodeCheckbox from './NodeCheckbox'
+import Padding from '../../../../components/Padding'
 
-const SelectedList = ({ list, nodes, status, onSelect, remove, removeWithRelated }) => (
+const SelectedList = ({ list, nodes, status, select, remove, removeWithRelated }) => (
   <div>
-    {status.isLoading && <LinearProgress />}
+    {status.isLoading && <Padding space={2}><LinearProgress /></Padding>}
 
     {nodes.map(node =>
       <NodeCheckbox
         key={node.uri}
         node={node}
         selected={list.selected.includes(node.uri)}
-        onSelect={selected => onSelect(node.uri, selected)}
+        select={selected => select(node.uri, selected)}
         remove={() => remove(node.uri)}
         removeWithRelated={() => removeWithRelated(node.uri)}
       />
@@ -27,7 +28,7 @@ SelectedList.propTypes = {
   list: PropTypes.instanceOf(NodeList).isRequired,
   nodes: PropTypes.instanceOf(List).isRequired,
   status: PropTypes.instanceOf(PromiseStatus).isRequired,
-  onSelect: PropTypes.func.isRequired,
+  select: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
   removeWithRelated: PropTypes.func.isRequired
 };
