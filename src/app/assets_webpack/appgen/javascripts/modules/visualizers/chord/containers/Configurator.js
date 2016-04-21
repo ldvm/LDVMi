@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { graphSelector, graphStatusSelector } from '../ducks/graph'
-import { searchableLensSelector, searchableLensStatusSelector } from '../ducks/searchableLens'
+import { getGraph, graphSelector, graphStatusSelector } from '../ducks/graph'
+import { getSearchableLens, searchableLensSelector, searchableLensStatusSelector } from '../ducks/searchableLens'
+import { getConfiguration } from '../ducks/configuration'
 import { Lens, Graph } from '../models'
 import { PromiseStatus } from '../../../core/models'
 import PromiseResult from '../../../core/components/PromiseResult'
@@ -18,6 +19,13 @@ class Configurator extends Component {
     searchableLens: PropTypes.instanceOf(Lens).isRequired,
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
+
+  componentWillMount() {
+    const { dispatch } = this.props;
+    dispatch(getGraph());
+    dispatch(getSearchableLens());
+    dispatch(getConfiguration());
+  }
 
   render() {
     const { searchableLens, status } = this.props;

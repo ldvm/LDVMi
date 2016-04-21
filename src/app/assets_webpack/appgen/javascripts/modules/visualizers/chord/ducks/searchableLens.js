@@ -7,6 +7,7 @@ import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import { Lens } from '../models'
 import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 import * as api from '../api'
+import withApplicationId from '../../../manageApp/misc/withApplicationId'
 
 // Actions
 
@@ -15,9 +16,11 @@ export const GET_SEARCHABLE_LENS_START = GET_SEARCHABLE_LENS + '_START';
 export const GET_SEARCHABLE_LENS_ERROR = GET_SEARCHABLE_LENS + '_ERROR';
 export const GET_SEARCHABLE_LENS_SUCCESS = GET_SEARCHABLE_LENS + '_SUCCESS';
 
-export function getSearchableLens(id) {
-  const promise = api.getSearchableLens(id);
-  return createAction(GET_SEARCHABLE_LENS , { promise });
+export function getSearchableLens() {
+  return withApplicationId(id => {
+    const promise = api.getSearchableLens(id);
+    return createAction(GET_SEARCHABLE_LENS , { promise });
+  })
 }
 
 // Reducer

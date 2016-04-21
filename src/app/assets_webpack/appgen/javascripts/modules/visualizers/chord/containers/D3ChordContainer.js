@@ -7,13 +7,10 @@ import { getMatrix, matrixSelector, matrixStatusSelector } from '../ducks/matrix
 import { PromiseStatus } from '../../../core/models'
 import PromiseResult from '../../../core/components/PromiseResult'
 import CenteredMessage from '../../../../components/CenteredMessage'
-import { applicationSelector } from "../../../manageApp/ducks/application";
-import { Application } from "../../../manageApp/models";
 
 class D3ChordContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    application: PropTypes.instanceOf(Application).isRequired,
     matrix: PropTypes.array.isRequired,
     status: PropTypes.instanceOf(PromiseStatus).isRequired,
     nodeUris: PropTypes.instanceOf(List)
@@ -30,8 +27,8 @@ class D3ChordContainer extends Component {
   }
 
   loadMatrix(props) {
-    const { dispatch, application, nodeUris } = props;
-    dispatch(getMatrix(application.id, nodeUris.toJS()));
+    const { dispatch, nodeUris } = props;
+    dispatch(getMatrix(nodeUris.toJS()));
   }
 
   isMatrixEmpty(matrix) {
@@ -63,7 +60,6 @@ class D3ChordContainer extends Component {
 }
 
 const selector = createStructuredSelector({
-  application: applicationSelector,
   matrix: matrixSelector,
   status: matrixStatusSelector
 });

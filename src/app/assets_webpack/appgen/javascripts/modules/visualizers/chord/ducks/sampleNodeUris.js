@@ -6,6 +6,7 @@ import moduleSelector from '../selector'
 import prefix from '../prefix'
 import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 import * as api from '../api'
+import withApplicationId from '../../../manageApp/misc/withApplicationId'
 
 // Actions
 
@@ -14,9 +15,11 @@ export const GET_SAMPLE_NODES_START = GET_SAMPLE_NODES + '_START';
 export const GET_SAMPLE_NODES_ERROR = GET_SAMPLE_NODES + '_ERROR';
 export const GET_SAMPLE_NODES_SUCCESS = GET_SAMPLE_NODES + '_SUCCESS';
 
-export function getSampleNodes(id) {
-  const promise = api.getSampleNodes(id);
-  return createAction(GET_SAMPLE_NODES, { promise });
+export function getSampleNodes() {
+  return withApplicationId(id => {
+    const promise = api.getSampleNodes(id);
+    return createAction(GET_SAMPLE_NODES, { promise });
+  });
 }
 
 // Reducer

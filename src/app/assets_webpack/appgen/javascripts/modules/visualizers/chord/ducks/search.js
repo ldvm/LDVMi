@@ -8,6 +8,7 @@ import * as api from '../api'
 import moduleSelector from '../selector'
 import { ResourceThroughLens } from '../models'
 import storageReducerFactory from '../../../../misc/storageReducerFactory'
+import withApplicationId from '../../../manageApp/misc/withApplicationId'
 
 // Actions
 
@@ -16,9 +17,11 @@ export const SEARCH_START = SEARCH + '_START';
 export const SEARCH_ERROR = SEARCH + '_ERROR';
 export const SEARCH_SUCCESS = SEARCH + '_SUCCESS';
 
-export function search(id, needle) {
-  const promise = api.searchNodes(id, needle);
-  return createAction(SEARCH, { promise });
+export function search(needle) {
+  return withApplicationId(id => {
+    const promise = api.searchNodes(id, needle);
+    return createAction(SEARCH, { promise });
+  });
 }
 
 // Reducer

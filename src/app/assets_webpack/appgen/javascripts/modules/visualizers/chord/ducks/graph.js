@@ -6,6 +6,7 @@ import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import { Graph } from '../models'
 import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 import * as api from '../api'
+import withApplicationId from '../../../manageApp/misc/withApplicationId'
 
 // Actions
 
@@ -14,9 +15,11 @@ export const GET_GRAPH_START = GET_GRAPH + '_START';
 export const GET_GRAPH_ERROR = GET_GRAPH + '_ERROR';
 export const GET_GRAPH_SUCCESS = GET_GRAPH + '_SUCCESS';
 
-export function getGraph(id) {
-  const promise = api.getGraph(id);
-  return createAction(GET_GRAPH , { promise });
+export function getGraph() {
+  return withApplicationId(id => {
+    const promise = api.getGraph(id);
+    return createAction(GET_GRAPH, { promise });
+  })
 }
 
 // Reducer

@@ -8,8 +8,6 @@ import Dialog from '../../../core/containers/Dialog';
 import { dialogClose } from '../../../core/ducks/dialog'
 import SearchInput from '../components/SearchInput'
 import SearchResult from '../components/SearchResult'
-import { applicationSelector } from '../../../manageApp/ducks/application'
-import { Application } from '../../../manageApp/models'
 import { searchableLensSelector } from '../ducks/searchableLens'
 import { search, searchSelector, searchStatusSelector } from '../ducks/search'
 import { PromiseStatus } from '../../../core/models'
@@ -18,7 +16,7 @@ import Alert from '../../../../components/Alert'
 
 export const dialogName = prefix('SEARCH_DIALOG');
 
-const SearchDialog = ({ dispatch, application, searchableLens, searchResult, searchStatus }) => {
+const SearchDialog = ({ dispatch, searchableLens, searchResult, searchStatus }) => {
 
   const actions = [ <Button label="Close" onTouchTap={() => dispatch(dialogClose(dialogName))} /> ];
 
@@ -26,7 +24,7 @@ const SearchDialog = ({ dispatch, application, searchableLens, searchResult, sea
     <Dialog name={dialogName} title="Search graph data" actions={actions} width={1000}>
       <SearchInput
         disabled={searchStatus.isLoading}
-        onSearch={needle => dispatch(search(application.id, needle))} />
+        onSearch={needle => dispatch(search(needle))} />
       
       {searchStatus.error &&
         <Alert danger>{searchStatus.error}</Alert>}
@@ -41,14 +39,12 @@ const SearchDialog = ({ dispatch, application, searchableLens, searchResult, sea
 
 SearchDialog.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  application: PropTypes.instanceOf(Application).isRequired,
   searchableLens: PropTypes.instanceOf(Lens).isRequired,
   searchResult: PropTypes.instanceOf(List).isRequired,
   searchStatus: PropTypes.instanceOf(PromiseStatus).isRequired
 };
 
 const selector = createStructuredSelector({
-  application: applicationSelector,
   searchableLens: searchableLensSelector,
   searchResult: searchSelector,
   searchStatus: searchStatusSelector

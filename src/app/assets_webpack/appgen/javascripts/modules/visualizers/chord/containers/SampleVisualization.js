@@ -10,21 +10,18 @@ import D3ChordContainer from './D3ChordContainer'
 import Alert from '../../../../components/Alert'
 import { graphSelector } from '../ducks/graph'
 import { sampleNodeUrisSelector, sampleNodeUrisStatusSelector } from '../ducks/sampleNodeUris'
-import { applicationSelector } from '../../../manageApp/ducks/application'
-import { Application } from '../../../manageApp/models'
 
 class SampleVisualization extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    application: PropTypes.instanceOf(Application).isRequired,
     graph: PropTypes.instanceOf(Graph).isRequired,
     nodeUris: PropTypes.instanceOf(List).isRequired,
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
   componentWillMount() {
-    const { dispatch, application } = this.props;
-    dispatch(getSampleNodes(application.id));
+    const { dispatch } = this.props;
+    dispatch(getSampleNodes());
   }
 
   render() {
@@ -46,7 +43,6 @@ class SampleVisualization extends Component {
 }
 
 const selector = createStructuredSelector({
-  application: applicationSelector,
   graph: graphSelector,
   nodeUris: sampleNodeUrisSelector,
   status: sampleNodeUrisStatusSelector

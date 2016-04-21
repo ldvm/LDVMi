@@ -41,17 +41,16 @@ export const ADD_WITH_RELATED_TO_LIST_ERROR = ADD_WITH_RELATED_TO_LIST + '_ERROR
 export const ADD_WITH_RELATED_TO_LIST_SUCCESS = ADD_WITH_RELATED_TO_LIST + '_SUCCESS';
 
 export function addWithRelatedToList(id, uri) {
-  return (dispatch, getState) => {
-    const appId = applicationSelector(getState()).id;
+  return withApplicationId(appId => {
     const promise = api.getRelatedNodes(appId, uri).then(related => {
       related.unshift(uri); // Append the actual uri to the end
       return related;
     });
-    dispatch(createAction(ADD_WITH_RELATED_TO_LIST,
+    return createAction(ADD_WITH_RELATED_TO_LIST,
       { promise },
       { listId: id, id: uri } // The id property here is identifying the promise request.
-    ));
-  }
+    );
+  })
 }
 
 export const SELECT_NODE = prefix('SELECT_NODE');

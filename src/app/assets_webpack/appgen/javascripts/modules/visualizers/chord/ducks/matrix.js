@@ -1,4 +1,3 @@
-import { List } from 'immutable'
 import { createSelector } from 'reselect'
 import createAction from '../../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
@@ -6,6 +5,7 @@ import moduleSelector from '../selector'
 import prefix from '../prefix'
 import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 import * as api from '../api'
+import withApplicationId from '../../../manageApp/misc/withApplicationId'
 
 // Actions
 
@@ -14,9 +14,11 @@ export const GET_MATRIX_START = GET_MATRIX + '_START';
 export const GET_MATRIX_ERROR = GET_MATRIX + '_ERROR';
 export const GET_MATRIX_SUCCESS = GET_MATRIX + '_SUCCESS';
 
-export function getMatrix(id, nodeUris) {
-  const promise = api.getMatrix(id, nodeUris);
-  return createAction(GET_MATRIX, { promise });
+export function getMatrix(nodeUris) {
+  return withApplicationId(id => {
+    const promise = api.getMatrix(id, nodeUris);
+    return createAction(GET_MATRIX, { promise });
+  });
 }
 
 // Reducer
