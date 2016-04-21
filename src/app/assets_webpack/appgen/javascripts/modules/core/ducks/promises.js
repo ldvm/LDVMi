@@ -100,7 +100,7 @@ const aggregateStatuses = statuses => new PromiseStatus({
 /** Returns an aggregated status for all promises of given name */
 export function createAllPromiseStatusSelector(name) {
   return createSelector(
-    [createPromiseStatusesSelector([name])],
+    [createPromiseStatusesSelector(name)],
     statuses => aggregateStatuses(statuses)
   )
 }
