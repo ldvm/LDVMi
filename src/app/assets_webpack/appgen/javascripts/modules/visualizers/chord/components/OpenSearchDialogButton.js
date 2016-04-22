@@ -7,7 +7,7 @@ const OpenSearchDialogButton = props => (
   <Button success raised
      onTouchTap={() => props.dialogOpen(dialogName)}
      icon="add"
-     label="Add items to this list"
+     label="Add items"
      {...props}
   />
 );

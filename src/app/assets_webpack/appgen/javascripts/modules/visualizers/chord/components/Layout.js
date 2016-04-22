@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react'
-import BodyPadding from '../../../../components/BodyPadding'
 
 const wrapperStyle = {
   position: 'relative',

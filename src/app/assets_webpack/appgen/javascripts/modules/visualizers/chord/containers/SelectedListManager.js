@@ -2,15 +2,14 @@ import React, { PropTypes } from 'react'
 import { Map } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import Padding from '../../../../components/Padding'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import FillInScreen from '../../../../components/FillInScreen'
 import { selectedListSelector } from '../ducks/selectedList'
 import { selectNode, removeFromList, removeWithRelatedFromList, listsSelector } from '../ducks/lists'
 import { NodeList } from '../models'
-import OpenSearchDialogButton from '../components/OpenSearchDialogButton'
 import SearchDialog from '../containers/SearchDialog'
 import SelectedList from '../components/SelectedList'
+import SidebarButtons from '../components/SidebarButtons'
 
 const SelectedListManager = ({ dispatch, lists, selectedList }) => {
   if (lists.size == 0) {
@@ -40,9 +39,7 @@ const SelectedListManager = ({ dispatch, lists, selectedList }) => {
     </FillInScreen>
 
     <SearchDialog />
-    <Padding space={2}>
-      <OpenSearchDialogButton fullWidth />
-    </Padding>
+    <SidebarButtons />
   </div>
 };
 

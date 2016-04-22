@@ -2,14 +2,13 @@ import React, { Component, PropTypes } from 'react'
 import { List } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { getSampleNodes } from '../ducks/sampleNodeUris'
 import { PromiseStatus } from '../../../core/models'
 import PromiseResult from '../../../core/components/PromiseResult'
-import { Graph } from "../models";
+import { Graph } from '../models'
 import D3ChordContainer from './D3ChordContainer'
 import Alert from '../../../../components/Alert'
 import { graphSelector } from '../ducks/graph'
-import { sampleNodeUrisSelector, sampleNodeUrisStatusSelector } from '../ducks/sampleNodeUris'
+import { visualizeSampleNodes, visualizedNodesSelector, visualizeSampleNodesStatusSelector } from '../ducks/visualizedNodes'
 
 class SampleVisualization extends Component {
   static propTypes = {
@@ -21,7 +20,7 @@ class SampleVisualization extends Component {
 
   componentWillMount() {
     const { dispatch } = this.props;
-    dispatch(getSampleNodes());
+    dispatch(visualizeSampleNodes());
   }
 
   render() {
@@ -44,8 +43,8 @@ class SampleVisualization extends Component {
 
 const selector = createStructuredSelector({
   graph: graphSelector,
-  nodeUris: sampleNodeUrisSelector,
-  status: sampleNodeUrisStatusSelector
+  nodeUris: visualizedNodesSelector,
+  status: visualizeSampleNodesStatusSelector
 });
 
 export default connect(selector)(SampleVisualization)
