@@ -8,6 +8,7 @@ import lists from './ducks/lists'
 import selectedList from './ducks/selectedList'
 import dirty from './ducks/dirty'
 import search from './ducks/search'
+import publishSettings from './ducks/publishSettings'
 
 const rootReducer = combineReducers({
   graph,
@@ -18,7 +19,8 @@ const rootReducer = combineReducers({
   lists,
   selectedList,
   dirty,
-  search
+  search,
+  publishSettings
 });
 
 export default rootReducer;

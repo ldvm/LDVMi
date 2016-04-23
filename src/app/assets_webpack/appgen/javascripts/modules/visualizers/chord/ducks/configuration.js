@@ -25,7 +25,8 @@ export const configurationSelector = createSelector(
   [moduleSelector],
   state => ({
     lists: state.lists.toJS(),
-    selectedList: state.selectedList
+    selectedList: state.selectedList,
+    publishSettings: state.publishSettings
   })
 );
 

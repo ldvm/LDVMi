@@ -4,6 +4,7 @@ import { SAVE_CONFIGURATION_START, SAVE_CONFIGURATION_ERROR, GET_CONFIGURATION_S
 import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 import { ADD_LIST, REMOVE_LIST, UPDATE_LIST, ADD_TO_LIST, ADD_WITH_RELATED_TO_LIST_SUCCESS, REMOVE_FROM_LIST, REMOVE_WITH_RELATED_FROM_LIST_SUCCESS, SELECT_NODE } from './lists'
 import { SELECT_LIST } from './selectedList'
+import { UPDATE_PUBLISH_SETTINGS } from './publishSettings'
 
 // Reducer
 
@@ -18,6 +19,7 @@ export default function dirtyReducer(state = false, action) {
     case REMOVE_WITH_RELATED_FROM_LIST_SUCCESS:
     case SELECT_NODE:
     case SELECT_LIST:
+    case UPDATE_PUBLISH_SETTINGS:
     case SAVE_CONFIGURATION_ERROR:
       return true;
 

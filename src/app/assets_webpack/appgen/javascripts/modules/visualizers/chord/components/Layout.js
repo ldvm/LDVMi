@@ -35,7 +35,7 @@ const Layout = ({ sidebar, toolbar, visualization }) => {
         {toolbar}
       </div>}
 
-      <div style={visualizationStyle}>
+      <div style={Object.assign({}, visualizationStyle, toolbar ? { paddingTop: 2 * bodyPaddingSpace + 'px' } : {})}>
         {visualization}
       </div>
   </div>;

@@ -20,6 +20,12 @@ export const NodeList = Record({
   selected: new OrderedSet()
 });
 
+export const PublishSettings = Record({
+  showLists: true,
+  allowSwitchingLists: true,
+  allowSelectingNodes: true
+});
+
 // Fresnel stuff (TODO: move to the core module?)
 
 export const Lens = Record({
