@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { List } from 'immutable'
+import { OrderedSet } from 'immutable'
 import LinearProgress from '../../../../components/LinearProgress'
 import { PromiseStatus } from '../../../core/models'
 import { NodeList } from '../models'
@@ -26,7 +26,7 @@ const SelectedList = ({ list, nodes, status, select, remove, removeWithRelated }
 
 SelectedList.propTypes = {
   list: PropTypes.instanceOf(NodeList).isRequired,
-  nodes: PropTypes.instanceOf(List).isRequired,
+  nodes: PropTypes.instanceOf(OrderedSet).isRequired,
   status: PropTypes.instanceOf(PromiseStatus).isRequired,
   select: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,

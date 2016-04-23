@@ -1,4 +1,4 @@
-import { Set } from 'immutable'
+import { OrderedSet } from 'immutable'
 import { createSelector } from 'reselect'
 import createAction from '../../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
@@ -26,14 +26,17 @@ export function visualizeSampleNodes() {
 export const VISUALIZE_SELECTED_NODES = prefix('VISUALIZE_SELECTED_NODES');
 export function visualizeSelectedNodes() {
   return (dispatch, getState) => {
-    const nodeUris = selectedListSelector(getState()).selected;
-    dispatch(createAction(VISUALIZE_SELECTED_NODES, { nodeUris }));
+    const selectedList = selectedListSelector(getState());
+    if (selectedList) {
+      const nodeUris = selectedList.selected;
+      dispatch(createAction(VISUALIZE_SELECTED_NODES, { nodeUris }));
+    }
   }
 }
 
 // Reducer
 
-const initialState = new Set();
+const initialState = new OrderedSet();
 
 export default function visualizedNodesReducer(state = initialState, action) {
   switch (action.type) {
@@ -41,10 +44,10 @@ export default function visualizedNodesReducer(state = initialState, action) {
       return initialState;
 
     case VISUALIZE_SAMPLE_NODES_SUCCESS:
-      return new Set(action.payload.map(node => node.uri));
+      return new OrderedSet(action.payload.map(node => node.uri));
     
     case VISUALIZE_SELECTED_NODES:
-      return new Set(action.payload.nodeUris);
+      return new OrderedSet(action.payload.nodeUris);
   }
 
   return state;

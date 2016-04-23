@@ -1,4 +1,4 @@
-import { Set, List, Record } from 'immutable';
+import { OrderedSet, List, Record } from 'immutable';
 
 export const Graph = Record({
   directed: false,
@@ -16,8 +16,8 @@ export const Node = Record({
 export const NodeList = Record({
   id: '',
   name: 'Unlabeled list',
-  uris: new Set(),
-  selected: new Set()
+  uris: new OrderedSet(),
+  selected: new OrderedSet()
 });
 
 // Fresnel stuff (TODO: move to the core module?)

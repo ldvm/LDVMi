@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { Set } from 'immutable'
+import { OrderedSet } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import CenteredMessage from '../../../../components/CenteredMessage'
@@ -9,7 +9,7 @@ import { visualizeSelectedNodes, visualizedNodesSelector } from '../ducks/visual
 class Visualization extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    nodeUris: PropTypes.instanceOf(Set).isRequired
+    nodeUris: PropTypes.instanceOf(OrderedSet).isRequired
   };
 
   componentWillMount() {

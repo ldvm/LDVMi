@@ -11,6 +11,7 @@
     "d3": "^3.5.16",
     "debug": "^2.2.0",
     "flexboxgrid": "^6.3.0",
+    "hash-string": "^1.0.0",
     "history": "2.0.0-rc2",
     "immutable": "^3.7.6",
     "lodash": "^4.6.1",

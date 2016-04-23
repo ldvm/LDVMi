@@ -1,4 +1,4 @@
-import { Set, OrderedMap, fromJS } from 'immutable'
+import { OrderedSet, OrderedMap, fromJS } from 'immutable'
 import { createSelector } from 'reselect'
 import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
@@ -7,7 +7,6 @@ import { randomString } from '../../../../misc/utils'
 import { NodeList } from '../models'
 import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
-import { applicationSelector } from '../../../manageApp/ducks/application'
 import * as api from '../api.js'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import withApplicationId from '../../../manageApp/misc/withApplicationId'
@@ -85,8 +84,8 @@ export function removeWithRelatedFromList(id, uri) {
 
 const reviveList = list => {
   return new NodeList(fromJS(list)
-    .update('uris', uris => new Set(uris))
-    .update('selected', selected => new Set(selected)));
+    .update('uris', uris => new OrderedSet(uris))
+    .update('selected', selected => new OrderedSet(selected)));
 };
 
 const initialState = new OrderedMap();

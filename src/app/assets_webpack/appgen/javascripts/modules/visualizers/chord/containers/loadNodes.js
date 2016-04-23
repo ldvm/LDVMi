@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react'
-import { List, Set, is } from 'immutable'
+import { OrderedSet, is } from 'immutable'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { getNodes, nodesSelector, nodesStatusSelector } from '../ducks/nodes'
+import { getNodes, nodesSelector, createNodesStatusSelector } from '../ducks/nodes'
 import { PromiseStatus } from '../../../core/models'
 
 /**
@@ -15,26 +15,22 @@ import { PromiseStatus } from '../../../core/models'
  * that some nodes will be loaded more then once.
  */
 
-const nodeUrisSelector = (state, props) => new List(props.nodeUris);
+const nodeUrisSelector = (_, props) => props.nodeUris; // Should be Immutable.OrderedSet
+const nodesStatusSelector = createNodesStatusSelector((_, props) => props.nodeUris.toJS());
 
 const selector = createSelector(
   [nodesSelector, nodesStatusSelector, nodeUrisSelector],
   (nodes, status, nodeUris) => {
     const selectedNodes = nodeUris
       .map(uri => nodes.get(uri))
-      .filter(node => node != null)
-      .toList();
-    const missingNodeUris = new Set(nodeUris
-      .filter(uri => !nodes.has(uri)));
+      .filter(node => node != null);
+    const missingNodeUris = nodeUris
+      .filter(uri => !nodes.has(uri));
     const completed = missingNodeUris.size === 0;
-
-    // For simplicity, the injected status is aggregated for all GET_NODES requests. Therefore
-    // it is not possible to determine what is the status of the requests invoked by this
-    // component instance.
 
     let finalStatus;
     if (completed) {
-      finalStatus = new PromiseStatus({isLoading: false, done: true});
+      finalStatus = new PromiseStatus({ isLoading: false, done: true });
     } else {
       finalStatus = status;
     }
@@ -52,13 +48,13 @@ export default function loadNodes(ComposedComponent) {
   class NodeLoader extends Component {
     static propTypes = {
       dispatch: PropTypes.func.isRequired,
-      nodeUris: PropTypes.instanceOf(Set).isRequired,
-      nodes: PropTypes.instanceOf(List).isRequired,
-      missingNodeUris: PropTypes.instanceOf(Set).isRequired,
+      nodeUris: PropTypes.instanceOf(OrderedSet).isRequired,
+      nodes: PropTypes.instanceOf(OrderedSet).isRequired,
+      missingNodeUris: PropTypes.instanceOf(OrderedSet).isRequired,
       status: PropTypes.instanceOf(PromiseStatus).isRequired
     };
 
-    componentDidMount() {
+    componentWillMount() {
       this.loadNodes(this.props.missingNodeUris);
     }
 

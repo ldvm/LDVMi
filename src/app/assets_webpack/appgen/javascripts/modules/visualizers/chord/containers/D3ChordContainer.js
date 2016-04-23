@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { createStructuredSelector } from 'reselect'
-import { List, Set, is } from 'immutable'
+import { OrderedSet, is } from 'immutable'
 import { connect } from 'react-redux'
 import D3Chord from '../components/D3Chord'
 import { getMatrix, matrixSelector, matrixStatusSelector } from '../ducks/matrix'
@@ -17,8 +17,8 @@ class D3ChordContainer extends Component {
     dispatch: PropTypes.func.isRequired,
     lang: PropTypes.string.isRequired,
     matrix: PropTypes.array.isRequired,
-    nodeUris: PropTypes.instanceOf(Set),
-    nodes: PropTypes.instanceOf(List),
+    nodeUris: PropTypes.instanceOf(OrderedSet),
+    nodes: PropTypes.instanceOf(OrderedSet),
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
