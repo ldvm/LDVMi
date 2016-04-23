@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { List } from 'immutable'
+import { Set } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { PromiseStatus } from '../../../core/models'
@@ -14,7 +14,7 @@ class SampleVisualization extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     graph: PropTypes.instanceOf(Graph).isRequired,
-    nodeUris: PropTypes.instanceOf(List).isRequired,
+    nodeUris: PropTypes.instanceOf(Set).isRequired,
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 

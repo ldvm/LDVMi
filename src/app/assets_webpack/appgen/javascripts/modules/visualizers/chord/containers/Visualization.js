@@ -1,15 +1,15 @@
 import React, { Component, PropTypes } from 'react'
-import { List } from 'immutable'
+import { Set } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import D3ChordContainer from './D3ChordContainer'
 import { visualizeSelectedNodes, visualizedNodesSelector } from '../ducks/visualizedNodes'
 
-class SampleVisualization extends Component {
+class Visualization extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    nodeUris: PropTypes.instanceOf(List).isRequired
+    nodeUris: PropTypes.instanceOf(Set).isRequired
   };
 
   componentWillMount() {
@@ -34,4 +34,4 @@ const selector = createStructuredSelector({
   nodeUris: visualizedNodesSelector
 });
 
-export default connect(selector)(SampleVisualization)
+export default connect(selector)(Visualization)

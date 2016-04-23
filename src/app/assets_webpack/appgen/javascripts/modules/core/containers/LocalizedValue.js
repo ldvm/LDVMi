@@ -5,7 +5,7 @@ import { createSelector } from 'reselect'
 import makePureRender from '../../../misc/makePureRender'
 import { langSelector } from '../ducks/lang'
 
-function extract(lang, value, defaultValue = null) {
+export function extractLocalizedValue(lang, value, defaultValue = null) {
   const NOLANG = 'nolang';
 
   if (value === undefined || value === null) {
@@ -36,7 +36,7 @@ function extract(lang, value, defaultValue = null) {
 }
 
 const LocalizedValue = ({ lang, value, defaultValue, silent }) => (
-  <span>{extract(lang, value, defaultValue) || (silent ? '' : '(missing value)')}</span>
+  <span>{extractLocalizedValue(lang, value, defaultValue) || (silent ? '' : '(missing value)')}</span>
 );
 
 LocalizedValue.propTypes = {

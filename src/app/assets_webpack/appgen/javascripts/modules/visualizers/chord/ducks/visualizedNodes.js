@@ -1,4 +1,4 @@
-import { List } from 'immutable'
+import { Set } from 'immutable'
 import { createSelector } from 'reselect'
 import createAction from '../../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
@@ -33,7 +33,7 @@ export function visualizeSelectedNodes() {
 
 // Reducer
 
-const initialState = new List();
+const initialState = new Set();
 
 export default function visualizedNodesReducer(state = initialState, action) {
   switch (action.type) {
@@ -41,10 +41,10 @@ export default function visualizedNodesReducer(state = initialState, action) {
       return initialState;
 
     case VISUALIZE_SAMPLE_NODES_SUCCESS:
-      return new List(action.payload.map(node => node.uri));
+      return new Set(action.payload.map(node => node.uri));
     
     case VISUALIZE_SELECTED_NODES:
-      return new List(action.payload.nodeUris);
+      return new Set(action.payload.nodeUris);
   }
 
   return state;

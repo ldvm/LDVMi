@@ -1,20 +1,28 @@
 import React, { Component, PropTypes } from 'react'
 import { createStructuredSelector } from 'reselect'
-import { List, is } from 'immutable'
+import { List, Set, is } from 'immutable'
 import { connect } from 'react-redux'
 import D3Chord from '../components/D3Chord'
 import { getMatrix, matrixSelector, matrixStatusSelector } from '../ducks/matrix'
 import { PromiseStatus } from '../../../core/models'
 import PromiseResult from '../../../core/components/PromiseResult'
 import CenteredMessage from '../../../../components/CenteredMessage'
+import loadNodes from './loadNodes'
+import { createAggregatedPromiseStatusSelector } from '../../../core/ducks/promises'
+import { langSelector } from '../../../core/ducks/lang'
+import { extractLocalizedValue } from '../../../core/containers/LocalizedValue'
 
 class D3ChordContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
+    lang: PropTypes.string.isRequired,
     matrix: PropTypes.array.isRequired,
-    status: PropTypes.instanceOf(PromiseStatus).isRequired,
-    nodeUris: PropTypes.instanceOf(List)
+    nodeUris: PropTypes.instanceOf(Set),
+    nodes: PropTypes.instanceOf(List),
+    status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
+
+  // TODO: implement shouldComponentUpdate to check for matrix and nodeUris
 
   componentWillMount() {
     this.loadMatrix(this.props);
@@ -43,8 +51,17 @@ class D3ChordContainer extends Component {
     return sum == 0;
   }
 
+  convertNodes(nodes, lang) {
+    // We need to extract labels in correct language for D3.js
+    return nodes.map(({ uri, label, inDegree, outDegree }) => ({
+      uri,
+      label: extractLocalizedValue(lang, label, 'missing label'),
+      inDegree, outDegree
+    })).toJS()
+  }
+
   render() {
-    const { matrix, status } = this.props;
+    const { lang, matrix, nodes, status } = this.props;
 
     // TODO: Hiding the visualization is probably not the best idea.
     if (!status.done) {
@@ -55,14 +72,19 @@ class D3ChordContainer extends Component {
       return <CenteredMessage>The graph is empty. There is nothing to visualize.</CenteredMessage>
     }
 
-    return <D3Chord matrix={matrix} />;
+    return <D3Chord matrix={matrix} nodes={this.convertNodes(nodes, lang)} />;
   }
 }
 
+const nodeStatusSelector = (status, props) => props.status; // Injected by NodeLoader
+
 const selector = createStructuredSelector({
+  lang: langSelector,
   matrix: matrixSelector,
-  status: matrixStatusSelector
+
+  // We make the component wait until both the matrix and nodes are properly loaded from the
+  // server before we start to render the D3.js visualization
+  status: createAggregatedPromiseStatusSelector([matrixStatusSelector, nodeStatusSelector])
 });
 
-// TODO: nodes loading based on uris (+ status, use higher order component)
-export default connect(selector)(D3ChordContainer);
+export default loadNodes(connect(selector)(D3ChordContainer));
