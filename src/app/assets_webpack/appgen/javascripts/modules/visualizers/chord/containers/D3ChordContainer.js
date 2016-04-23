@@ -11,6 +11,7 @@ import loadNodes from './loadNodes'
 import { createAggregatedPromiseStatusSelector } from '../../../core/ducks/promises'
 import { langSelector } from '../../../core/ducks/lang'
 import { extractLocalizedValue } from '../../../core/containers/LocalizedValue'
+import VisualizationMessage from '../components/VisualizationMessage'
 
 class D3ChordContainer extends Component {
   static propTypes = {
@@ -63,13 +64,16 @@ class D3ChordContainer extends Component {
   render() {
     const { lang, matrix, nodes, status } = this.props;
 
-    // TODO: Hiding the visualization is probably not the best idea.
     if (!status.done) {
-      return <PromiseResult status={status} loadingMessage="Loading graph data for selected nodes..." />
+      return <VisualizationMessage>
+          <PromiseResult status={status} loadingMessage="Loading graph data for selected nodes..." />
+        </VisualizationMessage>
     }
 
     if (this.isMatrixEmpty(matrix)) {
-      return <CenteredMessage>The graph is empty. There is nothing to visualize.</CenteredMessage>
+      return <VisualizationMessage>
+          <CenteredMessage>The graph is empty. There is nothing to visualize.</CenteredMessage>
+        </VisualizationMessage>
     }
 
     return <D3Chord matrix={matrix} nodes={this.convertNodes(nodes, lang)} />;

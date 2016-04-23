@@ -27,6 +27,7 @@ class Chord {
     const svg = d3.select(domEl).append('svg')
       .attr('width', width)
       .attr('height', height)
+      .attr('style', 'display: block; margin: auto') // center
       .append('g')
       .attr('id', 'circle')
       .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');

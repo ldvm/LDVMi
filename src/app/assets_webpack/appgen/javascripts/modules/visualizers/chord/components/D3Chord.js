@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import Chord from '../misc/Chord'
+import { getAvailableVerticalSpace } from '../../../../components/FillInScreen'
+import { bodyPaddingSpace } from '../../../../components/BodyPadding'
 
 class D3Chord extends Component {
   static propTypes = {
@@ -8,7 +10,10 @@ class D3Chord extends Component {
   };
 
   componentDidMount() {
-    this.chord = new Chord(this.refs.container, 1000, 700);
+    const container = this.refs.container;
+    const size = Math.max(getAvailableVerticalSpace(container) - bodyPaddingSpace, 500);
+
+    this.chord = new Chord(this.refs.container, size, size);
     this.updateVisualization();
   }
 

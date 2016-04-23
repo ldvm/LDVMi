@@ -1,5 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 
+export function getAvailableVerticalSpace(element) {
+  const screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+  const offsetTop = element.getBoundingClientRect().top + window.pageYOffset - document.documentElement.clientTop;
+  return screenHeight - offsetTop;
+}
+
 /**
  * Creates scrollable container that vertically fills in the remaining screen space
  * and makes sure that the inner content does not overflow the screen edge.
@@ -39,9 +45,7 @@ export default class FillInScreen extends Component {
 
   updateHeight() {
     const { container, props: { marginBottom, minHeight, forceFill }} = this;
-    const screenHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    const offsetTop = container.getBoundingClientRect().top + window.pageYOffset - document.documentElement.clientTop;
-    const height = Math.max(screenHeight - offsetTop - marginBottom, minHeight);
+    const height = Math.max(getAvailableVerticalSpace(container) - marginBottom, minHeight);
 
     container.style[forceFill ? 'height' : 'maxHeight'] = height + 'px';
     container.style.minHeight = minHeight + 'px';

@@ -1,8 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import Padding from './Padding'
+import MaterialTheme from '../misc/materialTheme'
+
+const SPACE = 3;
 
 const BodyPadding = ({ children }) => {
-  return <Padding space={3}>{children}</Padding>;
+  return <Padding space={SPACE}>{children}</Padding>;
 };
 
 export default BodyPadding;
@@ -14,3 +17,5 @@ export function addBodyPadding(ComposedComponent) {
     }
   }
 }
+
+export const bodyPaddingSpace = MaterialTheme.spacing.desktopGutterMini * SPACE;

@@ -6,16 +6,18 @@ const Loading = (props) => {
   const spacing = MaterialTheme.spacing.desktopGutterLess + 'px';
 
   const styles = {
-    margin: spacing + ' 0'
+    margin: spacing + ' 0',
   };
 
   const circleStyles = {
-    float: 'left',
+    display: 'inline-block',
     marginRight: '8px'
   };
 
   const labelStyles = {
-    lineHeight: '50px'
+    display: 'inline-block',
+    position: 'relative',
+    top: '-20px'
   };
 
   return <div style={styles}>

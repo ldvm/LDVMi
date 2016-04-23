@@ -5,6 +5,7 @@ import { createStructuredSelector } from 'reselect'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import D3ChordContainer from './D3ChordContainer'
 import { visualizeSelectedNodes, visualizedNodesSelector } from '../ducks/visualizedNodes'
+import VisualizationMessage from '../components/VisualizationMessage'
 
 class Visualization extends Component {
   static propTypes = {
@@ -23,7 +24,9 @@ class Visualization extends Component {
     const { nodeUris } = this.props;
 
     if (nodeUris.size == 0) {
-      return <CenteredMessage>No graph data selected for visualization.</CenteredMessage>
+      return <VisualizationMessage>
+          <CenteredMessage>No graph data selected for visualization.</CenteredMessage>
+        </VisualizationMessage>
     }
 
     return <D3ChordContainer nodeUris={nodeUris} />

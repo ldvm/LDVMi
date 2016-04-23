@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import { bodyPaddingSpace } from '../../../../components/BodyPadding'
 
 const wrapperStyle = {
   position: 'relative',
@@ -19,24 +20,24 @@ const toolbarStyle = {
 const visualizationStyle = {
   width: '100%',
   position: 'absolute',
-  marginLeft: '400px',
+  paddingLeft: 400 + bodyPaddingSpace + 'px',
+  boxSizing: 'border-box',
   zIndex: 2
 };
 
 const Layout = ({ sidebar, toolbar, visualization }) => {
   return <div style={wrapperStyle}>
+      {sidebar && <div style={sidebarStyle}>
+        {sidebar}
+      </div>}
 
-    {sidebar && <div style={sidebarStyle}>
-      {sidebar}
-    </div>}
+      {toolbar && <div style={toolbarStyle}>
+        {toolbar}
+      </div>}
 
-    {toolbar && <div style={toolbarStyle}>
-      {toolbar}
-    </div>}
-
-    <div style={visualizationStyle}>
-      {visualization}
-    </div>
+      <div style={visualizationStyle}>
+        {visualization}
+      </div>
   </div>;
 };
 
