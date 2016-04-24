@@ -40,6 +40,7 @@ const iconStyle = {
 
 const ListsManager = props => {
   const { lists, selectedList, addList, removeList, updateList, selectList} = props;
+  const { disableSwitching, disableManaging } = props;
 
   const renderButton = (icon, action, tooltip) => {
     return <IconButton
@@ -52,18 +53,18 @@ const ListsManager = props => {
 
   return (
     <div style={managerStyle}>
-      <div style={headerStyle}>
+      <div style={Object.assign({}, headerStyle, disableManaging ? { maxWidth: '320px'} : {})}>
         <ListHeader list={selectedList} />
       </div>
-      <div style={switchStyle}>
+      {disableSwitching || <div style={switchStyle}>
         <ListsSwitch
           renderButton={renderButton}
           lists={lists}
           selectedList={selectedList}
           selectList={selectList} />
-      </div>
+      </div>}
 
-      <div style={toolbarStyle}>
+      {disableManaging || <div style={toolbarStyle}>
         {renderButton('add', addList, 'Add new list')}
         {selectedList && <EditListDialog
             renderButton={renderButton}
@@ -77,7 +78,7 @@ const ListsManager = props => {
             removeList={removeList}
           />
         }
-      </div>
+      </div>}
       <div style={{ clear: 'both '}}></div>
     </div>
   );
@@ -89,7 +90,9 @@ ListsManager.propTypes = {
   addList: PropTypes.func.isRequired,
   updateList: PropTypes.func.isRequired,
   removeList: PropTypes.func.isRequired,
-  selectList: PropTypes.func.isRequired
+  selectList: PropTypes.func.isRequired,
+  disableSwitching: PropTypes.bool,
+  disableManaging: PropTypes.bool
 };
 
 export default ListsManager;

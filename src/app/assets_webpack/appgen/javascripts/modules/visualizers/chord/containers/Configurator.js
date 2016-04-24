@@ -15,7 +15,7 @@ import SampleVisualization from './SampleVisualization'
 import Visualization from './Visualization'
 import Layout from '../components/Layout'
 import Toolbar from '../components/Toolbar'
-import Sidebar from '../components/Sidebar'
+import ConfiguratorSidebar from '../components/ConfiguratorSidebar'
 
 class Configurator extends Component {
   static propTypes = {
@@ -44,7 +44,7 @@ class Configurator extends Component {
       return <Layout visualization={<SampleVisualization />} />
     } else {
       return <Layout
-        sidebar={<Sidebar />}
+        sidebar={<ConfiguratorSidebar />}
         toolbar={<Toolbar />}
         visualization={lists.size > 0 ? <Visualization /> : <SampleVisualization />}
       />

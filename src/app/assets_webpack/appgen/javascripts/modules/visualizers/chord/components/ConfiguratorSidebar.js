@@ -3,7 +3,7 @@ import Paper from 'material-ui/lib/paper'
 import ListsManagerContainer from '../containers/ListsManagerContainer'
 import SelectedListManager from '../containers/SelectedListManager'
 
-const Sidebar = () => {
+const ConfiguratorSidebar = () => {
   return (
     <Paper zDepth={2}>
       <ListsManagerContainer />
@@ -12,4 +12,4 @@ const Sidebar = () => {
   )
 };
 
-export default Sidebar;
+export default ConfiguratorSidebar;

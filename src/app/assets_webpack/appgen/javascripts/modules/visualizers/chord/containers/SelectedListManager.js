@@ -10,8 +10,10 @@ import { NodeList } from '../models'
 import SearchDialog from '../containers/SearchDialog'
 import SelectedList from '../components/SelectedList'
 import SidebarButtons from '../components/SidebarButtons'
+import Padding from '../../../../components/Padding'
+import VisualizeSelectedNodesButton from './VisualizeSelectedNodesButton'
 
-const SelectedListManager = ({ dispatch, lists, selectedList }) => {
+const SelectedListManager = ({ dispatch, lists, selectedList, disableManaging, disableSelecting }) => {
   if (lists.size == 0) {
     return <CenteredMessage>
       Start by clicking the 'plus' button to add your first list.
@@ -34,19 +36,30 @@ const SelectedListManager = ({ dispatch, lists, selectedList }) => {
           select={(uri, selected) => dispatch(selectNode(selectedList.id, uri, selected))}
           remove={uri => dispatch(removeFromList(selectedList.id, uri))}
           removeWithRelated={uri => dispatch(removeWithRelatedFromList(selectedList.id, uri))}
+          disableManaging={disableManaging}
+          disableSelecting={disableSelecting}
         />
       }
     </FillInScreen>
 
-    <SearchDialog />
-    <SidebarButtons />
+    {disableManaging ?
+      <Padding space={2}>
+        <VisualizeSelectedNodesButton fullWidth />
+      </Padding> :
+      <div>
+        <SearchDialog />
+        <SidebarButtons />
+      </div>
+    }
   </div>
 };
 
 SelectedListManager.propTypes = {
   dispatch: PropTypes.func.isRequired,
   lists: PropTypes.instanceOf(Map).isRequired,
-  selectedList: PropTypes.instanceOf(NodeList)
+  selectedList: PropTypes.instanceOf(NodeList),
+  disableManaging: PropTypes.bool,
+  disableSelecting: PropTypes.bool
 };
 
 const selector = createStructuredSelector({

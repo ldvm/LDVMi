@@ -7,7 +7,7 @@ import loadNodes from '../containers/loadNodes'
 import NodeCheckbox from './NodeCheckbox'
 import Padding from '../../../../components/Padding'
 
-const SelectedList = ({ list, nodes, status, select, remove, removeWithRelated }) => (
+const SelectedList = ({ list, nodes, status, select, remove, removeWithRelated, disableManaging, disableSelecting }) => (
   <div>
     {status.isLoading && <Padding space={2}><LinearProgress /></Padding>}
 
@@ -19,6 +19,8 @@ const SelectedList = ({ list, nodes, status, select, remove, removeWithRelated }
         select={selected => select(node.uri, selected)}
         remove={() => remove(node.uri)}
         removeWithRelated={() => removeWithRelated(node.uri)}
+        disableManaging={disableManaging}
+        disableSelecting={disableSelecting}
       />
     )}
   </div>
@@ -30,7 +32,9 @@ SelectedList.propTypes = {
   status: PropTypes.instanceOf(PromiseStatus).isRequired,
   select: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
-  removeWithRelated: PropTypes.func.isRequired
+  removeWithRelated: PropTypes.func.isRequired,
+  disableManaging: PropTypes.bool,
+  disableSelecting: PropTypes.bool
 };
 
 export default loadNodes(SelectedList);

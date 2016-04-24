@@ -16,6 +16,7 @@ import { addBodyPadding } from '../../../../components/BodyPadding'
 import SampleVisualization from './SampleVisualization'
 import Visualization from './Visualization'
 import Layout from '../components/Layout'
+import ApplicationSidebar from '../components/ApplicationSidebar'
 
 class Application extends Component {
   static propTypes = {
@@ -49,7 +50,7 @@ class Application extends Component {
   }
 
   render() {
-    const { searchableLens, lists, embed, status } = this.props;
+    const { searchableLens, lists, publishSettings, embed, status } = this.props;
 
     if (!status.done) {
       return <PromiseResult status={status} loadingMessage="Loading base graph info..." />
@@ -59,7 +60,8 @@ class Application extends Component {
       return <Layout visualization={<SampleVisualization />} />
     } else {
       return <Layout
-        sidebar={!embed && <div>here be application sidebar</div>}
+        sidebar={!embed && publishSettings.showLists &&
+          <ApplicationSidebar publishSettings={publishSettings} />}
         visualization={lists.size > 0 ? <Visualization /> : <SampleVisualization />}
       />
     }

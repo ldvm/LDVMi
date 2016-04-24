@@ -25,10 +25,10 @@ const labelStyle = {
   width: '80%'
 };
 
-const Option = ({ node, selected, select, remove, removeWithRelated }) => {
+const Option = ({ node, selected, select, remove, removeWithRelated, disableSelecting, disableManaging }) => {
   return <div>
     <Padding space={2}>
-      <IconMenu
+      {disableManaging || <IconMenu
         style={iconMenuStyle}
         iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
         anchorOrigin={{horizontal: 'left', vertical: 'top'}}
@@ -42,10 +42,11 @@ const Option = ({ node, selected, select, remove, removeWithRelated }) => {
           primaryText="Remove with related"
           onTouchTap={removeWithRelated}
         />
-      </IconMenu>
+      </IconMenu>}
       <div style={labelStyle}>
         <Checkbox
           onCheck={(_, isActive) => select(isActive)}
+          disabled={disableSelecting}
           checked={selected}
           label={<Label uri={node.uri} label={node.label} />}
         />
@@ -61,7 +62,9 @@ Option.propTypes = {
   selected: PropTypes.bool.isRequired,
   select: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
-  removeWithRelated: PropTypes.func.isRequired
+  removeWithRelated: PropTypes.func.isRequired,
+  disableManaging: PropTypes.bool,
+  disableSelecting: PropTypes.bool
 };
 
 export default makePureRender(Option);
