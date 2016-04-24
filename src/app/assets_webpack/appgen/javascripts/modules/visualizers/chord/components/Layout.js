@@ -1,12 +1,15 @@
 import React, { PropTypes } from 'react'
 import { bodyPaddingSpace } from '../../../../components/BodyPadding'
 
+const sidebarWidth = 400;
+
 const wrapperStyle = {
   position: 'relative',
   width: '100%'
 };
+
 const sidebarStyle = {
-  width: '400px',
+  width: sidebarWidth + 'px',
   position: 'absolute',
   zIndex: 3
 };
@@ -17,15 +20,18 @@ const toolbarStyle = {
   zIndex: 3
 };
 
-const visualizationStyle = {
+const baseVisualizationStyle = {
   width: '100%',
   position: 'absolute',
-  paddingLeft: 400 + bodyPaddingSpace + 'px',
   boxSizing: 'border-box',
   zIndex: 2
 };
 
 const Layout = ({ sidebar, toolbar, visualization }) => {
+  const visualizationStyle = Object.assign({}, baseVisualizationStyle,
+    toolbar ? { paddingTop: 2 * bodyPaddingSpace + 'px' } : {},
+    sidebar ? { paddingLeft: sidebarWidth + bodyPaddingSpace + 'px' } : {},
+  );
   return <div style={wrapperStyle}>
       {sidebar && <div style={sidebarStyle}>
         {sidebar}
@@ -35,7 +41,7 @@ const Layout = ({ sidebar, toolbar, visualization }) => {
         {toolbar}
       </div>}
 
-      <div style={Object.assign({}, visualizationStyle, toolbar ? { paddingTop: 2 * bodyPaddingSpace + 'px' } : {})}>
+      <div style={visualizationStyle}>
         {visualization}
       </div>
   </div>;
