@@ -11,7 +11,7 @@ class D3Chord extends Component {
 
   componentDidMount() {
     const container = this.refs.container;
-    const size = Math.max(getAvailableVerticalSpace(container) - bodyPaddingSpace, 500);
+    const size = Math.max(getAvailableVerticalSpace(container) - bodyPaddingSpace, 450);
 
     this.chord = new Chord(this.refs.container, size, size);
     this.updateVisualization();
