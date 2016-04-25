@@ -18,6 +18,9 @@ class Button extends Component {
     if (props.icon) {
       newProps.icon = <FontIcon className="material-icons">{props.icon}</FontIcon>;
     }
+    if (props.image) {
+      newProps.icon = <img src={props.image} width={32} height={32} />;
+    }
 
     if (type != 'default') {
       if (props.raised) {

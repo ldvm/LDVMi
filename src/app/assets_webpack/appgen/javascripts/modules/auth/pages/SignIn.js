@@ -3,22 +3,25 @@ import Helmet from "react-helmet"
 import React, {Component} from 'react'
 import { Link } from 'react-router'
 import SignInForm from '../forms/SignInForm'
-import { signIn } from '../api'
-import * as authActions from '../actions'
+import * as authActions from '../ducks/user'
 import { notification } from '../../core/ducks/notifications'
 import PaperCard from '../../../components/PaperCard'
 import NarrowedLayout from '../../../components/NarrowedLayout'
+import GoogleSignInButton from '../components/GoogleSignInButton'
 
 const SignIn = ({dispatch}) => {
 
-  const onSubmit = async values => {
-    try {
-      const user = await signIn(values);
-      dispatch(notification("You've been successfully signed in!"));
-      dispatch(authActions.singIn(user));
-    } catch (e) {
-      dispatch(notification(e.message));
-    }
+  const signIn = credentials => {
+    dispatch(authActions.signIn(credentials));
+  };
+
+  const googleSignInSuccess = googleUser => {
+    dispatch(authActions.googleSignIn(googleUser));
+  };
+
+  const googleSignInFailure = error => {
+    console.log(error);
+    dispatch(notification('Google sign in failed!'));
   };
 
   return (
@@ -29,7 +32,12 @@ const SignIn = ({dispatch}) => {
           <div>
             Don't have an account yet? <Link to="/signup">Sign up!</Link>
           </div>
-          <SignInForm onSubmit={onSubmit} />
+          <SignInForm onSubmit={signIn} /><br />
+          <GoogleSignInButton
+            clientId="421449098035-d8bj5j92mbemefp6ih2ut0sd7f7k9a9b.apps.googleusercontent.com"
+            onSuccess={googleSignInSuccess}
+            onFailure={googleSignInFailure}
+          />
         </PaperCard>
       </div>
     </NarrowedLayout>

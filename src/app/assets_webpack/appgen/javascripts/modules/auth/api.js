@@ -1,11 +1,15 @@
 import rest from '../../misc/rest'
 
-export async function signUp({name, email, password}) {
+export async function signUp({ name, email, password }) {
   return await rest('auth/signup', {name, email, password});
 }
 
-export async function signIn({email, password}) {
+export async function signIn({ email, password }) {
   return (await rest('auth/signin', {email, password})).data;
+}
+
+export async function googleSignIn({ token }) {
+  return (await rest('auth/googleSignIn', { token })).data;
 }
 
 export async function getUser() {

@@ -1,0 +1,73 @@
+import React, { Component, PropTypes } from 'react'
+import { findDOMNode } from 'react-dom'
+import scriptjs from 'scriptjs'
+import Button from '../../../components/Button'
+
+class GoogleSignIn extends Component {
+  static propTypes = {
+    clientId: PropTypes.string.isRequired,
+    onSuccess: PropTypes.func.isRequired,
+    onFailure: PropTypes.func.isRequired
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      buttonReady: false
+    }
+  }
+
+  componentDidMount() {
+    this.initApi();
+  }
+
+  initApi() {
+    scriptjs('https://apis.google.com/js/api:client.js', () => {
+      if (gapi.auth2) {
+        this.setupButton();
+      } else {
+        gapi.load('auth2', () => {
+          gapi.auth2.init({
+            client_id: this.props.clientId,
+            cookiepolicy: 'single_host_origin'
+          });
+          this.setupButton();
+        });
+      }
+    });
+  }
+
+  setupButton() {
+    const buttonDOMElement = findDOMNode(this.refs.button);
+    gapi.auth2.getAuthInstance().attachClickHandler(buttonDOMElement, {},
+      ::this.onSuccess, ::this.onFailure);
+    this.setState({ buttonReady: true });
+  }
+
+  onSuccess(googleUser) {
+    this.props.onSuccess({
+      name: googleUser.getBasicProfile().getName(),
+      email: googleUser.getBasicProfile().getEmail(),
+      token: googleUser.getAuthResponse().id_token
+    });
+  }
+
+  onFailure(error) {
+    this.props.onFailure(error);
+  }
+
+  render() {
+    const { buttonReady } = this.state;
+
+    return  (
+      <Button raised default fullWidth
+        ref="button"
+        label="Sign in with Google"
+        disabled={!buttonReady}
+        image="http://localhost:9000/assets/images/google_signin.png"
+      />
+    );
+  }
+}
+
+export default GoogleSignIn;
