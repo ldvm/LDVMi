@@ -24,6 +24,7 @@ object Visualizer {
       case "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate" => "maps"
       case "http://linked.opendata.cz/resource/ldvm/visualizer/data-cube/DataCubeVisualizerTemplate" => "insert_chart"
       case "http://linked.opendata.cz/resource/ldvm/visualizer/concept/ConceptVisualizerTemplate" => "library_books"
+      case "http://linked.opendata.cz/resource/ldvm/visualizer/chord/ChordVisualizerTemplate" => "donut_large"
       case _ => "help"
     }
 
@@ -32,6 +33,7 @@ object Visualizer {
       case "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate" => "googleMaps"
       case "http://linked.opendata.cz/resource/ldvm/visualizer/data-cube/DataCubeVisualizerTemplate" => "dataCube"
       case "http://linked.opendata.cz/resource/ldvm/visualizer/concept/ConceptVisualizerTemplate" => "concepts"
+      case "http://linked.opendata.cz/resource/ldvm/visualizer/chord/ChordVisualizerTemplate" => "chord"
       case _ => "platform"
     }
     Visualizer(ct.id, ct.uri, ct.title, name, icon, ct.description, ct.id)

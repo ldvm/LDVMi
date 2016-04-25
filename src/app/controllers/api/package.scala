@@ -4,9 +4,11 @@ import akka.actor.Props
 import model.actor.CheckCompatibilityResponse
 import model.entity._
 import model.rdf.sparql.ValueFilter
+import model.rdf.sparql.rgml.{Edge, Graph, Node}
 import model.rdf.sparql.datacube._
+import model.rdf.sparql.fresnel.{Lens, ResourceThroughLens}
 import model.rdf.sparql.geo._
-import model.rdf.sparql.visualization.{Scheme, Concept, HierarchyNode}
+import model.rdf.sparql.visualization.{Concept, HierarchyNode, Scheme}
 import model.rdf.{LocalizedValue, Property}
 import model.service.component.DataReference
 import play.api.db
@@ -97,6 +99,11 @@ package object api {
     implicit val visualizerWrites = Json.writes[ComponentTemplate]
     implicit val coordWrites = Json.writes[Coordinates]
     implicit val markerWrites = Json.writes[Marker]
+    implicit val graphWrites = Json.writes[Graph]
+    implicit val nodeWrites = Json.writes[Node]
+    implicit val edgeWrites = Json.writes[Edge]
+    implicit val lensWrites = Json.writes[Lens]
+    implicit val resourceThroughLensWrites = Json.writes[ResourceThroughLens]
 
     /*implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
       visualizationEagerBox =>

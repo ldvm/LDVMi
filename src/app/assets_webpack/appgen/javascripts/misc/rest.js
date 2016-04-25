@@ -26,8 +26,15 @@ export default async function rest(url, payload = null, method = 'POST') {
     } else if (response.status === 200) {
       throw new Error('API call failed but the HTTP status is 200. Probably invalid JSON?');
     } else if (response.status >= 400 && response.status < 500) {
-      // If the error is on our side we expect to get valid JSON back.
-      const error = JSON.parse(response.responseText);
+      let error;
+      try {
+        // If the error is on our side we expect to get valid JSON back.
+        error = JSON.parse(response.responseText);
+      } catch (_) {
+        // Json parsing failed, let's say we got back some HTML
+        const message = response.responseText.match(/<title[^>]*>([^<]+)<\/title>/)[1] || 'Request failed for unknown reason';
+        error = new Error(message)
+      }
       debug(error);
       throw error;
     } else {

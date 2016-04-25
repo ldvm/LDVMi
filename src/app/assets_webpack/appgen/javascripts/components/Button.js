@@ -24,7 +24,11 @@ class Button extends Component {
         newProps.backgroundColor = Theme[type];
         newProps.labelColor = '#ffffff';
       } else {
-        newProps.style = {color: Theme[type]};
+        if (!props.disabled) {
+          newProps.style = {color: Theme[type]};
+        } else {
+          newProps.style = {color: '#9e9e9e'};
+        }
       }
     }
 

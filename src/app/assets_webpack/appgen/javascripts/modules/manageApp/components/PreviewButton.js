@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react'
 import { Application } from '../models'
 import Button from '../../../components/Button'
+import { applicationUrl } from '../../publishedApp/routes'
 
-const PreviewButton = ({ application: { id, uid, published } }) => {
-  const href = '/app/' + id + '/' + uid; // TODO: find a better way to do this
-  const icon = published ? 'open_in_browser' : 'find_in_page';
-  const label = published ? 'Open app' : 'Preview';
+const PreviewButton = ({ application }) => {
+  const href = applicationUrl(application);
+  const icon = application.published ? 'open_in_browser' : 'find_in_page';
+  const label = application.published ? 'Open app' : 'Preview';
 
   return <Button
     label={label} icon={icon}
