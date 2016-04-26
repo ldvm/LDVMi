@@ -9,7 +9,7 @@ import PaperCard from '../../../components/PaperCard'
 import NarrowedLayout from '../../../components/NarrowedLayout'
 import GoogleSignInButton from '../components/GoogleSignInButton'
 
-const SignIn = ({dispatch}) => {
+const SignIn = ({ dispatch }) => {
 
   const signIn = credentials => {
     dispatch(authActions.signIn(credentials));

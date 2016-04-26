@@ -1,8 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { createSelector } from 'reselect'
+import { createStructuredSelector } from 'reselect'
 import Helmet from 'react-helmet'
-import { Link } from 'react-router'
 import { applicationSelector, applicationStatusSelector, applicationVisualizerSelector } from '../ducks/application'
 import { Application as ApplicationModel } from '../models'
 import { Visualizer } from '../../core/models'
@@ -15,6 +14,7 @@ import BodyPadding from '../../../components/BodyPadding'
 import { visualizerConfigurator } from '../../visualizers/routes'
 import { dialogOpen } from '../../core/ducks/dialog'
 import { dialogName as generalSettingsDialogName } from '../dialogs/GeneralSettingsDialog'
+import requireSignedIn from '../../auth/containers/requireSignedIn'
 
 class Application extends Component {
   static propTypes = {
@@ -67,8 +67,10 @@ class Application extends Component {
   }
 }
 
-const selector = createSelector(
-  [applicationSelector, applicationVisualizerSelector, applicationStatusSelector],
-  (application, visualizer, applicationStatus) => ({ application, visualizer, applicationStatus })
-);
-export default connect(selector)(Application);
+const selector = createStructuredSelector({
+  application: applicationSelector,
+  visualizer: applicationVisualizerSelector,
+  applicationStatus: applicationStatusSelector
+});
+
+export default requireSignedIn(connect(selector)(Application));

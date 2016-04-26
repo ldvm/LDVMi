@@ -1,10 +1,25 @@
 import createAction from '../../../misc/createAction'
+import { createSelector } from 'reselect'
 import { notification } from '../../core/ducks/notifications'
 import prefix from '../prefix'
 import { User } from '../models'
 import * as api from '../api'
+import moduleSelector from '../selector'
+import { createPromiseStatusSelector } from '../../core/ducks/promises'
 
 // Actions
+
+export const GET_USER = prefix('GET_USER');
+export const GET_USER_START = GET_USER + '_START';
+export const GET_USER_ERROR = GET_USER + '_ERROR';
+export const GET_USER_SUCCESS = GET_USER + '_SUCCESS';
+
+export function getUser() {
+  const promise = api.getUser()
+    // If it fails, don't propagate the error, just treat it as if the user is not logged in.
+    .catch(e => ({}));
+  return createAction(GET_USER, { promise });
+}
 
 export const SIGN_IN = prefix('SIGN_IN');
 export const SIGN_IN_START = SIGN_IN + '_START';
@@ -52,8 +67,14 @@ export default function authReducer(state = new User(), action) {
   switch (action.type) {
     case SIGN_IN_SUCCESS: 
     case GOOGLE_SIGN_IN_SUCCESS:
+    case GET_USER_SUCCESS:
       return new User(action.payload);
   }
 
   return state;
 }
+
+// Selectors
+
+export const userSelector = createSelector([moduleSelector], state => state.user);
+export const getUserStatusSelector = createPromiseStatusSelector(GET_USER);
