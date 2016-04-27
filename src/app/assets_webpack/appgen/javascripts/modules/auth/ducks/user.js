@@ -35,6 +35,7 @@ export function signIn(credentials) {
       })
       .catch(e => {
         dispatch(notification(e.message));
+        throw e;
       });
 
     dispatch(createAction(SIGN_IN, { promise }));
@@ -55,9 +56,31 @@ export function googleSignIn(googleUser) {
       })
       .catch(e => {
         dispatch(notification(e.message));
+        throw e;
       });
 
     dispatch(createAction(GOOGLE_SIGN_IN, { promise }));
+  }
+}
+
+export const SIGN_OUT = prefix('SIGN_OUT');
+export const SIGN_OUT_START = SIGN_OUT + '_START';
+export const SIGN_OUT_ERROR = SIGN_OUT + '_ERROR';
+export const SIGN_OUT_SUCCESS = SIGN_OUT + '_SUCCESS';
+
+export function signOut() {
+  return dispatch => {
+    const promise = api.signOut()
+      .then(response => {
+        dispatch(notification('You have been signed out.'));
+        return response;
+      })
+      .catch(e => {
+        dispatch(notification(e.message));
+        throw e;
+      });
+
+    dispatch(createAction(SIGN_OUT, { promise }));
   }
 }
 
@@ -69,6 +92,9 @@ export default function authReducer(state = new User(), action) {
     case GOOGLE_SIGN_IN_SUCCESS:
     case GET_USER_SUCCESS:
       return new User(action.payload);
+
+    case SIGN_OUT_SUCCESS:
+      return new User();
   }
 
   return state;

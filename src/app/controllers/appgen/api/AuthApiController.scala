@@ -63,4 +63,11 @@ class AuthApiController(implicit inj: Injector) extends SecuredRestController {
         Ok(SuccessResponse(data = Seq("id" -> id, "name" -> name, "email" -> email)))
     }
   }
+
+  def signOut = RestAction[EmptyRequest] { implicit request: RestRequestWithUser => json =>
+    request.user match {
+      case User(id, name, email, password) =>
+        Ok(SuccessResponse("You've been signed out")).withNewSession
+    }
+  }
 }
