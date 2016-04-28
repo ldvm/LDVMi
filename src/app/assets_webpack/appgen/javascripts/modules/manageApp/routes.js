@@ -1,8 +1,6 @@
 import React from 'react'
-import { Route, IndexRoute } from 'react-router'
+import { Route } from 'react-router'
 import { routeActions } from 'redux-simple-router'
-import { getVisualizers } from './../core/ducks/visualizers'
-import { getApplication } from './ducks/application'
 import Application from './pages/Application'
 import visualizerConfiguratorsRoutes from '../visualizers/routes'
 
@@ -10,10 +8,7 @@ const MODULE_PATH = 'manage-app';
 
 export default function createRoutes(dispatch) {
   return (
-    <Route component={Application} path={MODULE_PATH + '/:id'} onEnter={next => {
-      dispatch(getVisualizers());
-      dispatch(getApplication(next.params.id));
-    }}>
+    <Route component={Application} path={MODULE_PATH + '/:id'}>
       {visualizerConfiguratorsRoutes(dispatch)}
     </Route>
   );
