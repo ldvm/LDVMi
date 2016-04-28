@@ -42,6 +42,7 @@ const SignIn = ({ dispatch, status }) => {
             clientId={getGoogleClientId()}
             onSuccess={googleSignInSuccess}
             onFailure={googleSignInFailure}
+            disabled={status.isLoading}
           />
         </PaperCard>
       </div>

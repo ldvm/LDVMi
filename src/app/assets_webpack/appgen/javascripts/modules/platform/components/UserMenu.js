@@ -33,7 +33,7 @@ const UserMenu = ({ user, signIn, signUp, signOut }) => {
     return (
       <IconMenu
         {...buttonPositioning}
-        iconButtonElement={<IconButton icon="person_outline" iconStyle={{ color: 'white' }} />}
+        iconButtonElement={<IconButton icon="person_outline" color="white" />}
       >
         <MenuItem primaryText="Sign up" onTouchTap={signUp} />
         <MenuItem primaryText="Sign in" onTouchTap={signIn} />

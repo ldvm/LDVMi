@@ -7,7 +7,8 @@ class GoogleSignIn extends Component {
   static propTypes = {
     clientId: PropTypes.string.isRequired,
     onSuccess: PropTypes.func.isRequired,
-    onFailure: PropTypes.func.isRequired
+    onFailure: PropTypes.func.isRequired,
+    disabled: PropTypes.bool
   };
 
   constructor(props) {
@@ -67,13 +68,14 @@ class GoogleSignIn extends Component {
   }
 
   render() {
+    const { disabled } = this.props;
     const { buttonReady } = this.state;
 
     return  (
       <Button raised default fullWidth
         ref="button"
         label="Sign in with Google"
-        disabled={!buttonReady}
+        disabled={!buttonReady || disabled}
         image="/assets/images/google_signin.png"
       />
     );
