@@ -7,6 +7,8 @@ import play.api.db.slick.Session
 import org.h2.jdbc.JdbcSQLException
 import scaldi.{Injectable, Injector}
 import model.appgen.entity.{User, UserId}
+import org.h2.constant.ErrorCode
+import org.mindrot.jbcrypt.BCrypt
 
 class UserService(implicit inj: Injector) extends Injectable {
   val usersRepository = inject[UsersRepository]
@@ -14,12 +16,12 @@ class UserService(implicit inj: Injector) extends Injectable {
 
   def add(name: String, email: String, password: String)(implicit session: Session): UserAddResult = {
     try {
-      // TODO: Hash password
-      val id = usersRepository save new User(None, name, email, password)
+      val hash = BCrypt.hashpw(password, BCrypt.gensalt())
+      val id = usersRepository save new User(None, name, email, hash)
       UserSuccessfullyAdded(id)
     } catch {
       case (e: JdbcSQLException) =>
-        if (e.getErrorCode == 23505) { // TODO: replace by a constant
+        if (e.getErrorCode == ErrorCode.DUPLICATE_KEY_1) {
           UserAlreadyExists
         } else {
           throw e
@@ -29,8 +31,9 @@ class UserService(implicit inj: Injector) extends Injectable {
   }
 
   def find(email: String, password: String)(implicit session: Session): Option[User] = {
-    // TODO: Hash password
-    usersRepository.find(email, password)
+    usersRepository.find(email) filter { user =>
+      BCrypt.checkpw(password, user.password)
+    }
   }
 
   def find(email: String)(implicit session: Session): Option[User] = {
