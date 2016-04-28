@@ -1,22 +1,21 @@
+import React from 'react'
 import { connect } from 'react-redux'
 import Helmet from "react-helmet"
-import React, {Component} from 'react'
-import Paper from '../../../../../../../node_modules/material-ui/lib/paper';
 import SignUpForm from '../forms/SignUpForm'
 import { signUp } from '../api'
 import { notification } from '../../core/ducks/notifications'
 import PaperCard from '../../../components/PaperCard'
 import NarrowedLayout from '../../../components/NarrowedLayout'
+import requireSignedOut from '../containers/requireSignedOut'
+import * as routes from '../routes'
 
-import debugFactory from '../../../misc/debug'
-const debug = debugFactory('signup');
-
-const SignUp = ({dispatch}) => {
+const SignUp = ({ dispatch }) => {
 
   const onSubmit = async values => {
     try {
       await signUp(values);
       dispatch(notification("You've been successfully registered!"));
+      dispatch(routes.signIn());
     } catch (e) {
       const {message, data} = e;
       dispatch(notification(message));
@@ -38,4 +37,4 @@ const SignUp = ({dispatch}) => {
   )
 };
 
-export default connect()(SignUp);
+export default requireSignedOut(connect()(SignUp));

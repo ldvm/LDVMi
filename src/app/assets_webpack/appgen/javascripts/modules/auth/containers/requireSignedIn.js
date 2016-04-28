@@ -5,10 +5,10 @@ import { getUser, userSelector, getUserStatusSelector } from '../ducks/user'
 import { User } from '../models'
 import { PromiseStatus } from '../../core/models'
 import PromiseResult from '../../core/components/PromiseResult'
-import SignIn from '../pages/SignIn'
+import SignIn from './SignIn'
 
 export default function requireSignedIn(ComposedComponent) {
-  class RequireLogin extends Component {
+  class RequireSignedIn extends Component {
     static propTypes = {
       dispatch: PropTypes.func.isRequired,
       user: PropTypes.instanceOf(User).isRequired,
@@ -40,5 +40,5 @@ export default function requireSignedIn(ComposedComponent) {
     status: getUserStatusSelector
   });
 
-  return connect(selector)(RequireLogin);
+  return connect(selector)(RequireSignedIn);
 }

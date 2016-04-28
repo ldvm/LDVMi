@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react'
+import { Link } from 'react-router'
 import IconMenu from 'material-ui/lib/menus/icon-menu'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import IconButton from '../../../components/IconButton'
 import Button from '../../../components/Button'
 import { User } from '../../auth/models'
+import * as routes from '../routes'
 
 // TODO: come up with a more universal solution
 const ButtonWrapper = ({ children }) =>
@@ -22,6 +24,7 @@ const UserMenu = ({ user, signIn, signUp, signOut }) => {
           {...buttonPositioning}
           iconButtonElement={<Button icon="person" label={user.name} inverted />}
         >
+          <Link to={routes.profileUrl()} style={{ textDecoration: 'none' }}><MenuItem primaryText="Profile" /></Link>
           <MenuItem primaryText="Sign out" onTouchTap={signOut} />
         </IconMenu>
       </ButtonWrapper>
