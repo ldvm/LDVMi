@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import Helmet from 'react-helmet'
-import { applicationSelector, applicationStatusSelector, applicationVisualizerSelector } from '../ducks/application'
+import { applicationSelector, createApplicationStatusSelector, applicationVisualizerSelector } from '../ducks/application'
 import { Application as ApplicationModel } from '../models'
 import { Visualizer } from '../../core/models'
 import { PromiseStatus } from '../../core/models'
@@ -10,11 +10,13 @@ import PromiseResult from '../../core/components/PromiseResult'
 import ApplicationHeader from '../components/ApplicationHeader'
 import GeneralSettings from '../containers/GeneralSettings'
 import CenteredMessage from '../../../components/CenteredMessage'
+import Alert from '../../../components/Alert'
 import BodyPadding from '../../../components/BodyPadding'
 import { visualizerConfigurator } from '../../visualizers/routes'
 import { dialogOpen } from '../../core/ducks/dialog'
 import { dialogName as generalSettingsDialogName } from '../dialogs/GeneralSettingsDialog'
 import requireSignedIn from '../../auth/containers/requireSignedIn'
+import { userSelector } from '../../auth/ducks/user'
 
 class Application extends Component {
   static propTypes = {
@@ -42,12 +44,18 @@ class Application extends Component {
   }
 
   render() {
-    const { dispatch, application, visualizer, applicationStatus, children } = this.props;
+    const { dispatch, user, application, visualizer, applicationStatus, children } = this.props;
 
     const openGeneralSettingsDialog = () => dispatch(dialogOpen(generalSettingsDialogName));
 
     if (!applicationStatus.done) {
       return <BodyPadding><PromiseResult status={applicationStatus} /></BodyPadding>
+    }
+
+    if (application.userId != user.id) {
+      return <BodyPadding>
+        <Alert danger>You're not permitted to access this application.</Alert>
+      </BodyPadding>
     }
 
     return <div>
@@ -67,7 +75,12 @@ class Application extends Component {
   }
 }
 
+
+const applicationStatusSelector = createApplicationStatusSelector(
+  (_, props) => props.params.id); // The application id is passed as URL parameter
+
 const selector = createStructuredSelector({
+  user: userSelector,
   application: applicationSelector,
   visualizer: applicationVisualizerSelector,
   applicationStatus: applicationStatusSelector
