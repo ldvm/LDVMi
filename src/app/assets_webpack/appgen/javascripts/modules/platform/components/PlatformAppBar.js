@@ -1,13 +1,11 @@
 import React, { PropTypes } from 'react'
 import AppBar from 'material-ui/lib/app-bar'
-import IconMenu from 'material-ui/lib/menus/icon-menu'
-import MenuItem from 'material-ui/lib/menus/menu-item'
-import FontIcon from 'material-ui/lib/font-icon'
 import CircularProgress from 'material-ui/lib/circular-progress'
 import Loading from '../../core/containers/Loading'
 import makePureRender from '../../../misc/makePureRender'
 import { User } from '../../auth/models'
 import IconButton from '../../../components/IconButton'
+import UserMenu from './UserMenu'
 
 const PlatformAppBar = ({ user, goHome, signUp, signIn, signOut }) => {
 
@@ -19,20 +17,9 @@ const PlatformAppBar = ({ user, goHome, signUp, signIn, signOut }) => {
 
   const right = <div>
       <Loading>
-        <CircularProgress size={0.5} color="white" style={{position: 'absolute', right: '50px'}} />
+        <CircularProgress size={0.5} color="white" style={{position: 'absolute', right: '50%', top: '8px' }} />
       </Loading>
-      <IconMenu
-        iconButtonElement={<IconButton
-          icon={user.isSignedIn() ? 'person' : 'person_outline'}
-          iconStyle={{ color: 'white' }} /> }
-        targetOrigin={{horizontal: 'right', vertical: 'top'}}
-        anchorOrigin={{horizontal: 'right', vertical: 'top'}}>
-
-        {user.isSignedIn() ?
-          <MenuItem primaryText="Sign out" onTouchTap={signOut} /> :
-          [ <MenuItem key="sign-up" primaryText="Sign up" onTouchTap={signUp} />,
-            <MenuItem key="sign-in" primaryText="Sign in" onTouchTap={signIn} /> ]}
-      </IconMenu>
+      <UserMenu user={user} signIn={signIn} signUp={signUp} signOut={signOut} />
     </div>;
 
   return <AppBar

@@ -28,12 +28,17 @@ class Button extends Component {
         newProps.labelColor = '#ffffff';
       } else {
         if (!props.disabled) {
-          newProps.style = {color: Theme[type]};
+          newProps.style = { color: Theme[type] };
         } else {
-          newProps.style = {color: '#9e9e9e'};
+          newProps.style = { color: '#9e9e9e' };
         }
       }
+    } else {
+      if (!props.raised && props.inverted) {
+        newProps.style = { color: props.disabled ? '#eaeaea' : '#ffffff' }
+      }
     }
+
 
     return <Component {...newProps} />
   }
