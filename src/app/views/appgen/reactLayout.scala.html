@@ -1,4 +1,5 @@
 @(title: String, bundleName: String, baseUrl: String, applicationId: Long = 0)
+@import play.api.Play.current
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -11,7 +12,8 @@
         <script>
             window.appgen = {
                 baseUrl: '@baseUrl',
-                applicationId: @applicationId
+                applicationId: @applicationId,
+                googleClientId: '@current.configuration.getString("google.clientId")'
             }
         </script>
 	</head>

@@ -11,6 +11,7 @@ import NarrowedLayout from '../../../components/NarrowedLayout'
 import GoogleSignInButton from '../components/GoogleSignInButton'
 import { createAggregatedPromiseStatusSelector } from '../../core/ducks/promises'
 import { PromiseStatus } from '../../core/models'
+import { getGoogleClientId } from '../../../window'
 
 const SignIn = ({ dispatch, status }) => {
 
@@ -37,7 +38,7 @@ const SignIn = ({ dispatch, status }) => {
           </div>
           <SignInForm onSubmit={signIn} disabled={status.isLoading} /><br />
           <GoogleSignInButton
-            clientId="421449098035-d8bj5j92mbemefp6ih2ut0sd7f7k9a9b.apps.googleusercontent.com"
+            clientId={getGoogleClientId()}
             onSuccess={googleSignInSuccess}
             onFailure={googleSignInFailure}
           />
