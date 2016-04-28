@@ -1,14 +1,14 @@
 import React, { Component, PropTypes } from 'react'
-import FontIcon from 'material-ui/lib/font-icon';
 import { Application } from '../../manageApp/models'
 import { Visualizer } from '../../core/models'
 import BodyPadding from '../../../components/BodyPadding'
+import Icon from '../../../components/Icon'
 
 const iconStyle = {
   float: 'left',
-  fontSize: '3em',
-  width: '1.3em',
-  overflow: 'hidden'
+  height: '2.5em',
+  width: '2.5em',
+  margin: '0.3em 0.8em 0 0'
 };
 
 const appNameStyle = {
@@ -22,7 +22,7 @@ const appDescriptionStyle = {
 
 const ApplicationHeader = ({ application, visualizer }) => {
   return <BodyPadding>
-    <FontIcon className="material-icons" style={iconStyle}>{visualizer.icon}</FontIcon>
+    <Icon icon={visualizer.icon} style={iconStyle} />
     <h1 style={appNameStyle}>{application.name}</h1>
     <div style={appDescriptionStyle}>{application.description}</div>
   </BodyPadding>

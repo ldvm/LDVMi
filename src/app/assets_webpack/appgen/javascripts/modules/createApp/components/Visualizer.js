@@ -4,8 +4,8 @@ import Card from 'material-ui/lib/card/card';
 import CardHeader from 'material-ui/lib/card/card-header';
 import CardText from 'material-ui/lib/card/card-text';
 import CardActions from 'material-ui/lib/card/card-actions';
-import FontIcon from 'material-ui/lib/font-icon';
 import Button from '../../../components/Button'
+import Icon from '../../../components/Icon'
 import { VisualizerWithPipelines } from '../../core/models'
 import MaterialTheme from '../../../misc/materialTheme';
 import ShowPipelinesDialog from '../dialogs/ShowPipelinesDialog'
@@ -15,12 +15,10 @@ const cardStyle = {
 };
 
 const iconStyle = {
-  fontSize: '100px',
+  height: '100px',
   width: '100px',
-  overflow: 'hidden',
   margin: '0 auto',
-  display: 'block',
-  color: 'rgba(0, 0, 0, 0.7)'
+  display: 'block'
 };
 
 const Visualizer = ({ visualizer, dialogOpen, dialogClose, runEvaluation }) => {
@@ -33,7 +31,7 @@ const Visualizer = ({ visualizer, dialogOpen, dialogClose, runEvaluation }) => {
         subtitle={visualizer.pipelines.size + ' discovered pipeline(s)'}
       />
       <CardText>
-        <FontIcon className="material-icons" style={iconStyle}>{visualizer.icon}</FontIcon>
+        <Icon style={iconStyle} icon={visualizer.icon} color="rgba(0, 0, 0, 0.7)" />
         <p>{visualizer.description}</p>
       </CardText>
       <CardActions>

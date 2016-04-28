@@ -13,7 +13,7 @@ const PlatformAppBar = ({ user, goHome, signUp, signIn, signOut }) => {
       LDVMi Application Generator
     </span>;
 
-  const left = <IconButton onTouchTap={goHome} icon="explore" iconStyle={{ color: 'white' }} />;
+  const left = <IconButton onTouchTap={goHome} icon="explore" color="white" />;
 
   const right = <div>
       <Loading>

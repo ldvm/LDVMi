@@ -4,10 +4,10 @@ import IconMenu from 'material-ui/lib/menus/icon-menu';
 import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
-import FontIcon from 'material-ui/lib/font-icon'
 import { Option } from '../models'
 import Label from '../../../core/containers/Label'
 import Padding from '../../../../components/Padding'
+import Icon from '../../../../components/Icon'
 import makePureRender from '../../../../misc/makePureRender'
 import MaterialTheme from '../../../../misc/materialTheme';
 import { optionModes as modes } from  '../models'
@@ -95,7 +95,7 @@ const OptionConfig = ({ option, configureOption }) => {
         />
       </IconMenu>
       <div style={Object.assign({}, labelStyle, configStyles[mode])}>
-        <FontIcon className="material-icons" style={iconStyle} color={colors[mode]}>{icons[mode]}</FontIcon>
+        <Icon icon={icons[mode]} style={iconStyle} color={colors[mode]} />
         <Label uri={skosConcept.uri} label={skosConcept.label} />
         {count !== null && <span style={countStyle}> ({count})</span>}
       </div>
