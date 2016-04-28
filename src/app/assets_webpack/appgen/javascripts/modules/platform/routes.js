@@ -6,10 +6,11 @@ import authRoutes from './../auth/routes'
 import Platform from './containers/Platform'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
+import { getUser } from '../auth/ducks/user'
 
 export default function createRoutes(dispatch) {
   return (
-    <Route component={Platform} path='/'>
+    <Route component={Platform} path='/' onEnter={() => dispatch(getUser())}>
       <IndexRoute component={Home} />
       {authRoutes(dispatch)}
       {createAppRoutes(dispatch)}
