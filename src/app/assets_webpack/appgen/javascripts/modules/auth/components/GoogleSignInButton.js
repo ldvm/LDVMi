@@ -19,6 +19,11 @@ class GoogleSignIn extends Component {
 
   componentDidMount() {
     this.initApi();
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   initApi() {
@@ -38,10 +43,15 @@ class GoogleSignIn extends Component {
   }
 
   setupButton() {
-    const buttonDOMElement = findDOMNode(this.refs.button);
-    gapi.auth2.getAuthInstance().attachClickHandler(buttonDOMElement, {},
-      ::this.onSuccess, ::this.onFailure);
-    this.setState({ buttonReady: true });
+    // Apparently, isMounted() is an antipattern and is deprecated. But I need it as "cancelling"
+    // the requests of scriptjs and gapi would be complicated (if possible at all).
+    // More here: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+    if (this.mounted) {
+      const buttonDOMElement = findDOMNode(this.refs.button);
+      gapi.auth2.getAuthInstance().attachClickHandler(buttonDOMElement, {},
+        ::this.onSuccess, ::this.onFailure);
+      this.setState({ buttonReady: true });
+    }
   }
 
   onSuccess(googleUser) {
