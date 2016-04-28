@@ -104,3 +104,4 @@ export default function authReducer(state = new User(), action) {
 
 export const userSelector = createSelector([moduleSelector], state => state.user);
 export const getUserStatusSelector = createPromiseStatusSelector(GET_USER);
+export const googleSignInStatusSelector = createPromiseStatusSelector(GOOGLE_SIGN_IN);

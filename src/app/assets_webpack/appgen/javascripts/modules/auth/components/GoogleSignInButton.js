@@ -64,7 +64,7 @@ class GoogleSignIn extends Component {
         ref="button"
         label="Sign in with Google"
         disabled={!buttonReady}
-        image="http://localhost:9000/assets/images/google_signin.png"
+        image="/assets/images/google_signin.png"
       />
     );
   }

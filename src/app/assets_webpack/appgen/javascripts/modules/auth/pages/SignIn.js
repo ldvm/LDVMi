@@ -1,22 +1,25 @@
+import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import Helmet from "react-helmet"
-import React, {Component} from 'react'
 import { Link } from 'react-router'
 import SignInForm from '../forms/SignInForm'
-import * as authActions from '../ducks/user'
+import * as user from '../ducks/user'
 import { notification } from '../../core/ducks/notifications'
 import PaperCard from '../../../components/PaperCard'
 import NarrowedLayout from '../../../components/NarrowedLayout'
 import GoogleSignInButton from '../components/GoogleSignInButton'
+import { createAggregatedPromiseStatusSelector } from '../../core/ducks/promises'
+import { PromiseStatus } from '../../core/models'
 
-const SignIn = ({ dispatch }) => {
+const SignIn = ({ dispatch, status }) => {
 
   const signIn = credentials => {
-    dispatch(authActions.signIn(credentials));
+    dispatch(user.signIn(credentials));
   };
 
   const googleSignInSuccess = googleUser => {
-    dispatch(authActions.googleSignIn(googleUser));
+    dispatch(user.googleSignIn(googleUser));
   };
 
   const googleSignInFailure = error => {
@@ -32,7 +35,7 @@ const SignIn = ({ dispatch }) => {
           <div>
             Don't have an account yet? <Link to="/signup">Sign up!</Link>
           </div>
-          <SignInForm onSubmit={signIn} /><br />
+          <SignInForm onSubmit={signIn} disabled={status.isLoading} /><br />
           <GoogleSignInButton
             clientId="421449098035-d8bj5j92mbemefp6ih2ut0sd7f7k9a9b.apps.googleusercontent.com"
             onSuccess={googleSignInSuccess}
@@ -44,4 +47,15 @@ const SignIn = ({ dispatch }) => {
   )
 };
 
-export default connect()(SignIn);
+SignIn.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  status: PropTypes.instanceOf(PromiseStatus).isRequired
+};
+
+const statusSelector = createAggregatedPromiseStatusSelector([ user.googleSignInStatusSelector ]);
+
+const selector = createStructuredSelector({
+  status: statusSelector
+});
+
+export default connect(selector)(SignIn);
