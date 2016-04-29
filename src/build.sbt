@@ -77,3 +77,21 @@ libraryDependencies ++= Seq(
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
 
 //pipelineStages := Seq(rjs, digest, gzip)
+
+
+// Custom task that compiles appgen JavaScript frontend (React) files using webpack. The simplest
+// way is to execute a CLI commmand (it's probably not going to work on Windows machines but
+// whatever).
+lazy val buildAppgenJs = taskKey[Unit]("Build appgen JavaScript frontend")
+buildAppgenJs := {
+  def npmInstall = "npm install" !
+  def npmRun = "npm run appgen-build" !
+
+  println("Installing appgen JavaScript dependencies from npm...")
+  npmInstall
+  println("Building appgen JavaScript frontend...")
+  npmRun
+}
+
+// TODO: hook it to a proper place
+// (copyResources in Compile) <<= (copyResources in Compile) dependsOn buildAppgenJs

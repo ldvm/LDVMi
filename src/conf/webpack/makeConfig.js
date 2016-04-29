@@ -3,7 +3,7 @@ var autoprefixer = require('autoprefixer');
 var loadEntries = require('./loadEntries');
 
 var SOURCE_DIR = __dirname + '/../../app/assets_webpack/appgen/javascripts';
-var TARGET_DIR = __dirname + '/../../target/web/public/main/javascripts/appgen/';
+var TARGET_DIR = __dirname + '/../../public/javascripts/appgen';
 
 module.exports = function makeConfig(isDevelopment) {
   function makeEntry()  {
