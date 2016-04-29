@@ -21,7 +21,11 @@
 		<div id="approot"></div>
 		@Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
 
-		<script src="http://localhost:9090/webpack-dev-server.js"></script>
-		<script src="http://localhost:9090/build/@{bundleName}.bundle.js"></script>
+        @if(play.Play.isDev()) {
+            <script src="http://localhost:9090/webpack-dev-server.js"></script>
+            <script src="http://localhost:9090/build/@{bundleName}.bundle.js"></script>
+        } else {
+            <script src="@routes.Assets.versioned("javascripts/appgen/" + bundleName + ".bundle.js")"></script>
+        }
 	</body>
 </html>
