@@ -28,12 +28,12 @@ module.exports = function makeConfig(isDevelopment) {
   function makeLoaders() {
     var babelSettings = {
       cacheDirectory: true,
-      // plugins: ['transform-runtime'], TODO: enable this
+      plugins: ['transform-runtime'],
       env: {
         production: {
           plugins: [
-            // 'transform-react-constant-elements', TODO: enable this
-            // 'transform-react-inline-elements' TODO: enable this
+            'transform-react-constant-elements',
+            'transform-react-inline-elements'
           ]
         }
       }
