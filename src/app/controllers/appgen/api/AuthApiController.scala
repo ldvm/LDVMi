@@ -5,6 +5,7 @@ import model.appgen.entity.User
 import model.appgen.rest.SignUpRequest._
 import model.appgen.rest.SignInRequest._
 import model.appgen.rest.EmptyRequest._
+import model.appgen.rest.GoogleSignInRequest.GoogleSignInRequest
 import model.appgen.service.{UserAlreadyExists, UserSuccessfullyAdded}
 import play.api.mvc._
 import scaldi.Injector
@@ -42,10 +43,31 @@ class AuthApiController(implicit inj: Injector) extends SecuredRestController {
     )
   }}
 
+  def googleSignIn = Action(BodyParsers.parse.json) { request => DB.withSession { implicit session =>
+    request.body.validate[GoogleSignInRequest].fold(
+      errors => { BadRequest(InvalidJsonResponse(errors)) },
+      json => {
+        userService.googleSignIn(json.token) match {
+          case Some(User(id, name, email, password)) => Ok(
+            SuccessResponse(data = Seq("id" -> id, "name" -> name, "email" -> email)))
+            .withSession("userEmail" -> email)
+          case None => BadRequest(ErrorResponse("Google Sign-In failed"))
+        }
+      }
+    )
+  }}
+
   def getUser = RestAction[EmptyRequest] { implicit request: RestRequestWithUser => json =>
     request.user match {
       case User(id, name, email, password) =>
         Ok(SuccessResponse(data = Seq("id" -> id, "name" -> name, "email" -> email)))
+    }
+  }
+
+  def signOut = RestAction[EmptyRequest] { implicit request: RestRequestWithUser => json =>
+    request.user match {
+      case User(id, name, email, password) =>
+        Ok(SuccessResponse("You've been signed out")).withNewSession
     }
   }
 }

@@ -34,10 +34,6 @@ const switchStyle = {
 const toolbarStyle = {
 };
 
-const iconStyle = {
-  color: 'white'
-};
-
 const ListsManager = props => {
   const { lists, selectedList, addList, removeList, updateList, selectList} = props;
   const { disableSwitching, disableManaging } = props;
@@ -46,7 +42,7 @@ const ListsManager = props => {
     return <IconButton
       tooltip={tooltip}
       icon={icon}
-      iconStyle={iconStyle}
+      color="white"
       onTouchTap={action}
     />
   };

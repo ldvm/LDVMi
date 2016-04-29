@@ -1,18 +1,7 @@
-import * as authActions from './actions';
-import User from './User';
-import {Record} from 'immutable';
+import { combineReducers } from 'redux'
+import user from './ducks/user'
 
-const InitialState = Record({
-  user: null
+const rootReducer = combineReducers({
+  user
 });
-const initialState = new InitialState;
-
-export default function authReducer(state = initialState, action) {
-  switch (action.type) {
-    case authActions.SIGN_IN: {
-      return state.set('user', new User(action.payload));
-    }
-  }
-
-  return state;
-}
+export default rootReducer;

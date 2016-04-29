@@ -1,6 +1,6 @@
 import React from 'react'
-import FontIcon from 'material-ui/lib/font-icon'
 import Paper from 'material-ui/lib/paper';
+import Icon from './Icon'
 import * as Theme from '../misc/theme';
 import MaterialTheme from '../misc/materialTheme';
 import { getColorType } from '../misc/utils';
@@ -28,12 +28,11 @@ const Alert = (props) => {
 
   const iconStyles = {
     float: 'left',
-    marginRight: '12px',
-    color: '#ffffff'
+    marginRight: '12px'
   };
 
   return <Paper style={alertStyles}>
-    <FontIcon className="material-icons" style={iconStyles}>{icon}</FontIcon>
+    <Icon icon={icon} style={iconStyles} color="white" />
     {props.children}
   </Paper>
 };

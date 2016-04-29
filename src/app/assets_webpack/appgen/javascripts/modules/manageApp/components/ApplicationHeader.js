@@ -1,17 +1,17 @@
 import React, { Component, PropTypes } from 'react'
-import FontIcon from 'material-ui/lib/font-icon';
 import { Application } from '../models'
 import { Visualizer } from '../../core/models'
 import Button from '../../../components/Button'
+import Icon from '../../../components/Icon'
 import BodyPadding from '../../../components/BodyPadding'
 import PublishButton from '../containers/PublishButton'
 import PreviewButton from './PreviewButton'
 
 const iconStyle = {
   float: 'left',
-  fontSize: '3em',
-  width: '1.3em',
-  overflow: 'hidden'
+  height: '2.5em',
+  width: '2.5em',
+  margin: '0.3em 0.8em 0 0'
 };
 
 const appNameStyle = {
@@ -38,7 +38,7 @@ const ApplicationHeader = ({ application, visualizer, openGeneralSettingsDialog 
       <Button label="Delete" icon="delete" raised danger />
     </div>
 
-    <FontIcon className="material-icons" style={iconStyle}>{visualizer.icon}</FontIcon>
+    <Icon icon={visualizer.icon} style={iconStyle} />
     <h1 style={appNameStyle}>{application.name}</h1>
     <div style={visualizerNameStyle}>{visualizer.title}</div>
   </BodyPadding>

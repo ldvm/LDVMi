@@ -70,7 +70,8 @@ libraryDependencies ++= Seq(
   "org.webjars" % "codemirror" % "5.0",
   "org.webjars" % "ui-codemirror" % "0.1.5",
   "org.webjars" % "bootstrap-growl" % "2.0.1",
-  "org.webjars" % "flot" % "0.8.3"
+  "org.webjars" % "flot" % "0.8.3",
+  "org.mindrot" % "jbcrypt" % "0.3m"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node

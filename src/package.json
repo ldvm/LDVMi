@@ -34,6 +34,7 @@
     "reqwest": "^2.0.5",
     "reselect": "^2.0.3",
     "revalidator": "^0.3.1",
+    "scriptjs": "^2.5.8",
     "when": "^3.7.7"
   },
   "devDependencies": {

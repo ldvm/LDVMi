@@ -15,7 +15,7 @@ export default function loadingReducer(state = 0, action) {
   }
 
   if (action.type.match(SUCCESS + '$') || action.type.match(ERROR + '$')) {
-    return state - 1;
+    return Math.max(state - 1, 0);
   }
 
   switch (action.type) {
@@ -23,7 +23,7 @@ export default function loadingReducer(state = 0, action) {
       return state + 1;
     case formActions.STOP_SUBMIT:
     case formActions.SUBMIT_FAILED:
-      return state - 1;
+      return Math.max(state - 1, 0);
   }
 
   return state;

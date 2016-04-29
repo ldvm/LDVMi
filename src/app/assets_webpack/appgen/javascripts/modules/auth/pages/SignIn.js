@@ -1,39 +1,7 @@
-import { connect } from 'react-redux'
-import Helmet from "react-helmet"
-import React, {Component} from 'react'
-import { Link } from 'react-router'
-import SignInForm from '../forms/SignInForm'
-import { signIn } from '../api'
-import * as authActions from '../actions'
-import { notification } from '../../core/ducks/notifications'
-import PaperCard from '../../../components/PaperCard'
-import NarrowedLayout from '../../../components/NarrowedLayout'
+import React from 'react'
+import SignInContainer from '../containers/SignIn'
+import requireSignedOut from '../containers/requireSignedOut'
 
-const SignIn = ({dispatch}) => {
+const SignIn = props => <SignInContainer {...props} />;
 
-  const onSubmit = async values => {
-    try {
-      const user = await signIn(values);
-      dispatch(notification("You've been successfully signed in!"));
-      dispatch(authActions.singIn(user));
-    } catch (e) {
-      dispatch(notification(e.message));
-    }
-  };
-
-  return (
-    <NarrowedLayout>
-      <div className="signup-container">
-        <Helmet title="Sign in"  />
-        <PaperCard title="Sign in" subtitle="Enter your credentials for your LDVMi account">
-          <div>
-            Don't have an account yet? <Link to="/signup">Sign up!</Link>
-          </div>
-          <SignInForm onSubmit={onSubmit} />
-        </PaperCard>
-      </div>
-    </NarrowedLayout>
-  )
-};
-
-export default connect()(SignIn);
+export default requireSignedOut(SignIn);

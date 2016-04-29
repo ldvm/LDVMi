@@ -18,7 +18,7 @@ export const GET_APPLICATION_SUCCESS = GET_APPLICATION + '_SUCCESS';
 
 export function getApplication(id) {
   const promise = api.getApplication(id);
-  return createAction(GET_APPLICATION, { promise });
+  return createAction(GET_APPLICATION, { promise }, { id });
 }
 
 export const UPDATE_APPLICATION = prefix('UPDATE_APPLICATION');
@@ -60,6 +60,7 @@ export default function applicationReducer(state = new Application(), action) {
 export const applicationSelector = reducerSelector;
 
 export const applicationStatusSelector = createPromiseStatusSelector(GET_APPLICATION);
+export const createApplicationStatusSelector = idExtractor => createPromiseStatusSelector(GET_APPLICATION, idExtractor)
 export const publishStatusSelector = createPromiseStatusSelector(PUBLISH_APPLICATION);
 
 export const applicationVisualizerSelector = createSelector(

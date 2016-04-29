@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 import Helmet from 'react-helmet'
-import { applicationSelector, applicationStatusSelector, applicationVisualizerSelector } from '../../manageApp/ducks/application'
+import { applicationSelector, createApplicationStatusSelector, applicationVisualizerSelector } from '../../manageApp/ducks/application'
 import { Application as ApplicationModel } from '../../manageApp/models'
 import { Visualizer } from '../../core/models'
 import { PromiseStatus } from '../../core/models'
@@ -43,6 +43,8 @@ class ApplicationLoader extends Component {
     </div>;
   }
 }
+
+const applicationStatusSelector = createApplicationStatusSelector(() => getApplicationId());
 
 const selector = createSelector(
   [applicationSelector, applicationVisualizerSelector, applicationStatusSelector],

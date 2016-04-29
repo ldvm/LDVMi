@@ -1,4 +1,5 @@
-// Access values passed through the window object
+// Access values passed through the window object. This way we can expose values from the backend
+// and share them with frontend.
 
 function getValue(key) {
   if (!window) {
@@ -20,4 +21,8 @@ export function getBaseUrl() {
 
 export function getApplicationId() {
   return getValue('applicationId');
+}
+
+export function getGoogleClientId() {
+  return getValue('googleClientId');
 }
