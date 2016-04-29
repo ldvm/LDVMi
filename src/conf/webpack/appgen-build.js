@@ -1,4 +1,4 @@
 var makeConfig = require('./makeConfig');
 
-var isDevelopment = true;
+var isDevelopment = false;
 module.exports = makeConfig(isDevelopment);
