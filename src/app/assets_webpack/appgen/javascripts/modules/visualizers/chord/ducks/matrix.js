@@ -4,6 +4,7 @@ import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import moduleSelector from '../selector'
 import prefix from '../prefix'
 import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { VISUALIZE_SAMPLE_NODES_SUCCESS, VISUALIZE_SELECTED_NODES } from './visualizedNodes'
 import * as api from '../api'
 import withApplicationId from '../../../manageApp/misc/withApplicationId'
 
@@ -29,6 +30,8 @@ const initialState = [];
 export default function matrixReducer(state = initialState, action) {
   switch (action.type) {
     case GET_APPLICATION_START:
+    case VISUALIZE_SAMPLE_NODES_SUCCESS:
+    case VISUALIZE_SELECTED_NODES:
       return initialState;
 
     case GET_MATRIX_SUCCESS:
