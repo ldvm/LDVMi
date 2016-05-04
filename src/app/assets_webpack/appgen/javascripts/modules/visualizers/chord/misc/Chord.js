@@ -41,6 +41,8 @@ class Chord {
 
     /** Update with new data */
     this.update = (nodes, matrix, directed, displayAsUndirected = false) => {
+      svg.selectAll('.group').remove();
+      svg.selectAll('.chord').remove();
 
       const originalMatrix = matrix;
       if (directed && displayAsUndirected) {

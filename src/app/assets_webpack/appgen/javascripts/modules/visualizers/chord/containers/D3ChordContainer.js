@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { createStructuredSelector } from 'reselect'
+import { createSelector, createStructuredSelector } from 'reselect'
 import { OrderedSet, is } from 'immutable'
 import { connect } from 'react-redux'
 import D3Chord from '../components/D3Chord'
@@ -19,10 +19,9 @@ import { Graph, PublishSettings } from '../models'
 class D3ChordContainer extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    lang: PropTypes.string.isRequired,
     matrix: PropTypes.array.isRequired,
+    nodes: PropTypes.array.isRequired,
     nodeUris: PropTypes.instanceOf(OrderedSet),
-    nodes: PropTypes.instanceOf(OrderedSet),
     graph: PropTypes.instanceOf(Graph),
     publishSettings: PropTypes.instanceOf(PublishSettings),
     status: PropTypes.instanceOf(PromiseStatus).isRequired
@@ -57,17 +56,8 @@ class D3ChordContainer extends Component {
     return sum == 0;
   }
 
-  convertNodes(nodes, lang) {
-    // We need to extract labels in correct language for D3.js
-    return nodes.map(({ uri, label, inDegree, outDegree }) => ({
-      uri,
-      label: extractLocalizedValue(lang, label, 'missing label'),
-      inDegree, outDegree
-    })).toJS()
-  }
-
   render() {
-    const { lang, matrix, nodes, graph, publishSettings, status } = this.props;
+    const { matrix, nodes, graph, publishSettings, status } = this.props;
 
     if (!status.done) {
       return <VisualizationMessage>
@@ -83,17 +73,30 @@ class D3ChordContainer extends Component {
 
     return <D3Chord
       matrix={matrix}
-      nodes={this.convertNodes(nodes, lang)}
+      nodes={nodes}
       directed={graph.directed}
       displayAsUndirected={publishSettings.displayAsUndirected}
     />;
   }
 }
+// Both injected by NodeLoader
+const nodesSelector = (status, props) => props.nodes;
+const nodeStatusSelector = (status, props) => props.status;
 
-const nodeStatusSelector = (status, props) => props.status; // Injected by NodeLoader
+const convertedNodesSelector = createSelector(
+  [langSelector, nodesSelector],
+  (lang, nodes) => {
+    // We need to extract labels in correct language for D3.js
+    return nodes.map(({ uri, label, inDegree, outDegree }) => ({
+      uri,
+      label: extractLocalizedValue(lang, label, 'missing label'),
+      inDegree, outDegree
+    })).toJS()
+  }
+);
 
 const selector = createStructuredSelector({
-  lang: langSelector,
+  nodes: convertedNodesSelector,
   matrix: matrixSelector,
   graph: graphSelector,
   publishSettings: publishSettingsSelector,
