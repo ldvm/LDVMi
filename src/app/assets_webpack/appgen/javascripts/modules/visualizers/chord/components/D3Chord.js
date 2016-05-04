@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import Chord from '../misc/Chord'
 import { getAvailableVerticalSpace } from '../../../../components/FillInScreen'
 import { bodyPaddingSpace } from '../../../../components/BodyPadding'
-import { makePureRenderDebug } from '../../../../misc/makePureRender'
+import makePureRender from '../../../../misc/makePureRender'
 
 class D3Chord extends Component {
   static propTypes = {
@@ -30,7 +30,6 @@ class D3Chord extends Component {
 
   updateVisualization() {
     const { nodes, matrix, directed, displayAsUndirected  } = this.props;
-    console.log('update chord!');
     this.chord.update(nodes, matrix, directed, displayAsUndirected);
   }
 
@@ -39,4 +38,4 @@ class D3Chord extends Component {
   }
 }
 
-export default makePureRenderDebug(D3Chord);
+export default makePureRender(D3Chord);

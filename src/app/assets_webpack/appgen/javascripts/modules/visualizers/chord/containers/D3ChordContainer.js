@@ -27,8 +27,6 @@ class D3ChordContainer extends Component {
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
-  // TODO: implement shouldComponentUpdate to check for matrix and nodeUris
-
   componentWillMount() {
     this.loadMatrix(this.props);
   }
@@ -79,6 +77,7 @@ class D3ChordContainer extends Component {
     />;
   }
 }
+
 // Both injected by NodeLoader
 const nodesSelector = (status, props) => props.nodes;
 const nodeStatusSelector = (status, props) => props.status;
