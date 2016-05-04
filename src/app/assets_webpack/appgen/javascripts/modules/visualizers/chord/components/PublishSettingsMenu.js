@@ -2,10 +2,10 @@ import React, { PropTypes } from 'react'
 import IconMenu from 'material-ui/lib/menus/icon-menu'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import Button from '../../../../components/Button'
-import { PublishSettings } from '../models'
+import { PublishSettings, Graph } from '../models'
 
-const PublishSettingsMenu = ({ updatePublishSettings, publishSettings }) => {
-  const { showLists, allowSwitchingLists, allowSelectingNodes } = publishSettings;
+const PublishSettingsMenu = ({ updatePublishSettings, publishSettings, graph }) => {
+  const { showLists, allowSwitchingLists, allowSelectingNodes, displayAsUndirected } = publishSettings;
 
   return <IconMenu
     iconButtonElement={<Button raised icon="settings" label="Publish settings" />}
@@ -31,12 +31,21 @@ const PublishSettingsMenu = ({ updatePublishSettings, publishSettings }) => {
       primaryText="Allow selecting lists"
       insetChildren={true}
     />
+    {graph.directed &&
+      <MenuItem
+        checked={displayAsUndirected}
+        onTouchTap={() => updatePublishSettings({ displayAsUndirected: !displayAsUndirected })}
+        primaryText="Symmetrical chords"
+        insetChildren={true}
+      />
+    }
   </IconMenu>
 };
 
 PublishSettingsMenu.propTypes = {
   updatePublishSettings: PropTypes.func.isRequired,
-  publishSettings: PropTypes.instanceOf(PublishSettings)
+  publishSettings: PropTypes.instanceOf(PublishSettings),
+  graph: PropTypes.instanceOf(Graph)
 };
 
 export default PublishSettingsMenu;

@@ -7,7 +7,8 @@ class D3Chord extends Component {
   static propTypes = {
     matrix: PropTypes.array.isRequired,
     nodes: PropTypes.array.isRequired,
-    directed: PropTypes.bool.isRequired
+    directed: PropTypes.bool.isRequired,
+    displayAsUndirected: PropTypes.bool.isRequired
   };
 
   componentDidMount() {
@@ -27,8 +28,8 @@ class D3Chord extends Component {
   }
 
   updateVisualization() {
-    const { nodes, matrix, directed } = this.props;
-    this.chord.update(nodes, matrix, directed);
+    const { nodes, matrix, directed, displayAsUndirected  } = this.props;
+    this.chord.update(nodes, matrix, directed, displayAsUndirected);
   }
 
   render() {

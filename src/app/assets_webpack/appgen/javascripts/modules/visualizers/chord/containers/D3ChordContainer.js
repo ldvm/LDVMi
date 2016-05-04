@@ -13,7 +13,8 @@ import { langSelector } from '../../../core/ducks/lang'
 import { extractLocalizedValue } from '../../../core/containers/LocalizedValue'
 import VisualizationMessage from '../components/VisualizationMessage'
 import { graphSelector } from '../ducks/graph'
-import { Graph } from '../models'
+import { publishSettingsSelector } from '../ducks/publishSettings'
+import { Graph, PublishSettings } from '../models'
 
 class D3ChordContainer extends Component {
   static propTypes = {
@@ -23,6 +24,7 @@ class D3ChordContainer extends Component {
     nodeUris: PropTypes.instanceOf(OrderedSet),
     nodes: PropTypes.instanceOf(OrderedSet),
     graph: PropTypes.instanceOf(Graph),
+    publishSettings: PropTypes.instanceOf(PublishSettings),
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
@@ -65,7 +67,7 @@ class D3ChordContainer extends Component {
   }
 
   render() {
-    const { lang, matrix, nodes, graph, status } = this.props;
+    const { lang, matrix, nodes, graph, publishSettings, status } = this.props;
 
     if (!status.done) {
       return <VisualizationMessage>
@@ -80,9 +82,11 @@ class D3ChordContainer extends Component {
     }
 
     return <D3Chord
-      directed={graph.directed}
       matrix={matrix}
-      nodes={this.convertNodes(nodes, lang)} />;
+      nodes={this.convertNodes(nodes, lang)}
+      directed={graph.directed}
+      displayAsUndirected={publishSettings.displayAsUndirected}
+    />;
   }
 }
 
@@ -92,6 +96,7 @@ const selector = createStructuredSelector({
   lang: langSelector,
   matrix: matrixSelector,
   graph: graphSelector,
+  publishSettings: publishSettingsSelector,
 
   // We make the component wait until both the matrix and nodes are properly loaded from the
   // server before we start to render the D3.js visualization

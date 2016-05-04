@@ -23,7 +23,8 @@ export const NodeList = Record({
 export const PublishSettings = Record({
   showLists: true,
   allowSwitchingLists: true,
-  allowSelectingNodes: true
+  allowSelectingNodes: true,
+  displayAsUndirected: false
 });
 
 // Fresnel stuff (TODO: move to the core module?)

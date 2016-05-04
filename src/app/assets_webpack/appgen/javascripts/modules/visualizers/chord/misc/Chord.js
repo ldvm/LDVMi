@@ -40,7 +40,13 @@ class Chord {
     // within the scope with the private properties.
 
     /** Update with new data */
-    this.update = (nodes, matrix, directed) => {
+    this.update = (nodes, matrix, directed, displayAsUndirected = false) => {
+
+      const originalMatrix = matrix;
+      if (directed && displayAsUndirected) {
+        matrix = undirectize(matrix);
+      }
+
       // Compute the chord layout.
       layout.matrix(matrix);
 
@@ -120,10 +126,10 @@ class Chord {
         return directed ?
           nodes[d.source.index].label
             + " → " + nodes[d.target.index].label
-            + ": " + (d.source.value)
+            + ": " + originalMatrix[d.source.index][d.target.index]
             + "\n" + nodes[d.target.index].label
             + " → " + nodes[d.source.index].label
-            + ": " + (d.target.value)
+            + ": " + originalMatrix[d.target.index][d.source.index]
           :
           nodes[getBiggerNode(d.source, d.target)].label
             + '\n' + nodes[getSmallerNode(d.source, d.target)].label
@@ -157,6 +163,31 @@ class Chord {
     /** Clean-up when the D3.js visualization is being destroyed */
     this.destroy = () => {};
   }
+}
+
+/**
+ * Converts adjacency matrix of a directed graph into undirected. Weight of the new undirected
+ * edge is equal to the sum of weights of the original directed edges.
+ */
+function undirectize(matrix) {
+  const n = matrix.length;
+
+  const undirected = [];
+  for (let i = 0; i < n; i++) {
+    undirected[i] = [];
+  }
+
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n; j++) {
+      if (i == j) {
+        undirected[i][j] = matrix[i][j];
+      } else {
+        undirected[i][j] = matrix[i][j] + matrix[j][i];
+      }
+    }
+  }
+
+  return undirected;
 }
 
 export default Chord;
