@@ -40,7 +40,7 @@ class Chord {
     // within the scope with the private properties.
 
     /** Update with new data */
-    this.update = (nodes, matrix) => {
+    this.update = (nodes, matrix, directed) => {
       // Compute the chord layout.
       layout.matrix(matrix);
 
@@ -117,9 +117,17 @@ class Chord {
 
       // Add an elaborate mouseover title for each chord.
       chord.append('title').text(function (d) {
-        return nodes[getBiggerNode(d.source, d.target)].label
-          + '\n' + nodes[getSmallerNode(d.source, d.target)].label
-          + '\n(' + d.source.value + ')';
+        return directed ?
+          nodes[d.source.index].label
+            + " → " + nodes[d.target.index].label
+            + ": " + (d.source.value)
+            + "\n" + nodes[d.target.index].label
+            + " → " + nodes[d.source.index].label
+            + ": " + (d.target.value)
+          :
+          nodes[getBiggerNode(d.source, d.target)].label
+            + '\n' + nodes[getSmallerNode(d.source, d.target)].label
+            + '\n(' + d.source.value + ')';
       });
 
       function fadeChords(opacity) {

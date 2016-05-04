@@ -12,6 +12,8 @@ import { createAggregatedPromiseStatusSelector } from '../../../core/ducks/promi
 import { langSelector } from '../../../core/ducks/lang'
 import { extractLocalizedValue } from '../../../core/containers/LocalizedValue'
 import VisualizationMessage from '../components/VisualizationMessage'
+import { graphSelector } from '../ducks/graph'
+import { Graph } from '../models'
 
 class D3ChordContainer extends Component {
   static propTypes = {
@@ -20,6 +22,7 @@ class D3ChordContainer extends Component {
     matrix: PropTypes.array.isRequired,
     nodeUris: PropTypes.instanceOf(OrderedSet),
     nodes: PropTypes.instanceOf(OrderedSet),
+    graph: PropTypes.instanceOf(Graph),
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
@@ -62,7 +65,7 @@ class D3ChordContainer extends Component {
   }
 
   render() {
-    const { lang, matrix, nodes, status } = this.props;
+    const { lang, matrix, nodes, graph, status } = this.props;
 
     if (!status.done) {
       return <VisualizationMessage>
@@ -76,7 +79,10 @@ class D3ChordContainer extends Component {
         </VisualizationMessage>
     }
 
-    return <D3Chord matrix={matrix} nodes={this.convertNodes(nodes, lang)} />;
+    return <D3Chord
+      directed={graph.directed}
+      matrix={matrix}
+      nodes={this.convertNodes(nodes, lang)} />;
   }
 }
 
@@ -85,6 +91,7 @@ const nodeStatusSelector = (status, props) => props.status; // Injected by NodeL
 const selector = createStructuredSelector({
   lang: langSelector,
   matrix: matrixSelector,
+  graph: graphSelector,
 
   // We make the component wait until both the matrix and nodes are properly loaded from the
   // server before we start to render the D3.js visualization

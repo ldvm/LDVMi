@@ -6,7 +6,8 @@ import { bodyPaddingSpace } from '../../../../components/BodyPadding'
 class D3Chord extends Component {
   static propTypes = {
     matrix: PropTypes.array.isRequired,
-    nodes: PropTypes.array.isRequired
+    nodes: PropTypes.array.isRequired,
+    directed: PropTypes.bool.isRequired
   };
 
   componentDidMount() {
@@ -26,8 +27,8 @@ class D3Chord extends Component {
   }
 
   updateVisualization() {
-    const { nodes, matrix } = this.props;
-    this.chord.update(nodes, matrix);
+    const { nodes, matrix, directed } = this.props;
+    this.chord.update(nodes, matrix, directed);
   }
 
   render() {
