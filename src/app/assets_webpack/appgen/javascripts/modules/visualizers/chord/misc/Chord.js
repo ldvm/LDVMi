@@ -58,11 +58,19 @@ class Chord {
         .domain(palette.map((_, i) => i * (nodes.length / palette.length)))
         .range(palette);
 
-      // Helping functions to compare nodes by their size (= out degree)
+      // Helping functions to calculate aggregated weight for nodes (should be memoized...)
+      const getIncomingWeight = index =>
+        originalMatrix.reduce((sum, values) => sum + values[index], 0);
+      const getOutgoingWeight = index =>
+        originalMatrix[index].reduce((sum, value) => sum + value, 0);
+      const getWeight = index => directed ?
+        getIncomingWeight(index) + getOutgoingWeight(index) : getOutgoingWeight(index);
+
+      // Helping functions to compare nodes by their aggregated weight
       const getBiggerNode = (source, target) =>
-        nodes[source.index].outDegree >= nodes[target.index].outDegree ? source.index : target.index;
+        getWeight(source.index) >= getWeight(target.index) ? source.index : target.index;
       const getSmallerNode = (source, target) =>
-        nodes[source.index].outDegree < nodes[target.index].outDegree ? source.index : target.index;
+        getWeight(source.index) < getWeight(target.index) ? source.index : target.index;
 
       // Little terminology:
       // - group corresponds to a node (those arcs around the circle)
@@ -78,7 +86,13 @@ class Chord {
 
       // Add a mouseover title.
       group.append('title').text(function (d, i) {
-        return nodes[i].label + '\n' + nodes[i].uri;
+        return nodes[i].label
+          + '\n' + nodes[i].uri
+          + '\n' + (directed ?
+              'Incoming: ' + getIncomingWeight(i) + '\n' +
+              'Outgoing: ' + getOutgoingWeight(i) :
+              '(' + getIncomingWeight(i) + ')'
+          )
       });
 
       // Add the group arc (~ nodes).
