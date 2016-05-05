@@ -6,6 +6,7 @@ import model.rdf.sparql.rgml.query.{EdgesQuery, GraphQuery, NodesQuery, RelatedN
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
+import model.rdf.sparql.rgml.EdgeDirection._
 
 import scala.collection.mutable
 
@@ -86,11 +87,11 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     }
   }
 
-  override def relatedNodes(evaluation: PipelineEvaluation, nodeUri: String)(implicit session: Session): Option[Seq[String]] = {
+  override def relatedNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[String]] = {
     graph(evaluation) flatMap { graph =>
       sparqlEndpointService.getResult(
         evaluationToSparqlEndpoint(evaluation),
-        new RelatedNodesQuery(graph, nodeUri),
+        new RelatedNodesQuery(graph, nodeUri, direction),
         new RelatedNodesExtractor)
     }
   }

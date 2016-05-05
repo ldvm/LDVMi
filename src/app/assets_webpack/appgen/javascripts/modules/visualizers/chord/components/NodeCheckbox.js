@@ -25,7 +25,7 @@ const labelStyle = {
   width: '80%'
 };
 
-const Option = ({ node, selected, select, remove, removeWithRelated, disableSelecting, disableManaging }) => {
+const NodeCheckbox = ({ node, graphDirected, selected, select, remove, removeWithRelated, disableSelecting, disableManaging }) => {
   return <div>
     <Padding space={2}>
       {disableManaging || <IconMenu
@@ -38,10 +38,19 @@ const Option = ({ node, selected, select, remove, removeWithRelated, disableSele
           primaryText="Remove"
           onTouchTap={remove}
         />
-        <MenuItem
-          primaryText="Remove with related"
-          onTouchTap={removeWithRelated}
-        />
+        {graphDirected ?
+          ['outgoing', 'incoming'].map(direction =>
+            <MenuItem
+              key={direction}
+              primaryText={'Remove with ' + direction}
+              onTouchTap={() => removeWithRelated(direction)}
+            />)
+          :
+          <MenuItem
+            primaryText = "Remove with related"
+            onTouchTap={() => removeWithRelated()}
+          />
+        }
       </IconMenu>}
       <div style={labelStyle}>
         <Checkbox
@@ -57,8 +66,9 @@ const Option = ({ node, selected, select, remove, removeWithRelated, disableSele
   </div>
 };
 
-Option.propTypes = {
+NodeCheckbox.propTypes = {
   node: PropTypes.instanceOf(Node).isRequired,
+  graphDirected: PropTypes.bool.isRequired,
   selected: PropTypes.bool.isRequired,
   select: PropTypes.func.isRequired,
   remove: PropTypes.func.isRequired,
@@ -67,4 +77,4 @@ Option.propTypes = {
   disableSelecting: PropTypes.bool
 };
 
-export default makePureRender(Option);
+export default makePureRender(NodeCheckbox);

@@ -2,16 +2,26 @@ package model.rdf.sparql.rgml.query
 
 import model.rdf.sparql.query.SparqlQuery
 import model.rdf.sparql.rgml.Graph
+import model.rdf.sparql.rgml.EdgeDirection._
 
-class RelatedNodesQuery(graph: Graph, nodeUri: String) extends SparqlQuery {
+class RelatedNodesQuery(graph: Graph, nodeUri: String, direction: EdgeDirection = Outgoing) extends SparqlQuery {
 
   def get: String = {
     val where = if (graph.directed)
-      """
-        | ?edge
-        |   rgml:source <@n> ;
-        |   rgml:target ?node
-      """.stripMargin
+      direction match {
+        case Outgoing =>
+          """
+            | ?edge
+            |   rgml:source <@n> ;
+            |   rgml:target ?node
+          """.stripMargin
+        case Incoming =>
+          """
+            | ?edge
+            |   rgml:target <@n> ;
+            |   rgml:source ?node
+          """.stripMargin
+      }
     else
       """
         | {

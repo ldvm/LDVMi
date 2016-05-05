@@ -7,7 +7,7 @@ import loadNodes from '../containers/loadNodes'
 import NodeCheckbox from './NodeCheckbox'
 import Padding from '../../../../components/Padding'
 
-const SelectedList = ({ list, nodes, status, select, remove, removeWithRelated, disableManaging, disableSelecting }) => (
+const SelectedList = ({ list, graphDirected, nodes, status, select, remove, removeWithRelated, disableManaging, disableSelecting }) => (
   <div>
     {status.isLoading && <Padding space={2}><LinearProgress /></Padding>}
 
@@ -15,10 +15,11 @@ const SelectedList = ({ list, nodes, status, select, remove, removeWithRelated, 
       <NodeCheckbox
         key={node.uri}
         node={node}
+        graphDirected={graphDirected}
         selected={list.selected.includes(node.uri)}
         select={selected => select(node.uri, selected)}
         remove={() => remove(node.uri)}
-        removeWithRelated={() => removeWithRelated(node.uri)}
+        removeWithRelated={direction => removeWithRelated(node.uri, direction)}
         disableManaging={disableManaging}
         disableSelecting={disableSelecting}
       />
@@ -28,6 +29,7 @@ const SelectedList = ({ list, nodes, status, select, remove, removeWithRelated, 
 
 SelectedList.propTypes = {
   list: PropTypes.instanceOf(NodeList).isRequired,
+  graphDirected: PropTypes.bool.isRequired,
   nodes: PropTypes.instanceOf(OrderedSet).isRequired,
   status: PropTypes.instanceOf(PromiseStatus).isRequired,
   select: PropTypes.func.isRequired,

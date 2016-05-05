@@ -75,7 +75,7 @@ class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApi
 
   def getRelatedNodes(id: Long) = RestAsyncAction[RelatedNodesRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val relatedNodes = rgmlService.relatedNodes(evaluation, json.nodeUri)
+      val relatedNodes = rgmlService.relatedNodes(evaluation, json.nodeUri, json.direction)
       Future(Ok(SuccessResponse(data = Seq("relatedNodes" -> relatedNodes))))
     }
   }

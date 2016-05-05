@@ -39,12 +39,13 @@ export const ADD_WITH_RELATED_TO_LIST_START = ADD_WITH_RELATED_TO_LIST + '_START
 export const ADD_WITH_RELATED_TO_LIST_ERROR = ADD_WITH_RELATED_TO_LIST + '_ERROR';
 export const ADD_WITH_RELATED_TO_LIST_SUCCESS = ADD_WITH_RELATED_TO_LIST + '_SUCCESS';
 
-export function addWithRelatedToList(id, uri) {
+export function addWithRelatedToList(id, uri, direction = 'outgoing') {
   return withApplicationId(appId => {
-    const promise = api.getRelatedNodes(appId, uri).then(related => {
-      related.unshift(uri); // Append the actual uri to the end
-      return related;
-    });
+    const promise = api.getRelatedNodes(appId, uri, direction)
+      .then(related => {
+        related.unshift(uri); // Append the actual uri to the end
+        return related;
+      });
     return createAction(ADD_WITH_RELATED_TO_LIST,
       { promise },
       { listId: id, id: uri } // The id property here is identifying the promise request.
@@ -67,12 +68,13 @@ export const REMOVE_WITH_RELATED_FROM_LIST_START = REMOVE_WITH_RELATED_FROM_LIST
 export const REMOVE_WITH_RELATED_FROM_LIST_ERROR = REMOVE_WITH_RELATED_FROM_LIST + '_ERROR';
 export const REMOVE_WITH_RELATED_FROM_LIST_SUCCESS = REMOVE_WITH_RELATED_FROM_LIST + '_SUCCESS';
 
-export function removeWithRelatedFromList(id, uri) {
+export function removeWithRelatedFromList(id, uri, direction = 'outgoing') {
   return withApplicationId(appId => {
-    const promise = api.getRelatedNodes(appId, uri).then(related => {
-      related.unshift(uri); // Append the actual uri to the end
-      return related;
-    });
+    const promise = api.getRelatedNodes(appId, uri, direction)
+      .then(related => {
+        related.unshift(uri); // Append the actual uri to the end
+        return related;
+      });
     return createAction(REMOVE_WITH_RELATED_FROM_LIST,
       { promise },
       { listId: id, id: uri } // The id property here is identifying the promise request.

@@ -6,14 +6,15 @@ import CenteredMessage from '../../../../components/CenteredMessage'
 import FillInScreen from '../../../../components/FillInScreen'
 import { selectedListSelector } from '../ducks/selectedList'
 import { selectNode, removeFromList, removeWithRelatedFromList, listsSelector } from '../ducks/lists'
-import { NodeList } from '../models'
+import { NodeList, Graph } from '../models'
 import SearchDialog from '../containers/SearchDialog'
 import SelectedList from '../components/SelectedList'
 import SidebarButtons from '../components/SidebarButtons'
 import Padding from '../../../../components/Padding'
 import VisualizeSelectedNodesButton from './VisualizeSelectedNodesButton'
+import { graphSelector } from '../ducks/graph'
 
-const SelectedListManager = ({ dispatch, lists, selectedList, disableManaging, disableSelecting }) => {
+const SelectedListManager = ({ dispatch, lists, selectedList, graph, disableManaging, disableSelecting }) => {
   if (lists.size == 0) {
     return <CenteredMessage>
       Start by clicking the 'plus' button to add your first list.
@@ -33,9 +34,10 @@ const SelectedListManager = ({ dispatch, lists, selectedList, disableManaging, d
         <SelectedList
           nodeUris={selectedList.uris}
           list={selectedList}
+          graphDirected={graph.directed}
           select={(uri, selected) => dispatch(selectNode(selectedList.id, uri, selected))}
           remove={uri => dispatch(removeFromList(selectedList.id, uri))}
-          removeWithRelated={uri => dispatch(removeWithRelatedFromList(selectedList.id, uri))}
+          removeWithRelated={(uri, direction) => dispatch(removeWithRelatedFromList(selectedList.id, uri, direction))}
           disableManaging={disableManaging}
           disableSelecting={disableSelecting}
         />
@@ -45,7 +47,8 @@ const SelectedListManager = ({ dispatch, lists, selectedList, disableManaging, d
     {disableManaging ?
       <Padding space={2}>
         <VisualizeSelectedNodesButton fullWidth />
-      </Padding> :
+      </Padding>
+      :
       <div>
         <SearchDialog />
         <SidebarButtons />
@@ -58,13 +61,15 @@ SelectedListManager.propTypes = {
   dispatch: PropTypes.func.isRequired,
   lists: PropTypes.instanceOf(Map).isRequired,
   selectedList: PropTypes.instanceOf(NodeList),
+  graph: PropTypes.instanceOf(Graph).isRequired,
   disableManaging: PropTypes.bool,
   disableSelecting: PropTypes.bool
 };
 
 const selector = createStructuredSelector({
   lists: listsSelector,
-  selectedList: selectedListSelector
+  selectedList: selectedListSelector,
+  graph: graphSelector
 });
 
 export default connect(selector)(SelectedListManager);
