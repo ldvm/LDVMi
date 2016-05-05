@@ -14,12 +14,17 @@ export const GET_GRAPH = prefix('GET_GRAPH');
 export const GET_GRAPH_START = GET_GRAPH + '_START';
 export const GET_GRAPH_ERROR = GET_GRAPH + '_ERROR';
 export const GET_GRAPH_SUCCESS = GET_GRAPH + '_SUCCESS';
+export const GET_GRAPH_RESET = GET_GRAPH + '_RESET';
 
 export function getGraph() {
   return withApplicationId(id => {
     const promise = api.getGraph(id);
     return createAction(GET_GRAPH, { promise });
   })
+}
+
+export function getGraphReset() {
+  return createAction(GET_GRAPH_RESET);
 }
 
 // Reducer
@@ -29,6 +34,7 @@ const initialState = new Graph();
 export default function graphReducer(state = initialState, action) {
   switch (action.type) {
     case GET_APPLICATION_START:
+    case GET_GRAPH_RESET:
       return initialState;
 
     case GET_GRAPH_SUCCESS:

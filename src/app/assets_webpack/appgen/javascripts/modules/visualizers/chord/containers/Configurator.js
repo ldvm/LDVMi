@@ -2,9 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { OrderedMap } from 'immutable'
-import { getGraph, graphSelector, graphStatusSelector } from '../ducks/graph'
-import { getSearchableLens, searchableLensSelector, searchableLensStatusSelector } from '../ducks/searchableLens'
-import { getConfiguration, getConfigurationStatusSelector } from '../ducks/configuration'
+import { getGraph, getGraphReset,  graphSelector, graphStatusSelector } from '../ducks/graph'
+import { getSearchableLens, getSearchableLensReset, searchableLensSelector, searchableLensStatusSelector } from '../ducks/searchableLens'
+import { getConfiguration, getConfigurationReset, getConfigurationStatusSelector } from '../ducks/configuration'
 import { listsSelector } from '../ducks/lists'
 import { Lens, Graph } from '../models'
 import { PromiseStatus } from '../../../core/models'
@@ -31,6 +31,13 @@ class Configurator extends Component {
     dispatch(getGraph());
     dispatch(getSearchableLens());
     dispatch(getConfiguration());
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch(getGraphReset());
+    dispatch(getSearchableLensReset());
+    dispatch(getConfigurationReset());
   }
 
   render() {

@@ -3,9 +3,9 @@ import { OrderedMap } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { createAggregatedPromiseStatusSelector } from '../../../core/ducks/promises'
-import { getGraph, graphSelector, graphStatusSelector } from '../ducks/graph'
-import { getSearchableLens, searchableLensSelector, searchableLensStatusSelector } from '../ducks/searchableLens'
-import { getConfiguration, getConfigurationStatusSelector } from '../ducks/configuration'
+import { getGraph, getGraphReset, graphSelector, graphStatusSelector } from '../ducks/graph'
+import { getSearchableLens, getSearchableLensReset, searchableLensSelector, searchableLensStatusSelector } from '../ducks/searchableLens'
+import { getConfiguration, getConfigurationReset, getConfigurationStatusSelector } from '../ducks/configuration'
 import { listsSelector } from '../ducks/lists'
 import { selectList } from '../ducks/selectedList'
 import { publishSettingsSelector } from '../ducks/publishSettings'
@@ -35,6 +35,13 @@ class Application extends Component {
     dispatch(getGraph());
     dispatch(getSearchableLens());
     dispatch(getConfiguration());
+  }
+  
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch(getGraphReset());
+    dispatch(getSearchableLensReset());
+    dispatch(getConfigurationReset());
   }
 
   componentWillReceiveProps(nextProps) {

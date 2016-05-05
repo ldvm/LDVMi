@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import prefix from '../prefix'
 import moduleSelector from '../selector'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
-import { createGetConfiguration, createSaveConfiguration } from '../../../manageApp/ducks/configuration'
+import { createGetConfiguration, createGetConfigurationReset, createSaveConfiguration } from '../../../manageApp/ducks/configuration'
 
 // Actions
 
@@ -15,6 +15,7 @@ export const GET_CONFIGURATION = prefix('GET_CONFIGURATION');
 export const GET_CONFIGURATION_START = GET_CONFIGURATION + '_START';
 export const GET_CONFIGURATION_ERROR = GET_CONFIGURATION + '_ERROR';
 export const GET_CONFIGURATION_SUCCESS = GET_CONFIGURATION + '_SUCCESS';
+export const GET_CONFIGURATION_RESET = GET_CONFIGURATION + '_RESET';
 
 // Selectors
 
@@ -33,3 +34,4 @@ export const configurationSelector = createSelector(
 // Actual actions created using factories
 export const saveConfiguration = createSaveConfiguration(SAVE_CONFIGURATION, configurationSelector);
 export const getConfiguration = createGetConfiguration(GET_CONFIGURATION);
+export const getConfigurationReset = createGetConfigurationReset(GET_CONFIGURATION_RESET);
