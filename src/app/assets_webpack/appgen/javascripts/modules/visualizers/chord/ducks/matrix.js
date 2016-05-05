@@ -30,6 +30,9 @@ const initialState = [];
 export default function matrixReducer(state = initialState, action) {
   switch (action.type) {
     case GET_APPLICATION_START:
+
+    // This reducer has to be kept in sync with selected nodes so that it doesn't happen that
+    // the visualizer gets filled adjacency matrix and no nodes.
     case VISUALIZE_SAMPLE_NODES_SUCCESS:
     case VISUALIZE_SELECTED_NODES:
       return initialState;
