@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import Helmet from 'react-helmet'
-import { getApplication, applicationSelector, createApplicationStatusSelector, applicationVisualizerSelector } from '../ducks/application'
+import { getApplication, getApplicationReset, applicationSelector, createApplicationStatusSelector, applicationVisualizerSelector } from '../ducks/application'
 import { Application as ApplicationModel } from '../models'
 import { Visualizer } from '../../core/models'
 import { PromiseStatus } from '../../core/models'
@@ -43,6 +43,11 @@ class Application extends Component {
     }
 
     this.loadVisualizerConfigurator(props);
+  }
+
+  componentWillUnmount() {
+    const { dispatch, applicationId } = this.props;
+    dispatch(getApplicationReset(applicationId));
   }
   
   loadData(props) {

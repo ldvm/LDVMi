@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect'
 import * as api from '../api'
 import prefix from '../prefix'
-import createPromiseReducer from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../core/ducks/promises'
 import { Application } from '../models'
@@ -15,10 +14,14 @@ export const GET_APPLICATION = prefix('GET_APPLICATION');
 export const GET_APPLICATION_START = GET_APPLICATION + '_START';
 export const GET_APPLICATION_ERROR = GET_APPLICATION + '_ERROR';
 export const GET_APPLICATION_SUCCESS = GET_APPLICATION + '_SUCCESS';
+export const GET_APPLICATION_RESET = GET_APPLICATION + '_RESET';
 
 export function getApplication(id) {
   const promise = api.getApplication(id);
   return createAction(GET_APPLICATION, { promise }, { id });
+}
+export function getApplicationReset(id) {
+  return createAction(GET_APPLICATION_RESET, {}, { id });
 }
 
 export const UPDATE_APPLICATION = prefix('UPDATE_APPLICATION');

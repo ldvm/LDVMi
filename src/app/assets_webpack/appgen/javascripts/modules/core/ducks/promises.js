@@ -8,11 +8,12 @@ const DEFAULT_ID = 0;
 const START = 'START';
 const SUCCESS = 'SUCCESS';
 const ERROR = 'ERROR';
+const RESET = 'RESET';
 
 // Reducer
 
 const parseType = actionType => {
-  for (let status of [START, SUCCESS, ERROR]) {
+  for (let status of [START, SUCCESS, ERROR, RESET]) {
     if (actionType.match(status + '$')) {
       return [ actionType.replace('_' + status, ''), status ]
     }
@@ -43,6 +44,9 @@ const updateSinglePromiseState = (state = new PromiseStatus(), suffix, payload) 
       return state
         .set('isLoading', false)
         .set('done', true);
+
+    case RESET:
+      return new PromiseStatus();
 
     default:
       throw new Error('Unrecognized promise action type suffix: ' + suffix);

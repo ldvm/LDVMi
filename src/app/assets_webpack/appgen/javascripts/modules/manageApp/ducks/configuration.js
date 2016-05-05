@@ -41,3 +41,7 @@ export function createGetConfiguration(getAction) {
     }
   }
 }
+
+export function createGetConfigurationReset(resetAction) {
+  return () => createAction(resetAction);
+}
