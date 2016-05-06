@@ -1,5 +1,6 @@
 import { Map } from 'immutable'
 import { createSelector } from 'reselect'
+import { UPDATE_LOCATION } from 'redux-simple-router'
 import createAction from '../../../misc/createAction'
 import prefix from '../prefix'
 import moduleSelector from '../selector'
@@ -29,6 +30,9 @@ export default function dialogReducer(state = initialState, action) {
 
     case DIALOG_CLOSE:
       return state.set(action.payload.name, false);
+
+    case UPDATE_LOCATION:
+      return initialState;
   }
 
   return state;
