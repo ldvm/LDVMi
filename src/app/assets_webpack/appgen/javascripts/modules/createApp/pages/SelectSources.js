@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import Helmet from "react-helmet"
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
@@ -13,20 +13,29 @@ import BrowseDataSourcesDialog from '../dialogs/BrowseDataSourcesDialog'
 import SelectedDataSources from '../components/SelectedDataSources'
 import { dialogOpen, dialogClose } from '../../core/ducks/dialog'
 import { notification } from '../../core/ducks/notifications'
-import { addDataSource } from '../ducks/dataSources'
+import { getDataSources, addDataSource } from '../ducks/dataSources'
 import { runDiscovery } from '../ducks/runDiscoveryStatus'
-import { selectDataSource, deselectDataSource } from '../ducks/selectedDataSources'
+import { selectDataSource, deselectDataSource, deselectAllDataSources } from '../ducks/selectedDataSources'
 import * as api from '../api'
 import { dataSourcesSelector } from '../selector'
 
-const SelectSources = ({ dispatch, dataSources, runDiscoveryStatus }) => {
+class SelectSources extends Component {
 
-  const initialValues = {
-    graphUris: "",
-    isPublic: true
-  };
+  componentWillMount() {
+    const { dispatch, dataSources } = this.props;
+    if (!dataSources.done) {
+      dispatch(getDataSources());
+    }
+  }
 
-  const handleAddDataSource = async (dataSource) => {
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch(deselectAllDataSources());
+  }
+
+  async handleAddDataSource(dataSource) {
+    const { dispatch } = this.props;
+
     try {
       dataSource.graphUris = dataSource.graphUris.split('\n');
       const result = await api.addDataSource(dataSource);
@@ -42,64 +51,80 @@ const SelectSources = ({ dispatch, dataSources, runDiscoveryStatus }) => {
       console.log(e);
       dispatch(notification(e.message));
     }
-  };
+  }
 
-  const handleRunAnalysis = () => {
+  handleRunAnalysis() {
+    const { dispatch, dataSources } = this.props;
     const ids = dataSources.selected.map(dataSource => dataSource.id);
     if (ids.size == 0) {
       dispatch(notification('Please select some data sources first'));
     } else {
       dispatch(runDiscovery(ids));
     }
-  };
+  }
 
-  return (
-    <PaperCard title="1. Select data sources" subtitle="Select data sources for your new visualization">
-      <Helmet title="Select data sources"  />
-      <PromiseResult isLoading={dataSources.isLoading} error={dataSources.error} />
-      <PromiseResult isLoading={runDiscoveryStatus.isLoading} error={runDiscoveryStatus.error} />
+  render() {
+    const { dispatch, dataSources, runDiscoveryStatus } = this.props;
+    const initialValues = {
+      graphUris: '',
+      isPublic: true
+    };
 
-      {dataSources.done && <div>
+    return (
+      <PaperCard title="1. Select data sources" subtitle="Select data sources for your new visualization">
+        <Helmet title="Select data sources"  />
+        <PromiseResult isLoading={dataSources.isLoading} error={dataSources.error} />
+        <PromiseResult isLoading={runDiscoveryStatus.isLoading} error={runDiscoveryStatus.error} />
 
-        {dataSources.selected.size == 0 &&
-          <CenteredMessage>Click the 'Browse' button to start selecting data sources.</CenteredMessage>}
+        {dataSources.done && <div>
 
-        {dataSources.selected.size > 0 &&
-          <SelectedDataSources
-            dataSources={dataSources.selected}
-            deselectDataSource={id => dispatch(deselectDataSource(id))} />}
+          {dataSources.selected.size == 0 &&
+            <CenteredMessage>
+              Click the 'Browse' button to start selecting data sources.
+            </CenteredMessage>}
 
-        <AddDataSourceDialog
-          onSubmit={handleAddDataSource}
-          initialValues={initialValues}
-          dialogClose={name => dispatch(dialogClose(name))} />
-        <BrowseDataSourcesDialog
-          dialogClose={name => dispatch(dialogClose(name))}
-          selectDataSource={id => dispatch(selectDataSource(id))}
-          deselectDataSource={id => dispatch(deselectDataSource(id))}
-          dataSources={dataSources.all} />
+          {dataSources.selected.size > 0 &&
+            <SelectedDataSources
+              dataSources={dataSources.selected}
+              deselectDataSource={id => dispatch(deselectDataSource(id))}
+            />}
 
-        <ButtonBar
-          left={<div>
-            <Button
-              label="Browse"
-              onTouchTap={() => dispatch(dialogOpen(BrowseDataSourcesDialog.dialogName))}
-              icon="folder_open" raised />
-            <Button
-              label="Add new"
-              onTouchTap={() => dispatch(dialogOpen(AddDataSourceDialog.dialogName))}
-              icon="add" raised success />
-            </div>}
-          right={<div>
-            <Button
-              label="Run analysis"
-              icon="play_arrow" raised warning
-              onTouchTap={handleRunAnalysis}
-              disabled={dataSources.selected.size == 0 || runDiscoveryStatus.isLoading } />
-            </div>}/>
-      </div>}
-    </PaperCard>
-  )
-};
+          <AddDataSourceDialog
+            onSubmit={::this.handleAddDataSource}
+            initialValues={initialValues}
+            dialogClose={name => dispatch(dialogClose(name))}
+          />
+          <BrowseDataSourcesDialog
+            dialogClose={name => dispatch(dialogClose(name))}
+            selectDataSource={id => dispatch(selectDataSource(id))}
+            deselectDataSource={id => dispatch(deselectDataSource(id))}
+            dataSources={dataSources.all}
+          />
+
+          <ButtonBar
+            left={<div>
+              <Button
+                label="Browse"
+                onTouchTap={() => dispatch(dialogOpen(BrowseDataSourcesDialog.dialogName))}
+                icon="folder_open" raised />
+              <Button
+                label="Add new"
+                onTouchTap={() => dispatch(dialogOpen(AddDataSourceDialog.dialogName))}
+                icon="add" raised success />
+              </div>}
+            right={<div>
+              <Button
+                label="Run analysis"
+                icon="play_arrow" raised warning
+                onTouchTap={::this.handleRunAnalysis}
+                disabled={dataSources.selected.size == 0 || runDiscoveryStatus.isLoading } />
+              </div>}
+          />
+        </div>}
+      </PaperCard>
+    )
+  }
+
+}
 
 export default connect(dataSourcesSelector)(SelectSources);

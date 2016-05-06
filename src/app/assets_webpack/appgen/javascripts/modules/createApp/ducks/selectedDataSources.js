@@ -6,14 +6,18 @@ import { ADD_DATA_SOURCE } from './dataSources'
 // Actions
 
 export const SELECT_DATA_SOURCE = prefix('SELECT_DATA_SOURCE');
-export const DESELECT_DATA_SOURCE = prefix('DESELECT_DATA_SOURCE');
-
 export function selectDataSource(dataSourceId) {
   return createAction(SELECT_DATA_SOURCE, dataSourceId);
 }
 
+export const DESELECT_DATA_SOURCE = prefix('DESELECT_DATA_SOURCE');
 export function deselectDataSource(dataSourceId) {
   return createAction(DESELECT_DATA_SOURCE, dataSourceId);
+}
+
+export const DESELECT_ALL_DATA_SOURCES = prefix('DESELECT_ALL_DATA_SOURCES');
+export function deselectAllDataSources() {
+  return createAction(DESELECT_ALL_DATA_SOURCES);
 }
 
 // Reducer
@@ -27,6 +31,9 @@ export default function selectedDataSourcesReducer(state = initialState, action)
 
     case DESELECT_DATA_SOURCE:
       return state.delete(action.payload);
+
+    case DESELECT_ALL_DATA_SOURCES:
+      return initialState;
 
     case ADD_DATA_SOURCE:
       const { payload: { dataSource }} = action;

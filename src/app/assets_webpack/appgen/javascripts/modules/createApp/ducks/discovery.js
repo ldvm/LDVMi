@@ -29,6 +29,7 @@ const reducer = (state, action) => {
   switch (action.type) {
     case GET_DISCOVERY_SUCCESS:
       // Update the local state only if the incoming state is different.
+      // TODO: Immutable.merge would do exactly that
       const newState = fromJS(action.payload);
       return state.equals(newState) ? state : newState;
   }
