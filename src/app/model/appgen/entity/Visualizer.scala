@@ -12,6 +12,7 @@ object Visualizer {
     title: String,
     name: String,
     icon: String,
+    supported: Boolean,
     description: Option[String] = None,
     componentTemplateId: Option[ComponentTemplateId])
 
@@ -36,6 +37,13 @@ object Visualizer {
       case "http://linked.opendata.cz/resource/ldvm/visualizer/chord/ChordVisualizerTemplate" => "chord"
       case _ => "platform"
     }
-    Visualizer(ct.id, ct.uri, ct.title, name, icon, ct.description, ct.id)
+
+    val supported = ct.uri match {
+      case "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate" => true
+      case "http://linked.opendata.cz/resource/ldvm/visualizer/chord/ChordVisualizerTemplate" => true
+      case _ => false
+    }
+
+    Visualizer(ct.id, ct.uri, ct.title, name, icon, supported, ct.description, ct.id)
   }
 }

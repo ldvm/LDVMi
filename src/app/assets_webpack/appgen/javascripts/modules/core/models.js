@@ -7,6 +7,7 @@ const visualizerProps = {
   description: '',
   uri: '',
   icon: '',
+  supported: false,
   componentTemplateId: 0
 };
 export const Visualizer = Record(visualizerProps);
