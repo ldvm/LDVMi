@@ -1,6 +1,7 @@
 import React from 'react'
 import NarrowedLayout from '../../../components/NarrowedLayout'
 import Headline from '../../../components/Headline'
+import requireSignedIn from '../../auth/containers/requireSignedIn'
 
 const CreateApp = ({ children }) =>
   <NarrowedLayout>
@@ -8,4 +9,4 @@ const CreateApp = ({ children }) =>
     {children}
   </NarrowedLayout>;
 
-export default CreateApp;
+export default requireSignedIn(CreateApp);

@@ -5,7 +5,7 @@ import SignUpForm from '../forms/SignUpForm'
 import { signUp } from '../api'
 import { notification } from '../../core/ducks/notifications'
 import PaperCard from '../../../components/PaperCard'
-import NarrowedLayout from '../../../components/NarrowedLayout'
+import SuperNarrowedLayout from '../../../components/SuperNarrowedLayout'
 import requireSignedOut from '../containers/requireSignedOut'
 import * as routes from '../routes'
 
@@ -26,14 +26,12 @@ const SignUp = ({ dispatch }) => {
   };
 
   return (
-    <NarrowedLayout>
-      <div className="signup-container">
-        <Helmet title="Sign up"  />
-        <PaperCard title="Sign up" subtitle="Fill in some basic info to get your LDVMi account">
-          <SignUpForm onSubmit={onSubmit} />
-        </PaperCard>
-      </div>
-    </NarrowedLayout>
+    <SuperNarrowedLayout>
+      <Helmet title="Sign up"  />
+      <PaperCard title="Sign up" subtitle="Fill in some basic info to get your LDVMi account">
+        <SignUpForm onSubmit={onSubmit} />
+      </PaperCard>
+    </SuperNarrowedLayout>
   )
 };
 
