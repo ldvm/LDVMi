@@ -15,4 +15,9 @@ class ApplicationsRepository extends BaseIdRepository[ApplicationId, Application
     // TODO: implement sorting
     findAll().filter(_.published == true)
   }
+
+  def findByUser(user: User)(implicit session: Session): Seq[Application] = {
+    // TODO: implement sorting
+    findAll().filter(_.userId == user.id.get)
+  }
 }

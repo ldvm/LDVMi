@@ -1,5 +1,6 @@
 import React from 'react'
-import { Route, IndexRoute } from 'react-router'
+import { Route } from 'react-router'
+import { routeActions } from 'redux-simple-router'
 import { getVisualizers } from './../core/ducks/visualizers'
 
 import CreateApp from './pages/CreateApp'
@@ -15,4 +16,12 @@ export default function createRoutes(dispatch) {
       <Route component={Discovery} path="discovery/:userPipelineDiscoveryId" />
     </Route>
   );
+}
+
+export function createAppUrl() {
+  return '/' + MODULE_PATH + '/select-sources';
+}
+
+export function createApp() {
+  return routeActions.push(createAppUrl(id));
 }

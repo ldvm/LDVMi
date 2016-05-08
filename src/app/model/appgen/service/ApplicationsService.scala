@@ -23,4 +23,6 @@ class ApplicationsService(implicit inj: Injector) extends Injectable {
   }
 
   def findPublished(implicit session: Session) = applicationsRepository.findPublished
+
+  def findByUser(user: User)(implicit session: Session): Seq[Application] = applicationsRepository.findByUser(user)
 }

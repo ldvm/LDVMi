@@ -5,6 +5,7 @@ import PaperCard from '../../../components/PaperCard'
 import NarrowedLayout from '../../../components/NarrowedLayout'
 import Headline from '../../../components/Headline'
 import LatestPublishedApps from '../containers/LatestPublishedApps'
+import Userbox from '../components/Userbox'
 
 const Home = () =>
   <NarrowedLayout>
@@ -20,7 +21,7 @@ const Home = () =>
           </PaperCard>
         </Col>
         <Col md={6}>
-
+          <Userbox />
         </Col>
       </Row>
     </Grid>
