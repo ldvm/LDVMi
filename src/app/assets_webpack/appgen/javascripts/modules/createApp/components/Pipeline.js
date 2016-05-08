@@ -50,9 +50,6 @@ const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus, dispatch}) => {
         disabled={isRunning}
         onTouchTap={() => runEvaluation(pipeline.id)}
       />
-      <Button raised icon="pageview" label="Preview"
-        disabled={!isFinished}
-      />
       <Button success raised icon="create" label="Create app"
         disabled={!isFinished}
         onTouchTap={() => dispatch(dialogOpen(createAppDialogName))}

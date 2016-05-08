@@ -71,7 +71,7 @@ class SelectSources extends Component {
     };
 
     return (
-      <PaperCard title="1. Select data sources" subtitle="Select data sources for your new visualization">
+      <PaperCard title="Select data sources" subtitle="Select data sources for your new visualization">
         <Helmet title="Select data sources"  />
         <PromiseResult isLoading={dataSources.isLoading} error={dataSources.error} />
         <PromiseResult isLoading={runDiscoveryStatus.isLoading} error={runDiscoveryStatus.error} />
