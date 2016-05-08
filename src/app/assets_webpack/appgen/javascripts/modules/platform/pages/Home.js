@@ -1,21 +1,29 @@
-import { connect } from 'react-redux'
-import Helmet from 'react-helmet'
 import React, { Component } from 'react'
-import { Link } from 'react-router'
-import { signUpUrl } from '../../auth/routes'
+import Helmet from 'react-helmet'
+import { Grid,  Row, Col } from 'react-flexbox-grid'
+import PaperCard from '../../../components/PaperCard'
 import NarrowedLayout from '../../../components/NarrowedLayout'
 import Headline from '../../../components/Headline'
+import LatestPublishedApps from '../containers/LatestPublishedApps'
 
-const Home = ({ user }) =>
+const Home = () =>
   <NarrowedLayout>
     <Helmet title="LDVMi Application Generator" titleTemplate="%s" />
-    <Headline title="Welcome to LDVMi Application Generator" icon="explore" />
-    <ul>
-      <li><Link to={signUpUrl()}>Sign up!</Link></li>
-      <li><Link to="/create-app/select-sources">Create new application</Link></li>
-    </ul>
-    {user ? ' Signed in ' + user.name : 'No user signed in'}
+    <Headline title="LDVMi Application Generator" icon="explore" />
+    <Grid>
+      <Row>
+        <Col md={6}>
+          <PaperCard title="About" subtitle="LDVMi Application Generator">
+            <div>This generator lets you create interactive apps based on linked RDF data!</div>
+            <p><strong>Check out the latest published applications:</strong></p>
+            <LatestPublishedApps />
+          </PaperCard>
+        </Col>
+        <Col md={6}>
+
+        </Col>
+      </Row>
+    </Grid>
   </NarrowedLayout>;
 
-// TODO: make a selector
-export default connect(state => ({user: state.auth.user}))(Home);
+export default Home;

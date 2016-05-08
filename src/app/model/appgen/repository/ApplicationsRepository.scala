@@ -9,4 +9,10 @@ class ApplicationsRepository extends BaseIdRepository[ApplicationId, Application
   def findById(user: User, id: ApplicationId)(implicit session: Session): Option[Application] = {
     byIdFunc(id).filter(_.userId === user.id.get).firstOption
   }
+
+  def findPublished(implicit session: Session): Seq[Application] = {
+    // TODO: use actual date of publishing
+    // TODO: implement sorting
+    findAll().filter(_.published == true)
+  }
 }

@@ -21,4 +21,6 @@ class ApplicationsService(implicit inj: Injector) extends Injectable {
       case None => None
     }
   }
+
+  def findPublished(implicit session: Session) = applicationsRepository.findPublished
 }

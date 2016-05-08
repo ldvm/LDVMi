@@ -18,7 +18,7 @@ const h1Style = {
   fontWeight: 300,
   color: color,
   marginTop: MaterialTheme.spacing.desktopGutterLess + 'px',
-  marginBottom: MaterialTheme.spacing.desktopGutterLess + 'px'
+  marginBottom: 2 * MaterialTheme.spacing.desktopGutterLess + 'px'
 };
 
 const Headline = ({ title, icon }) =>
