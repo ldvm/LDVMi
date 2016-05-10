@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react'
+import IconMenu from 'material-ui/lib/menus/icon-menu'
+import MenuItem from 'material-ui/lib/menus/menu-item'
 import { Application } from '../models'
 import { Visualizer } from '../../core/models'
 import Button from '../../../components/Button'
@@ -31,13 +33,24 @@ const buttonBarStyle = {
 const ApplicationHeader = ({ application, visualizer, openGeneralSettingsDialog }) => {
   return <BodyPadding>
     <div style={buttonBarStyle}>
-      <Button label="General settings" icon="settings" raised
-        onTouchTap={openGeneralSettingsDialog}
-      />
-      <ToggleLabelEditorButton />
       <PreviewButton application={application} />
       <PublishButton />
-      <Button label="Delete" icon="delete" raised danger />
+      <IconMenu
+        iconButtonElement={<Button raised icon="expand_more" label="More" />}
+        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+      >
+        <MenuItem
+          primaryText="General settings"
+          leftIcon={<Icon icon="settings" />}
+          onTouchTap={openGeneralSettingsDialog}
+        />
+        <ToggleLabelEditorButton />
+        <MenuItem
+          primaryText="Delete"
+          leftIcon={<Icon icon="delete" />}
+        />
+      </IconMenu>
     </div>
 
     <Icon icon={visualizer.icon} style={iconStyle} />

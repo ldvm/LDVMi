@@ -1,15 +1,18 @@
 import React, { PropTypes } from 'react'
-import Button from '../../../components/Button'
+import MenuItem from 'material-ui/lib/menus/menu-item'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import Icon from '../../../components/Icon'
 import { toggleLabelEditor, labelEditorEnabledSelector } from '../ducks/labelEditor'
 
 const ToggleLabelEditorButton = ({ dispatch, enabled }) => {
   const toggle = () => dispatch(toggleLabelEditor(!enabled));
 
-  return enabled ?
-    <Button label="Stop editing labels" icon="mode_edit" raised warning onTouchTap={toggle} /> :
-    <Button label="Edit labels" icon="mode_edit" raised onTouchTap={toggle} />;
+  return <MenuItem
+      primaryText={enabled ? 'Stop editing labels' : 'Edit labels'}
+      leftIcon={<Icon icon="mode_edit" />}
+      onTouchTap={toggle}
+    />
 };
 
 ToggleLabelEditorButton.propTypes = {
