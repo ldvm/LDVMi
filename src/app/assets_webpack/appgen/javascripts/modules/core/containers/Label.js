@@ -12,6 +12,8 @@ class Label extends Component {
 
   componentDidMount() {
     // TODO: possibly load missing label
+    // Prop 'label' might be a "custom label" or passed down from wherever, we don't care,
+    // if it's missing, we will try to load a new one from the server.
   }
 
   render() {
