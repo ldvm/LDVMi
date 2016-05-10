@@ -6,6 +6,7 @@ import Icon from '../../../components/Icon'
 import BodyPadding from '../../../components/BodyPadding'
 import PublishButton from '../containers/PublishButton'
 import PreviewButton from './PreviewButton'
+import ToggleLabelEditorButton from '../containers/ToggleLabelEditorButton'
 
 const iconStyle = {
   float: 'left',
@@ -33,6 +34,7 @@ const ApplicationHeader = ({ application, visualizer, openGeneralSettingsDialog 
       <Button label="General settings" icon="settings" raised
         onTouchTap={openGeneralSettingsDialog}
       />
+      <ToggleLabelEditorButton />
       <PreviewButton application={application} />
       <PublishButton />
       <Button label="Delete" icon="delete" raised danger />
