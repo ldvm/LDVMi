@@ -1,8 +1,10 @@
+import { createSelector } from 'reselect'
 import * as api from '../api'
 import { notification } from '../../core/ducks/notifications'
 import { applicationSelector } from './application'
 import createAction from '../../../misc/createAction'
 import prefix from '../prefix'
+import moduleSelector from '../selector'
 
 // Most visualizers need to be able to save and load configuration. Following action factories represent
 // shared business logic which is identical for all visualizers. The functionality cannot be shared
@@ -21,20 +23,35 @@ import prefix from '../prefix'
 
 // Actions common for all visualizers
 
+export const SAVE_CONFIGURATION_START = prefix('SAVE_CONFIGURATION_START');
 export const SAVE_CONFIGURATION_ERROR = prefix('SAVE_CONFIGURATION_ERROR');
 export const SAVE_CONFIGURATION_SUCCESS = prefix('SAVE_CONFIGURATION_SUCCESS');
 
+export const GET_CONFIGURATION_START = prefix('GET_CONFIGURATION_START');
 export const GET_CONFIGURATION_ERROR = prefix('GET_CONFIGURATION_ERROR');
 export const GET_CONFIGURATION_SUCCESS = prefix('GET_CONFIGURATION_SUCCESS');
 export const GET_CONFIGURATION_RESET = prefix('GET_CONFIGURATION_RESET');
 
+// Selector for configuration common for all visualizers
+
+const commonConfigurationSelector = createSelector(
+  [moduleSelector],
+  state => ({
+    customLabels: state.customLabels.toJS()
+  })
+);
+
 // Custom visualizer-dependent actions
 
-export function createSaveConfiguration(saveAction, configurationSelector) {
+export function createSaveConfiguration(saveAction, visualizerConfigurationSelector) {
   return (id) => {
     return (dispatch, getState) => {
       const appId = id || applicationSelector(getState()).id;
-      const configuration = configurationSelector(getState());
+
+      const configuration = {
+        common: commonConfigurationSelector(getState()),
+        visualizer: visualizerConfigurationSelector(getState())
+      };
 
       const promise = api.saveConfiguration(appId, configuration)
         .then(response => {
@@ -46,6 +63,7 @@ export function createSaveConfiguration(saveAction, configurationSelector) {
           dispatch(createAction(SAVE_CONFIGURATION_ERROR));
           throw e;
         });
+      dispatch(createAction(SAVE_CONFIGURATION_START));
       dispatch(createAction(saveAction, { promise }));
     }
   }
@@ -58,14 +76,15 @@ export function createGetConfiguration(getAction) {
 
       const promise = api.getConfiguration(appId)
         .then(configuration => {
-          dispatch(createAction(GET_CONFIGURATION_SUCCESS, configuration));
-          return configuration;
+          dispatch(createAction(GET_CONFIGURATION_SUCCESS, configuration.common));
+          return configuration.visualizer;
         })
         .catch(e => {
           dispatch(notification('Loading the configuration failed.'));
-          dispatch(createAction(GET_CONFIGURATION_SUCCESS));
+          dispatch(createAction(GET_CONFIGURATION_ERROR));
           throw e;
         });
+      dispatch(createAction(GET_CONFIGURATION_START));
       dispatch(createAction(getAction, { promise }));
     }
   }
