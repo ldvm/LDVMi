@@ -1,7 +1,9 @@
+import { Map } from 'immutable'
 import languages from '../../../misc/languages'
+import { normalizeLocalizedValue } from '../../core/misc/languageUtils'
 
 /** Validates the custom labels form */
-export default function validateCustomLabels(values) {
+export function validateForm(values) {
   const usedLanguages = values.variants.map(variant => variant.lang);
 
   return {
@@ -23,5 +25,10 @@ export default function validateCustomLabels(values) {
       return errors;
     })
   }
+}
+
+export function applyCustomLabel(uri, label, customLabels) {
+  const customLabel = customLabels.get(uri) || new Map();
+  return normalizeLocalizedValue(label).mergeDeep(customLabel);
 }
 

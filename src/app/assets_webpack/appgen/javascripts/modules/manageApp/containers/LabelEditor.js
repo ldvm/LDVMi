@@ -8,6 +8,10 @@ import { customLabelsSelector } from '../ducks/customLabels'
 import { updateCustomLabel } from '../ducks/customLabels'
 import LabelEditorDialog, { dialogName } from '../dialogs/LabelEditorDialog'
 
+// Helpers that convert label variants between the internal reducer format (language => label map)
+// and the form values format (each variant corresponds to two input fields, one for language
+// and one for label).
+
 function variantsFromValues(values) {
   const variants = {};
   for (let variant of values.variants) {

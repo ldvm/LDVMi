@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react'
-import { createStructuredSelector } from 'reselect'
+import { createSelector, createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { dialogOpen } from '../../core/ducks/dialog'
 import { labelEditorEnabledSelector, editResourceLabel } from '../ducks/labelEditor'
 import ActivatedEditableLabel from '../components/ActivatedEditableLabel'
 import Label from '../../core/containers/Label'
 import { dialogName } from '../dialogs/LabelEditorDialog'
+import { customLabelsSelector } from '../ducks/customLabels'
+import { applyCustomLabel } from '../misc/customLabelsUtils'
 
 const EditableLabel = ({ dispatch, uri, label, editorEnabled }) => {
 
-  // TODO: Here inject the custom label
-  
   const edit = () => {
     dispatch(editResourceLabel(uri));
     dispatch(dialogOpen(dialogName));
@@ -33,8 +33,17 @@ EditableLabel.propTypes = {
   editorEnabled: PropTypes.bool.isRequired
 };
 
+const resourceUriSelector = (_, props) => props.uri;
+const labelSelector = (_, props) => props.label;
+
+const customLabelSelector = createSelector(
+  [resourceUriSelector, labelSelector, customLabelsSelector],
+  (resourceUri, label, customLabels) => applyCustomLabel(resourceUri, label, customLabels)
+);
+
 const selector = createStructuredSelector({
-  editorEnabled: labelEditorEnabledSelector
+  editorEnabled: labelEditorEnabledSelector,
+  label: customLabelSelector
 });
 
 export default connect(selector)(EditableLabel);

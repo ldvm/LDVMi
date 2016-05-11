@@ -9,13 +9,13 @@ import Padding from '../../../components/Padding'
 import Dialog from '../../core/containers/Dialog'
 import prefix from '../prefix'
 import VariantFormRow from '../components/labelEditor/VariantFormRow'
-import validate from '../misc/validateCustomLabels'
+import { validateForm } from '../misc/customLabelsUtils'
 
 export const formName = prefix('label-editor-form');
 export const dialogName = prefix('LABEL_EDITOR_DIALOG');
 
 const LabelEditorDialog = props =>  {
-  const { resourceUri, dialogClose, fields: { variants }, handleSubmit, submitting, submitFailed } = props;
+  const { resourceUri, dialogClose, fields: { variants }, handleSubmit, submitFailed } = props;
   const errorText = errorTextFactory(submitFailed);
 
   const actions = [
@@ -66,5 +66,5 @@ LabelEditorDialog.propTypes = {
 export default reduxForm({
   form: formName,
   fields: ['variants[].lang', 'variants[].label'],
-  validate
+  validateForm
 })(LabelEditorDialog);

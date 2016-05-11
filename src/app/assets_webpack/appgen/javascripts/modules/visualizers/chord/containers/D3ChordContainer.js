@@ -10,7 +10,9 @@ import CenteredMessage from '../../../../components/CenteredMessage'
 import loadNodes from './loadNodes'
 import { createAggregatedPromiseStatusSelector } from '../../../core/ducks/promises'
 import { langSelector } from '../../../core/ducks/lang'
-import { extractLocalizedValue } from '../../../core/containers/LocalizedValue'
+import { extractLocalizedValue } from '../../../core/misc/languageUtils'
+import { customLabelsSelector } from '../../../manageApp/ducks/customLabels'
+import { applyCustomLabel } from '../../../manageApp/misc/customLabelsUtils'
 import VisualizationMessage from '../components/VisualizationMessage'
 import { graphSelector } from '../ducks/graph'
 import { publishSettingsSelector } from '../ducks/publishSettings'
@@ -83,12 +85,13 @@ const nodesSelector = (status, props) => props.nodes;
 const nodeStatusSelector = (status, props) => props.status;
 
 const convertedNodesSelector = createSelector(
-  [langSelector, nodesSelector],
-  (lang, nodes) => {
-    // We need to extract labels in correct language for D3.js
+  [langSelector, nodesSelector, customLabelsSelector],
+  (lang, nodes, customLabels) => {
+    // We need to extract labels in correct language and also apply custom labels if
+    // available for D3.js
     return nodes.map(({ uri, label, inDegree, outDegree }) => ({
       uri,
-      label: extractLocalizedValue(lang, label, 'missing label'),
+      label: extractLocalizedValue(lang, applyCustomLabel(uri, label, customLabels), 'missing label'),
       inDegree, outDegree
     })).toJS()
   }
