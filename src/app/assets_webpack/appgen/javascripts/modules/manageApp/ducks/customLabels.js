@@ -17,7 +17,7 @@ export default function customLabelsReducer(state = new Map(), action) {
   switch (action.type) {
     case UPDATE_CUSTOM_LABEL:
       const { resourceUri, variants } = action.payload;
-      return state.set(resourceUri, fromJS(variants));
+      return state.setIn([resourceUri, 'variants'], fromJS(variants));
       break;
   }
   

@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
-import { Grid } from 'react-flexbox-grid'
-import { makeValidator, errorTextFactory } from '../../../misc/formUtils'
+import { errorTextFactory } from '../../../misc/formUtils'
 import CenteredMessage from '../../../components/CenteredMessage'
 import Button from '../../../components/Button'
 import FillInScreen from '../../../components/FillInScreen'
@@ -10,6 +9,7 @@ import Padding from '../../../components/Padding'
 import Dialog from '../../core/containers/Dialog'
 import prefix from '../prefix'
 import VariantFormRow from '../components/labelEditor/VariantFormRow'
+import validate from '../misc/validateCustomLabels'
 
 export const formName = prefix('label-editor-form');
 export const dialogName = prefix('LABEL_EDITOR_DIALOG');
@@ -63,10 +63,8 @@ LabelEditorDialog.propTypes = {
   resourceUri: PropTypes.string.isRequired
 };
 
-const validate = () => {};
-
 export default reduxForm({
   form: formName,
   fields: ['variants[].lang', 'variants[].label'],
-  undefined
+  validate
 })(LabelEditorDialog);
