@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { reduxForm } from 'redux-form'
-import TextField from 'material-ui/lib/text-field'
+import { Grid } from 'react-flexbox-grid'
 import { makeValidator, errorTextFactory } from '../../../misc/formUtils'
 import CenteredMessage from '../../../components/CenteredMessage'
 import Button from '../../../components/Button'
@@ -9,7 +9,7 @@ import IgnoreDialogPadding from '../../../components/IgnoreDialogPadding'
 import Padding from '../../../components/Padding'
 import Dialog from '../../core/containers/Dialog'
 import prefix from '../prefix'
-import LabelLanguageAutoComplete from '../components/LabelLanguageAutoComplete'
+import VariantFormRow from '../components/labelEditor/VariantFormRow'
 
 export const formName = prefix('label-editor-form');
 export const dialogName = prefix('LABEL_EDITOR_DIALOG');
@@ -25,24 +25,32 @@ const LabelEditorDialog = props =>  {
   ];
 
   return (
-    <Dialog name={dialogName} title="Custom label editor" actions={actions}>
+    <Dialog name={dialogName} title="Custom labels editor" actions={actions}>
       <IgnoreDialogPadding horizontal vertical>
-        <FillInScreen marginBottom={150}>
+        <FillInScreen marginBottom={120}>
           <Padding space={3}>
             <form onSubmit={handleSubmit}>
-              Hey! {resourceUri}
+              <div>Labels defined here take precedence over the default ones.</div>
+              <p>Resource: <code>{resourceUri}</code></p>
 
               {!variants .length && <CenteredMessage>No custom labels yet.</CenteredMessage>}
 
               {variants.map((variant, index) =>
-                <div key={index}>
-                  <TextField floatingLabelText="Label" {...variant.label} {...errorText(variant.label)} />
-                  {' '}@
-                  <LabelLanguageAutoComplete floatingLabelText="Language" {...variant.lang} {...errorText(variant.lang)} />
-                  <Button label="Remove" raised danger icon="remove_circle" onTouchTap={() => variants.removeField(index)} />
-                </div>
+                <VariantFormRow
+                  key={index}
+                  label={{ ...variant.label, ...errorText(variant.label)}}
+                  lang={{ ...variant.lang, ...errorText(variant.lang)}}
+                  remove={() => variants.removeField(index)}
+                />
               )}
-              <Button label="Add label" raised  icon="add" onTouchTap={() => variants.addField()} />
+
+              <CenteredMessage>
+                <Button raised
+                  label="Add label variant"
+                  icon="add"
+                  onTouchTap={() => variants.addField()}
+                />
+              </CenteredMessage>
             </form>
           </Padding>
         </FillInScreen>

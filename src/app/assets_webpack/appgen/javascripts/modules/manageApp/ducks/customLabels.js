@@ -8,7 +8,7 @@ import moduleSelector from '../selector'
 
 export const UPDATE_CUSTOM_LABEL = prefix('UPDATE_CUSTOM_LABEL');
 export function updateCustomLabel(resourceUri, variants) {
-  return createAction(UPDATE_CUSTOM_LABEL, { [resourceUri]: { variants }});
+  return createAction(UPDATE_CUSTOM_LABEL, { resourceUri, variants });
 }
 
 // Reducer
@@ -16,7 +16,8 @@ export function updateCustomLabel(resourceUri, variants) {
 export default function customLabelsReducer(state = new Map(), action) {
   switch (action.type) {
     case UPDATE_CUSTOM_LABEL:
-      return state.mergeDeep(fromJS(action.payload));
+      const { resourceUri, variants } = action.payload;
+      return state.set(resourceUri, fromJS(variants));
       break;
   }
   

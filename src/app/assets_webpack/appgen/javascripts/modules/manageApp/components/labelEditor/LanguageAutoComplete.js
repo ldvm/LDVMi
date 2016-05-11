@@ -1,8 +1,8 @@
 import React from 'react'
 import { fromJS } from 'immutable'
-import AutoComplete from 'material-ui/lib/auto-complete'
-import MenuItem from 'material-ui/lib/menus/menu-item'
-import languages from '../../../misc/languages'
+import AutoComplete from '../../../../../../../../node_modules/material-ui/lib/auto-complete'
+import MenuItem from '../../../../../../../../node_modules/material-ui/lib/menus/menu-item'
+import languages from '../../../../misc/languages'
 
 const dataSource = fromJS(languages).map((language, code) => ({
   text: code,
@@ -21,7 +21,7 @@ const filter = (searchText, code) => {
     (code.includes(searchText) || languages[code].toLowerCase().includes(searchText.toLowerCase()));
 };
 
-const LabelLanguageAutoComplete = props => {
+const LanguageAutoComplete = props => {
   // The autocomplete is not really compatible with the API of standard text input.
   // Therefore we need to bind autocomplete events to those expected from a standard text input.
   return <AutoComplete
@@ -35,4 +35,4 @@ const LabelLanguageAutoComplete = props => {
   />
 };
 
-export default LabelLanguageAutoComplete;
+export default LanguageAutoComplete;

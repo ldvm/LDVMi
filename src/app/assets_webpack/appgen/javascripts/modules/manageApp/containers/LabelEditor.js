@@ -6,7 +6,7 @@ import { dialogClose } from '../../core/ducks/dialog'
 import { labelEditorResourceUriSelector } from '../ducks/labelEditor'
 import { customLabelsSelector } from '../ducks/customLabels'
 import { updateCustomLabel } from '../ducks/customLabels'
-import LabelEditorDialog from '../dialogs/LabelEditorDialog'
+import LabelEditorDialog, { dialogName } from '../dialogs/LabelEditorDialog'
 
 function variantsFromValues(values) {
   const variants = {};
@@ -30,14 +30,14 @@ const LabelEditor = ({ dispatch, resourceUri, variants }) => {
   const handleSubmit = values => {
     const variants = variantsFromValues(values);
     dispatch(updateCustomLabel(resourceUri, variants));
+    dispatch(dialogClose(dialogName));
   };
 
   const initialValues = variantsToValues(variants);
-  console.log(initialValues);
 
   return <LabelEditorDialog
       resourceUri={resourceUri}
-      dialogClose={dialogName => dispatch(dialogClose(dialogName))}
+      dialogClose={() => dispatch(dialogClose(dialogName))}
       onSubmit={handleSubmit}
       initialValues={initialValues}
     />
