@@ -9,6 +9,7 @@ import { PromiseStatus } from '../../core/models'
 import PromiseResult from '../../core/components/PromiseResult'
 import ApplicationHeader from '../components/ApplicationHeader'
 import GeneralSettings from '../containers/GeneralSettings'
+import LabelEditor from '../containers/LabelEditor'
 import CenteredMessage from '../../../components/CenteredMessage'
 import Alert from '../../../components/Alert'
 import BodyPadding from '../../../components/BodyPadding'
@@ -88,6 +89,7 @@ class Application extends Component {
         openGeneralSettingsDialog={openGeneralSettingsDialog}
       />
       <GeneralSettings application={application} />
+      <LabelEditor />
 
       {!children &&
         <CenteredMessage>Loading visualizer configurator...</CenteredMessage>}
