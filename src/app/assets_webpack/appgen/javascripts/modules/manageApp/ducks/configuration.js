@@ -76,8 +76,8 @@ export function createGetConfiguration(getAction) {
 
       const promise = api.getConfiguration(appId)
         .then(configuration => {
-          dispatch(createAction(GET_CONFIGURATION_SUCCESS, configuration.common));
-          return configuration.visualizer;
+          dispatch(createAction(GET_CONFIGURATION_SUCCESS, configuration.common || {}));
+          return configuration.visualizer || {};
         })
         .catch(e => {
           dispatch(notification('Loading the configuration failed.'));
