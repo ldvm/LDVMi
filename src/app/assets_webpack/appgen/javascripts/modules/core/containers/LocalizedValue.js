@@ -22,4 +22,5 @@ const selector = createSelector(
   })
 );
 
+// TODO: switch to per instance memoization, this doesn't work
 export default connect(selector)(makePureRender(LocalizedValue));

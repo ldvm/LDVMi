@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
-import { createSelector, createStructuredSelector } from 'reselect'
+import { Map } from 'immutable'
+import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { dialogOpen } from '../../core/ducks/dialog'
 import { labelEditorEnabledSelector, editResourceLabel } from '../ducks/labelEditor'
@@ -8,8 +9,10 @@ import Label from '../../core/containers/Label'
 import { dialogName } from '../dialogs/LabelEditorDialog'
 import { customLabelsSelector } from '../ducks/customLabels'
 import { applyCustomLabel } from '../misc/customLabelsUtils'
+import makePureRender from '../../../misc/makePureRender'
 
-const EditableLabel = ({ dispatch, uri, label, editorEnabled }) => {
+const EditableLabel = ({ dispatch, uri, label, editorEnabled, customLabels }) => {
+  const customLabel = applyCustomLabel(uri, label, customLabels) ;
 
   const edit = () => {
     dispatch(editResourceLabel(uri));
@@ -17,12 +20,12 @@ const EditableLabel = ({ dispatch, uri, label, editorEnabled }) => {
   };
 
   if (!editorEnabled) {
-    return <Label uri={uri} label={label} />;
+    return <Label uri={uri} label={customLabel} />;
   }
 
   return (
     <ActivatedEditableLabel edit={edit}>
-      <Label uri={uri} label={label} />
+      <Label uri={uri} label={customLabel} />
     </ActivatedEditableLabel>
   )
 };
@@ -30,20 +33,13 @@ const EditableLabel = ({ dispatch, uri, label, editorEnabled }) => {
 EditableLabel.propTypes = {
   uri: PropTypes.string.isRequired,
   label: PropTypes.any.isRequired,
-  editorEnabled: PropTypes.bool.isRequired
+  editorEnabled: PropTypes.bool.isRequired,
+  customLabels: PropTypes.instanceOf(Map).isRequired
 };
-
-const resourceUriSelector = (_, props) => props.uri;
-const labelSelector = (_, props) => props.label;
-
-const customLabelSelector = createSelector(
-  [resourceUriSelector, labelSelector, customLabelsSelector],
-  (resourceUri, label, customLabels) => applyCustomLabel(resourceUri, label, customLabels)
-);
 
 const selector = createStructuredSelector({
   editorEnabled: labelEditorEnabledSelector,
-  label: customLabelSelector
+  customLabels: customLabelsSelector
 });
 
-export default connect(selector)(EditableLabel);
+export default connect(selector)(makePureRender(EditableLabel));
