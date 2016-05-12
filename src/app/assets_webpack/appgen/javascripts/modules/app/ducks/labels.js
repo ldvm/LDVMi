@@ -1,7 +1,11 @@
+import { Map, fromJS } from 'immutable'
+import { createSelector } from 'reselect'
 import prefix from '../../core/prefix'
 import createAction from '../../../misc/createAction'
 import * as api from '../api'
 import withApplicationId from '../misc/withApplicationId'
+import { GET_APPLICATION_START } from './application'
+import moduleSelector from '../selector'
 
 // Actions
 
@@ -34,3 +38,25 @@ export function getLabels(resourceUris) {
   })
 }
 
+// Reducer
+
+const initialState = new Map();
+
+export default function labelsReducer(state = initialState, action) {
+  switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
+    case GET_LABELS_SUCCESS:
+      return state.mergeDeep(fromJS(action.payload));
+  }
+  return state;
+}
+
+
+// Selectors
+
+export const labelsSelector = createSelector(
+  [moduleSelector],
+  parentState => parentState.labels
+);

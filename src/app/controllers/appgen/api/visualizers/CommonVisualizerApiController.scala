@@ -16,10 +16,13 @@ class CommonVisualizerApiController(implicit inj: Injector) extends VisualizerAp
     withEvaluation(ApplicationId(id)) { evaluation =>
       val labels = json.resourceUris.map(uri => {
         // First try to get the label from pipeline output and if that fails
-        // try standard dereferencing.
+        // try standard dereferencing. We're using this crazy construct to get 'None's for
+        // empty localized values (they will translate in nulls on the client).
         val label = visualizationService
           .getLabels(evaluation, uri)
-          .orElse(visualizationService.getLabels(uri))
+          .flatMap(l => if (l.size == 0) visualizationService.getLabels(uri) else Some(l))
+          .flatMap(l => if (l.size == 0) None else Some(l))
+
         (uri, label)
       }).toMap
       Future(Ok(SuccessResponse(data = Seq("labels" -> labels))))

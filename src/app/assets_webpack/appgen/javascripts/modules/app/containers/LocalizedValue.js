@@ -1,26 +1,24 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { createSelector } from 'reselect'
+import { createStructuredSelector } from 'reselect'
 import makePureRender from '../../../misc/makePureRender'
 import { langSelector } from '../ducks/lang'
 import { extractLocalizedValue } from '../misc/languageUtils'
 
-const LocalizedValue = ({ value }) => (
-  <span>{value}</span>
-);
-
-LocalizedValue.propTypes = {
-  value: PropTypes.string.isRequired,
+const LocalizedValue = ({ lang, value, defaultValue, silent }) => {
+  const extracted = extractLocalizedValue(lang, value, defaultValue);
+  return <span>{extracted || (silent ? '' : '(missing value)')}</span>;
 };
 
-const propsSelector = (_, props) => props;
+LocalizedValue.propTypes = {
+  lang: PropTypes.string.isRequired,
+  value: PropTypes.any,
+  defaultValue: PropTypes.string,
+  silent: PropTypes.bool
+};
 
-const selector = createSelector(
-  [langSelector, propsSelector],
-  (lang, { value, defaultValue, silent }) => ({
-    value: extractLocalizedValue(lang, value, defaultValue) || (silent ? '' : '(missing value)')
-  })
-);
+const selector = createStructuredSelector({
+  lang: langSelector
+});
 
-// TODO: switch to per instance memoization, this doesn't work
 export default connect(selector)(makePureRender(LocalizedValue));
