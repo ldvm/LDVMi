@@ -7,7 +7,7 @@ import { getLatestUserApps, getLatestUserAppsReset, latestUserAppsSelector, late
 import PromiseResult from '../../core/components/PromiseResult'
 import { PromiseStatus } from '../../core/models'
 import CenteredMessage from '../../../components/CenteredMessage'
-import { applicationUrl } from '../../manageApp/routes'
+import { applicationUrl } from '../../app/configuratorRoutes'
 
 class LatestUserApps extends Component {
   static propTypes = {

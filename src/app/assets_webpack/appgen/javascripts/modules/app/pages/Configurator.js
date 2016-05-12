@@ -7,7 +7,7 @@ import { Application as ApplicationModel } from '../models'
 import { Visualizer } from '../../core/models'
 import { PromiseStatus } from '../../core/models'
 import PromiseResult from '../../core/components/PromiseResult'
-import ApplicationHeader from '../components/ApplicationHeader'
+import ConfiguratorHeader from '../components/ConfiguratorHeader'
 import GeneralSettings from '../containers/GeneralSettings'
 import LabelEditor from '../containers/LabelEditor'
 import CenteredMessage from '../../../components/CenteredMessage'
@@ -83,7 +83,7 @@ class Application extends Component {
 
     return <div>
       <Helmet title={application.name} />
-      <ApplicationHeader
+      <ConfiguratorHeader
         application={application}
         visualizer={visualizer}
         openGeneralSettingsDialog={openGeneralSettingsDialog}

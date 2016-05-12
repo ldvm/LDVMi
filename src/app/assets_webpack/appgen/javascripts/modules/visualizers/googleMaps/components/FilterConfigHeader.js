@@ -6,7 +6,7 @@ import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import { Filter } from '../models'
 import Padding from '../../../../components/Padding'
-import EditableLabel from '../../../manageApp/containers/EditableLabel'
+import EditableLabel from '../../../app/containers/EditableLabel'
 import * as theme from '../../../../misc/theme'
 import { filterTypes as types, optionModes as modes } from '../models'
 

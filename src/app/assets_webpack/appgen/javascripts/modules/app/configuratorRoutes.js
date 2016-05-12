@@ -1,14 +1,13 @@
 import React from 'react'
 import { Route } from 'react-router'
 import { routeActions } from 'redux-simple-router'
-import Application from './pages/Application'
+import Configurator from './pages/Configurator'
 import visualizerConfiguratorsRoutes from '../visualizers/routes'
-
-const MODULE_PATH = 'manage-app';
+import { path } from './definition'
 
 export default function createRoutes(dispatch) {
   return (
-    <Route component={Application} path={MODULE_PATH + '/:id'}>
+    <Route component={Configurator} path={path + '/:id'}>
       {visualizerConfiguratorsRoutes(dispatch)}
     </Route>
   );
@@ -17,7 +16,7 @@ export default function createRoutes(dispatch) {
 // "Named" routes
 
 export function applicationUrl(id) {
-  return '/' + MODULE_PATH + '/' + id;
+  return '/' + path + '/' + id;
 }
 
 export function application(id) {

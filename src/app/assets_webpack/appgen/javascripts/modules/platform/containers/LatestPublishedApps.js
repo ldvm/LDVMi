@@ -6,7 +6,7 @@ import { getLatestPublishedApps, getLatestPublishedAppsReset, latestPublishedApp
 import PromiseResult from '../../core/components/PromiseResult'
 import { PromiseStatus } from '../../core/models'
 import CenteredMessage from '../../../components/CenteredMessage'
-import { applicationUrl } from '../../publishedApp/routes'
+import { applicationUrl } from '../../app/applicationRoutes'
 
 class LatestPublishedApps extends Component {
   static propTypes = {

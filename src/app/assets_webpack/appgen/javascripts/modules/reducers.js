@@ -1,6 +1,6 @@
 import authReducer from './auth/reducer'
 import createAppReducer from './createApp/reducer'
-import manageAppReducer from './manageApp/reducer'
+import appReducer from './app/reducer'
 import coreReducer from './core/reducer'
 import visualizersReducer from './visualizers/reducer'
 import platformReducer from './platform/reducer'
@@ -10,6 +10,6 @@ export default {
   core: coreReducer,
   platform: platformReducer,
   createApp: createAppReducer,
-  manageApp: manageAppReducer,
+  app: appReducer,
   visualizers: visualizersReducer
 };

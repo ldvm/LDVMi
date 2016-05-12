@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import moduleSelector from '../selector'
-import { createDirtyReducer } from '../../../manageApp/ducks/dirty'
+import { createDirtyReducer } from '../../../app/ducks/dirty'
 import { CONFIGURE_FILTER } from './filtersConfig'
 import { CONFIGURE_OPTION, CONFIGURE_ALL_OPTIONS } from './optionsConfig'
 import { UPDATE_PUBLISH_SETTINGS } from './publishSettings'

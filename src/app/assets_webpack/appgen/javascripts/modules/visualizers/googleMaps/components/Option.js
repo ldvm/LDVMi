@@ -4,7 +4,7 @@ import Checkbox from 'material-ui/lib/checkbox';
 import RadioButton from 'material-ui/lib/radio-button';
 import { Option as OptionModel } from '../models'
 import Padding from '../../../../components/Padding'
-import EditableLabel from '../../../manageApp/containers/EditableLabel'
+import EditableLabel from '../../../app/containers/EditableLabel'
 import makePureRender from '../../../../misc/makePureRender'
 import { optionModes as modes, filterTypes as types } from  '../models'
 

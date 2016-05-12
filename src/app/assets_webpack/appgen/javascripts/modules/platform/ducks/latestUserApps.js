@@ -5,7 +5,7 @@ import createAction from '../../../misc/createAction'
 import prefix from '../prefix'
 import * as api from '../api'
 import moduleSelector from '../selector'
-import { Application } from '../../manageApp/models'
+import { Application } from '../../app/models'
 import storageReducerFactory from '../../../misc/storageReducerFactory'
 
 // Actions

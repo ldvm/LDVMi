@@ -5,7 +5,7 @@ import prefix from '../prefix'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import { moduleSelector } from '../selector'
 import { Property } from '../models'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
 // Actions
 

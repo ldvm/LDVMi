@@ -3,7 +3,7 @@ import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import { Filter, Option } from '../models'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
 // Actions
 

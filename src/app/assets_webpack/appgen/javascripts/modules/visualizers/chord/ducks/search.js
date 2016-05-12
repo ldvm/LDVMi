@@ -3,12 +3,12 @@ import { List, fromJS } from 'immutable'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import createAction from '../../../../misc/createAction'
 import prefix from '../prefix'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import * as api from '../api'
 import moduleSelector from '../selector'
 import { ResourceThroughLens } from '../models'
 import storageReducerFactory from '../../../../misc/storageReducerFactory'
-import withApplicationId from '../../../manageApp/misc/withApplicationId'
+import withApplicationId from '../../../app/misc/withApplicationId'
 
 // Actions
 

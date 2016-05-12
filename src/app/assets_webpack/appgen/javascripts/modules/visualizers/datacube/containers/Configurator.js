@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Application } from '../../../manageApp/models'
+import { Application } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
 import ConfiguratorToolbar from '../components/ConfiguratorToolbar'
 

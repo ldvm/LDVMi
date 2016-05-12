@@ -4,7 +4,7 @@ import prefix from '../prefix'
 import { arrayToObject } from '../../../../misc/utils'
 import { createPromiseStatusSelector, createPromiseStatusesSelector, createAllPromiseStatusSelector } from '../../../core/ducks/promises'
 import { SkosConcept } from '../models'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
 // Actions
 

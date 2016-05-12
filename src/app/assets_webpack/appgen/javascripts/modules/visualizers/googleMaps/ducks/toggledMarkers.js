@@ -3,7 +3,7 @@ import { Set } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import moduleSelector from '../selector'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
 // Actions
 

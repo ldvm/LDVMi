@@ -1,7 +1,7 @@
 import React from 'react'
 import createNotFoundRoutes from './NotFound'
 import { Visualizer, VisualizerWithPipelines } from '../../core/models'
-import { applicationUrl } from '../../manageApp/routes'
+import { applicationUrl } from '../../app/configuratorRoutes'
 
 class ConfiguratorsRouteFactory {
   constructor() {

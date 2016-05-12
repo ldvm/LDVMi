@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { Application } from '../../manageApp/models'
+import { Application } from '../models'
 import { Visualizer } from '../../core/models'
 import BodyPadding from '../../../components/BodyPadding'
 import Icon from '../../../components/Icon'

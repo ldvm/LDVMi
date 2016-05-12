@@ -5,7 +5,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item';
 import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import { Option } from '../models'
-import EditableLabel from '../../../manageApp/containers/EditableLabel'
+import EditableLabel from '../../../app/containers/EditableLabel'
 import Padding from '../../../../components/Padding'
 import Icon from '../../../../components/Icon'
 import makePureRender from '../../../../misc/makePureRender'

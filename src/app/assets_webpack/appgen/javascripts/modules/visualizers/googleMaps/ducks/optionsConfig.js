@@ -4,7 +4,7 @@ import createAction from '../../../../misc/createAction'
 import { CONFIGURE_FILTER } from './filtersConfig'
 import { Option, optionModes as modes } from '../models'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
 /**
  * Check the option config update and make sure that the 'selected' property is consistent with

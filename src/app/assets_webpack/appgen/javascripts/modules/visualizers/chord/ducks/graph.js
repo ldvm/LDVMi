@@ -4,9 +4,9 @@ import moduleSelector from '../selector'
 import createAction from '../../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import { Graph } from '../models'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import * as api from '../api'
-import withApplicationId from '../../../manageApp/misc/withApplicationId'
+import withApplicationId from '../../../app/misc/withApplicationId'
 
 // Actions
 

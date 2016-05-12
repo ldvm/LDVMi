@@ -30,7 +30,7 @@ const buttonBarStyle = {
   float: 'right'
 };
 
-const ApplicationHeader = ({ application, visualizer, openGeneralSettingsDialog }) => {
+const ConfiguratorHeader = ({ application, visualizer, openGeneralSettingsDialog }) => {
   return <BodyPadding>
     <div style={buttonBarStyle}>
       <PreviewButton application={application} />
@@ -59,10 +59,10 @@ const ApplicationHeader = ({ application, visualizer, openGeneralSettingsDialog 
   </BodyPadding>
 };
 
-ApplicationHeader.propTypes = {
+ConfiguratorHeader.propTypes = {
   application: PropTypes.instanceOf(Application).isRequired,
   visualizer: PropTypes.instanceOf(Visualizer).isRequired,
   openGeneralSettingsDialog: PropTypes.func.isRequired
 };
 
-export default ApplicationHeader;
+export default ConfiguratorHeader;

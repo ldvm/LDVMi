@@ -4,9 +4,9 @@ import createAction from '../../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import moduleSelector from '../selector'
 import prefix from '../prefix'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import * as api from '../api'
-import withApplicationId from '../../../manageApp/misc/withApplicationId'
+import withApplicationId from '../../../app/misc/withApplicationId'
 import { selectedListSelector } from './selectedList'
 
 // Actions
