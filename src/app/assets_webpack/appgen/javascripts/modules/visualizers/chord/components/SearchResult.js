@@ -6,7 +6,7 @@ import TableHeaderColumn from 'material-ui/lib/table/table-header-column'
 import TableBody from 'material-ui/lib/table/table-body'
 import TableRow from 'material-ui/lib/table/table-row'
 import { Lens } from '../models'
-import Label from '../../../core/containers/Label'
+import Label from '../../../app/containers/Label'
 import IgnoreDialogPadding from '../../../../components/IgnoreDialogPadding'
 import SearchResultRow from './SearchResultRow'
 

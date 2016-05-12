@@ -1,6 +1,6 @@
 import { Map } from 'immutable'
 import languages from '../../../misc/languages'
-import { normalizeLocalizedValue } from '../../core/misc/languageUtils'
+import { normalizeLocalizedValue } from './languageUtils'
 
 /** Validates the custom labels form */
 export function validateForm(values) {

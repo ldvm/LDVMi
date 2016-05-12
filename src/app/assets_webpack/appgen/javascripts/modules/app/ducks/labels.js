@@ -1,7 +1,7 @@
-import prefix from '../prefix'
+import prefix from '../../core/prefix'
 import createAction from '../../../misc/createAction'
 import * as api from '../api'
-import withApplicationId from '../../app/misc/withApplicationId'
+import withApplicationId from '../misc/withApplicationId'
 
 // Actions
 
