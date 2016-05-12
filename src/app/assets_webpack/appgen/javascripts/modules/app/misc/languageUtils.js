@@ -13,8 +13,9 @@ export function extractLocalizedValue(lang, value, defaultValue = null) {
       return value.get('variants').get(lang);
     } else if (value.get('variants').has(NOLANG)) {
       return value.get('variants').get(NOLANG);
+    } else if (value.get('variants').size > 0) {
+      return value.get('variants').first();
     } else {
-      // TODO: return first available value
       return defaultValue;
     }
   } else if (value.variants) {
@@ -22,8 +23,9 @@ export function extractLocalizedValue(lang, value, defaultValue = null) {
       return value.variants[lang];
     } else if (NOLANG in value.variants) {
       return value.variants[NOLANG];
+    } else if (Object.keys(value.variants).length > 0) {
+      return value.variants[Object.keys(value.variants)[0]];
     } else {
-      // TODO: return first available value
       return defaultValue;
     }
   } else if (value instanceof String || typeof value == "string") {
