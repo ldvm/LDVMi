@@ -15,13 +15,14 @@ const containerStyle = {
 
 const iconContainerStyle = {
   position: 'absolute',
-  right: '-40px',
-  top: '50%',
-  marginTop: '-21px',
+  right: '-38px',
+  bottom: 0,
+  marginBottom: '-15px',
   zIndex: 999
 };
 
 const iconStyle = {
+  backgroundColor: 'white',
   boxShadow: boxShadow,
   borderRadius: borderRadius,
   width: '18px',

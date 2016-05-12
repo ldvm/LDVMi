@@ -3,6 +3,7 @@ import { Record } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
 import moduleSelector from '../selector'
+import { GET_APPLICATION_START } from './application'
 
 // Actions
 
@@ -25,6 +26,9 @@ const initialState = new (Record({
 
 export default function labelEditorReducer(state = initialState, action) {
   switch (action.type) {
+    case GET_APPLICATION_START:
+      return initialState;
+
     case TOGGLE_LABEL_EDITOR:
     case EDIT_RESOURCE_LABEL:
       return state.merge(action.payload);
