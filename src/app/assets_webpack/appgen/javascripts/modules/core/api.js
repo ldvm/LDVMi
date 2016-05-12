@@ -8,3 +8,7 @@ export async function getVisualizers() {
   return result.data.visualizers;
 }
 
+export async function getLabels(appId, resourceUris) {
+  const result = await rest('commonVisualizer/getLabels/' + appId, { resourceUris });
+  return result.data.labels;
+}

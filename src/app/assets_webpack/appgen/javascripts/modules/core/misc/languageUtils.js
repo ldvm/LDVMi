@@ -48,3 +48,7 @@ export function normalizeLocalizedValue(value) {
     return normalizedEmpty;
   }
 }
+
+export function isLocalizedValueEmpty(value) {
+  return normalizeLocalizedValue(value).get('variants').size === 0;
+}
