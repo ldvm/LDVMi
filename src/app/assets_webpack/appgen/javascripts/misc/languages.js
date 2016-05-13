@@ -1,3 +1,4 @@
+// Extensive list of "supported" valid languages.
 export default {
   ab: 'Abkhazian',
   aa: 'Afar',

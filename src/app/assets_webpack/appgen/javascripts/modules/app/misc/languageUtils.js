@@ -115,3 +115,11 @@ export function extractLanguages(value) {
     return new Set();
   }
 }
+
+/**
+ * Return preferred language in the browser environment.
+ * @returns {string} language code
+ */
+export function getBrowserPreferredLanguage() {
+  return (window.navigator && window.navigator.language) || 'en';
+}

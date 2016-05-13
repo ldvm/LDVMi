@@ -9,6 +9,7 @@ import BodyPadding from '../../../components/BodyPadding'
 import PublishButton from '../containers/PublishButton'
 import PreviewButton from './PreviewButton'
 import ToggleLabelEditorButton from '../containers/ToggleLabelEditorButton'
+import LanguageSwitch from '../containers/LanguageSwitch'
 
 const iconStyle = {
   float: 'left',
@@ -33,6 +34,7 @@ const buttonBarStyle = {
 const ConfiguratorHeader = ({ application, visualizer, openGeneralSettingsDialog }) => {
   return <BodyPadding>
     <div style={buttonBarStyle}>
+      <LanguageSwitch />{' '}
       <PreviewButton application={application} />
       <PublishButton />
       <IconMenu

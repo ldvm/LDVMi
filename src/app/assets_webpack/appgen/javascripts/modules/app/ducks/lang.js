@@ -6,19 +6,19 @@ import moduleSelector from '../selector'
 import createAction from '../../../misc/createAction'
 import prefix from '../prefix'
 import { extractLanguages } from '../misc/languageUtils'
+import { getBrowserPreferredLanguage } from '../misc/languageUtils'
 
 // Actions
 
-export const CHANGE_LANGUAGE = prefix('CHANGE_LANGUAGE');
-
-export function changeLanguage(lang) {
-  return createAction(CHANGE_LANGUAGE, { lang });
+export const SELECT_LANGUAGE = prefix('SELECT_LANGUAGE');
+export function selectLanguage(lang) {
+  return createAction(SELECT_LANGUAGE, { lang });
 }
 
 // Reducers
 
-const currentReducer = (state = 'cs', action) => {
-  if (action.type == CHANGE_LANGUAGE) {
+const selectedReducer = (state = '', action) => {
+  if (action.type == SELECT_LANGUAGE) {
     return action.payload.lang;
   }
   return state;
@@ -43,7 +43,7 @@ const availableReducer = (state = new Set(), action) => {
 };
 
 export default combineReducers({
-  current: currentReducer,
+  selected: selectedReducer,
   available: availableReducer
 });
 
@@ -51,5 +51,19 @@ export default combineReducers({
 
 const selector = createSelector([moduleSelector], state => state.lang);
 
-export const langSelector = createSelector([selector], state => state.current);
+export const langSelector = createSelector([selector], state => {
+  const { selected, available } = state;
+
+  // We first try to use the actually selected language, if that fails we try to use the
+  // language preferred by the browser and even if that fails, we fall back to the first
+  // available language.
+  for (let candidate of [selected, getBrowserPreferredLanguage(), available.first()]) {
+    if (available.has(candidate)) {
+      return candidate;
+    }
+  }
+
+  return getBrowserPreferredLanguage();
+});
+
 export const availableLangsSelector = createSelector([selector], state => state.available);
