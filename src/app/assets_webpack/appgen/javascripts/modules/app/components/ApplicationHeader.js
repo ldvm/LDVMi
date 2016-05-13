@@ -3,6 +3,7 @@ import { Application } from '../models'
 import { Visualizer } from '../../core/models'
 import BodyPadding from '../../../components/BodyPadding'
 import Icon from '../../../components/Icon'
+import LanguageSwitch from '../containers/LanguageSwitch'
 
 const iconStyle = {
   float: 'left',
@@ -20,8 +21,16 @@ const appDescriptionStyle = {
   color: 'rgba(0, 0, 0, 0.6)'
 };
 
+const buttonBarStyle = {
+  float: 'right'
+};
+
 const ApplicationHeader = ({ application, visualizer }) => {
   return <BodyPadding>
+    <div style={buttonBarStyle}>
+      <LanguageSwitch />
+    </div>
+
     <Icon icon={visualizer.icon} style={iconStyle} />
     <h1 style={appNameStyle}>{application.name}</h1>
     <div style={appDescriptionStyle}>{application.description}</div>
