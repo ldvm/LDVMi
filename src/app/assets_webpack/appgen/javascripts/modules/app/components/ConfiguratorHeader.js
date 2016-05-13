@@ -1,10 +1,11 @@
-import React, { Component, PropTypes } from 'react'
+import React, { PropTypes } from 'react'
 import IconMenu from 'material-ui/lib/menus/icon-menu'
 import MenuItem from 'material-ui/lib/menus/menu-item'
 import { Application } from '../models'
 import { Visualizer } from '../../core/models'
 import Button from '../../../components/Button'
 import Icon from '../../../components/Icon'
+import Gap from '../../../components/Gap'
 import BodyPadding from '../../../components/BodyPadding'
 import PublishButton from '../containers/PublishButton'
 import PreviewButton from './PreviewButton'
@@ -34,7 +35,8 @@ const buttonBarStyle = {
 const ConfiguratorHeader = ({ application, visualizer, openGeneralSettingsDialog }) => {
   return <BodyPadding>
     <div style={buttonBarStyle}>
-      <LanguageSwitch />{' '}
+      <LanguageSwitch />
+      <Gap space={2} />
       <PreviewButton application={application} />
       <PublishButton />
       <IconMenu
