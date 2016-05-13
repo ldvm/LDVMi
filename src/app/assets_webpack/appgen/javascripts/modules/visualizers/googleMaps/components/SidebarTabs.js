@@ -10,7 +10,7 @@ import Button from '../../../../components/Button'
 import Padding from '../../../../components/Padding'
 import FilterConfig from '../containers/FilterConfig'
 import FilterPreview from '../containers/FilterPreview'
-import { Application } from '../../../manageApp/models'
+import { Application } from '../../../app/models'
 
 const SidebarTabs = ({ filters }) => {
 

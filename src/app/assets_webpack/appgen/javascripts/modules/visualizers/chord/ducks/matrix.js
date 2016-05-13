@@ -3,10 +3,10 @@ import createAction from '../../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import moduleSelector from '../selector'
 import prefix from '../prefix'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import { VISUALIZE_SAMPLE_NODES_SUCCESS, VISUALIZE_SELECTED_NODES } from './visualizedNodes'
 import * as api from '../api'
-import withApplicationId from '../../../manageApp/misc/withApplicationId'
+import withApplicationId from '../../../app/misc/withApplicationId'
 
 // Actions
 

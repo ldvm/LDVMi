@@ -3,7 +3,7 @@ import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import moduleSelector from '../selector'
 import { listsSelector, ADD_LIST, REMOVE_LIST } from './lists'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
 
 // Actions

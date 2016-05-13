@@ -12,7 +12,7 @@ import { PromiseStatus } from '../../core/models'
 import CreateAppDialog from '../dialogs/CreateAppDialog'
 import { notification } from '../../core/ducks/notifications'
 import * as api from '../api'
-import * as routes from '../../manageApp/routes'
+import * as routes from '../../app/configuratorRoutes'
 
 const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus, dispatch}) => {
   const lastEvaluation = pipeline.evaluations.get(0);

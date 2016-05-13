@@ -7,8 +7,8 @@ import { notification } from '../../../core/ducks/notifications'
 import createAction from '../../../../misc/createAction'
 import * as api from '../api'
 import { filtersSelector } from './filters'
-import { applicationSelector } from './../../../manageApp/ducks/application'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { applicationSelector } from './../../../app/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
 // Actions
 

@@ -33,6 +33,7 @@ class LocalizedValue {
     }
   }
 
+  def size = languageMap.size
 }
 
 object LocalizedValue {

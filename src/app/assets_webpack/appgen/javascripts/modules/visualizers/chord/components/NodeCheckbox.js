@@ -6,7 +6,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item'
 import IconButton from 'material-ui/lib/icon-button'
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert'
 import Padding from '../../../../components/Padding'
-import Label from '../../../core/containers/Label'
+import EditableLabel from '../../../app/containers/EditableLabel'
 import makePureRender from '../../../../misc/makePureRender'
 import { Node } from '../models'
 
@@ -57,7 +57,7 @@ const NodeCheckbox = ({ node, graphDirected, selected, select, remove, removeWit
           onCheck={(_, isActive) => select(isActive)}
           disabled={disableSelecting}
           checked={selected}
-          label={<Label uri={node.uri} label={node.label} />}
+          label={<EditableLabel uri={node.uri} label={node.label} />}
         />
       </div>
       <div style={{ clear: 'both '}}></div>

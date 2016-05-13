@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import Application from '../containers/Application'
-import { Application as ApplicationModel } from '../../../manageApp/models'
+import { Application as ApplicationModel } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
-import ApplicationHeader from '../../../publishedApp/components/ApplicationHeader'
+import ApplicationHeader from '../../../app/components/ApplicationHeader'
 
 const Standalone = ({ application, visualizer }) => <div>
     <ApplicationHeader application={application} visualizer={visualizer} />

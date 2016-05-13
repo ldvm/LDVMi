@@ -4,7 +4,7 @@ import createAction from '../../../../misc/createAction'
 import { Coordinates, MapState } from '../models'
 import moduleSelector from '../selector'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
 // Actions
 

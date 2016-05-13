@@ -7,7 +7,7 @@ import skosConceptsCountsReducer, { GET_SKOS_CONCEPTS_COUNTS_SUCCESS } from './s
 import filtersConfigReducer, { CONFIGURE_FILTER } from './filtersConfig'
 import optionsConfigReducer, { CONFIGURE_OPTION, CONFIGURE_ALL_OPTIONS, validateOptionsUpdate } from './optionsConfig'
 import { Filter, Option } from '../models'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
 // Helping stuff
 

@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import prefix from '../prefix'
 import moduleSelector from '../selector'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
-import { createGetConfiguration, createGetConfigurationReset, createSaveConfiguration } from '../../../manageApp/ducks/configuration'
+import { createGetConfiguration, createGetConfigurationReset, createSaveConfiguration } from '../../../app/ducks/configuration'
 
 // Actions
 

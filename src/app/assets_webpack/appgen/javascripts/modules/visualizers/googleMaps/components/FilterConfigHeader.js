@@ -6,7 +6,7 @@ import IconButton from 'material-ui/lib/icon-button';
 import MoreVertIcon from 'material-ui/lib/svg-icons/navigation/more-vert';
 import { Filter } from '../models'
 import Padding from '../../../../components/Padding'
-import Label from '../../../core/containers/Label'
+import EditableLabel from '../../../app/containers/EditableLabel'
 import * as theme from '../../../../misc/theme'
 import { filterTypes as types, optionModes as modes } from '../models'
 
@@ -79,7 +79,7 @@ const FilterConfigHeader = ({ filter, configureAllOptions, configureFilter }) =>
         />
       </IconMenu>
       <h3 style={h3Style}>
-        <Label uri={property.uri} label={property.label} /><br />
+        <EditableLabel uri={property.uri} label={property.label} /><br />
         <small style={smallStyle}>{property.uri}</small>
       </h3>
     </Padding>

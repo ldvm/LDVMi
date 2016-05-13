@@ -1,6 +1,6 @@
 import createAction from '../../../misc/createAction'
 import * as api from './api'
-import { applicationSelector } from '../../manageApp/ducks/application'
+import { applicationSelector } from '../../app/ducks/application'
 import { GET_PROPERTIES } from './ducks/properties'
 import { GET_SKOS_CONCEPTS } from './ducks/skosConcepts'
 import { GET_SKOS_CONCEPTS_COUNTS } from './ducks/skosConceptsCounts'

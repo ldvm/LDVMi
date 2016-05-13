@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import TableRow from 'material-ui/lib/table/table-row'
 import TableRowColumn from 'material-ui/lib/table/table-row-column'
 import { Lens, ResourceThroughLens } from '../models'
-import LocalizedValue from '../../../core/containers/LocalizedValue'
+import LocalizedValue from '../../../app/containers/LocalizedValue'
 import AddToListButtons from '../containers/AddToListButtons'
 
 const SearchResultRow = ({ searchableLens, resource }) => {
@@ -10,7 +10,7 @@ const SearchResultRow = ({ searchableLens, resource }) => {
     <TableRow>
       {searchableLens.showProperties.map(propertyUri =>
         <TableRowColumn key={propertyUri}>
-          <LocalizedValue value={resource.properties.get(propertyUri)} silent />
+          <LocalizedValue localizedValue={resource.properties.get(propertyUri)} silent />
         </TableRowColumn>
       )}
       <TableRowColumn>

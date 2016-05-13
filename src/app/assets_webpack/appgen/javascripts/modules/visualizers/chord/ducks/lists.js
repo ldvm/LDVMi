@@ -5,11 +5,11 @@ import createAction from '../../../../misc/createAction'
 import moduleSelector from '../selector'
 import { randomString } from '../../../../misc/utils'
 import { NodeList } from '../models'
-import { GET_APPLICATION_START } from '../../../manageApp/ducks/application'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
 import * as api from '../api.js'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
-import withApplicationId from '../../../manageApp/misc/withApplicationId'
+import withApplicationId from '../../../app/misc/withApplicationId'
 
 // Actions
 
