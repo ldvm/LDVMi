@@ -39,6 +39,11 @@ class Button extends Component {
       }
     }
 
+    // Fixing the alignment bug for link buttons.
+    // https://github.com/callemall/material-ui/issues/2801
+    if (props.linkButton) {
+      newProps.className = 'linkButton ' + props.className;
+    }
 
     return <Component {...newProps} />
   }

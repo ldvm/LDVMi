@@ -60,3 +60,11 @@ pre {
 .paper-card-body {
   padding: 1.5 * $gutter;
 }
+
+/** Fixing link button */
+// Material UI button used as a link is not vertically aligned with the rest of the buttons.
+// The problem is fixed in newer versions of the library. For now, there is this hacky fix.
+// See: https://github.com/callemall/material-ui/issues/2801
+a.linkButton {
+  display: inline !important;
+}
