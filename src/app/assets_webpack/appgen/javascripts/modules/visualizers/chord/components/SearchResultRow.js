@@ -10,7 +10,7 @@ const SearchResultRow = ({ searchableLens, resource }) => {
     <TableRow>
       {searchableLens.showProperties.map(propertyUri =>
         <TableRowColumn key={propertyUri}>
-          <LocalizedValue value={resource.properties.get(propertyUri)} silent />
+          <LocalizedValue localizedValue={resource.properties.get(propertyUri)} silent />
         </TableRowColumn>
       )}
       <TableRowColumn>

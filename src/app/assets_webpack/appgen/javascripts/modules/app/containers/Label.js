@@ -27,7 +27,7 @@ class Label extends Component {
   render() {
     const { uri, label, availableLabels } = this.props;
     const finalLabel = isLocalizedValueEmpty(label) ? availableLabels.get(uri) : label;
-    return <LocalizedValue value={finalLabel} defaultValue={uri} />
+    return <LocalizedValue localizedValue={finalLabel} defaultValue={uri} />
   }
 }
 

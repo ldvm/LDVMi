@@ -10,7 +10,7 @@ import CenteredMessage from '../../../../components/CenteredMessage'
 import loadNodes from './loadNodes'
 import { createAggregatedPromiseStatusSelector } from '../../../core/ducks/promises'
 import { langSelector } from '../../../app/ducks/lang'
-import { extractLocalizedValue } from '../../../app/misc/languageUtils'
+import { extractFromLocalizedValue } from '../../../app/misc/languageUtils'
 import { customLabelsSelector } from '../../../app/ducks/customLabels'
 import { applyCustomLabel } from '../../../app/misc/customLabelsUtils'
 import VisualizationMessage from '../components/VisualizationMessage'
@@ -91,7 +91,7 @@ const convertedNodesSelector = createSelector(
     // available for D3.js
     return nodes.map(({ uri, label, inDegree, outDegree }) => ({
       uri,
-      label: extractLocalizedValue(lang, applyCustomLabel(uri, label, customLabels), 'missing label'),
+      label: extractFromLocalizedValue(lang, applyCustomLabel(uri, label, customLabels), 'missing label'),
       inDegree, outDegree
     })).toJS()
   }

@@ -3,16 +3,16 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import makePureRender from '../../../misc/makePureRender'
 import { langSelector } from '../ducks/lang'
-import { extractLocalizedValue } from '../misc/languageUtils'
+import { extractFromLocalizedValue } from '../misc/languageUtils'
 
-const LocalizedValue = ({ lang, value, defaultValue, silent }) => {
-  const extracted = extractLocalizedValue(lang, value, defaultValue);
+const LocalizedValue = ({ lang, localizedValue, defaultValue, silent }) => {
+  const extracted = extractFromLocalizedValue(lang, localizedValue, defaultValue);
   return <span>{extracted || (silent ? '' : '(missing value)')}</span>;
 };
 
 LocalizedValue.propTypes = {
   lang: PropTypes.string.isRequired,
-  value: PropTypes.any,
+  localizedValue: PropTypes.any,
   defaultValue: PropTypes.string,
   silent: PropTypes.bool
 };

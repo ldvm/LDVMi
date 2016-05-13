@@ -4,49 +4,51 @@ import languages from '../../../misc/languages'
 export const NOLANG = 'nolang';
 
 // There is a little confusion with what the "localized value" is. In the broadest sense it means
-// a value that should be displayed with...
-// TODO: fix this naming craziness... rename extractLocalizedValue into something better?
+// a value that potentially holds the same information available in different languages but
+// it can just as well be a simple string. Following function make no assumptions about the input
+// format and should be smart enough to extract the required information.
 
 /**
- * Extracts localized value in given language. If value for given language is not available, the
- * function returns any value that is available. If there is no value available at all, defaultValue
+ * Attempts to extract value in required language. If value for given language is not available, the
+ * function returns any value that is available. For example, if the localizedValue itself is a
+ * string, this string is returned. If there is no value available at all, defaultValue
  * is returned.
  *
  * @param {string} lang code of the required language
- * @param {*} value can be anything, the function will parse it and if it recognizes familiar
- *  format (object or Immutable.Map with "variants" property) it will attempt to extract
+ * @param {*} localizedValue can be anything, the function will parse it and if it recognizes
+ *  familiar format (object or Immutable.Map with "variants" property) it will attempt to extract
  *  value in required language.
  * @param {string} defaultValue function will fallback to this value if no other value is available
- * @returns {string} localized value
+ * @returns {string} extracted value
  */
-export function extractLocalizedValue(lang, value, defaultValue = null) {
+export function extractFromLocalizedValue(lang, localizedValue, defaultValue = null) {
 
-  if (value === undefined || value === null) {
+  if (localizedValue === undefined || localizedValue === null) {
     return defaultValue;
   }
 
-  if (value instanceof Map && value.has('variants')) {
-    if (value.get('variants').has(lang)) {
-      return value.get('variants').get(lang);
-    } else if (value.get('variants').has(NOLANG)) {
-      return value.get('variants').get(NOLANG);
-    } else if (value.get('variants').size > 0) {
-      return value.get('variants').first();
+  if (localizedValue instanceof Map && localizedValue.has('variants')) {
+    if (localizedValue.get('variants').has(lang)) {
+      return localizedValue.get('variants').get(lang);
+    } else if (localizedValue.get('variants').has(NOLANG)) {
+      return localizedValue.get('variants').get(NOLANG);
+    } else if (localizedValue.get('variants').size > 0) {
+      return localizedValue.get('variants').first();
     } else {
       return defaultValue;
     }
-  } else if (value.variants) {
-    if (lang in value.variants) {
-      return value.variants[lang];
-    } else if (NOLANG in value.variants) {
-      return value.variants[NOLANG];
-    } else if (Object.keys(value.variants).length > 0) {
-      return value.variants[Object.keys(value.variants)[0]];
+  } else if (localizedValue.variants) {
+    if (lang in localizedValue.variants) {
+      return localizedValue.variants[lang];
+    } else if (NOLANG in localizedValue.variants) {
+      return localizedValue.variants[NOLANG];
+    } else if (Object.keys(localizedValue.variants).length > 0) {
+      return localizedValue.variants[Object.keys(localizedValue.variants)[0]];
     } else {
       return defaultValue;
     }
-  } else if (value instanceof String || typeof value == "string") {
-    return value + '';
+  } else if (localizedValue instanceof String || typeof localizedValue == "string") {
+    return localizedValue + '';
   } else {
     return defaultValue;
   }
@@ -54,8 +56,7 @@ export function extractLocalizedValue(lang, value, defaultValue = null) {
 
 /**
  * Returns localized value in standardized format. The standardized format means an instance
- * of Immutable.Map with the "variants" property. The function tries its best to convert the
- * input value into the standardized format.
+ * of Immutable.Map with the "variants" property. 
  * @param {*} value in any format
  * @returns {Map} normalized value
  */
