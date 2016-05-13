@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "appgen-dev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./conf/webpack/appgen-dev.js --progress --colors --port 9090 --hot --inline",
-    "appgen-build": "./node_modules/webpack/bin/webpack.js --config ./conf/webpack/appgen-build.js --progress --colors"
+    "appgen-build": "./node_modules/webpack/bin/webpack.js --config ./conf/webpack/appgen-build.js --progress --colors",
+    "appgen-test": "./node_modules/.bin/mocha --compilers js:babel-core/register --recursive ./app/assets_webpack/appgen/tests"
   },
   "dependencies": {
     "babel-polyfill": "^6.3.14",
@@ -49,11 +50,14 @@
     "babel-preset-react": "^6.3.13",
     "babel-preset-stage-0": "^6.3.13",
     "babel-runtime": "^6.6.1",
+    "chai": "^3.5.0",
+    "chai-immutable": "^1.5.4",
     "concurrently": "^1.0.0",
     "css-loader": "^0.23.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "less": "^2.5.3",
     "less-loader": "^2.2.2",
+    "mocha": "^2.4.5",
     "node-sass": "^3.4.2",
     "postcss": "^5.0.14",
     "postcss-loader": "^0.8.0",
