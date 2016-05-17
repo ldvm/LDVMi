@@ -64,7 +64,15 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
   def matrix(evaluation: PipelineEvaluation, nodeUris: Seq[String])(implicit session: Session): Option[Seq[Seq[Double]]] = {
     (for {
       graph <- graph(evaluation)
-      edges <- edges(evaluation)
+      edges <- Some(nodeUris.flatMap(uri => {
+        // Let's fetch incident edges for all required nodes. Some edges might be selected multiple
+        // times and some edges we don't need at all but we're still making only O(n) SPARQL
+        // requests this approach works also for very large graphs.
+        if (graph.directed)
+          Seq(incidentEdges(evaluation, uri, Outgoing), incidentEdges(evaluation, uri, Incoming))
+        else
+          Seq(incidentEdges(evaluation, uri))
+        }).flatten.reduceLeft((result, edges) => result ++ edges).toSet)
     } yield (graph, edges)) match {
       case Some((graph, edges)) =>
         val urisSet = nodeUris.toSet
