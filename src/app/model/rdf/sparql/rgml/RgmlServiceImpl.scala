@@ -7,6 +7,7 @@ import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 import model.rdf.sparql.rgml.EdgeDirection._
+import utils.Profiler
 
 import scala.collection.mutable
 
