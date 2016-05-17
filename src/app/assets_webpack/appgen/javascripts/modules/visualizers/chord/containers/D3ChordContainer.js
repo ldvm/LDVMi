@@ -89,10 +89,9 @@ const convertedNodesSelector = createSelector(
   (lang, nodes, customLabels) => {
     // We need to extract labels in correct language and also apply custom labels if
     // available for D3.js
-    return nodes.map(({ uri, label, inDegree, outDegree }) => ({
+    return nodes.map(({ uri, label }) => ({
       uri,
-      label: extractFromLocalizedValue(lang, applyCustomLabel(uri, label, customLabels), 'missing label'),
-      inDegree, outDegree
+      label: extractFromLocalizedValue(lang, applyCustomLabel(uri, label, customLabels), 'missing label')
     })).toJS()
   }
 );

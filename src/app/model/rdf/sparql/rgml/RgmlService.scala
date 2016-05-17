@@ -8,7 +8,8 @@ trait RgmlService {
   def graph(evaluation: PipelineEvaluation)(implicit session: Session): Option[Graph]
   def nodes(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Node]]
   def nodes(evaluation: PipelineEvaluation, uris: Seq[String])(implicit session: Session): Option[Seq[Node]]
+  def nodesWithDegree(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[NodeWithDegree]]
   def edges(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Edge]]
   def matrix(evaluation: PipelineEvaluation, nodeUris: Seq[String])(implicit session: Session): Option[Seq[Seq[Double]]]
-  def relatedNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[String]]
+  def relatedNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[Node]]
 }

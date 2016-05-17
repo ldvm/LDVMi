@@ -2,7 +2,7 @@ package model.rdf.sparql.rgml.query
 
 import model.rdf.sparql.query.SparqlQuery
 
-class NodesQuery extends SparqlQuery {
+class NodesWithDegreeQuery extends SparqlQuery {
 
   def get: String =
     """
@@ -13,13 +13,18 @@ class NodesQuery extends SparqlQuery {
       | CONSTRUCT {
       |	  ?node	rdf:type rgml:Node ;
       |     rdfs:label ?label ;
-      |     .
+      |     rgml:inDegree ?inDegree ;
+      |     rgml:outDegree ?outDegree.
       |	}
       |	WHERE {
       |   SELECT ?node ?label
+      |     (COUNT(?edgeOut) AS ?outDegree)
+      |     (COUNT(?edgeIn) AS ?inDegree)
       |   WHERE {
       |	    ?node	rdf:type rgml:Node .
       |     OPTIONAL { ?node rdfs:label ?label }
+      |     OPTIONAL { ?edgeOut rgml:source ?node . }
+      |     OPTIONAL { ?edgeIn rgml:target ?node . }
       |   }
       |   GROUP BY ?node ?label
       |	}

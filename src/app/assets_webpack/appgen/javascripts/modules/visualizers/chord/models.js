@@ -8,9 +8,7 @@ export const Graph = Record({
 
 export const Node = Record({
   uri: '',
-  label: '',
-  inDegree: '',
-  outDegree: ''
+  label: ''
 });
 
 export const NodeList = Record({

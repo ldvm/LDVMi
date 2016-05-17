@@ -1,8 +1,8 @@
 package model.rdf.sparql.rgml
 
 import model.entity.PipelineEvaluation
-import model.rdf.sparql.rgml.extractor.{EdgesExtractor, GraphExtractor, NodesExtractor, RelatedNodesExtractor}
-import model.rdf.sparql.rgml.query.{EdgesQuery, GraphQuery, NodesQuery, RelatedNodesQuery}
+import model.rdf.sparql.rgml.extractor._
+import model.rdf.sparql.rgml.query._
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
@@ -28,12 +28,10 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
   }
 
   override def nodes(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Node]] = {
-    graph(evaluation) flatMap { graph =>
-      sparqlEndpointService.getResult(
-        evaluationToSparqlEndpoint(evaluation),
-        new NodesQuery(),
-        new NodesExtractor(graph))
-    }
+    sparqlEndpointService.getResult(
+      evaluationToSparqlEndpoint(evaluation),
+      new NodesQuery(),
+      new NodesExtractor())
   }
 
   override def nodes(evaluation: PipelineEvaluation, uris: Seq[String])(implicit session: Session): Option[Seq[Node]] = {
@@ -42,6 +40,16 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     nodes(evaluation) map { nodes =>
       val urisSet = uris.toSet
       nodes.filter(node => urisSet.contains(node.uri))
+    }
+  }
+
+
+  override def nodesWithDegree(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[NodeWithDegree]] = {
+    graph(evaluation) flatMap { graph =>
+      sparqlEndpointService.getResult(
+        evaluationToSparqlEndpoint(evaluation),
+        new NodesWithDegreeQuery(),
+        new NodesWithDegreeExtractor(graph))
     }
   }
 
@@ -87,12 +95,12 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     }
   }
 
-  override def relatedNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[String]] = {
+  override def relatedNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[Node]] = {
     graph(evaluation) flatMap { graph =>
       sparqlEndpointService.getResult(
         evaluationToSparqlEndpoint(evaluation),
         new RelatedNodesQuery(graph, nodeUri, direction),
-        new RelatedNodesExtractor)
+        new NodesExtractor)
     }
   }
 
