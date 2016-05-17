@@ -95,11 +95,20 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     }
   }
 
-  override def relatedNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[Node]] = {
+  override def incidentEdges(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[Edge]] = {
     graph(evaluation) flatMap { graph =>
       sparqlEndpointService.getResult(
         evaluationToSparqlEndpoint(evaluation),
-        new RelatedNodesQuery(graph, nodeUri, direction),
+        new IncidentEdgesQuery(graph, nodeUri, direction),
+        new EdgesExtractor)
+    }
+  }
+
+  override def adjacentNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[Node]] = {
+    graph(evaluation) flatMap { graph =>
+      sparqlEndpointService.getResult(
+        evaluationToSparqlEndpoint(evaluation),
+        new AdjacentNodesQuery(graph, nodeUri, direction),
         new NodesExtractor)
     }
   }
