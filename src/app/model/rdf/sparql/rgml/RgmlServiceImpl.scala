@@ -34,6 +34,13 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
       new NodesExtractor())
   }
 
+  override def nodes(evaluation: PipelineEvaluation, offset: Integer, limit: Integer)(implicit session: Session): Option[Seq[Node]] = {
+    sparqlEndpointService.getResult(
+      evaluationToSparqlEndpoint(evaluation),
+      new NodesQuery(Some(offset), Some(limit)),
+      new NodesExtractor())
+  }
+
   override def nodes(evaluation: PipelineEvaluation, uris: Seq[String])(implicit session: Session): Option[Seq[Node]] = {
     // Okay, for really large graphs it would be more efficient to load only the nodes that are
     // required but for the current visualizers' purposes this "dumb" approach is alright.
@@ -111,6 +118,64 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
         new AdjacentNodesQuery(graph, nodeUri, direction),
         new NodesExtractor)
     }
+  }
+
+  // TODO: override
+  def sampleNodesByHighestDegree(evaluation: PipelineEvaluation, size: Int)(implicit session: Session): Option[Seq[Node]] = {
+    // Get 'size' nodes with the highest out degree and lets hope there will be something to visualize
+    Some(nodesWithDegree(evaluation).getOrElse(Seq.empty).sortBy(-_.outDegree)
+      .take(size).map(node => Node(node.uri, node.label)))
+  }
+
+  // TODO: override
+  override def sampleNodesWithForrestFire(
+    evaluation: PipelineEvaluation,
+    size: Int,
+    useWeights: Boolean = true,
+    pF: Double = 0.2,
+    pB: Double = 0.05)(implicit session: Session):
+  Option[Seq[Node]] = {
+
+    val random = scala.util.Random
+    val g = graph(evaluation).get
+
+    if (g == null) { // Not exactly Scala way but what the heck
+      return None
+    }
+
+    def randomNode: Node = nodes(evaluation, random.nextInt(g.nodeCount), 1).get.head
+
+    def burn(sample: Set[String], node: String): Set[String] = {
+      if (sample.size == size || sample.contains(node)) {
+        return sample
+      }
+
+      spread(node).foldLeft(sample + node)(burn)
+    }
+
+    def spread(node: String): Seq[String] = {
+      if (g.directed)
+        spreadInDirection(node, Outgoing, pF) ++ spreadInDirection(node, Incoming, pB)
+      else
+        spreadInDirection(node, Outgoing, pF)
+    }
+
+    def spreadInDirection(node: String, direction: EdgeDirection, p: Double): Seq[String] = {
+      incidentEdges(evaluation, node, direction).getOrElse(Seq())
+        .filter(edge => choose(edge, p))
+        .map(edge => if (edge.source == node) edge.target else edge.source)
+    }
+
+    def choose(edge: Edge, p: Double): Boolean = {
+      random.nextFloat() < 1 - Math.pow(1 - p, if (useWeights) edge.weight else 1)
+    }
+
+    var sample = Set.empty[String]
+    while (sample.size < size && sample.size < g.nodeCount) {
+      sample = burn(sample, randomNode.uri)
+    }
+
+    nodes(evaluation, sample.toSeq)
   }
 
   private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation)(implicit session: Session): GenericSparqlEndpoint = {
