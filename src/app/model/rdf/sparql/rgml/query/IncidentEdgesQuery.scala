@@ -1,26 +1,14 @@
 package model.rdf.sparql.rgml.query
 
 import model.rdf.sparql.rgml.EdgeDirection._
-import model.rdf.sparql.rgml.Graph
 
-class IncidentEdgesQuery(graph: Graph, nodeUri: String, direction: EdgeDirection = Outgoing) extends EdgesQuery {
+class IncidentEdgesQuery(nodeUri: String, direction: EdgeDirection) extends EdgesQuery {
 
   override def get: String = {
-    val where = if (graph.directed)
-      direction match {
-        case Outgoing =>
-          """
-            | FILTER(?source = <@n>)
-          """.stripMargin
-        case Incoming =>
-          """
-            | FILTER(?target = <@n>)
-          """.stripMargin
-      }
-    else
-      """
-        | FILTER(?source = <@n> || ?target = <@n>)
-      """.stripMargin
+    val where = direction match {
+      case Outgoing => "rgml:source <@n>"
+      case Incoming => "rgml:target <@n>"
+    }
 
     """
       | PREFIX rgml: <http://purl.org/puninj/2001/05/rgml-schema#>
@@ -41,9 +29,9 @@ class IncidentEdgesQuery(graph: Graph, nodeUri: String, direction: EdgeDirection
       |       rgml:source ?source ;
       |       rgml:target ?target ;
       |       rgml:weight ?weight ;
+      |       @w ;
       |       .
       |
-      |     @w
       |   }
       | }
     """

@@ -64,15 +64,12 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
   def matrix(evaluation: PipelineEvaluation, nodeUris: Seq[String])(implicit session: Session): Option[Seq[Seq[Double]]] = {
     (for {
       graph <- graph(evaluation)
-      edges <- Some(nodeUris.flatMap(uri => {
-        // Let's fetch incident edges for all required nodes. Some edges might be selected multiple
-        // times and some edges we don't need at all but we're still making only O(n) SPARQL
-        // requests this approach works also for very large graphs.
-        if (graph.directed)
-          Seq(incidentEdges(evaluation, uri, Outgoing), incidentEdges(evaluation, uri, Incoming))
-        else
-          Seq(incidentEdges(evaluation, uri))
-        }).flatten.reduceLeft((result, edges) => result ++ edges).toSet)
+      edges <- Some(nodeUris
+        // Let's fetch incident edges for all required nodes. Some edges might be selected
+        // multiple times and some edges we don't need at all but we're still making only O(n)
+        // SPARQL requests. This approach works also for very large graphs.
+        .flatMap(uri => incidentEdges(evaluation, uri))
+        .reduceLeft((result, edges) => result ++ edges).toSet)
     } yield (graph, edges)) match {
       case Some((graph, edges)) =>
         val urisSet = nodeUris.toSet
@@ -111,12 +108,28 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     }
   }
 
-  override def incidentEdges(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[Edge]] = {
-    graph(evaluation) flatMap { graph =>
+  override def incidentEdges(evaluation: PipelineEvaluation, nodeUri: String, direction: Option[EdgeDirection] = None)(implicit session: Session): Option[Seq[Edge]] = {
+    // Fetch edges in one direction
+    def fetchEdges(actualDirection: EdgeDirection) = {
       sparqlEndpointService.getResult(
         evaluationToSparqlEndpoint(evaluation),
-        new IncidentEdgesQuery(graph, nodeUri, direction),
+        new IncidentEdgesQuery(nodeUri, actualDirection),
         new EdgesExtractor)
+    }
+
+    // Fetch edges in both directions (it turns out that using two queries is faster than one)
+    def fetchAllEdges() = {
+      fetchEdges(Incoming).flatMap(incoming => fetchEdges(Outgoing).map(outgoing => incoming ++ outgoing))
+    }
+
+    direction match {
+      case Some(d) => graph(evaluation) flatMap { graph =>
+        if (!graph.directed)
+          fetchAllEdges()
+        else
+          fetchEdges(d)
+      }
+      case None => fetchAllEdges()
     }
   }
 
@@ -136,7 +149,6 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
       .take(size).map(node => Node(node.uri, node.label)))
   }
 
-  // TODO: override
   override def sampleNodesWithForrestFire(
     evaluation: PipelineEvaluation,
     size: Int,
@@ -163,20 +175,25 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     }
 
     def spread(node: String): Seq[String] = {
-      if (g.directed)
-        spreadInDirection(node, Outgoing, pF) ++ spreadInDirection(node, Incoming, pB)
-      else
-        spreadInDirection(node, Outgoing, pF)
-    }
-
-    def spreadInDirection(node: String, direction: EdgeDirection, p: Double): Seq[String] = {
-      incidentEdges(evaluation, node, direction).getOrElse(Seq())
-        .filter(edge => choose(edge, p))
-        .map(edge => if (edge.source == node) edge.target else edge.source)
+      incidentEdges(evaluation, node).getOrElse(Seq())
+        .filter(edge => choose(edge, probability(node, edge)))
+        .map(edge => theOther(node, edge))
     }
 
     def choose(edge: Edge, p: Double): Boolean = {
       random.nextFloat() < 1 - Math.pow(1 - p, if (useWeights) edge.weight else 1)
+    }
+
+    def probability(node: String, edge: Edge): Double = {
+      if (direction(node, edge) == Outgoing || !g.directed) pF else pB
+    }
+
+    def theOther(node: String, edge: Edge): String = {
+      if (direction(node, edge) == Outgoing) edge.target else edge.source
+    }
+
+    def direction(node: String, edge: Edge): EdgeDirection = {
+      if (edge.source == node) Outgoing else Incoming
     }
 
     var sample = Set.empty[String]
