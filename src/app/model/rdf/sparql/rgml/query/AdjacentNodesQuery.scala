@@ -3,11 +3,10 @@ package model.rdf.sparql.rgml.query
 import model.rdf.sparql.rgml.Graph
 import model.rdf.sparql.rgml.EdgeDirection._
 
-class AdjacentNodesQuery(graph: Graph, nodeUri: String, direction: EdgeDirection = Outgoing) extends NodesQuery {
+class AdjacentNodesQuery(nodeUri: String, direction: EdgeDirection = Outgoing) extends NodesQuery {
 
   override def get: String = {
-    val where = if (graph.directed)
-      direction match {
+    val where = direction match {
         case Outgoing =>
           """
             | ?edge
@@ -21,20 +20,6 @@ class AdjacentNodesQuery(graph: Graph, nodeUri: String, direction: EdgeDirection
             |   rgml:source ?node
           """.stripMargin
       }
-    else
-      """
-        | {
-        |   ?edge
-        |     rgml:source <@n> ;
-        |     rgml:target ?node
-        | }
-        | UNION
-        | {
-        |   ?edge
-        |     rgml:source ?node ;
-        |     rgml:target <@n>
-        | }
-      """.stripMargin
 
 
     """

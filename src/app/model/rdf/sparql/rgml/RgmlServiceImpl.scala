@@ -119,7 +119,10 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
 
     // Fetch edges in both directions (it turns out that using two queries is faster than one)
     def fetchAllEdges() = {
-      fetchEdges(Incoming).flatMap(incoming => fetchEdges(Outgoing).map(outgoing => incoming ++ outgoing))
+      for {
+        incoming <- fetchEdges(Incoming)
+        outgoing <- fetchEdges(Outgoing)
+      } yield incoming ++ outgoing
     }
 
     direction match {
@@ -133,12 +136,31 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     }
   }
 
-  override def adjacentNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: EdgeDirection = Outgoing)(implicit session: Session): Option[Seq[Node]] = {
-    graph(evaluation) flatMap { graph =>
+  override def adjacentNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: Option[EdgeDirection] = None)(implicit session: Session): Option[Seq[Node]] = {
+    // Fetch nodes in one direction
+    def fetchNodes(actualDirection: EdgeDirection) = {
       sparqlEndpointService.getResult(
         evaluationToSparqlEndpoint(evaluation),
-        new AdjacentNodesQuery(graph, nodeUri, direction),
+        new AdjacentNodesQuery(nodeUri, actualDirection),
         new NodesExtractor)
+    }
+
+    // Fetch nodes in both directions (it turns out that using two queries is faster than one)
+    def fetchAllNodes() = {
+      for {
+        incoming <- fetchNodes(Incoming)
+        outgoing <- fetchNodes(Outgoing)
+      } yield incoming ++ outgoing
+    }
+
+    direction match {
+      case Some(d) => graph(evaluation) flatMap { graph =>
+        if (!graph.directed)
+          fetchAllNodes()
+        else
+          fetchNodes(d)
+      }
+      case None => fetchAllNodes()
     }
   }
 
