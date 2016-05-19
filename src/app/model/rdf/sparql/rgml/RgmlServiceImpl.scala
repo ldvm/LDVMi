@@ -61,8 +61,8 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     }
   }
 
-  def matrix(evaluation: PipelineEvaluation, nodeUris: Seq[String])(implicit session: Session): Option[Seq[Seq[Double]]] = {
-    (for {
+  def matrix(evaluation: PipelineEvaluation, nodeUris: Seq[String], useWeights: Boolean = true)(implicit session: Session): Option[Seq[Seq[Double]]] = {
+    for {
       graph <- graph(evaluation)
       edges <- Some(nodeUris
         // Let's fetch incident edges for all required nodes. Some edges might be selected
@@ -70,41 +70,37 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
         // SPARQL requests. This approach works also for very large graphs.
         .flatMap(uri => incidentEdges(evaluation, uri))
         .reduceLeft((result, edges) => result ++ edges).toSet)
-    } yield (graph, edges)) match {
-      case Some((graph, edges)) =>
-        val urisSet = nodeUris.toSet
+    } yield {
+      val urisSet = nodeUris.toSet
 
-        // Adjacency matrix of the graph that takes into account weight of the edges.
-        val matrix: mutable.Map[String, mutable.Map[String, Double]] = mutable.Map()
+      // Adjacency matrix of the graph that takes into account weight of the edges.
+      val matrix: mutable.Map[String, mutable.Map[String, Double]] = mutable.Map()
 
-        // Update the adjacency matrix using an edge going from source to target.
-        def addEdge(source: String, target: String, weight: Double) {
-          val counts = matrix.getOrElse(source, mutable.Map())
-          counts.put(target, counts.getOrElse(target, 0.0) + weight)
-          matrix.put(source, counts)
-        }
+      // Update the adjacency matrix using an edge going from source to target.
+      def addEdge(source: String, target: String, weight: Double) {
+        val counts = matrix.getOrElse(source, mutable.Map())
+        counts.put(target, counts.getOrElse(target, 0.0) + (if (useWeights) weight else 1))
+        matrix.put(source, counts)
+      }
 
-        // Go through all edges and take only those that are between selected nodes.
-        edges.foreach(edge => {
-          if (urisSet.contains(edge.source) && urisSet.contains(edge.target)) {
-            addEdge(edge.source, edge.target, edge.weight)
+      // Go through all edges and take only those that are between selected nodes.
+      edges.foreach(edge => {
+        if (urisSet.contains(edge.source) && urisSet.contains(edge.target)) {
+          addEdge(edge.source, edge.target, edge.weight)
 
-            if (!graph.directed) {
-              addEdge(edge.target, edge.source, edge.weight)
-            }
+          if (!graph.directed) {
+            addEdge(edge.target, edge.source, edge.weight)
           }
-        })
+        }
+      })
 
-        // Let's remove the uris and create a pure matrix of doubles (two-dimensional array/list).
-        // We have to be careful to maintain the order.
-
-        Some(nodeUris.map(source =>
-          nodeUris.map(target =>
-            matrix.getOrElse(source, mutable.Map()).getOrElse(target, 0.0)
-          )
-        ))
-
-      case None => None
+      // Let's remove the uris and create a pure matrix of doubles (two-dimensional array/list).
+      // We have to be careful to maintain the order.
+      nodeUris.map(source =>
+        nodeUris.map(target =>
+          matrix.getOrElse(source, mutable.Map()).getOrElse(target, 0.0)
+        )
+      )
     }
   }
 
