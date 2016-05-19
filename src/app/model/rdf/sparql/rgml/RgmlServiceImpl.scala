@@ -149,7 +149,7 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
       .take(size).map(node => Node(node.uri, node.label)))
   }
 
-  override def sampleNodesWithForrestFire(
+  override def sampleNodesWithForestFire(
     evaluation: PipelineEvaluation,
     size: Int,
     useWeights: Boolean = true,
@@ -162,6 +162,15 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
 
     if (g == null) { // Not exactly Scala way but what the heck
       return None
+    }
+
+    def makeSample: Seq[String] = {
+      var sample = Set.empty[String]
+      while (sample.size < Math.min(size, g.nodeCount)) {
+        sample = burn(sample, randomNode.uri)
+      }
+
+      sample.toSeq
     }
 
     def randomNode: Node = nodes(evaluation, random.nextInt(g.nodeCount), 1).get.head
@@ -196,12 +205,7 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
       if (edge.source == node) Outgoing else Incoming
     }
 
-    var sample = Set.empty[String]
-    while (sample.size < size && sample.size < g.nodeCount) {
-      sample = burn(sample, randomNode.uri)
-    }
-
-    nodes(evaluation, sample.toSeq)
+    nodes(evaluation, makeSample)
   }
 
   private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation)(implicit session: Session): GenericSparqlEndpoint = {
