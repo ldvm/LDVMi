@@ -162,8 +162,7 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     }
   }
 
-  // TODO: override
-  def sampleNodesByHighestDegree(evaluation: PipelineEvaluation, size: Int)(implicit session: Session): Option[Seq[Node]] = {
+  override def sampleNodesByHighestDegree(evaluation: PipelineEvaluation, size: Int)(implicit session: Session): Option[Seq[Node]] = {
     // Get 'size' nodes with the highest out degree and lets hope there will be something to visualize
     Some(nodesWithDegree(evaluation).getOrElse(Seq.empty).sortBy(-_.outDegree)
       .take(size).map(node => Node(node.uri, node.label)))
