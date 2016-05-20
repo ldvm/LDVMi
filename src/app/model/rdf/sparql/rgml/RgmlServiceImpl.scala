@@ -43,14 +43,16 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
   }
 
   override def nodes(evaluation: PipelineEvaluation, uris: Seq[String])(implicit session: Session): Option[Seq[Node]] = {
-    // Okay, for really large graphs it would be more efficient to load only the nodes that are
-    // required but for the current visualizers' purposes this "dumb" approach is alright.
-    nodes(evaluation) map { nodes =>
-      val urisSet = uris.toSet
-      nodes.filter(node => urisSet.contains(node.uri))
-    }
-  }
+    val batchSize = 100
+    val endpoint = evaluationToSparqlEndpoint(evaluation)
 
+    Some(uris.sliding(batchSize, batchSize).flatMap(batch => {
+      sparqlEndpointService.getResult(
+        endpoint,
+        new NodesByUrisQuery(batch),
+        new NodesExtractor())
+    }).flatten.toSeq)
+  }
 
   override def nodesWithDegree(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[NodeWithDegree]] = {
     graph(evaluation) flatMap { graph =>
