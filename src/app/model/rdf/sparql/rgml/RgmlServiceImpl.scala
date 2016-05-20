@@ -186,7 +186,9 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     def makeSample: Seq[String] = {
       var sample = Set.empty[String]
       while (sample.size < Math.min(size, g.nodeCount)) {
-        sample = burn(sample, randomNode.uri)
+        val v = randomNode.uri
+        if (!sample.contains(v))
+          sample = burn(sample + v, Seq(v))
       }
 
       sample.toSeq
@@ -194,12 +196,19 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
 
     def randomNode: Node = nodes(evaluation, random.nextInt(g.nodeCount), 1).get.head
 
-    def burn(sample: Set[String], node: String): Set[String] = {
-      if (sample.size == size || sample.contains(node)) {
+    def burn(sample: Set[String], frontier: Seq[String]): Set[String] = {
+      if (sample.size >= size)
         return sample
-      }
 
-      spread(node).foldLeft(sample + node)(burn)
+      val nextFrontier = frontier
+        .flatMap(spread)
+        .filterNot(sample.contains)
+        .distinct.take(size - sample.size)
+      
+      if (nextFrontier.isEmpty)
+        sample
+      else
+        burn(sample ++ nextFrontier, nextFrontier)
     }
 
     def spread(node: String): Seq[String] = {
