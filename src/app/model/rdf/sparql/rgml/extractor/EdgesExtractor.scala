@@ -19,11 +19,12 @@ class EdgesExtractor extends QueryExecutionResultExtractor[EdgesQuery, Seq[Edge]
 
       Some(edgeStatements.map { e =>
         val edgeResource = e.asResource()
+        val uri = edgeResource.getURI
         val source = edgeResource.getProperty(RGML.source).getResource.getURI
         val target = edgeResource.getProperty(RGML.target).getResource.getURI
         val weight = edgeResource.getProperty(RGML.weight).getDouble
 
-        Edge(source, target, weight)
+        Edge(uri, source, target, weight)
       })
     } catch {
       case e: org.apache.jena.sparql.engine.http.QueryExceptionHTTP => {

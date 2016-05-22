@@ -4,7 +4,7 @@ import akka.actor.Props
 import model.actor.CheckCompatibilityResponse
 import model.entity._
 import model.rdf.sparql.ValueFilter
-import model.rdf.sparql.rgml.{Edge, Graph, Node}
+import model.rdf.sparql.rgml.{Edge, Graph, Node, NodeWithDegree}
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.fresnel.{Lens, ResourceThroughLens}
 import model.rdf.sparql.geo._
@@ -101,6 +101,7 @@ package object api {
     implicit val markerWrites = Json.writes[Marker]
     implicit val graphWrites = Json.writes[Graph]
     implicit val nodeWrites = Json.writes[Node]
+    implicit val nodeWithDegreeWrites = Json.writes[NodeWithDegree]
     implicit val edgeWrites = Json.writes[Edge]
     implicit val lensWrites = Json.writes[Lens]
     implicit val resourceThroughLensWrites = Json.writes[ResourceThroughLens]

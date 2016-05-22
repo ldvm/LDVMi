@@ -39,7 +39,7 @@ export const ADD_WITH_RELATED_TO_LIST_START = ADD_WITH_RELATED_TO_LIST + '_START
 export const ADD_WITH_RELATED_TO_LIST_ERROR = ADD_WITH_RELATED_TO_LIST + '_ERROR';
 export const ADD_WITH_RELATED_TO_LIST_SUCCESS = ADD_WITH_RELATED_TO_LIST + '_SUCCESS';
 
-export function addWithRelatedToList(id, uri, direction = 'outgoing') {
+export function addWithRelatedToList(id, uri, direction = null) {
   return withApplicationId(appId => {
     const promise = api.getRelatedNodes(appId, uri, direction)
       .then(related => {

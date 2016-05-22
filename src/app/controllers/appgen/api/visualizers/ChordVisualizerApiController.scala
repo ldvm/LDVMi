@@ -13,7 +13,6 @@ import model.rdf.sparql.rgml.RgmlService
 import play.api.db.slick.Session
 import scaldi.Injector
 import play.api.libs.concurrent.Execution.Implicits._
-
 import scala.concurrent.Future
 
 class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApiController {
@@ -36,9 +35,8 @@ class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApi
 
   def getSampleNodes(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      // Get 30 nodes with the highest out degree and lets hope there will be something to visualize
-      val nodes = rgmlService.nodes(evaluation).getOrElse(Seq.empty)
-        .sortBy(-_.outDegree).take(30)
+      val nodes = rgmlService.sampleNodesWithForestFire(evaluation, 30)
+      // val nodes = rgmlService.sampleNodesByHighestDegree(evaluation, 30)
       Future(Ok(SuccessResponse(data = Seq("nodes" -> nodes))))
     }
   }
@@ -75,7 +73,9 @@ class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApi
 
   def getRelatedNodes(id: Long) = RestAsyncAction[RelatedNodesRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val relatedNodes = rgmlService.relatedNodes(evaluation, json.nodeUri, json.direction)
+      val relatedNodes = rgmlService
+        .adjacentNodes(evaluation, json.nodeUri, json.direction)
+        .flatMap { nodes => Some(nodes.map(_.uri)) }
       Future(Ok(SuccessResponse(data = Seq("relatedNodes" -> relatedNodes))))
     }
   }
