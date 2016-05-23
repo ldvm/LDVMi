@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { userSelector } from '../ducks/user'
 import { User } from '../models'
-import * as routes from '../../platform/routes'
+import * as routes from '../../dashboard/routes'
 
 export default function requireSignedOut(ComposedComponent) {
   class RequireSignedOut extends Component {
@@ -21,9 +21,9 @@ export default function requireSignedOut(ComposedComponent) {
     }
 
     potentiallyRedirect(props) {
-      const {dispatch, user} = props;
+      const { dispatch, user } = props;
       if (user.isSignedIn()) {
-        dispatch(routes.profile());
+        dispatch(routes.dashboard());
       }
     }
 
