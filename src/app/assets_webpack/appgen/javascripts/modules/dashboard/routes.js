@@ -11,25 +11,30 @@ import Discoveries from './pages/Discoveries'
 export default function createRoutes(dispatch) {
   return (
     <Route component={Dashboard} path={MODULE_PREFIX}>
-      <IndexRoute component={Applications} />
-      <Route component={DataSources} path="data-sources" />
+      <Route component={DataSources} path="data-sources(/:page)" />
       <Route component={Discoveries} path="discoveries" />
+      <Route component={Applications} path=":page" />
+      <IndexRoute component={Applications} />
     </Route>
   );
 }
 
 // "Named" routes
 
-export function dashboardUrl() {
-  return '/' + MODULE_PREFIX;
+export function dashboardUrl(page = null) {
+  return '/' + MODULE_PREFIX + (page ? '/' + page : page);
 }
 
 export function dashboard() {
   return routeActions.push(dashboardUrl());
 }
 
-export function applicationsUrl() {
-  return dashboardUrl();
+export function applicationsUrl(page = null) {
+  return dashboardUrl(page);
+}
+
+export function applications(page = null) {
+  return routeActions.push(applicationsUrl(page));
 }
 
 export function dataSourcesUrl() {

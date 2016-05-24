@@ -1,5 +1,5 @@
 import React from 'react'
 
-const DataSources = () => <span>data sources</span>
+const DataSources = ({ routeParams: { page }}) => <span>data sources(page: {page})</span>
 
 export default DataSources;

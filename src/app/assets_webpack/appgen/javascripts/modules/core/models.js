@@ -24,3 +24,8 @@ export const PromiseStatus = Record({
   done: false
 });
 
+export const Paginator = Record({
+  page: 1,
+  pageSize: 10,
+  total: null
+});

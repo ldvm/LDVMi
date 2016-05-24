@@ -19,7 +19,7 @@ import * as dashboardRoutes from '../routes'
  * a reversed approach. We will rebuild the default tab URL from the currently active routes which
  * are injected to this component by the router.
  *
- * TODO: turn this into a universal re-usable solution
+ * TODO: turn this into a universal re-usable and less hacky solution
  *
  * @param route - the active route for this component (parent route of our tab routes)
  * @param routes - all currently active routes
@@ -37,7 +37,10 @@ function makeTabUrl(route, routes) {
   for (let i = 0; i <= routeIndex + 1; i++) {
     url += routes[i].path ? '/' + routes[i].path : '';
   }
-  return url.replace(/\/+/, '/');
+  return url
+    .replace(/\/+/, '/')
+    .replace(/[\(:].+$/, '') // Remove optional parts/params of the uri (hack hack hack hack hack....)
+    .replace(/\/$/, '');
 }
 
 const Dashboard = ({ dispatch, children, route, routes }) =>
