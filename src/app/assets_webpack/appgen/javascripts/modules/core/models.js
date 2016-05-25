@@ -27,5 +27,10 @@ export const PromiseStatus = Record({
 export const Paginator = Record({
   page: 1,
   pageSize: 10,
-  total: null
+  totalCount: null
+});
+
+export const PaginationInfo = Record({
+  skipCount: 0,
+  pageSize: 10
 });

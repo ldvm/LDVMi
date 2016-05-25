@@ -1,13 +1,17 @@
 import React, { PropTypes } from 'react';
 import { Range } from 'immutable'
 import { connect } from 'react-redux'
-import Button from '../../../components/Button'
 import { Paginator } from '../models'
 import { changePage} from '../ducks/pagination'
 import PaginatorPage from '../components/PaginatorPage'
+import { createPaginatorSelector } from '../ducks/pagination'
 
 const Pagination = ({ paginator, page, changePage }) => {
-  const totalPages = Math.floor((paginator.total + paginator.pageSize - 1) / paginator.pageSize);
+  if (paginator.totalCount == null || paginator.totalCount <= paginator.pageSize) {
+    return <span />;
+  }
+
+  const totalPages = Math.floor((paginator.totalCount + paginator.pageSize - 1) / paginator.pageSize);
 
   return (
     <div>
@@ -37,8 +41,7 @@ Pagination.propTypes = {
 };
 
 const mapStateToProps = (state, props) => {
-  // TODO: use selector to get paginator (props.name)
-  const paginator = new Paginator({ total: 91 });
+  const paginator = createPaginatorSelector(props.name)(state);
   return {
     paginator: paginator,
     page: props.page || paginator.page

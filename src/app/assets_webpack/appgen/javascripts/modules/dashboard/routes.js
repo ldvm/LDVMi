@@ -22,7 +22,7 @@ export default function createRoutes(dispatch) {
 // "Named" routes
 
 export function dashboardUrl(page = null) {
-  return '/' + MODULE_PREFIX + (page ? '/' + page : page);
+  return '/' + MODULE_PREFIX + (page ? '/' + page : '');
 }
 
 export function dashboard() {

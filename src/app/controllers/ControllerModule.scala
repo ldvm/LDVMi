@@ -23,4 +23,5 @@ class ControllerModule extends Module {
   binding to new MapsVisualizerApiController
   binding to new ChordVisualizerApiController
   binding to new CommonVisualizerApiController
+  binding to new DashboardApiController
 }
