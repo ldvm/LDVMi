@@ -12,7 +12,7 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
 
   def getApplications = RestAction[PaginatedRequest] { implicit request => json =>
     Ok(SuccessResponse(data = Seq(
-      "applications" -> applicationsService.findByUser(request.user, json.paginationInfo),
+      "items" -> applicationsService.findByUser(request.user, json.paginationInfo).map(_.removeConfiguration),
       "totalCount" -> applicationsService.countByUser(request.user)
     )))
   }

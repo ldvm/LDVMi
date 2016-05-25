@@ -4,7 +4,7 @@ import * as routes from '../routes'
 import Padding from '../../../components/Padding'
 import Pagination from '../../core/containers/Pagination'
 import { getApplications, APPLICATIONS_PAGINATOR } from '../ducks/applications'
-import { resetPaginator } from '../../core/ducks/pagination'
+import { destroyPaginator, resetPaginator } from '../../core/ducks/pagination'
 
 class Applications extends Component {
 
@@ -16,6 +16,11 @@ class Applications extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.loadPage(nextProps);
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch(destroyPaginator(APPLICATIONS_PAGINATOR));
   }
 
   loadPage(props) {

@@ -1,7 +1,8 @@
+import { Map } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
 import * as api from '../api'
-import { withPaginationInfo, resetPaginator } from '../../core/ducks/pagination'
+import { withPaginationInfo, createPaginatedPlaceholderReducer } from '../../core/ducks/pagination'
 
 // Actions
 
@@ -20,3 +21,10 @@ export function getApplications(page) {
 }
 
 // Reducers
+
+export const paginatedApplicationsReducer =
+  createPaginatedPlaceholderReducer(APPLICATIONS_PAGINATOR, GET_APPLICATIONS_SUCCESS);
+
+export default function applicationsReducer(state = new Map(), action) {
+  return state;
+}
