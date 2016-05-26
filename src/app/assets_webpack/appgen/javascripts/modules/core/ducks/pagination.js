@@ -69,6 +69,11 @@ export function createPaginatorSelector(paginatorName) {
   )
 }
 
+export function createPageSelector(paginatorName) {
+  return createSelector([createPaginatorSelector(paginatorName)],
+    paginator => paginator.page)
+}
+
 export function createPageContentSelector(paginatorName, itemsSelector, pageSelector = () => null) {
   return createSelector(
     [createPaginatorSelector(paginatorName), itemsSelector, pageSelector],
