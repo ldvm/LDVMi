@@ -1,10 +1,8 @@
-import { Map } from 'immutable'
 import { createSelector } from 'reselect'
 import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
 import * as api from '../api'
-import { withPaginationInfo, createPaginatedPlaceholderReducer, createPageContentSelector, createPaginatedPromiseStatusSelector } from '../../core/ducks/pagination'
-import { arrayToObject } from '../../../misc/utils'
+import { withPaginationInfo, createPaginatedReducer, createEntitiesReducer, createPageContentSelector, createPagePromiseStatusSelector } from '../../core/ducks/lazyPagination'
 import { Application } from '../../app/models'
 import moduleSelector from '../selector'
 
@@ -31,42 +29,22 @@ export function getApplicationsReset() {
 
 // Reducers
 
-export const paginatedApplicationsReducer = createPaginatedPlaceholderReducer(
-  APPLICATIONS_PAGINATOR, GET_APPLICATIONS_SUCCESS, app => app.id);
+const applicationsReducer = createEntitiesReducer(
+  GET_APPLICATIONS_SUCCESS,
+  GET_APPLICATIONS_RESET,
+  app => new Application(app));
 
-const initialState = new Map();
-
-export default function applicationsReducer(state = initialState, action) {
-  switch (action.type) {
-    case GET_APPLICATIONS_SUCCESS:
-      const applications = (new Map(arrayToObject(action.payload.items, app => app.id)))
-        .map(app => new Application(app));
-      return state.merge(applications);
-
-    case GET_APPLICATIONS_RESET:
-      return initialState;
-  }
-
-  return state;
-}
+export default createPaginatedReducer(
+  APPLICATIONS_PAGINATOR,
+  GET_APPLICATIONS_SUCCESS,
+  applicationsReducer);
 
 // Selectors
 
-const applicationsSelector = createSelector([moduleSelector],
-  state => state.applications);
+const selector = createSelector([moduleSelector], state => state.applications);
 
-const paginatedApplicationsSelector = createSelector([moduleSelector],
-  state => state.paginatedApplications);
-
-export const createApplicationsSelector = pageSelector => {
-  const pageContentSelector = createPageContentSelector(
-    APPLICATIONS_PAGINATOR, paginatedApplicationsSelector, pageSelector);
-
-  return createSelector(
-    [applicationsSelector, pageContentSelector],
-    (applications, pageContent) => pageContent.map(id => applications.get(id + ''))
-  );
-};
+export const createApplicationsSelector = pageSelector =>
+  createPageContentSelector(APPLICATIONS_PAGINATOR, selector, pageSelector);
 
 export const createApplicationsStatusSelector = pageSelector =>
-  createPaginatedPromiseStatusSelector(GET_APPLICATIONS, APPLICATIONS_PAGINATOR, pageSelector);
+  createPagePromiseStatusSelector(GET_APPLICATIONS, APPLICATIONS_PAGINATOR, pageSelector);

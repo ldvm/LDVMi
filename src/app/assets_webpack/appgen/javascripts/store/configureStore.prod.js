@@ -6,7 +6,7 @@ import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import promiseMiddleware from 'redux-promise-middleware';
 import rootReducer from './rootReducer'
-import { paginationMiddleware } from '../modules/core/ducks/pagination'
+import { paginationMiddleware } from '../modules/core/ducks/lazyPagination'
 
 const reduxRouterMiddleware = syncHistory(browserHistory);
 

@@ -20,7 +20,7 @@ class Applications extends Component {
 
   componentWillMount() {
     const { loadPage, props: { dispatch } } = this;
-    dispatch(resetPaginator(APPLICATIONS_PAGINATOR, { pageSize: 3 }));
+    dispatch(resetPaginator(APPLICATIONS_PAGINATOR, { pageSize: 4 }));
     loadPage(this.props);
   }
 
