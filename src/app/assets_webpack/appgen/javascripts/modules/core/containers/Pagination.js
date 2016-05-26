@@ -2,9 +2,8 @@ import React, { PropTypes } from 'react';
 import { Range } from 'immutable'
 import { connect } from 'react-redux'
 import { Paginator } from '../models'
-import { changePage} from '../ducks/pagination'
+import { changePage, createPaginatorSelector } from '../ducks/pagination'
 import PaginatorPage from '../components/PaginatorPage'
-import { createPaginatorSelector } from '../ducks/pagination'
 
 const Pagination = ({ paginator, page, changePage }) => {
   if (paginator.totalCount == null || paginator.totalCount <= paginator.pageSize) {

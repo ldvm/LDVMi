@@ -4,6 +4,7 @@ import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
 import { Paginator, PaginationInfo } from '../models'
 import moduleSelector from '../selector'
+import { createPromiseStatusSelector } from './promises'
 
 // Misc
 
@@ -154,4 +155,28 @@ export function createPaginatorSelector(paginatorName) {
   return createSelector([selector], pagination =>
     pagination.get(paginatorName) || new Paginator()
   )
+}
+
+export function createPageContentSelector(paginatorName, itemsSelector, pageSelector = () => null) {
+  return createSelector(
+    [createPaginatorSelector(paginatorName), itemsSelector, pageSelector],
+    (paginator, items, page) => {
+      if (!List.isList(items)) {
+        throw new Error('Pagination is supported only over Imutable.List!');
+      }
+
+      const paginationInfo = makePaginationInfo(paginator, page);
+      return items.skip(paginationInfo.skipCount).take(paginator.pageSize);
+    }
+  )
+}
+
+export function createPaginatedPromiseStatusSelector(name, paginatorName, pageSelector = () => null) {
+  // Use paginator state and (optionally) injected page to create PaginationInfo whose hashCode
+  // is identifying the request.
+  const idSelector = createSelector(
+    [createPaginatorSelector(paginatorName), pageSelector],
+    (paginator, page) => makePaginationInfo(paginator, page).hashCode());
+
+  return createPromiseStatusSelector(name, idSelector);
 }
