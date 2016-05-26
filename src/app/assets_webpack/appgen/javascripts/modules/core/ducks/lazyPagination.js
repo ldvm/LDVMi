@@ -4,6 +4,7 @@ import { combineReducers } from 'redux'
 import { Paginator } from '../models'
 import { createPromiseStatusSelector } from './promises'
 import { createPaginatorSelector, createPageContentSelector as _createPageContentSelector, makePaginationInfo, resetPaginator, RESET_PAGINATOR, DESTROY_PAGINATOR } from './pagination'
+import createAction from '../../../misc/createAction'
 
 // Misc
 
@@ -36,13 +37,15 @@ export const paginationMiddleware = store => next => action => {
     // If the item count changed (e. g. an item was added or removed by someone else), we dispatch
     // an action that resets the paginator. Note this also covers the situations when the paginator
     // hasn't been initialized yet (e. g. we've just displayed a page and made the first request
-    // to fetch the first page).
+    // to fetch the first page). We also reset all promise statuses of this type so that the app
+    // knows that it has to fetch the pages again
     if (paginator.totalCount !== totalCount) {
       store.dispatch(resetPaginator(paginatorName, new Paginator({
         page: 1,
         pageSize: paginator.pageSize, // Remember pagesize
         totalCount
       })));
+      store.dispatch(createAction(action.type.replace('_SUCCESS', '_RESET'))); // Little hacky :-(
     }
   }
 
