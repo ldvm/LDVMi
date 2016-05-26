@@ -7,6 +7,14 @@ import moduleSelector from '../selector'
 
 // Misc
 
+/**
+ * Create PaginationInfo (which represents "intent" to fetch a page of items) from
+ * given Paginator (which represents "state").
+ *
+ * @param {Paginator} paginator
+ * @param {number|null} page if specified, it replaces Paginator's internal value.
+ * @return {PaginationInfo}
+ */
 export function makePaginationInfo(paginator, page = null) {
   const realPage = page || paginator.page;
   return new PaginationInfo({
@@ -17,6 +25,10 @@ export function makePaginationInfo(paginator, page = null) {
 
 // Actions
 
+// Note: This action merely updates paginator's internal state. The reason why it's called RESET
+// is that it typically changes totalCount or pageSize (page can be changed with CHANGE_PAGE)
+// which means that e. g. lazily loaded pages from backend should be forgotten and loaded again.
+// This action signals a significant change.
 export const RESET_PAGINATOR = prefix('RESET_PAGINATOR');
 export function resetPaginator(name, paginator) {
   return createAction(RESET_PAGINATOR, { name, paginator });
@@ -61,19 +73,30 @@ export default function paginationReducer(state = new Map(), action) {
 
 // Selectors
 
+/** Select the map of all paginators */
 const selector = createSelector([moduleSelector], state => state.pagination);
 
+/** Select paginator by name */
 export function createPaginatorSelector(paginatorName) {
   return createSelector([selector], pagination =>
     pagination.get(paginatorName) || new Paginator()
   )
 }
 
+/** Select current page number of the specified paginator */
 export function createPageSelector(paginatorName) {
   return createSelector([createPaginatorSelector(paginatorName)],
     paginator => paginator.page)
 }
 
+/**
+ * Select page content from the input items. The page size is specified by the paginator and the
+ * current page number either by the paginator or by an optional dedicated selector.
+ *
+ * @param {string} paginatorName
+ * @param {function} itemsSelector - Immutable.List of items to be paginated
+ * @param {function|null} pageSelector - if set, it is used instead of the internal paginator's value.
+ */
 export function createPageContentSelector(paginatorName, itemsSelector, pageSelector = () => null) {
   return createSelector(
     [createPaginatorSelector(paginatorName), itemsSelector, pageSelector],
