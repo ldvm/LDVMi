@@ -22,8 +22,13 @@ const parseType = actionType => {
   return [];
 };
 
-const updatePromiseState = (state = Map(), id, suffix, payload) =>
-  state.update(id, promiseState => updateSinglePromiseState(promiseState, suffix, payload));
+const updatePromiseState = (state = Map(), id, suffix, payload) => {
+  if (suffix == RESET && id == DEFAULT_ID) {
+    return Map();
+  }
+  
+  return state.update(id, promiseState => updateSinglePromiseState(promiseState, suffix, payload));
+};
 
 const updateSinglePromiseState = (state = new PromiseStatus(), suffix, payload) => {
   switch (suffix) {
@@ -78,11 +83,11 @@ const propsSelector = (_, props) => props;
 /**
  * Select status of a specific promise which is defined by its name and its id. The id might
  * dynamically depend on outer state (i. e. props) for which reason it's possible to define
- * an "idExtractor" function that can extract that information from the state and props.
+ * an "idSelector" function that can extract that information from the props and state.
  */
-export function createPromiseStatusSelector(name, idExtractor = () => DEFAULT_ID) {
-  return createSelector([selector, propsSelector], (state, props) =>
-    state.getIn([name, idExtractor(state, props)])  || new PromiseStatus());
+export function createPromiseStatusSelector(name, idSelector = () => DEFAULT_ID) {
+  return createSelector([selector, propsSelector, idSelector], (state, props, id) =>
+    state.getIn([name, id])  || new PromiseStatus());
 }
 
 /** Return statuses of all promises of given name. */
