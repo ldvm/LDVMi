@@ -11,11 +11,10 @@ const ApplicationsTable = ({ applications, visualizers }) => (
   <Table selectable={false}>
     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
       <TableRow>
-        <TableHeaderColumn style={{ width: '50%' }}>Name</TableHeaderColumn>
+        <TableHeaderColumn style={{ width: '60%' }}>Name</TableHeaderColumn>
+        <TableHeaderColumn>Visualizer</TableHeaderColumn>
         <TableHeaderColumn style={{ width: '10%' }}>Published</TableHeaderColumn>
-        <TableHeaderColumn> </TableHeaderColumn>
-        <TableHeaderColumn> </TableHeaderColumn>
-        <TableHeaderColumn> </TableHeaderColumn>
+        <TableHeaderColumn style={{ width: '10%' }}> </TableHeaderColumn>
       </TableRow>
     </TableHeader>
     <TableBody displayRowCheckbox={false} allowMultiselect showRowHover>

@@ -1,9 +1,11 @@
 import React, { PropTypes } from 'react'
 import TableRow from 'material-ui/lib/table/table-row'
 import TableRowColumn from 'material-ui/lib/table/table-row-column'
+import IconMenu from 'material-ui/lib/menus/icon-menu'
 import { Link } from 'react-router'
 import Icon from '../../../components/Icon'
-import Button from '../../../components/Button'
+import IconButton from '../../../components/IconButton'
+import MenuItem from '../../../components/MenuItem'
 import makePureRender from '../../../misc/makePureRender'
 import { Application } from '../../app/models'
 import { Visualizer } from '../../core/models'
@@ -28,12 +30,14 @@ const linkStyle = {
 
 const descriptionStyle = {
   color: '#9e9e9e',
-  marginBottom: '12px'
+  marginBottom: '12px',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis'
 };
 
 const ApplicationRow = ({ application, visualizer }) => (
   <TableRow>
-    <TableRowColumn style={{ width: '50%' }}>
+    <TableRowColumn style={{ width: '60%' }}>
       <h3 style={h3Style}>
         {visualizer &&
           <Icon icon={visualizer.icon} style={iconStyle} color="#333333" />
@@ -42,28 +46,32 @@ const ApplicationRow = ({ application, visualizer }) => (
           {application.name}
         </Link>
       </h3>
-      <div style={descriptionStyle}>{application.description}</div>
+      <div style={descriptionStyle}>
+        {application.description}
+      </div>
+    </TableRowColumn>
+    <TableRowColumn>
+      {visualizer && visualizer.title}
     </TableRowColumn>
     <TableRowColumn style={{ width: '10%' }}>
       {application.published && <Icon icon="done" color={theme.success} />}
     </TableRowColumn>
-    <TableRowColumn>
-      <Link to={configuratorRoutes.applicationUrl(application.id)}>
-        <Button label="Configure" icon="mode_edit" />
-      </Link>
-    </TableRowColumn>
-    <TableRowColumn>
-      {application.published ?
+    <TableRowColumn style={{ width: '10%' }}>
+      <IconMenu
+         iconButtonElement={<IconButton icon="more_vert" />}
+         anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+         targetOrigin={{horizontal: 'right', vertical: 'top'}}
+       >
+        <Link to={configuratorRoutes.applicationUrl(application.id)}>
+          <MenuItem primaryText="Configure" icon="mode_edit" />
+        </Link>
         <a href={applicationRoutes.applicationUrl(application)} target="_blank">
-          <Button label="Open" icon="open_in_browser" />
-        </a> :
-        <a href={applicationRoutes.applicationUrl(application)} target="_blank">
-          <Button label="Preview" icon="find_in_page" />
+          {application.published ?
+            <MenuItem primaryText="Open" icon="open_in_browser" /> :
+            <MenuItem primaryText="Preview" icon="find_in_page" />}
         </a>
-      }
-    </TableRowColumn>
-    <TableRowColumn>
-      <Button icon="delete" label="Delete " danger />
+        <MenuItem primaryText="Delete" icon="delete" />
+      </IconMenu>
     </TableRowColumn>
   </TableRow>
 );
