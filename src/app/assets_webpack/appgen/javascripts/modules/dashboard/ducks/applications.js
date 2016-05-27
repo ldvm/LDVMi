@@ -1,10 +1,12 @@
 import { createSelector } from 'reselect'
 import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
-import * as api from '../api'
+import * as dashboardApi from '../api'
+import * as appApi from '../../app/api'
 import { withPaginationInfo, createPaginatedReducer, createEntitiesReducer, createPageContentSelector, createPagePromiseStatusSelector } from '../../core/ducks/lazyPagination'
 import { Application } from '../../app/models'
 import moduleSelector from '../selector'
+import { createPromiseStatusSelector } from '../../core/ducks/promises'
 
 // Actions
 
@@ -18,13 +20,27 @@ export const GET_APPLICATIONS_RESET = GET_APPLICATIONS + '_RESET';
 
 export function getApplications(page) {
   return withPaginationInfo(APPLICATIONS_PAGINATOR, page)(paginationInfo => {
-    const promise = api.getApplications(paginationInfo);
+    const promise = dashboardApi.getApplications(paginationInfo);
     return createAction(GET_APPLICATIONS, { promise });
   });
 }
 
 export function getApplicationsReset() {
   return createAction(GET_APPLICATIONS_RESET);
+}
+
+export const DELETE_APPLICATION = prefix('DELETE_APPLICATION');
+export const DELETE_APPLICATION_START = DELETE_APPLICATION + '_START';
+export const DELETE_APPLICATION_ERROR = DELETE_APPLICATION + '_ERROR';
+export const DELETE_APPLICATION_SUCCESS = DELETE_APPLICATION + '_SUCCESS';
+export function deleteApplication(id) {
+  return dispatch => {
+    const promise = appApi.deleteApp(id).then(response => {
+      dispatch(getApplicationsReset());
+      return response;
+    });
+    return createAction(DELETE_APPLICATION, { promise }, { id });
+  }
 }
 
 // Reducers
@@ -44,7 +60,13 @@ export default createPaginatedReducer(
 const selector = createSelector([moduleSelector], state => state.applications);
 
 export const createApplicationsSelector = pageSelector =>
-  createPageContentSelector(APPLICATIONS_PAGINATOR, selector, pageSelector);
+  createSelector(
+    [createPageContentSelector(APPLICATIONS_PAGINATOR, selector, pageSelector)],
+    applications => applications.filter(app => app != null) // skip deleted apps
+  );
 
 export const createApplicationsStatusSelector = pageSelector =>
   createPagePromiseStatusSelector(GET_APPLICATIONS, APPLICATIONS_PAGINATOR, pageSelector);
+
+export const createDeleteApplicationStatusSelector = idSelector =>
+  createPromiseStatusSelector(DELETE_APPLICATION, idSelector)

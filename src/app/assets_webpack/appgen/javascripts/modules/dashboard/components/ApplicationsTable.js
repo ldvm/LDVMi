@@ -7,7 +7,7 @@ import TableBody from 'material-ui/lib/table/table-body'
 import TableRow from 'material-ui/lib/table/table-row'
 import ApplicationRow from './ApplicationRow'
 
-const ApplicationsTable = ({ applications, visualizers }) => (
+const ApplicationsTable = ({ applications, visualizers, deleteApplication }) => (
   <Table selectable={false}>
     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
       <TableRow>
@@ -23,6 +23,7 @@ const ApplicationsTable = ({ applications, visualizers }) => (
           key={application.id}
           application={application}
           visualizer={visualizers.filter(v => v.componentTemplateId == application.visualizerComponentTemplateId).get(0)}
+          deleteApplication={() => deleteApplication(application.id)}
         />
       )}
     </TableBody>
@@ -31,7 +32,8 @@ const ApplicationsTable = ({ applications, visualizers }) => (
 
 ApplicationsTable.propTypes = {
   applications: PropTypes.instanceOf(List).isRequired,
-  visualizers: PropTypes.instanceOf(List).isRequired
+  visualizers: PropTypes.instanceOf(List).isRequired,
+  deleteApplication: PropTypes.func.isRequired
 };
 
 export default ApplicationsTable;

@@ -10,6 +10,13 @@ import createAction from '../../../misc/createAction'
 // and is instead fetched from the backend when required. The backend must support it by sending
 // the current totalCount with individual pages.
 
+// Note about deletion support: Deleting an item from the lazily paginated collection creates all
+// sorts of possible situations. Typically, all items coming after the deleted item are shifted,
+// which causes that the fetched pages are no longer aligned. To keep things simple, the recommended
+// way is to dispatch the RESET action to reset the requests and reload the page which will
+// cause the paginator to synchronize with the backend. Obviously, the disadvantage is the
+// "flicker" of when the current page is being reloaded.
+
 // Misc
 
 /**
@@ -70,7 +77,7 @@ export const paginationMiddleware = store => next => action => {
  * Create reducer that maintains data coming from server (by pages) in a "paginatable" state.
  * @param {string} paginatorName
  * @param {string} addPageActionType - type of the action carrying a new page
- * @param {string} entitiesReducer - user-provided reducer that holds individual entities
+ * @param {function} entitiesReducer - user-provided reducer that holds individual entities
  *  indexed by keys (has to be an Immutable.Map). Can provide arbitrary other functionality
  *  (like entity updates etc.)
  * @param {function} keyExtractor - extract key from an entity

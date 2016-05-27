@@ -6,7 +6,7 @@ import * as routes from '../routes'
 import Padding from '../../../components/Padding'
 import PromiseResult from '../../core/components/PromiseResult'
 import Pagination from '../../core/containers/Pagination'
-import { getApplications, getApplicationsReset, APPLICATIONS_PAGINATOR, createApplicationsSelector, createApplicationsStatusSelector } from '../ducks/applications'
+import { getApplications, getApplicationsReset, deleteApplication, APPLICATIONS_PAGINATOR, createApplicationsSelector, createApplicationsStatusSelector } from '../ducks/applications'
 import { destroyPaginator, resetPaginator } from '../../core/ducks/pagination'
 import { PromiseStatus } from '../../core/models'
 import ApplicationsTable from '../components/ApplicationsTable'
@@ -24,15 +24,13 @@ class Applications extends Component {
 
   componentWillMount() {
     const { loadPage, props: { dispatch } } = this;
-    // dispatch(resetPaginator(APPLICATIONS_PAGINATOR, { pageSize: 5 }));
+    // dispatch(resetPaginator(APPLICATIONS_PAGINATOR, { pageSize: 6 }));
     dispatch(getVisualizers()); // TODO: wait for it to load
     loadPage(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.page !== nextProps.page) {
-      this.loadPage(nextProps);
-    }
+    this.loadPage(nextProps);
   }
 
   componentWillUnmount() {
@@ -43,7 +41,7 @@ class Applications extends Component {
 
   loadPage(props) {
     const { dispatch, page, status } = props;
-    if (!status.done) {
+    if (!status.isLoading && !status.error && !status.done) {
       dispatch(getApplications(page));
     }
   }
@@ -54,13 +52,14 @@ class Applications extends Component {
   }
 
   render() {
-    const { applications, visualizers, page, status } = this.props;
+    const { dispatch, applications, visualizers, page, status } = this.props;
     return (
       <div>
         {status.done &&
           <ApplicationsTable
             applications={applications}
             visualizers={visualizers}
+            deleteApplication={id => dispatch(deleteApplication(id))}
           />
         }
 

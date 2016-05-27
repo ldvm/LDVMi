@@ -12,6 +12,8 @@ import { Visualizer } from '../../core/models'
 import * as applicationRoutes from '../../app/applicationRoutes'
 import * as configuratorRoutes from '../../app/configuratorRoutes'
 import * as theme from '../../../misc/theme'
+import withDialogControls from '../../core/containers/withDialogControls'
+import ConfirmDialog from '../../core/containers/ConfirmDialog'
 
 const iconStyle = {
   float: 'left',
@@ -35,7 +37,11 @@ const descriptionStyle = {
   textOverflow: 'ellipsis'
 };
 
-const ApplicationRow = ({ application, visualizer }) => (
+// Each application has its own delete confirm dialog. It's not exactly nice but it works and is
+// simply. We just have to give each dialog a different name.
+const confirmDialogName = id => 'DELETE_APP_CONFIRM_DIALOG_' + id;
+
+const ApplicationRow = ({ application, visualizer, deleteApplication, dialogOpen }) => (
   <TableRow>
     <TableRowColumn style={{ width: '60%' }}>
       <h3 style={h3Style}>
@@ -57,10 +63,17 @@ const ApplicationRow = ({ application, visualizer }) => (
       {application.published && <Icon icon="done" color={theme.success} />}
     </TableRowColumn>
     <TableRowColumn style={{ width: '10%' }}>
+      <ConfirmDialog danger
+        dialogName={confirmDialogName(application.id)}
+        message={`Do you really wish to delete the application "${application.name}"?`}
+        action={deleteApplication}
+        icon="delete"
+      />
       <IconMenu
          iconButtonElement={<IconButton icon="more_vert" />}
          anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
          targetOrigin={{horizontal: 'right', vertical: 'top'}}
+         closeOnItemTouchTap={true}
        >
         <Link to={configuratorRoutes.applicationUrl(application.id)}>
           <MenuItem primaryText="Configure" icon="mode_edit" />
@@ -70,7 +83,11 @@ const ApplicationRow = ({ application, visualizer }) => (
             <MenuItem primaryText="Open" icon="open_in_browser" /> :
             <MenuItem primaryText="Preview" icon="find_in_page" />}
         </a>
-        <MenuItem primaryText="Delete" icon="delete" />
+        <MenuItem
+          primaryText="Delete"
+          icon="delete"
+          onTouchTap={() => dialogOpen(confirmDialogName(application.id))}
+        />
       </IconMenu>
     </TableRowColumn>
   </TableRow>
@@ -78,7 +95,9 @@ const ApplicationRow = ({ application, visualizer }) => (
 
 ApplicationRow.propTypes = {
   application: PropTypes.instanceOf(Application).isRequired,
-  visualizer: PropTypes.instanceOf(Visualizer).isRequired
+  visualizer: PropTypes.instanceOf(Visualizer).isRequired,
+  deleteApplication: PropTypes.func.isRequired,
+  dialogOpen: PropTypes.func.isRequired
 };
 
-export default makePureRender(ApplicationRow);
+export default withDialogControls(makePureRender(ApplicationRow));
