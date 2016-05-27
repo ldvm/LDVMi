@@ -37,7 +37,7 @@
                             <span ng-show="source.files.length">Change</span>
                             <input type="file" name="" multiple ng-file-model="source.files">
                         </span>
-                        <span class="fileinput-filename" ng-show="source.files.length" ng-repeat="f in source.files">{{f.name}}</span>
+                        <span class="fileinput-filename" ng-show="source.files.length" ng-repeat="f in source.files" style="padding-right: 7px;">{{f.name}}</span>
                         <a href="#" class="close" ng-show="source.files.length" ng-click="source.files = []"
                            data-dismiss="fileinput">×</a>
                     </div>
