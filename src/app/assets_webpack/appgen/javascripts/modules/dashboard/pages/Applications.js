@@ -9,18 +9,23 @@ import Pagination from '../../core/containers/Pagination'
 import { getApplications, getApplicationsReset, APPLICATIONS_PAGINATOR, createApplicationsSelector, createApplicationsStatusSelector } from '../ducks/applications'
 import { destroyPaginator, resetPaginator } from '../../core/ducks/pagination'
 import { PromiseStatus } from '../../core/models'
+import ApplicationsTable from '../components/ApplicationsTable'
+import { visualizersSelector } from '../../core/ducks/visualizers'
+import { getVisualizers } from '../../core/ducks/visualizers'
 
 class Applications extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     page: PropTypes.number.isRequired,
     applications: PropTypes.instanceOf(List).isRequired,
+    visualizers: PropTypes.instanceOf(List).isRequired,
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
   componentWillMount() {
     const { loadPage, props: { dispatch } } = this;
-    dispatch(resetPaginator(APPLICATIONS_PAGINATOR, { pageSize: 4 }));
+    // dispatch(resetPaginator(APPLICATIONS_PAGINATOR, { pageSize: 5 }));
+    dispatch(getVisualizers()); // TODO: wait for it to load
     loadPage(this.props);
   }
 
@@ -49,18 +54,24 @@ class Applications extends Component {
   }
 
   render() {
-    const { applications, page, status } = this.props;
+    const { applications, visualizers, page, status } = this.props;
     return (
-      <Padding space={2}>
-        <PromiseResult status={status} loadingMessage="Loading applications..."/>
+      <div>
+        {status.done &&
+          <ApplicationsTable
+            applications={applications}
+            visualizers={visualizers}
+          />
+        }
 
-        {status.done && applications.map(app => app && <div key={app.id}>{app.name}</div>)}
-
-        <Pagination
-          name={APPLICATIONS_PAGINATOR}
-          page={page}
-          changePage={::this.changePage} />
-      </Padding>
+        <Padding space={2}>
+          <PromiseResult status={status} loadingMessage="Loading applications..."/>
+          <Pagination
+            name={APPLICATIONS_PAGINATOR}
+            page={page}
+            changePage={::this.changePage} />
+        </Padding>
+      </div>
     );
   }
 }
@@ -70,6 +81,7 @@ const pageSelector = (_, props) => parseInt(props.routeParams.page || 1);
 const selector = createStructuredSelector({
   page: pageSelector,
   applications: createApplicationsSelector(pageSelector),
+  visualizers: visualizersSelector,
   status: createApplicationsStatusSelector(pageSelector)
 });
 
