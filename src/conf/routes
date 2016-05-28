@@ -123,7 +123,8 @@ POST        /appgen/api/manageApp/saveAppConfiguration/:id  @controllers.appgen.
 POST        /appgen/api/manageApp/publishApp/:id            @controllers.appgen.api.ManageAppApiController.publishApp(id: Long)
 POST        /appgen/api/manageApp/deleteApp/:id             @controllers.appgen.api.ManageAppApiController.deleteApp(id: Long)
 
-POST        /appgen/api/dashboard/getApplications             @controllers.appgen.api.DashboardApiController.getApplications
+POST        /appgen/api/dashboard/getApplications           @controllers.appgen.api.DashboardApiController.getApplications
+POST        /appgen/api/dashboard/getDiscoveries            @controllers.appgen.api.DashboardApiController.getDiscoveries
 
 POST        /appgen/api/common/getVisualizers               @controllers.appgen.api.CommonApiController.getVisualizers
 

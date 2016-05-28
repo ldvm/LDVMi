@@ -7,7 +7,7 @@ import Paper from 'material-ui/lib/paper'
 import { routeActions } from 'redux-simple-router'
 import NarrowedLayout from '../../../components/NarrowedLayout'
 import Headline from '../../../components/Headline'
-import requireSignedIn from '../../auth/containers/requireSignedIn'
+import requireSignedIn, { AS_PAGE } from '../../auth/containers/requireSignedIn'
 import * as dashboardRoutes from '../routes'
 
 /**
@@ -63,4 +63,4 @@ const Dashboard = ({ dispatch, children, route, routes }) =>
     </Paper>
   </NarrowedLayout>;
 
-export default requireSignedIn(connect()(Dashboard));
+export default requireSignedIn(connect()(Dashboard), AS_PAGE);

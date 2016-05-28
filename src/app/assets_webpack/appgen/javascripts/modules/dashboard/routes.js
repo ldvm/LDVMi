@@ -12,7 +12,7 @@ export default function createRoutes(dispatch) {
   return (
     <Route component={Dashboard} path={MODULE_PREFIX}>
       <Route component={DataSources} path="data-sources(/:page)" />
-      <Route component={Discoveries} path="discoveries" />
+      <Route component={Discoveries} path="discoveries(/:page)" />
       <Route component={Applications} path=":page" />
       <IndexRoute component={Applications} />
     </Route>
@@ -37,10 +37,18 @@ export function applications(page = null) {
   return routeActions.push(applicationsUrl(page));
 }
 
-export function dataSourcesUrl() {
-  return dashboardUrl() + '/data-sources';
+export function dataSourcesUrl(page = null) {
+  return dashboardUrl() + '/data-sources' + (page ? '/' + page : '');
 }
 
-export function discoveriesUrl() {
-  return dashboardUrl() + '/discoveries';
+export function dataSources(page = null) {
+  return routeActions.push(dataSourcesUrl(page));
+}
+
+export function discoveriesUrl(page = null) {
+  return dashboardUrl() + '/discoveries' + (page ? '/' + page : '');
+}
+
+export function discoveries(page = null) {
+  return routeActions.push(discoveriesUrl(page));
 }
