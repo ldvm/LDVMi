@@ -2,13 +2,14 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import Helmet from 'react-helmet'
-import { getApplication, getApplicationReset, applicationSelector, createApplicationStatusSelector, applicationVisualizerSelector } from '../ducks/application'
+import { getApplication, getApplicationReset, deleteApplication, applicationSelector, createApplicationStatusSelector, applicationVisualizerSelector } from '../ducks/application'
 import { Application as ApplicationModel } from '../models'
 import { Visualizer } from '../../core/models'
 import { PromiseStatus } from '../../core/models'
 import PromiseResult from '../../core/components/PromiseResult'
 import ConfiguratorHeader from '../components/ConfiguratorHeader'
 import GeneralSettings from '../containers/GeneralSettings'
+import DeleteAppConfirmDialog, { dialogName as deleteAppConfirmDialogName } from '../dialogs/DeleteAppConfirmDialog'
 import LabelEditor from '../containers/LabelEditor'
 import CenteredMessage from '../../../components/CenteredMessage'
 import Alert from '../../../components/Alert'
@@ -69,8 +70,6 @@ class Application extends Component {
   render() {
     const { dispatch, user, application, visualizer, applicationStatus, children } = this.props;
 
-    const openGeneralSettingsDialog = () => dispatch(dialogOpen(generalSettingsDialogName));
-
     if (!applicationStatus.done) {
       return <BodyPadding><PromiseResult status={applicationStatus} /></BodyPadding>
     }
@@ -86,9 +85,13 @@ class Application extends Component {
       <ConfiguratorHeader
         application={application}
         visualizer={visualizer}
-        openGeneralSettingsDialog={openGeneralSettingsDialog}
+        openGeneralSettingsDialog={() => dispatch(dialogOpen(generalSettingsDialogName))}
+        openDeleteAppConfirmDialog={() => dispatch(dialogOpen(deleteAppConfirmDialogName))}
       />
       <GeneralSettings application={application} />
+      <DeleteAppConfirmDialog
+        application={application}
+        deleteApplication={() => dispatch(deleteApplication(application.id))} />
       <LabelEditor />
 
       {!children &&

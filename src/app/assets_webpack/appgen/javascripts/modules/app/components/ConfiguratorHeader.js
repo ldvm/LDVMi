@@ -32,7 +32,7 @@ const buttonBarStyle = {
   float: 'right'
 };
 
-const ConfiguratorHeader = ({ application, visualizer, openGeneralSettingsDialog }) => {
+const ConfiguratorHeader = ({ application, visualizer, openGeneralSettingsDialog, openDeleteAppConfirmDialog }) => {
   return <BodyPadding>
     <div style={buttonBarStyle}>
       <LanguageSwitch />
@@ -53,6 +53,7 @@ const ConfiguratorHeader = ({ application, visualizer, openGeneralSettingsDialog
         <MenuItem
           primaryText="Delete"
           leftIcon={<Icon icon="delete" />}
+          onTouchTap={openDeleteAppConfirmDialog}
         />
       </IconMenu>
     </div>
@@ -66,7 +67,8 @@ const ConfiguratorHeader = ({ application, visualizer, openGeneralSettingsDialog
 ConfiguratorHeader.propTypes = {
   application: PropTypes.instanceOf(Application).isRequired,
   visualizer: PropTypes.instanceOf(Visualizer).isRequired,
-  openGeneralSettingsDialog: PropTypes.func.isRequired
+  openGeneralSettingsDialog: PropTypes.func.isRequired,
+  openDeleteAppConfirmDialog: PropTypes.func.isRequired
 };
 
 export default ConfiguratorHeader;

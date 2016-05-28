@@ -63,6 +63,9 @@ const ApplicationRow = ({ application, visualizer, deleteApplication, dialogOpen
       {application.published && <Icon icon="done" color={theme.success} />}
     </TableRowColumn>
     <TableRowColumn style={{ width: '10%' }}>
+      
+      {/* The confirm dialog has to be outside of the IconMenu to work properly. That is why we
+          cannot extract the confirm dialog with the delete button into a separate component. */}
       <ConfirmDialog danger
         dialogName={confirmDialogName(application.id)}
         message={`Do you really wish to delete the application "${application.name}"?`}

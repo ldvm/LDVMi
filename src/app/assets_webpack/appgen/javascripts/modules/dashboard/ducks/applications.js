@@ -69,4 +69,4 @@ export const createApplicationsStatusSelector = pageSelector =>
   createPagePromiseStatusSelector(GET_APPLICATIONS, APPLICATIONS_PAGINATOR, pageSelector);
 
 export const createDeleteApplicationStatusSelector = idSelector =>
-  createPromiseStatusSelector(DELETE_APPLICATION, idSelector)
+  createPromiseStatusSelector(DELETE_APPLICATION, idSelector);
