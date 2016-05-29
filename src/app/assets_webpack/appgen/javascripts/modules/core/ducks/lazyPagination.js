@@ -9,6 +9,15 @@ import createAction from '../../../misc/createAction'
 // and is instead fetched from the backend when required. The backend must support it by sending
 // the current totalCount with individual pages.
 
+// The principle is similar to standard server-side applications. With every request we re-render
+// the page and the paginator which is possible because of the up-to-date total count information
+// that is contained in every request. To increase comfort, we maintain a cache of fetched pages
+// for which we leverage the promise API/reducers. The cache is a "mirror" of the data collection
+// on the server which we lazily build page by page as the user requests it. Thanks to this
+// approach we can paginate the collections just as if it was completely available here on the
+// client and use the standard pagination API for that. The disadvantage is that the set of
+// related reducers and selectors responsible for maintaining this cache is rather complicated.
+
 // Note about deletion support: Deleting an item from the lazily paginated collection creates all
 // sorts of possible situations. Typically, all items coming after the deleted item are shifted,
 // which causes that the fetched pages are no longer aligned. To keep things simple, the recommended
@@ -56,10 +65,11 @@ export const paginationMiddleware = store => next => action => {
     // an action that resets the paginator. Note this also covers the situations when the paginator
     // hasn't been initialized yet (e. g. we've just displayed a page and made the first request
     // to fetch the first page). We also reset all promise statuses of this type so that the app
-    // knows that it has to fetch the pages again
+    // knows that it has to fetch the pages again. Note that the SUCCESS action is dispatched as
+    // the last one, after the RESETing action.
     if (paginator.totalCount !== totalCount) {
       store.dispatch(resetPaginator(paginatorName, paginator.set('totalCount', totalCount)));
-      store.dispatch(createAction(action.type.replace('_SUCCESS', '_RESET'))); // Little hacky :-(
+      store.dispatch(createAction(action.type.replace('_SUCCESS', '_RESET')));
     }
   }
 
@@ -121,8 +131,8 @@ export function createEntitiesReducer(addActionType, resetActionType, recordFact
 }
 
 /**
- * Create reducer that maintains entity keys in a collection with correct order and offset which
- * makes the collection "paginatable".
+ * Create cache reducer that maintains entity keys in a collection with correct order and offset
+ * which makes the collection "paginatable".
  * @param {string} paginatorName
  * @param {string} addPageActionType - type of the action carrying a new page
  * @param {function} keyExtractor - extract key from an entity
@@ -130,7 +140,9 @@ export function createEntitiesReducer(addActionType, resetActionType, recordFact
 function createKeysReducer(paginatorName, addPageActionType, keyExtractor = x => x.id) {
 
   // A "virtual" storage that can take pages of items in an arbitrary order (coming from server)
-  // and store them with correct offsets. It is very handy, because it is possible to iterate over
+  // and store them with correct offsets. It works a "mirror" of the collection on the server.
+
+  // It is very handy, because it is possible to iterate over
   // this storage or extract pages from this storage even though most of the data is still missing.
   // Thanks to this storage we can use unified pagination API for both data that is available
   // from the beginning and the data that is being fetched lazily.
