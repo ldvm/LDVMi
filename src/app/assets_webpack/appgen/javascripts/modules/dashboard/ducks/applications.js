@@ -7,6 +7,7 @@ import { withPaginationInfo, createPaginatedReducer, createEntitiesReducer, crea
 import { Application } from '../../app/models'
 import moduleSelector from '../selector'
 import { createPromiseStatusSelector } from '../../core/ducks/promises'
+import { notification } from '../../core/ducks/notifications'
 
 // Actions
 
@@ -37,6 +38,7 @@ export function deleteApplication(id) {
   return dispatch => {
     const promise = appApi.deleteApp(id).then(response => {
       dispatch(getApplicationsReset());
+      dispatch(notification('The application has been deleted'));
       return response;
     });
     return createAction(DELETE_APPLICATION, { promise }, { id });

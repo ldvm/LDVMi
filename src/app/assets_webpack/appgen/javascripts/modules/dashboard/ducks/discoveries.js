@@ -2,12 +2,11 @@ import { createSelector } from 'reselect'
 import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
 import * as dashboardApi from '../api'
-import * as appApi from '../../app/api'
 import { withPaginationInfo, createPaginatedReducer, createEntitiesReducer, createPageContentSelector, createPagePromiseStatusSelector } from '../../core/ducks/lazyPagination'
-import { Application } from '../../app/models'
 import moduleSelector from '../selector'
 import { createPromiseStatusSelector } from '../../core/ducks/promises'
 import { Discovery } from '../../createApp/models'
+import { notification } from '../../core/ducks/notifications'
 
 // Actions
 
@@ -36,11 +35,16 @@ export const DELETE_DISCOVERY_ERROR = DELETE_DISCOVERY + '_ERROR';
 export const DELETE_DISCOVERY_SUCCESS = DELETE_DISCOVERY + '_SUCCESS';
 export function deleteDiscovery(id) {
   return dispatch => {
-    // TODO: replace by deleteDiscovery
-    const promise = appApi.deleteApp(id).then(response => {
-      dispatch(getDiscoveriesReset());
-      return response;
-    });
+    const promise = dashboardApi.deleteDiscovery(id)
+      .then(response => {
+        dispatch(getDiscoveriesReset());
+        dispatch(notification('The discovery has been deleted'));
+        return response;
+      })
+      .catch(e => {
+        dispatch(notification('Deleting the discovery failed!'));
+        throw e;
+      });
     return createAction(DELETE_DISCOVERY, { promise }, { id });
   }
 }

@@ -50,7 +50,7 @@ export const DELETE_APPLICATION_SUCCESS = DELETE_APPLICATION + '_SUCCESS';
 export function deleteApplication(id) {
   return dispatch => {
     const promise = api.deleteApp(id).then(response => {
-      dispatch(notification("The application has been deleted"));
+      dispatch(notification('The application has been deleted'));
       dispatch(dashboardRoutes.dashboard());
       return response;
     });
