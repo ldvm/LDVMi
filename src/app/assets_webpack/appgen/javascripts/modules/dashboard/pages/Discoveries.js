@@ -6,6 +6,7 @@ import * as routes from '../routes'
 import Padding from '../../../components/Padding'
 import PullRight from '../../../components/PullRight'
 import ClearBoth from '../../../components/ClearBoth'
+import CenteredMessage from '../../../components/CenteredMessage'
 import PromiseResult from '../../core/components/PromiseResult'
 import Pagination from '../../core/containers/Pagination'
 import { destroyPaginator } from '../../core/ducks/pagination'
@@ -60,14 +61,19 @@ class Discoveries extends Component {
           />}
 
         <Padding space={2}>
-          {discoveries.size == 0 &&
-            <PromiseResult status={status} loadingMessage="Loading discoveries..."/>}
-          
-          <PullRight>
-            <DeleteAllDiscoveriesButton
-              deleteAllDiscoveries={() => dispatch(deleteAllDiscoveries())}
-            />
-          </PullRight>
+          {discoveries.size == 0 ? (
+            <div>
+              {status.done && <CenteredMessage>No discoveries found.</CenteredMessage>}
+              <PromiseResult status={status} loadingMessage="Loading discoveries..." />
+            </div>
+          ) : (
+            <PullRight>
+              <DeleteAllDiscoveriesButton
+                deleteAllDiscoveries={() => dispatch(deleteAllDiscoveries())}
+              />
+            </PullRight>
+          )}
+
           <Pagination
             name={DISCOVERIES_PAGINATOR}
             page={page}

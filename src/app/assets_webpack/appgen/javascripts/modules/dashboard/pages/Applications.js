@@ -5,6 +5,7 @@ import { createStructuredSelector } from 'reselect'
 import * as routes from '../routes'
 import Padding from '../../../components/Padding'
 import PromiseResult from '../../core/components/PromiseResult'
+import CenteredMessage from '../../../components/CenteredMessage'
 import Pagination from '../../core/containers/Pagination'
 import { getApplications, getApplicationsReset, deleteApplication, APPLICATIONS_PAGINATOR, createApplicationsSelector, createApplicationsStatusSelector } from '../ducks/applications'
 import { destroyPaginator, resetPaginator } from '../../core/ducks/pagination'
@@ -63,8 +64,13 @@ class Applications extends Component {
           />}
 
         <Padding space={2}>
-          {applications.size == 0 &&
-            <PromiseResult status={status} loadingMessage="Loading applications..."/>}
+          {applications.size == 0 && (
+            <div>
+              {status.done && <CenteredMessage>No applications found.</CenteredMessage>}
+              <PromiseResult status={status} loadingMessage="Loading applications..." />
+            </div>
+          )}
+
           <Pagination
             name={APPLICATIONS_PAGINATOR}
             page={page}
