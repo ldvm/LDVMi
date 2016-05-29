@@ -24,7 +24,10 @@ const parseType = actionType => {
 
 const updatePromiseState = (state = Map(), id, suffix, payload) => {
   if (suffix == RESET && id == DEFAULT_ID) {
-    return Map();
+    // We leave out promises that are currently loading. There is no point in resetting them
+    // because once they are resolved, they will update the state anyway. Plus this way we keep the
+    // information that there is a promise loading which can be used to avoid redundant requests.
+    return state.filter(promiseState => promiseState.isLoading);
   }
   
   return state.update(id, promiseState => updateSinglePromiseState(promiseState, suffix, payload));
@@ -51,7 +54,11 @@ const updateSinglePromiseState = (state = new PromiseStatus(), suffix, payload) 
         .set('done', true);
 
     case RESET:
-      return new PromiseStatus();
+      if (state.isLoading) {
+        return state;
+      } else {
+        return new PromiseStatus();
+      }
 
     default:
       throw new Error('Unrecognized promise action type suffix: ' + suffix);
