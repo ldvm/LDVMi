@@ -13,3 +13,7 @@ export async function getDiscoveries(paginationInfo) {
 export async function deleteDiscovery(id) {
   return await rest('dashboard/deleteDiscovery/' + id, {});
 }
+
+export async function deleteAllDiscoveries() {
+  return await rest('dashboard/deleteAllDiscoveries', {});
+}

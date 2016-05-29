@@ -4,12 +4,15 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import * as routes from '../routes'
 import Padding from '../../../components/Padding'
+import PullRight from '../../../components/PullRight'
+import ClearBoth from '../../../components/ClearBoth'
 import PromiseResult from '../../core/components/PromiseResult'
 import Pagination from '../../core/containers/Pagination'
 import { destroyPaginator } from '../../core/ducks/pagination'
 import { PromiseStatus } from '../../core/models'
-import { getDiscoveries, getDiscoveriesReset, deleteDiscovery, createDiscoveriesSelector, createDiscoveriesStatusSelector, DISCOVERIES_PAGINATOR } from '../ducks/discoveries'
+import { getDiscoveries, getDiscoveriesReset, deleteDiscovery, deleteAllDiscoveries, createDiscoveriesSelector, createDiscoveriesStatusSelector, DISCOVERIES_PAGINATOR } from '../ducks/discoveries'
 import DiscoveriesTable from '../components/DiscoveriesTable'
+import DeleteAllDiscoveriesButton from '../components/DeleteAllDiscoveriesButton'
 
 class Discoveries extends Component {
   static propTypes = {
@@ -59,10 +62,17 @@ class Discoveries extends Component {
         <Padding space={2}>
           {discoveries.size == 0 &&
             <PromiseResult status={status} loadingMessage="Loading discoveries..."/>}
+          
+          <PullRight>
+            <DeleteAllDiscoveriesButton
+              deleteAllDiscoveries={() => dispatch(deleteAllDiscoveries())}
+            />
+          </PullRight>
           <Pagination
             name={DISCOVERIES_PAGINATOR}
             page={page}
             changePage={::this.changePage} />
+          <ClearBoth />
         </Padding>
       </div>
     );

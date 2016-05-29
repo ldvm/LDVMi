@@ -24,6 +24,12 @@ class DiscoveriesService(implicit inj: Injector) extends Injectable {
     } yield (uPD, pD)
   }
 
+  def findByUser(user: User)(implicit session: Session): Seq[Discovery] = {
+    queryByUser(user)
+      .list
+      .map(Discovery.merge)
+  }
+
   def findByUser(user: User, paginationInfo: PaginationInfo)(implicit session: Session): Seq[Discovery] = {
       queryByUser(user)
       .sortBy({ case (uPD, pD) => uPD.id.desc })

@@ -35,4 +35,10 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
       case None => BadRequest(ErrorResponse("The discovery does not exist or is not accessible"))
     }
   }
+
+  def deleteAllDiscoveries = RestAction[EmptyRequest] { implicit request => json =>
+    discoveriesService.findByUser(request.user).foreach(discovery =>
+      discoveriesService.delete(discovery))
+    Ok(SuccessResponse("All discoveries have been deleted"))
+  }
 }

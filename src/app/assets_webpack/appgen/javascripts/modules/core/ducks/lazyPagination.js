@@ -56,7 +56,7 @@ export const paginationMiddleware = store => next => action => {
 
   // Intercept all actions that refer to a paginator and carry 'totalCount' in their payload.
   // Typically, such actions are REST responses coming from server.
-  if (action.meta && action.meta.paginatorName && action.payload && action.payload.totalCount) {
+  if (action.meta && "paginatorName" in action.meta && action.payload && "totalCount" in action.payload) {
     const { paginatorName } = action.meta;
     const totalCount = parseInt(action.payload.totalCount);
     const paginator = createPaginatorSelector(paginatorName)(store.getState());

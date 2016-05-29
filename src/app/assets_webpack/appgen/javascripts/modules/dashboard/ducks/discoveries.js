@@ -49,6 +49,26 @@ export function deleteDiscovery(id, page) {
   }
 }
 
+export const DELETE_ALL_DISCOVERIES = prefix('DELETE_ALL_DISCOVERIES');
+export const DELETE_ALL_DISCOVERIES_START = DELETE_ALL_DISCOVERIES + '_START';
+export const DELETE_ALL_DISCOVERIES_ERROR = DELETE_ALL_DISCOVERIES + '_ERROR';
+export const DELETE_ALL_DISCOVERIES_SUCCESS = DELETE_ALL_DISCOVERIES + '_SUCCESS';
+export function deleteAllDiscoveries() {
+  return dispatch => {
+    const promise = dashboardApi.deleteAllDiscoveries()
+      .then(response => {
+        dispatch(notification('All discoveries have been deleted'));
+        dispatch(getDiscoveries(1));
+        return response;
+      })
+      .catch(e => {
+        dispatch(notification('Deleting discoveries failed!'));
+        throw e;
+      });
+    dispatch(createAction(DELETE_ALL_DISCOVERIES, { promise }));
+  }
+}
+
 // Reducers
 
 const discoveriesReducer = createEntitiesReducer(
