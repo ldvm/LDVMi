@@ -34,14 +34,19 @@ export const DELETE_APPLICATION = prefix('DELETE_APPLICATION');
 export const DELETE_APPLICATION_START = DELETE_APPLICATION + '_START';
 export const DELETE_APPLICATION_ERROR = DELETE_APPLICATION + '_ERROR';
 export const DELETE_APPLICATION_SUCCESS = DELETE_APPLICATION + '_SUCCESS';
-export function deleteApplication(id) {
+export function deleteApplication(id, page) {
   return dispatch => {
-    const promise = appApi.deleteApp(id).then(response => {
-      dispatch(getApplicationsReset());
-      dispatch(notification('The application has been deleted'));
-      return response;
-    });
-    return createAction(DELETE_APPLICATION, { promise }, { id });
+    const promise = appApi.deleteApp(id)
+      .then(response => {
+        dispatch(notification('The application has been deleted'));
+        dispatch(getApplications(page));
+        return response;
+      })
+      .catch(e => {
+        dispatch(notification('Deleting the application failed!'));
+        throw e;
+      });
+    dispatch(createAction(DELETE_APPLICATION, { promise }, { id }));
   }
 }
 

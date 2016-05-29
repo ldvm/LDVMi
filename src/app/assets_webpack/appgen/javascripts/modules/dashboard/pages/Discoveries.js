@@ -50,15 +50,15 @@ class Discoveries extends Component {
     const { dispatch, discoveries, page, status } = this.props;
     return (
       <div>
-        {status.done &&
+        {discoveries.size > 0 &&
           <DiscoveriesTable
             discoveries={discoveries}
-            deleteDiscovery={id => dispatch(deleteDiscovery(id))}
-          />
-        }
+            deleteDiscovery={id => dispatch(deleteDiscovery(id, page))}
+          />}
 
         <Padding space={2}>
-          <PromiseResult status={status} loadingMessage="Loading discoveries..."/>
+          {discoveries.size == 0 &&
+            <PromiseResult status={status} loadingMessage="Loading discoveries..."/>}
           <Pagination
             name={DISCOVERIES_PAGINATOR}
             page={page}

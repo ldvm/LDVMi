@@ -1,7 +1,6 @@
 import { Range, List, Map } from 'immutable'
 import { createSelector } from 'reselect'
 import { combineReducers } from 'redux'
-import { Paginator } from '../models'
 import { createPromiseStatusSelector } from './promises'
 import { createPaginatorSelector, createPageContentSelector as _createPageContentSelector, makePaginationInfo, resetPaginator, RESET_PAGINATOR, DESTROY_PAGINATOR } from './pagination'
 import createAction from '../../../misc/createAction'
@@ -59,11 +58,7 @@ export const paginationMiddleware = store => next => action => {
     // to fetch the first page). We also reset all promise statuses of this type so that the app
     // knows that it has to fetch the pages again
     if (paginator.totalCount !== totalCount) {
-      store.dispatch(resetPaginator(paginatorName, new Paginator({
-        page: 1,
-        pageSize: paginator.pageSize, // Remember pagesize
-        totalCount
-      })));
+      store.dispatch(resetPaginator(paginatorName, paginator.set('totalCount', totalCount)));
       store.dispatch(createAction(action.type.replace('_SUCCESS', '_RESET'))); // Little hacky :-(
     }
   }

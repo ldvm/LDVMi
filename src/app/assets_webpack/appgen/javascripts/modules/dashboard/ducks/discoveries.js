@@ -33,19 +33,19 @@ export const DELETE_DISCOVERY = prefix('DELETE_DISCOVERY');
 export const DELETE_DISCOVERY_START = DELETE_DISCOVERY + '_START';
 export const DELETE_DISCOVERY_ERROR = DELETE_DISCOVERY + '_ERROR';
 export const DELETE_DISCOVERY_SUCCESS = DELETE_DISCOVERY + '_SUCCESS';
-export function deleteDiscovery(id) {
+export function deleteDiscovery(id, page) {
   return dispatch => {
     const promise = dashboardApi.deleteDiscovery(id)
       .then(response => {
-        dispatch(getDiscoveriesReset());
         dispatch(notification('The discovery has been deleted'));
+        dispatch(getDiscoveries(page));
         return response;
       })
       .catch(e => {
         dispatch(notification('Deleting the discovery failed!'));
         throw e;
       });
-    return createAction(DELETE_DISCOVERY, { promise }, { id });
+    dispatch(createAction(DELETE_DISCOVERY, { promise }, { id }));
   }
 }
 

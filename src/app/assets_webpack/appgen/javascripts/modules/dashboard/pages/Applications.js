@@ -55,16 +55,16 @@ class Applications extends Component {
     const { dispatch, applications, visualizers, page, status } = this.props;
     return (
       <div>
-        {status.done &&
+        {applications.size > 0 &&
           <ApplicationsTable
             applications={applications}
             visualizers={visualizers}
-            deleteApplication={id => dispatch(deleteApplication(id))}
-          />
-        }
+            deleteApplication={id => dispatch(deleteApplication(id, page))}
+          />}
 
         <Padding space={2}>
-          <PromiseResult status={status} loadingMessage="Loading applications..."/>
+          {applications.size == 0 &&
+            <PromiseResult status={status} loadingMessage="Loading applications..."/>}
           <Pagination
             name={APPLICATIONS_PAGINATOR}
             page={page}
