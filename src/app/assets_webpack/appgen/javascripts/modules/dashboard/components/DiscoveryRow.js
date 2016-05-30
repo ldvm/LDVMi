@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import TableRow from 'material-ui/lib/table/table-row'
 import TableRowColumn from 'material-ui/lib/table/table-row-column'
-import moment from 'moment'
 import IconButton from '../../../components/IconButton'
+import FromNow from '../../../components/FromNow'
 import makePureRender from '../../../misc/makePureRender'
 import * as createAppRoutes from '../../createApp/routes'
 import withDialogControls from '../../core/containers/withDialogControls'
@@ -20,8 +20,12 @@ const DiscoveryRow = ({ discovery, deleteDiscovery, dialogOpen }) => (
       <TitleLink to={createAppRoutes.discoveryUrl(discovery.id)}>{discovery.name}</TitleLink>
     </TableRowColumn>
     <TableRowColumn>here be status</TableRowColumn>
-    <TableRowColumn><strong>{discovery.pipelinesDiscoveredCount}</strong></TableRowColumn>
-    <TableRowColumn>{moment(discovery.modifiedUtc).fromNow()}</TableRowColumn>
+    <TableRowColumn>
+      <strong>{discovery.pipelinesDiscoveredCount}</strong>
+    </TableRowColumn>
+    <TableRowColumn>
+      <FromNow timestamp={discovery.modifiedUtc} />
+    </TableRowColumn>
     <TableRowColumn style={{ width: '10%' }}>
       <ConfirmDialog danger
         dialogName={confirmDialogName(discovery.id)}
