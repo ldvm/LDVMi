@@ -11,7 +11,7 @@ const DiscoveriesTable = ({ discoveries, deleteDiscovery }) => (
   <Table selectable={false}>
     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
       <TableRow>
-        <TableHeaderColumn>Discovery</TableHeaderColumn>
+        <TableHeaderColumn style={{ width: '50%' }}>Discovery</TableHeaderColumn>
         <TableHeaderColumn>Status</TableHeaderColumn>
         <TableHeaderColumn>Discovered pipelines</TableHeaderColumn>
         <TableHeaderColumn>Finished/last updated</TableHeaderColumn>

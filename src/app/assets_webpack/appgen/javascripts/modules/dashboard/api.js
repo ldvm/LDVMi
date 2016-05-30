@@ -10,6 +10,11 @@ export async function getDiscoveries(paginationInfo) {
   return result.data;
 }
 
+export async function getDiscovery(id) {
+  const result = await rest('dashboard/getDiscovery/' + id, {});
+  return result.data.discovery;
+}
+
 export async function deleteDiscovery(id) {
   return await rest('dashboard/deleteDiscovery/' + id, {});
 }

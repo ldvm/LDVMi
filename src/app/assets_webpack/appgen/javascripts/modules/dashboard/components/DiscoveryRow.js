@@ -9,6 +9,7 @@ import withDialogControls from '../../core/containers/withDialogControls'
 import ConfirmDialog from '../../core/containers/ConfirmDialog'
 import { Discovery } from '../../createApp/models'
 import TitleLink from './TitleLink'
+import DiscoveryStatus from '../containers/DiscoveryStatus'
 
 // Each discovery has its own delete confirm dialog. It's not exactly nice but it works and is
 // simple. We just have to give each dialog a different name.
@@ -16,10 +17,12 @@ const confirmDialogName = id => 'DELETE_APP_CONFIRM_DIALOG_' + id;
 
 const DiscoveryRow = ({ discovery, deleteDiscovery, dialogOpen }) => (
   <TableRow>
-    <TableRowColumn>
+    <TableRowColumn style={{ width: '50%' }}>
       <TitleLink to={createAppRoutes.discoveryUrl(discovery.id)}>{discovery.name}</TitleLink>
     </TableRowColumn>
-    <TableRowColumn>here be status</TableRowColumn>
+    <TableRowColumn>
+      <DiscoveryStatus discovery={discovery} />
+    </TableRowColumn>
     <TableRowColumn>
       <strong>{discovery.pipelinesDiscoveredCount}</strong>
     </TableRowColumn>

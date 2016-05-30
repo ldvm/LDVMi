@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { Map } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
 import * as dashboardApi from '../api'
@@ -27,6 +28,16 @@ export function getDiscoveries(page) {
 
 export function getDiscoveriesReset() {
   return createAction(GET_DISCOVERIES_RESET);
+}
+
+export const GET_DISCOVERY = prefix('GET_DISCOVERY');
+export const GET_DISCOVERY_START = GET_DISCOVERY + '_START';
+export const GET_DISCOVERY_ERROR = GET_DISCOVERY + '_ERROR';
+export const GET_DISCOVERY_SUCCESS = GET_DISCOVERY + '_SUCCESS';
+
+export function getDiscovery(id) {
+  const promise = dashboardApi.getDiscovery(id);
+  return createAction(GET_DISCOVERY, { promise });
 }
 
 export const DELETE_DISCOVERY = prefix('DELETE_DISCOVERY');
@@ -71,10 +82,24 @@ export function deleteAllDiscoveries() {
 
 // Reducers
 
-const discoveriesReducer = createEntitiesReducer(
-  GET_DISCOVERIES_SUCCESS,
-  GET_DISCOVERIES_RESET,
-  app => new Discovery(app));
+const initialState = new Map();
+
+function discoveriesReducer(state = initialState, action) {
+  switch (action.type) {
+
+    case GET_DISCOVERIES_SUCCESS:
+      return action.payload.items.reduce(
+        (state, discovery) => state.set(discovery.id, new Discovery(discovery)), state);
+
+    case GET_DISCOVERY_SUCCESS:
+      return state.set(action.payload.id, new Discovery(action.payload));
+
+    case GET_DISCOVERIES_RESET:
+      return initialState;
+  }
+
+  return state;
+}
 
 export default createPaginatedReducer(
   DISCOVERIES_PAGINATOR,

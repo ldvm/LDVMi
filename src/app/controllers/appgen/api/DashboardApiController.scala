@@ -1,12 +1,14 @@
 package controllers.appgen.api
 
+import play.api.mvc._
 import controllers.appgen.api.JsonImplicits._
 import controllers.appgen.api.rest.SecuredRestController
-import model.appgen.entity.UserPipelineDiscoveryId
+import model.appgen.entity.{Discovery, UserPipelineDiscoveryId}
 import model.appgen.rest.EmptyRequest.EmptyRequest
 import model.appgen.rest.PaginatedRequest._
 import scaldi.Injector
 import model.appgen.rest.Response._
+import model.appgen.rest.RestRequestWithUser
 import model.appgen.service.{ApplicationsService, DiscoveriesService}
 
 class DashboardApiController(implicit inj: Injector) extends SecuredRestController {
@@ -27,12 +29,16 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
     )))
   }
 
+  def getDiscovery(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
+    withDiscovery(UserPipelineDiscoveryId(id)) { discovery =>
+      Ok(SuccessResponse(data = Seq("discovery" -> discovery)))
+    }
+  }
+
   def deleteDiscovery(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
-    discoveriesService.findById(request.user, UserPipelineDiscoveryId(id)) match {
-      case Some(discovery) =>
-        discoveriesService.delete(discovery)
-        Ok(SuccessResponse("The discovery has been deleted"))
-      case None => BadRequest(ErrorResponse("The discovery does not exist or is not accessible"))
+    withDiscovery(UserPipelineDiscoveryId(id)) { discovery =>
+      discoveriesService.delete(discovery)
+      Ok(SuccessResponse("The discovery has been deleted"))
     }
   }
 
@@ -40,5 +46,14 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
     discoveriesService.findByUser(request.user).foreach(discovery =>
       discoveriesService.delete(discovery))
     Ok(SuccessResponse("All discoveries have been deleted"))
+  }
+
+  private def withDiscovery(id: UserPipelineDiscoveryId)
+    (func: (Discovery) => Result)
+    (implicit request: RestRequestWithUser): Result = {
+    discoveriesService.findById(request.user, id) match {
+      case Some(discovery) => func(discovery)
+      case None => BadRequest(ErrorResponse("The discovery does not exist or is not accessible"))
+    }
   }
 }
