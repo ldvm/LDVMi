@@ -1,12 +1,34 @@
 package model.appgen.repository
 import model.appgen.entity._
-
 import org.virtuslab.unicorn.LongUnicornPlay._
 import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
+import utils.PaginationInfo
 
 class UserDataSourcesRepository extends BaseIdRepository[UserDataSourceId, UserDataSource, UserDataSources] (TableQuery[UserDataSources]) {
+  // TODO: add method that fetches user repositories plus public
+  // def findAvailable(user: User)
+
   def find(user: User)(implicit session: Session): Seq[UserDataSource] = {
-    // TODO: or when the datasource is public
-    query.filter(_.userId === user.id.get).run
+    query
+      .filter(_.userId === user.id.get)
+      .sortBy(_.name.asc)
+      .list
+  }
+
+  def findByUser(user: User, paginationInfo: PaginationInfo)(implicit session: Session): Seq[UserDataSource] = {
+    query
+      .filter(_.userId === user.id.get)
+      .sortBy(_.name.asc)
+      .drop(paginationInfo.skipCount)
+      .take(paginationInfo.pageSize)
+      .list
+  }
+
+  def countByUser(user: User)(implicit session: Session): Int = {
+    query.filter(_.userId === user.id.get).length.run
+  }
+
+  def findById(user: User, id: UserDataSourceId)(implicit session: Session): Option[UserDataSource] = {
+    byIdFunc(id).filter(_.userId === user.id.get).firstOption
   }
 }

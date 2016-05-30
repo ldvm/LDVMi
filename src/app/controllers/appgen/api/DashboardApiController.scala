@@ -3,7 +3,8 @@ package controllers.appgen.api
 import play.api.mvc._
 import controllers.appgen.api.JsonImplicits._
 import controllers.appgen.api.rest.SecuredRestController
-import model.appgen.entity.{Discovery, UserPipelineDiscoveryId}
+import model.appgen.entity.{Discovery, UserDataSource, UserDataSourceId, UserPipelineDiscoveryId}
+import model.appgen.repository.UserDataSourcesRepository
 import model.appgen.rest.EmptyRequest.EmptyRequest
 import model.appgen.rest.PaginatedRequest._
 import scaldi.Injector
@@ -14,6 +15,7 @@ import model.appgen.service.{ApplicationsService, DiscoveriesService}
 class DashboardApiController(implicit inj: Injector) extends SecuredRestController {
   val applicationsService = inject[ApplicationsService]
   val discoveriesService = inject[DiscoveriesService]
+  val userDataSourcesRepository = inject[UserDataSourcesRepository]
 
   def getApplications = RestAction[PaginatedRequest] { implicit request => json =>
     Ok(SuccessResponse(data = Seq(
@@ -54,6 +56,31 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
     discoveriesService.findById(request.user, id) match {
       case Some(discovery) => func(discovery)
       case None => BadRequest(ErrorResponse("The discovery does not exist or is not accessible"))
+    }
+  }
+
+  def getDataSources = RestAction[PaginatedRequest] { implicit request => json =>
+    Ok(SuccessResponse(data = Seq(
+      "items" -> userDataSourcesRepository.findByUser(request.user, json.paginationInfo),
+      "totalCount" -> userDataSourcesRepository.countByUser(request.user)
+    )))
+  }
+
+  def deleteDataSource(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
+    withUserDataSource(UserDataSourceId(id)) { userDataSource =>
+      // Here we're also deleting just the user meta data which is part of appgen. The actual
+      // LDVM component remains untouched.
+      userDataSourcesRepository.deleteById(userDataSource.id.get)
+      Ok(SuccessResponse("The data source has been deleted"))
+    }
+  }
+
+  private def withUserDataSource(id: UserDataSourceId)
+    (func: (UserDataSource) => Result)
+    (implicit request: RestRequestWithUser): Result = {
+    userDataSourcesRepository.findById(request.user, id) match {
+      case Some(userDataSource) => func(userDataSource)
+      case None => BadRequest(ErrorResponse("The data source does not exist or is not accessible"))
     }
   }
 }

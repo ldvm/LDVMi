@@ -20,7 +20,7 @@ const Loading = (props) => {
   const labelStyles = {
     display: 'inline-block',
     position: 'relative',
-    left: '10px',
+    left: '15px',
     top: '-10px',
     color: '#8a8a8a'
   };

@@ -22,3 +22,12 @@ export async function deleteDiscovery(id) {
 export async function deleteAllDiscoveries() {
   return await rest('dashboard/deleteAllDiscoveries', {});
 }
+
+export async function getDataSources(paginationInfo) {
+  const result = await rest('dashboard/getDataSources', { paginationInfo });
+  return result.data;
+}
+
+export async function deleteDataSource(id) {
+  return await rest('dashboard/deleteDataSource/' + id, {});
+}

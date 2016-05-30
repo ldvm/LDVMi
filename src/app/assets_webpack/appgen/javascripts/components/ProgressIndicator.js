@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import CircularProgress from 'material-ui/lib/circular-progress'
 import Icon from './Icon'
+import * as theme from '../misc/theme'
 
 export const IN_PROGRESS = 0;
 export const ERROR = 1;
@@ -27,8 +28,8 @@ const ProgressIndicator = ({ status }) => {
       <div style={circularWrapperStyle}>
         <CircularProgress size={circularSize} style={circularStyle} />
       </div>);
-    case ERROR: return <Icon icon="error" />;
-    case SUCCESS: return <Icon icon="done" />;
+    case ERROR: return <Icon icon="error" color={theme.danger} />;
+    case SUCCESS: return <Icon icon="done" color={theme.success} />;
     default: return <span />;
   }
 };
