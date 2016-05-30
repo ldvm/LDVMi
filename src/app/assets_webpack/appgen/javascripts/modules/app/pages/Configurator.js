@@ -15,6 +15,7 @@ import CenteredMessage from '../../../components/CenteredMessage'
 import Alert from '../../../components/Alert'
 import BodyPadding from '../../../components/BodyPadding'
 import * as routes from '../../visualizers/routes'
+import * as dashboardRoutes from '../../dashboard/routes'
 import { dialogOpen } from '../../core/ducks/dialog'
 import { dialogName as generalSettingsDialogName } from '../dialogs/GeneralSettingsDialog'
 import requireSignedIn from '../../auth/containers/requireSignedIn'
@@ -91,7 +92,7 @@ class Application extends Component {
       <GeneralSettings application={application} />
       <DeleteAppConfirmDialog
         application={application}
-        deleteApplication={() => dispatch(deleteApplication(application.id))} />
+        deleteApplication={() => dispatch(deleteApplication(application.id, dashboardRoutes.dashboard()))} />
       <LabelEditor />
 
       {!children &&

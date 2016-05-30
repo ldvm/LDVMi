@@ -7,7 +7,6 @@ import { Application } from '../models'
 import { Visualizer } from '../../core/models'
 import { applicationSelector as reducerSelector } from '../selector'
 import { visualizersSelector } from '../../core/ducks/visualizers'
-import * as dashboardRoutes from '../../dashboard/routes'
 import { notification } from '../../core/ducks/notifications'
 
 // Actions
@@ -47,11 +46,11 @@ export const DELETE_APPLICATION_START = DELETE_APPLICATION + '_START';
 export const DELETE_APPLICATION_ERROR = DELETE_APPLICATION + '_ERROR';
 export const DELETE_APPLICATION_SUCCESS = DELETE_APPLICATION + '_SUCCESS';
 
-export function deleteApplication(id) {
+export function deleteApplication(id, redirectAction) {
   return dispatch => {
     const promise = api.deleteApp(id).then(response => {
       dispatch(notification('The application has been deleted'));
-      dispatch(dashboardRoutes.dashboard());
+      dispatch(redirectAction);
       return response;
     });
     return createAction(DELETE_APPLICATION, { promise }, { id });
