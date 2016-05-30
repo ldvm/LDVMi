@@ -14,25 +14,19 @@ import * as configuratorRoutes from '../../app/configuratorRoutes'
 import * as theme from '../../../misc/theme'
 import withDialogControls from '../../core/containers/withDialogControls'
 import ConfirmDialog from '../../core/containers/ConfirmDialog'
+import TitleLink from './TitleLink'
+
+const appWrapperStyle = {
+  margin: '12px 0'
+};
 
 const iconStyle = {
   float: 'left',
-  margin: '0.2em 0.6em 0 0'
-};
-
-const h3Style = {
-  margin: '12px 0 0 0',
-  fontWeight: 'normal',
-  fontSize: '1.3em'
-};
-
-const linkStyle = {
-  textDecoration: 'none'
+  margin: '0.18em 0.6em 0 0'
 };
 
 const descriptionStyle = {
   color: '#9e9e9e',
-  marginBottom: '12px',
   overflow: 'hidden',
   textOverflow: 'ellipsis'
 };
@@ -44,16 +38,16 @@ const confirmDialogName = id => 'DELETE_APP_CONFIRM_DIALOG_' + id;
 const ApplicationRow = ({ application, visualizer, deleteApplication, dialogOpen }) => (
   <TableRow>
     <TableRowColumn style={{ width: '60%' }}>
-      <h3 style={h3Style}>
-        {visualizer &&
-          <Icon icon={visualizer.icon} style={iconStyle} color="#333333" />
-        }
-        <Link style={linkStyle} to={configuratorRoutes.applicationUrl(application.id)}>
+      <div style={appWrapperStyle}>
+        <TitleLink to={configuratorRoutes.applicationUrl(application.id)}>
+          {visualizer &&
+            <Icon icon={visualizer.icon} style={iconStyle} color="#333333" />
+          }
           {application.name}
-        </Link>
-      </h3>
-      <div style={descriptionStyle}>
-        {application.description}
+        </TitleLink>
+        <div style={descriptionStyle}>
+          {application.description}
+        </div>
       </div>
     </TableRowColumn>
     <TableRowColumn>
