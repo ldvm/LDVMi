@@ -12,10 +12,10 @@ import Icon from '../../../components/Icon'
 
 const confirmDialogName = id => 'DELETE_DATA_SOURCE_CONFIRM_DIALOG_' + id;
 
-const DataSourceRow = ({ dataSource, deleteDataSource, dialogOpen }) => (
+const DataSourceRow = ({ dataSource, editDataSource, deleteDataSource, dialogOpen }) => (
   <TableRow>
     <TableRowColumn style={{ width: '60%' }}>
-      <TitleLink to="#" onClick={e => { e.preventDefault(); alert('edit!');  }}>
+      <TitleLink to="#" onClick={e => { e.preventDefault(); editDataSource(); }}>
         {dataSource.name}
       </TitleLink>
     </TableRowColumn>
@@ -39,6 +39,7 @@ const DataSourceRow = ({ dataSource, deleteDataSource, dialogOpen }) => (
 
 DataSourceRow.propTypes = {
   dataSource: PropTypes.instanceOf(DataSource).isRequired,
+  editDataSource: PropTypes.func.isRequired,
   deleteDataSource: PropTypes.func.isRequired,
   dialogOpen: PropTypes.func.isRequired
 };

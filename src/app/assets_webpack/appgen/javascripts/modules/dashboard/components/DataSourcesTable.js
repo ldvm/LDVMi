@@ -7,7 +7,7 @@ import TableBody from 'material-ui/lib/table/table-body'
 import TableRow from 'material-ui/lib/table/table-row'
 import DataSourceRow from './DataSourceRow'
 
-const DataSourcesTable = ({ dataSources, deleteDataSource }) => (
+const DataSourcesTable = ({ dataSources, editDataSource, deleteDataSource }) => (
   <Table selectable={false}>
     <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
       <TableRow>
@@ -21,6 +21,7 @@ const DataSourcesTable = ({ dataSources, deleteDataSource }) => (
         <DataSourceRow
           key={dataSource.id}
           dataSource={dataSource}
+          editDataSource={() => editDataSource(dataSource.id)}
           deleteDataSource={() => deleteDataSource(dataSource.id)}
         />
       )}
@@ -30,6 +31,7 @@ const DataSourcesTable = ({ dataSources, deleteDataSource }) => (
 
 DataSourcesTable.propTypes = {
   dataSources: PropTypes.instanceOf(List).isRequired,
+  editDataSource: PropTypes.func.isRequired,
   deleteDataSource: PropTypes.func.isRequired
 };
 

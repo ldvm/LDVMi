@@ -10,6 +10,7 @@ import model.appgen.rest.PaginatedRequest._
 import scaldi.Injector
 import model.appgen.rest.Response._
 import model.appgen.rest.RestRequestWithUser
+import model.appgen.rest.UpdateDataSourceRequest.UpdateDataSourceRequest
 import model.appgen.service.{ApplicationsService, DiscoveriesService}
 
 class DashboardApiController(implicit inj: Injector) extends SecuredRestController {
@@ -72,6 +73,13 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
       // LDVM component remains untouched.
       userDataSourcesRepository.deleteById(userDataSource.id.get)
       Ok(SuccessResponse("The data source has been deleted"))
+    }
+  }
+
+  def updateDataSource(id: Long) = RestAction[UpdateDataSourceRequest] { implicit request => json =>
+    withUserDataSource(UserDataSourceId(id)) { userDataSource =>
+      userDataSourcesRepository.save(userDataSource.copy(name = json.name, isPublic = json.isPublic))
+      Ok(SuccessResponse("The data source has been updated"))
     }
   }
 

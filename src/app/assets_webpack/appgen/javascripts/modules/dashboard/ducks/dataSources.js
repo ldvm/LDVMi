@@ -50,7 +50,10 @@ export function deleteDataSource(id, page) {
   }
 }
 
-// TODO: update data source
+export const UPDATE_DATA_SOURCE = prefix('UPDATE_DATA_SOURCE');
+export function updateDataSource(id, update) {
+  return createAction(UPDATE_DATA_SOURCE, { id, update });
+}
 
 // Reducers
 
@@ -63,7 +66,8 @@ function dataSourcesReducer(state = initialState, action) {
       return action.payload.items.reduce(
         (state, dataSource) => state.set(dataSource.id, new DataSource(dataSource)), state);
 
-    // TODO: update data source
+    case UPDATE_DATA_SOURCE:
+      return state.update(action.payload.id, dataSource => dataSource.merge(action.payload.update));
 
     case GET_DATA_SOURCES_RESET:
       return initialState;

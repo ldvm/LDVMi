@@ -31,3 +31,7 @@ export async function getDataSources(paginationInfo) {
 export async function deleteDataSource(id) {
   return await rest('dashboard/deleteDataSource/' + id, {});
 }
+
+export async function updateDataSource(id, values) {
+  return await rest('dashboard/updateDataSource/' + id, values);
+}
