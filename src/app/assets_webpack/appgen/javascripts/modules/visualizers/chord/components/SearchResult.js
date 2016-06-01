@@ -12,7 +12,7 @@ import SearchResultRow from './SearchResultRow'
 
 const SearchResult = ({ searchableLens, result }) => (
   <IgnoreDialogPadding horizontal bottom>
-    <Table selectable={false} height="300">
+    <Table selectable={false} height="300px">
       <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
           {searchableLens.showProperties.map(propertyUri =>

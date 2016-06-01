@@ -22,8 +22,8 @@ const h3Style = {
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  margin: '0',
-  padding: '0'
+  margin: 0,
+  padding: 0
 };
 
 const smallStyle = {
