@@ -1,9 +1,8 @@
-import Colors from 'material-ui/styles/colors';
-import ColorManipulator from 'material-ui/utils/color-manipulator';
-import Spacing from 'material-ui/styles/spacing';
-import zIndex from 'material-ui/styles/zIndex';
+import * as Colors from 'material-ui/styles/colors'
+import * as ColorManipulator from 'material-ui/utils/colorManipulator'
+import Spacing from 'material-ui/styles/spacing'
+import zIndex from 'material-ui/styles/zIndex'
 import * as Theme from './theme'
-
 
 export default {
   spacing: Spacing,

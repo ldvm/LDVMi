@@ -1,7 +1,7 @@
 import React from 'react'
 import { fromJS } from 'immutable'
-import AutoComplete from '../../../../../../../../node_modules/material-ui/lib/auto-complete'
-import MenuItem from '../../../../../../../../node_modules/material-ui/lib/menus/menu-item'
+import AutoComplete from 'material-ui/AutoComplete'
+import MenuItem from 'material-ui/MenuItem'
 import languages from '../../../../misc/languages'
 
 const dataSource = fromJS(languages).map((language, code) => ({
