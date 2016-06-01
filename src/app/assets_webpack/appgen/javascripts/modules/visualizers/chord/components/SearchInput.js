@@ -22,6 +22,13 @@ class SearchInput extends Component {
     }
   }
 
+  onKeyDown(e) {
+    const ENTER_KEY_CODE = 13;
+    if (e.keyCode == ENTER_KEY_CODE) {
+      this.search();
+    }
+  }
+
   render() {
     const { disabled } = this.props;
     return (
@@ -31,12 +38,12 @@ class SearchInput extends Component {
           hintText="Identificator, part of the name..."
           style={textFieldStyle}
           disabled={disabled}
-          onEnterKeyDown={this.search.bind(this)}
+          onKeyDown={::this.onKeyDown}
         />
         <Button warning raised
           label="Search"
           icon="search"
-          onTouchTap={this.search.bind(this)}
+          onTouchTap={::this.search}
           disabled={disabled}
         />
       </div>
