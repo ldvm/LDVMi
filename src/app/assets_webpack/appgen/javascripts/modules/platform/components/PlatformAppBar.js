@@ -1,7 +1,5 @@
 import React, { PropTypes } from 'react'
 import AppBar from 'material-ui/AppBar';
-import CircularProgress from 'material-ui/CircularProgress';
-import Loading from '../../core/containers/Loading'
 import makePureRender from '../../../misc/makePureRender'
 import { User } from '../../auth/models'
 import IconButton from '../../../components/IconButton'
@@ -15,12 +13,7 @@ const PlatformAppBar = ({ user, goHome, signUp, signIn, signOut }) => {
 
   const left = <IconButton onTouchTap={goHome} icon="explore" color="white" />;
 
-  const right = <div>
-      <Loading>
-        <CircularProgress size={0.5} color="white" style={{position: 'absolute', right: '50%', top: '8px' }} />
-      </Loading>
-      <UserMenu user={user} signIn={signIn} signUp={signUp} signOut={signOut} />
-    </div>;
+  const right = <UserMenu user={user} signIn={signIn} signUp={signUp} signOut={signOut} />;
 
   return <AppBar
     className="appbar"

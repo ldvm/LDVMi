@@ -9,13 +9,22 @@ import PlatformAppBar from '../components/PlatformAppBar'
 import Notifications from '../../core/containers/Notifications'
 import { User } from '../../auth/models'
 import { userSelector } from '../../auth/ducks/user'
+import IfLoading from '../../core/containers/IfLoading'
+import AppLoadingBar from '../components/AppLoadingBar'
+import DelayedRender from '../../../components/DelayedRender'
 
 const Platform = ({ dispatch, user, children }) =>  {
-  return <div>
+  return (
+    <div>
       <Helmet
         title="Loading..."
         titleTemplate="%s | LDVMi Application Generator"
       />
+      <IfLoading>
+        <DelayedRender delay={200}>
+          <AppLoadingBar />
+        </DelayedRender>
+      </IfLoading>
       <PlatformAppBar
         user={user}
         goHome={() => dispatch(routeActions.push('/'))}
@@ -27,7 +36,8 @@ const Platform = ({ dispatch, user, children }) =>  {
       {children}
 
       <Notifications />
-    </div>;
+    </div>
+  );
 };
 
 Platform.propTypes = {
