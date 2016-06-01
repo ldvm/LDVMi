@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Map } from 'immutable'
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/Paper';
 import RefreshMapButton from '../containers/RefreshMapButton'
 import FillInScreen from '../../../../components/FillInScreen'
 import Padding from '../../../../components/Padding'

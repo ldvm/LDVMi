@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import IconMenu from 'material-ui/lib/menus/icon-menu'
-import MenuItem from 'material-ui/lib/menus/menu-item'
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
 import { Application } from '../models'
 import { Visualizer } from '../../core/models'
 import Button from '../../../components/Button'

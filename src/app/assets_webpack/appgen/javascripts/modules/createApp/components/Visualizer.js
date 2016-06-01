@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react'
 import { Col } from 'react-flexbox-grid'
-import Card from 'material-ui/lib/card/card';
-import CardHeader from 'material-ui/lib/card/card-header';
-import CardText from 'material-ui/lib/card/card-text';
-import CardActions from 'material-ui/lib/card/card-actions';
+import Card from 'material-ui/Card/Card';
+import CardHeader from 'material-ui/Card/CardHeader';
+import CardText from 'material-ui/Card/CardText';
+import CardActions from 'material-ui/Card/CardActions';
 import Button from '../../../components/Button'
 import Icon from '../../../components/Icon'
 import { VisualizerWithPipelines } from '../../core/models'

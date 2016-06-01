@@ -1,5 +1,5 @@
 import React from 'react'
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/Paper';
 import Icon from './Icon'
 import * as Theme from '../misc/theme';
 import MaterialTheme from '../misc/materialTheme';

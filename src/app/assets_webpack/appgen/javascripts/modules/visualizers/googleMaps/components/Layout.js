@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Row, Col } from 'react-flexbox-grid'
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/Paper';
 import FillInScreen from '../../../../components/FillInScreen'
 import BodyPadding from '../../../../components/BodyPadding'
 import MapContainer from '../containers/MapContainer'

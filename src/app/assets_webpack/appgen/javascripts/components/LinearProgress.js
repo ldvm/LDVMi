@@ -1,5 +1,5 @@
 import React from 'react'
-import MaterialLinearProgress from 'material-ui/lib/linear-progress';
+import MaterialLinearProgress from 'material-ui/LinearProgress';
 import * as Theme from '../misc/theme';
 import MaterialTheme from '../misc/materialTheme';
 import { getColorType } from '../misc/utils';

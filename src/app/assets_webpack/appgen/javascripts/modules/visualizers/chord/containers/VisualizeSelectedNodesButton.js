@@ -13,7 +13,7 @@ const VisualizeSelectedNodesButton = props => {
      onTouchTap={() => dispatch(visualizeSelectedNodes())}
      disabled={disabled}
      icon="refresh"
-     label="Visualize selected"
+     label="Visualize"
      {...props}
   />
 };

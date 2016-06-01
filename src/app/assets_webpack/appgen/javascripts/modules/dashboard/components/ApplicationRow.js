@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
-import TableRow from 'material-ui/lib/table/table-row'
-import TableRowColumn from 'material-ui/lib/table/table-row-column'
-import IconMenu from 'material-ui/lib/menus/icon-menu'
+import TableRow from 'material-ui/Table/TableRow';
+import TableRowColumn from 'material-ui/Table/TableRowColumn';
+import IconMenu from 'material-ui/IconMenu';
 import { Link } from 'react-router'
 import Icon from '../../../components/Icon'
 import IconButton from '../../../components/IconButton'

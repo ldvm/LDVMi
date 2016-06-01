@@ -1,5 +1,5 @@
 import React from 'react'
-import Divider from 'material-ui/lib/divider';
+import Divider from 'material-ui/Divider';
 import MaterialTheme from '../misc/materialTheme';
 
 const spacing = MaterialTheme.spacing.desktopGutterLess + 'px';

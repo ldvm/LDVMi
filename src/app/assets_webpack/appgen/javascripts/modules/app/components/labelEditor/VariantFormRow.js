@@ -1,5 +1,5 @@
 import React from 'react'
-import TextField from 'material-ui/lib/text-field'
+import TextField from 'material-ui/TextField';
 import { Row, Col } from 'react-flexbox-grid'
 import Button from '../../../../components/Button'
 import LanguageAutoComplete from './LanguageAutoComplete'

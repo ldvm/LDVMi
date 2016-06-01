@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import MaterialMenuItem from 'material-ui/lib/menus/menu-item'
+import MaterialMenuItem from 'material-ui/MenuItem';
 import Icon from './Icon'
 
 const style = {

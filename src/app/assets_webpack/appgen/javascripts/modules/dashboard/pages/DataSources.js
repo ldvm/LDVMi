@@ -94,7 +94,7 @@ class DataSources extends Component {
 
         <EditDataSourceDialog
           onSubmit={::this.handleUpdateDataSource}
-          initialValues={dataSourceToEdit}
+          initialValues={dataSourceToEdit.toJS()}
           dialogClose={name => dispatch(dialogClose(name))}
         />
         <Padding space={2}>

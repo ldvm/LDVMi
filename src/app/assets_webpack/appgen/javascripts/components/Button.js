@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import RaisedButton from 'material-ui/lib/raised-button';
-import FlatButon from 'material-ui/lib/flat-button';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButon from 'material-ui/FlatButton';
 import * as Theme from '../misc/theme';
 import { getColorType } from '../misc/utils';
 import Icon from './Icon'
@@ -13,7 +13,7 @@ class Button extends Component {
     const Component = props.raised ? RaisedButton : FlatButon;
     const type = getColorType(props);
 
-    let newProps = Object.assign({}, props);
+    let newProps = Object.assign({ style: {} }, props);
 
     if (props.icon) {
       newProps.icon = <Icon icon={props.icon} />;
@@ -28,15 +28,21 @@ class Button extends Component {
         newProps.labelColor = '#ffffff';
       } else {
         if (!props.disabled) {
-          newProps.style = { color: Theme[type] };
+          newProps.style.color = Theme[type];
         } else {
-          newProps.style = { color: '#9e9e9e' };
+          newProps.style.color = '#9e9e9e';
         }
       }
     } else {
       if (!props.raised && props.inverted) {
-        newProps.style = { color: props.disabled ? '#eaeaea' : '#ffffff' }
+        newProps.style.color = props.disabled ? '#eaeaea' : '#ffffff';
       }
+    }
+
+    // fullWidth is not working in the current Material UI version
+    // https://github.com/callemall/material-ui/issues/4226
+    if (props.fullWidth) {
+      newProps.style.width = '100%'
     }
 
     // Fixing the alignment bug for link buttons.

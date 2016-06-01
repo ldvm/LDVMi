@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import TableRow from 'material-ui/lib/table/table-row'
-import TableRowColumn from 'material-ui/lib/table/table-row-column'
+import TableRow from 'material-ui/Table/TableRow';
+import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import IconButton from '../../../components/IconButton'
 import FromNow from '../../../components/FromNow'
 import makePureRender from '../../../misc/makePureRender'
