@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {reduxForm} from 'redux-form';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import React, {Component} from 'react'
+import {reduxForm} from 'redux-form'
+import TextField from 'material-ui/TextField'
+import Button from '../../../components/Button'
 import { makeValidator, errorText } from '../../../misc/formUtils'
 
 const SignUpForm = (props) => {
@@ -14,7 +14,7 @@ const SignUpForm = (props) => {
         <TextField floatingLabelText="Password" type="password" {...password} {...errorText(password)} fullWidth />
       </div>
       <br />
-      <RaisedButton label="Sign in" onTouchTap={handleSubmit} primary fullWidth disabled={submitting || disabled} />
+      <Button label="Sign in" onTouchTap={handleSubmit} raised primary fullWidth disabled={submitting || disabled} />
     </form>
   );
 };
