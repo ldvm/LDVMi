@@ -24,11 +24,20 @@ const filter = (searchText, code) => {
 const LanguageAutoComplete = props => {
   // The autocomplete is not really compatible with the API of standard text input.
   // Therefore we need to bind autocomplete events to those expected from a standard text input.
+
+  const onNewRequest = (newValue) => {
+    if (typeof newValue === "string") {
+      props.onChange(newValue);
+    } else {
+      props.onChange(newValue.text);
+    }
+  };
+
   return <AutoComplete
     filter={filter}
     dataSource={dataSource}
     searchText={props.value}
-    onNewRequest={props.onChange}
+    onNewRequest={onNewRequest}
     onUpdateInput={props.onChange}
     menuCloseDelay={200}
     {...props}
