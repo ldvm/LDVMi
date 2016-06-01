@@ -25,3 +25,11 @@ export function createAppUrl() {
 export function createApp() {
   return routeActions.push(createAppUrl(id));
 }
+
+export function discoveryUrl(id) {
+  return '/' + MODULE_PATH + '/discovery/' + id;
+}
+
+export function discovery(id) {
+  return routeActions.push(discoveryUrl(id));
+}

@@ -1,8 +1,8 @@
 package controllers.appgen
 
-import model.appgen.entity.{Application, Visualizer, UserPipelineDiscovery, UserDataSource}
+import model.appgen.entity._
 import model.entity.CustomUnicornPlay
-import play.api.libs.json.{Writes, JsNumber, Json}
+import play.api.libs.json.{JsNumber, Json, Writes}
 
 package object api {
   object JsonImplicits {
@@ -13,5 +13,6 @@ package object api {
     implicit val userDataSourceWrites = Json.writes[UserDataSource]
     implicit val userPipelineDiscoveryWrites = Json.writes[UserPipelineDiscovery]
     implicit val applicationWrites = Json.writes[Application]
+    implicit val discoveryWrites = Json.writes[Discovery]
   }
 }

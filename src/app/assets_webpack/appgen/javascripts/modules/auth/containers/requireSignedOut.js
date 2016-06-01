@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react'
+import { routeActions } from 'redux-simple-router'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { userSelector } from '../ducks/user'
 import { User } from '../models'
-import * as routes from '../../platform/routes'
 
 export default function requireSignedOut(ComposedComponent) {
   class RequireSignedOut extends Component {
@@ -21,9 +21,12 @@ export default function requireSignedOut(ComposedComponent) {
     }
 
     potentiallyRedirect(props) {
-      const {dispatch, user} = props;
+      const { dispatch, user } = props;
       if (user.isSignedIn()) {
-        dispatch(routes.profile());
+        // Originally, we were redirecting to dashboardRoutes.dashboardUrl(). Importing that,
+        // however, caused circular dependency with couple of nasty consequences. So let's just
+        // redirect to the front page.
+        dispatch(routeActions.push('/'));
       }
     }
 

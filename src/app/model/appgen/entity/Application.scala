@@ -34,6 +34,9 @@ case class Application(
 
     copy(uid = newUid)
   }
+
+  // Leave out the configuration, as it might be large.
+  def removeConfiguration = copy(configuration = None)
 }
 
 

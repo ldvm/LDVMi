@@ -80,9 +80,10 @@ module.exports = function makeConfig(isDevelopment) {
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.optimize.UglifyJsPlugin({
+          mangle: false, // it breaks the Immutable Record
           compress: {
             screw_ie8: true, // eslint-disable-line camelcase
-            warnings: false // Because uglify reports irrelevant warnings.
+            warnings: false, // Because uglify reports irrelevant warnings.
           }
         })
       );

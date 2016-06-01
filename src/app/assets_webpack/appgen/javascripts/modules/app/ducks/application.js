@@ -7,6 +7,7 @@ import { Application } from '../models'
 import { Visualizer } from '../../core/models'
 import { applicationSelector as reducerSelector } from '../selector'
 import { visualizersSelector } from '../../core/ducks/visualizers'
+import { notification } from '../../core/ducks/notifications'
 
 // Actions
 
@@ -38,6 +39,22 @@ export const PUBLISH_APPLICATION_SUCCESS = PUBLISH_APPLICATION + '_SUCCESS';
 export function publishApplication(id, published) {
   const promise = api.publishApp(id, published);
   return createAction(PUBLISH_APPLICATION, { promise }, { published });
+}
+
+export const DELETE_APPLICATION = prefix('DELETE_APPLICATION');
+export const DELETE_APPLICATION_START = DELETE_APPLICATION + '_START';
+export const DELETE_APPLICATION_ERROR = DELETE_APPLICATION + '_ERROR';
+export const DELETE_APPLICATION_SUCCESS = DELETE_APPLICATION + '_SUCCESS';
+
+export function deleteApplication(id, redirectAction) {
+  return dispatch => {
+    const promise = api.deleteApp(id).then(response => {
+      dispatch(notification('The application has been deleted'));
+      dispatch(redirectAction);
+      return response;
+    });
+    return createAction(DELETE_APPLICATION, { promise }, { id });
+  }
 }
 
 // Reducer

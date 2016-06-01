@@ -5,7 +5,7 @@ import MenuItem from 'material-ui/lib/menus/menu-item'
 import IconButton from '../../../components/IconButton'
 import Button from '../../../components/Button'
 import { User } from '../../auth/models'
-import * as routes from '../routes'
+import * as routes from '../../dashboard/routes'
 
 // TODO: come up with a more universal solution
 const ButtonWrapper = ({ children }) =>
@@ -24,7 +24,7 @@ const UserMenu = ({ user, signIn, signUp, signOut }) => {
           {...buttonPositioning}
           iconButtonElement={<Button icon="person" label={user.name} inverted />}
         >
-          <Link to={routes.profileUrl()} style={{ textDecoration: 'none' }}><MenuItem primaryText="Profile" /></Link>
+          <Link to={routes.dashboardUrl()} style={{ textDecoration: 'none' }}><MenuItem primaryText="Dashboard" /></Link>
           <MenuItem primaryText="Sign out" onTouchTap={signOut} />
         </IconMenu>
       </ButtonWrapper>

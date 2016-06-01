@@ -19,6 +19,10 @@ export async function publishApp(id, published) {
   return await rest('manageApp/publishApp/' + id, { published });
 }
 
+export async function deleteApp(id) {
+  return await rest('manageApp/deleteApp/' + id, {});
+}
+
 export async function getConfiguration(id) {
   const result = await rest('app/getAppConfiguration/' + id, {});
   return JSON.parse(result.data.configuration) || {};

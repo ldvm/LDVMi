@@ -17,6 +17,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc.WebSocket
 import play.api.Play.current
+import utils.PaginationInfo
 
 package object api {
 
@@ -149,6 +150,11 @@ package object api {
     implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData)
 
     implicit val polygonQueryReads: Reads[MapQueryData] = (JsPath \ "filters").read[Map[String, Seq[ValueFilter]]].map(MapQueryData)
+
+    implicit val paginationInfoReads: Reads[PaginationInfo] = (
+      (JsPath \ "skipCount").read[Int] and
+      (JsPath \ "pageSize").read[Int]
+    )(PaginationInfo.apply _)
   }
 
 }

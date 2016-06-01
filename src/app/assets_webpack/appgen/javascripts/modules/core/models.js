@@ -24,3 +24,20 @@ export const PromiseStatus = Record({
   done: false
 });
 
+/** Representation of paginator state */
+export const Paginator = Record({
+  page: 1,
+  pageSize: 10,
+  totalCount: null
+});
+
+/**
+ * Representation of the "intent" to fetch a page of items. We don't really need this record as
+ * it to a large extent represents the same information as Paginator. We use it for semantics
+ * purposes (it makes certain operations nicer) and it's also a counter-part to Scala's
+ * PaginationInfo (we use it for request).
+ */
+export const PaginationInfo = Record({
+  skipCount: 0,
+  pageSize: 10
+});

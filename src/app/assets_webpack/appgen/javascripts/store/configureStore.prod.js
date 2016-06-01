@@ -6,13 +6,15 @@ import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import promiseMiddleware from 'redux-promise-middleware';
 import rootReducer from './rootReducer'
+import { paginationMiddleware } from '../modules/core/ducks/lazyPagination'
 
 const reduxRouterMiddleware = syncHistory(browserHistory);
 
 const finalCreateStore = compose(
   applyMiddleware(
     thunk,
-    promiseMiddleware({promiseTypeSuffixes: ['START', 'SUCCESS', 'ERROR']})
+    promiseMiddleware({promiseTypeSuffixes: ['START', 'SUCCESS', 'ERROR']}),
+    paginationMiddleware
   ),
   applyMiddleware(reduxRouterMiddleware)
 )(createStore);

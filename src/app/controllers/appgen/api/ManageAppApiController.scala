@@ -6,6 +6,7 @@ import play.api.mvc._
 import controllers.appgen.api.rest.SecuredRestController
 import model.appgen.entity._
 import model.appgen.repository.ApplicationsRepository
+import model.appgen.rest.EmptyRequest.EmptyRequest
 import model.appgen.rest.PublishAppRequest.PublishAppRequest
 import scaldi.Injector
 import model.appgen.rest.Response._
@@ -54,6 +55,13 @@ class ManageAppApiController(implicit inj: Injector) extends SecuredRestControll
         case true => Ok(SuccessResponse("The application has been published"))
         case false => Ok(SuccessResponse("The application is no longer published"))
       }
+    }
+  }
+      Ok(SuccessResponse("The application has been deleted"))
+  def deleteApp(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
+    withApplication(ApplicationId(id)) { application =>
+      applicationsRepository.deleteById(application.id.get)
+      Ok(SuccessResponse("The application has been deleted"))
     }
   }
 }
