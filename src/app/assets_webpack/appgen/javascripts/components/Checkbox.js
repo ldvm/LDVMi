@@ -3,7 +3,7 @@ import MaterialCheckbox from 'material-ui/Checkbox';
 
 export default (props) => {
   let newProps = Object.assign({}, props, {
-    value: null,
+    value: '',
     checked: props.value,
     onCheck: (e, checked) => props.onChange(checked)
   });

@@ -28,7 +28,7 @@
     "react-router": "2.0.0-rc5",
     "react-tap-event-plugin": "1.0.x",
     "redux": "^3.0.0",
-    "redux-form": "4.1.x",
+    "redux-form": "5.2.x",
     "redux-logger": "2.0.x",
     "redux-promise-middleware": "2.3.x",
     "redux-simple-router": "2.0.x",
