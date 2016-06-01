@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { createSelector } from 'reselect'
 import Button from '../../../components/Button'
 import IconButton from '../../../components/IconButton'
 import TableRow from 'material-ui/Table/TableRow';
@@ -13,6 +12,7 @@ import CreateAppDialog from '../dialogs/CreateAppDialog'
 import { notification } from '../../core/ducks/notifications'
 import * as api from '../api'
 import * as routes from '../../app/configuratorRoutes'
+import { getLatestUserApps } from '../../platform/ducks/latestUserApps'
 
 const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus, dispatch}) => {
   const lastEvaluation = pipeline.evaluations.get(0);
@@ -32,6 +32,7 @@ const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus, dispatch}) => {
       const appId = await api.createApp(data.name, pipeline.id);
       dispatch(notification(`New data application (${appId}) has been created`));
       dispatch(routes.application(appId));
+      dispatch(getLatestUserApps()); // Refresh latest apps in menu
     }
     catch (e) {
       console.log(e);

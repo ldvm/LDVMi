@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React, { PropTypes, Component } from 'react'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { routeActions } from 'redux-simple-router'
@@ -12,39 +12,55 @@ import { userSelector } from '../../auth/ducks/user'
 import IfLoading from '../../core/containers/IfLoading'
 import AppLoadingBar from '../components/AppLoadingBar'
 import DelayedRender from '../../../components/DelayedRender'
+import { getLatestUserApps, latestUserAppsSelector, latestUserAppsStatusSelector } from '../ducks/latestUserApps'
 
-const Platform = ({ dispatch, user, children }) =>  {
-  return (
-    <div>
-      <Helmet
-        title="Loading..."
-        titleTemplate="%s | LDVMi Application Generator"
-      />
-      <IfLoading>
-        <DelayedRender delay={200}>
-          <AppLoadingBar />
-        </DelayedRender>
-      </IfLoading>
-      <PlatformAppBar
-        user={user}
-        goHome={() => dispatch(routeActions.push('/'))}
-        signIn={() => dispatch(signIn())}
-        signUp={() => dispatch(signUp())}
-        signOut={() => dispatch(signOut())}
-      />
+class Platform extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    user: PropTypes.instanceOf(User).isRequired,
+    children: PropTypes.node.isRequired // Injected by React Router
+  };
 
-      {children}
+  componentWillMount() {
+    this.loadLatestUserApps();
+  }
 
-      <Notifications />
-    </div>
-  );
-};
+  loadLatestUserApps() {
+    const { dispatch, user } = this.props;
+    if (user.isSignedIn()) {
+      dispatch(getLatestUserApps());
+    }
+  }
 
-Platform.propTypes = {
-  dispatch: PropTypes.func.isRequired,
-  user: PropTypes.instanceOf(User).isRequired,
-  children: PropTypes.node.isRequired // Injected by React Router
-};
+  render() {
+    const { dispatch, user, children } = this.props;
+
+    return (
+      <div>
+        <Helmet
+          title="Loading..."
+          titleTemplate="%s | LDVMi Application Generator"
+        />
+        <IfLoading>
+          <DelayedRender delay={200}>
+            <AppLoadingBar />
+          </DelayedRender>
+        </IfLoading>
+        <PlatformAppBar
+          user={user}
+          goHome={() => dispatch(routeActions.push('/'))}
+          signIn={() => dispatch(signIn())}
+          signUp={() => dispatch(signUp())}
+          signOut={() => dispatch(signOut())}
+        />
+
+        {children}
+
+        <Notifications />
+      </div>
+    );
+  }
+}
 
 const selector = createStructuredSelector({
   user: userSelector

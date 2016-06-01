@@ -45,7 +45,7 @@ class AppApiController(implicit inj: Injector) extends RestController {
   }
 
   def getLatestPublishedApps = RestAction[EmptyRequest] { implicit request => json =>
-    val applications = applicationsService.findPublished
+    val applications = applicationsService.findPublished.take(1)
     Ok(SuccessResponse(data = Seq("latestPublishedApps" -> applications)))
   }
 

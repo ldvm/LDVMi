@@ -1,19 +1,20 @@
 import React, { PropTypes } from 'react'
+import { Link } from 'react-router'
 import AppBar from 'material-ui/AppBar';
 import makePureRender from '../../../misc/makePureRender'
 import { User } from '../../auth/models'
 import IconButton from '../../../components/IconButton'
-import UserMenu from './UserMenu'
+import Menu from './Menu'
 
 const PlatformAppBar = ({ user, goHome, signUp, signIn, signOut }) => {
 
-  const title = <span onTouchTap={goHome} className="appbar-logo">
+  const title = <Link to="/" className="appbar-logo">
       LDVMi Application Generator
-    </span>;
+    </Link>;
 
   const left = <IconButton onTouchTap={goHome} icon="explore" color="white" />;
 
-  const right = <UserMenu user={user} signIn={signIn} signUp={signUp} signOut={signOut} />;
+  const right = <Menu user={user} signIn={signIn} signUp={signUp} signOut={signOut} />;
 
   return <AppBar
     className="appbar"
