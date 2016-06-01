@@ -1,5 +1,5 @@
 import React from 'react'
-import Paper from 'material-ui/lib/paper';
+import Paper from 'material-ui/Paper';
 
 const PaperCard = ({title, subtitle, color, children}) => (
   <Paper className="paper-card">

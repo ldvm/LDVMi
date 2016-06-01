@@ -1,7 +1,7 @@
 import React from 'react';
 import { reduxForm } from 'redux-form'
 import { makeValidator, errorTextFactory } from '../../../misc/formUtils'
-import TextField from 'material-ui/lib/text-field'
+import TextField from 'material-ui/TextField';
 import Checkbox from '../../../components/Checkbox'
 import Button from '../../../components/Button'
 import Dialog from '../../core/containers/Dialog'

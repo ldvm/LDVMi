@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import MaterialIconButton from 'material-ui/lib/icon-button'
+import MaterialIconButton from 'material-ui/IconButton';
 import Icon from './Icon'
 
 // (The Material UI icon menu requires that the icon button is not a stateless component)

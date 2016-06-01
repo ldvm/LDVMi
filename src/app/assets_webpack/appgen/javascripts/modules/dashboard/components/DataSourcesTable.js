@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react'
 import { List } from 'immutable'
-import Table from 'material-ui/lib/table/table'
-import TableHeader from 'material-ui/lib/table/table-header'
-import TableHeaderColumn from 'material-ui/lib/table/table-header-column'
-import TableBody from 'material-ui/lib/table/table-body'
-import TableRow from 'material-ui/lib/table/table-row'
+import Table from 'material-ui/Table/Table';
+import TableHeader from 'material-ui/Table/TableHeader';
+import TableHeaderColumn from 'material-ui/Table/TableHeaderColumn';
+import TableBody from 'material-ui/Table/TableBody';
+import TableRow from 'material-ui/Table/TableRow';
 import DataSourceRow from './DataSourceRow'
 
 const DataSourcesTable = ({ dataSources, editDataSource, deleteDataSource }) => (

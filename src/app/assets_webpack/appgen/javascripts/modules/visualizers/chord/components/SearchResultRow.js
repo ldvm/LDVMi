@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import TableRow from 'material-ui/lib/table/table-row'
-import TableRowColumn from 'material-ui/lib/table/table-row-column'
+import TableRow from 'material-ui/Table/TableRow';
+import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import { Lens, ResourceThroughLens } from '../models'
 import LocalizedValue from '../../../app/containers/LocalizedValue'
 import AddToListButtons from '../containers/AddToListButtons'

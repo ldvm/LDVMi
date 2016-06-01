@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 import Button from '../../../components/Button'
 import IconButton from '../../../components/IconButton'
-import TableRow from 'material-ui/lib/table/table-row';
-import TableRowColumn from 'material-ui/lib/table/table-row-column';
+import TableRow from 'material-ui/Table/TableRow';
+import TableRowColumn from 'material-ui/Table/TableRowColumn';
 import { dialogOpen, dialogClose } from '../../core/ducks/dialog'
 import { PipelineWithEvaluations } from '../models'
 import { createStatusSelector } from '../ducks/runEvaluationStatus'

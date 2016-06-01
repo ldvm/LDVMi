@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import CircularProgress from 'material-ui/lib/circular-progress'
+import CircularProgress from 'material-ui/CircularProgress';
 import Icon from './Icon'
 import * as theme from '../misc/theme'
 

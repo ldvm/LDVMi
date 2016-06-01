@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import TextField from 'material-ui/lib/text-field'
+import TextField from 'material-ui/TextField';
 import Button from '../../../../components/Button'
 
 const textFieldStyle = {

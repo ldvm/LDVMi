@@ -1,5 +1,5 @@
 import React from 'react'
-import * as Icons from 'material-ui/lib/svg-icons'
+import * as Icons from 'material-ui/svg-icons';
 
 /**
  * Transform icon name from the CamelCase format into the format with underscores. Also the

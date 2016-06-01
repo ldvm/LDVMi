@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import TextField from 'material-ui/lib/text-field'
+import TextField from 'material-ui/TextField';
 import Button from '../../../../components/Button'
 import IconButton from '../../../../components/IconButton'
 import Dialog from '../../../core/containers/Dialog'

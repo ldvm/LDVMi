@@ -1,5 +1,5 @@
 import React from 'react';
-import MaterialCheckbox from 'material-ui/lib/checkbox';
+import MaterialCheckbox from 'material-ui/Checkbox';
 
 export default (props) => {
   let newProps = Object.assign({}, props, {

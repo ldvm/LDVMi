@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import RaisedButton from 'material-ui/lib/raised-button';
-import FlatButon from 'material-ui/lib/flat-button';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButon from 'material-ui/FlatButton';
 import * as Theme from '../misc/theme';
 import { getColorType } from '../misc/utils';
 import Icon from './Icon'

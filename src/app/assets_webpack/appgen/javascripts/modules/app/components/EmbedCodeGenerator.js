@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { findDOMNode } from 'react-dom'
-import TextField from 'material-ui/lib/text-field'
+import TextField from 'material-ui/TextField';
 
 function generateIframeCode(url, width, height) {
   return `<iframe width="${width}" height="${height}" src="${url}" frameborder="0"></iframe>`;

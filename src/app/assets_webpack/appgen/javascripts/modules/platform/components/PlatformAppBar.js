@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import AppBar from 'material-ui/lib/app-bar'
-import CircularProgress from 'material-ui/lib/circular-progress'
+import AppBar from 'material-ui/AppBar';
+import CircularProgress from 'material-ui/CircularProgress';
 import Loading from '../../core/containers/Loading'
 import makePureRender from '../../../misc/makePureRender'
 import { User } from '../../auth/models'

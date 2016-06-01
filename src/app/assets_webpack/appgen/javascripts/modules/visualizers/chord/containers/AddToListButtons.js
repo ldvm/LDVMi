@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import IconMenu from 'material-ui/lib/menus/icon-menu'
-import MenuItem from 'material-ui/lib/menus/menu-item'
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
 import Button from '../../../../components/Button'
 import { PromiseStatus } from '../../../core/models'
 import { addToList, addWithRelatedToList, removeFromList } from '../ducks/lists'

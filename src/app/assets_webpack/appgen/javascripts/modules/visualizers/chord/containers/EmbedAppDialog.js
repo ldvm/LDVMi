@@ -2,8 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import { OrderedMap } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import DropDownMenu from 'material-ui/lib/DropDownMenu'
-import MenuItem from 'material-ui/lib/menus/menu-item'
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
 import Button from '../../../../components/Button'
 import Dialog from '../../../core/containers/Dialog'
 import prefix from '../prefix'

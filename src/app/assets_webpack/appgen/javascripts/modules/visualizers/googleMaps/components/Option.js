@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
-import Divider from 'material-ui/lib/divider';
-import Checkbox from 'material-ui/lib/checkbox';
-import RadioButton from 'material-ui/lib/radio-button';
+import Divider from 'material-ui/Divider';
+import Checkbox from 'material-ui/Checkbox';
+import RadioButton from 'material-ui/RadioButton';
 import { Option as OptionModel } from '../models'
 import Padding from '../../../../components/Padding'
 import EditableLabel from '../../../app/containers/EditableLabel'

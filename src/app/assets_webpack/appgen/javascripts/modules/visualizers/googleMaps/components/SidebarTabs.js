@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import { List, Map } from 'immutable'
-import Tabs from 'material-ui/lib/tabs/tabs';
-import Tab from 'material-ui/lib/tabs/tab';
-import Paper from 'material-ui/lib/paper';
+import Tabs from 'material-ui/Tabs/Tabs';
+import Tab from 'material-ui/Tabs/Tab';
+import Paper from 'material-ui/Paper';
 import RefreshMapButton from '../containers/RefreshMapButton'
 import SaveButton from '../containers/SaveButton'
 import FillInScreen from '../../../../components/FillInScreen'
