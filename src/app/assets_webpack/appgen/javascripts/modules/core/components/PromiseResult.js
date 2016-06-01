@@ -1,11 +1,16 @@
 import React, { PropTypes } from 'react'
+import DelayRender from './../../../components/DelayedRender'
 import Loading from './../../../components/Loading'
 import Alert from './../../../components/Alert'
 import { PromiseStatus } from '../models'
 
 const PromiseResult = ({ error, isLoading, loadingMessage }) => {
   if (isLoading === true) {
-    return <Loading>{loadingMessage ? loadingMessage : 'Loading...'}</Loading>
+    return (
+      <DelayRender delay={200}>
+        <Loading>{loadingMessage ? loadingMessage : 'Loading...'}</Loading>
+      </DelayRender>
+    )
   } else if (error) {
     return <Alert danger>{error}</Alert>;
   } else {
