@@ -39,7 +39,7 @@ class Platform extends Component {
       <div>
         <Helmet
           title="Loading..."
-          titleTemplate="%s | LDVMi Application Generator"
+          titleTemplate="%s | Linked Pipes Application Generator"
         />
         <IfLoading>
           <DelayedRender delay={200}>

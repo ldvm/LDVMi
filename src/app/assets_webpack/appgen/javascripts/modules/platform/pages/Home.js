@@ -13,12 +13,12 @@ import * as routes from '../routes'
 
 const Home = () =>
   <NarrowedLayout>
-    <Helmet title="LDVMi Application Generator" titleTemplate="%s" />
-    <Headline title="LDVMi Application Generator" icon="explore" />
+    <Helmet title="Linked Pipes Application Generator" titleTemplate="%s" />
+    <Headline title="Linked Pipes Application Generator" icon="explore" />
     <Grid>
       <Row>
         <Col md={6}>
-          <PaperCard title="About" subtitle="LDVMi Application Generator">
+          <PaperCard title="About" subtitle="Linked Pipes Application Generator">
             <AboutSharedInfo />
             <p>
               <Link to={routes.aboutUrl()}>

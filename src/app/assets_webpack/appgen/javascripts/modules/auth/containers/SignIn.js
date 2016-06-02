@@ -28,7 +28,7 @@ const SignIn = ({ dispatch, status }) => {
   };
 
   return (
-    <PaperCard title="Sign in" subtitle="Enter your credentials for your LDVMi account">
+    <PaperCard title="Sign in" subtitle="Enter your account credentials">
       <div>
         Don't have an account yet? <Link to={routes.signUpUrl()}>Sign up!</Link>
       </div>

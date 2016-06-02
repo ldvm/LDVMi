@@ -28,7 +28,7 @@ const SignUp = ({ dispatch }) => {
   return (
     <SuperNarrowedLayout>
       <Helmet title="Sign up"  />
-      <PaperCard title="Sign up" subtitle="Fill in some basic info to get your LDVMi account">
+      <PaperCard title="Sign up" subtitle="Fill in some basic info to get your account">
         <SignUpForm onSubmit={onSubmit} />
       </PaperCard>
     </SuperNarrowedLayout>

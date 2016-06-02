@@ -9,7 +9,7 @@ import Menu from './Menu'
 const PlatformAppBar = ({ user, goHome, signUp, signIn, signOut }) => {
 
   const title = <Link to="/" className="appbar-logo">
-      LDVMi Application Generator
+      Linked Pipes Application Generator
     </Link>;
 
   const left = <IconButton onTouchTap={goHome} icon="explore" color="white" />;
