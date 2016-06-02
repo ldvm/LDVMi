@@ -4,6 +4,7 @@ import { Grid,  Row, Col } from 'react-flexbox-grid'
 import PaperCard from '../../../components/PaperCard'
 import NarrowedLayout from '../../../components/NarrowedLayout'
 import Headline from '../../../components/Headline'
+import Subheadline from '../../../components/Subheadline'
 import LatestPublishedApps from '../containers/LatestPublishedApps'
 import Userbox from '../components/Userbox'
 
@@ -17,7 +18,6 @@ const Home = () =>
           <PaperCard title="About" subtitle="LDVMi Application Generator">
             <div>This generator lets you create interactive apps based on linked RDF data!</div>
             <p><strong>Check out the latest published applications:</strong></p>
-            <LatestPublishedApps />
           </PaperCard>
         </Col>
         <Col md={6}>
@@ -25,6 +25,8 @@ const Home = () =>
         </Col>
       </Row>
     </Grid>
+    <Subheadline title="Latest published applications" />
+    <LatestPublishedApps />
   </NarrowedLayout>;
 
 export default Home;

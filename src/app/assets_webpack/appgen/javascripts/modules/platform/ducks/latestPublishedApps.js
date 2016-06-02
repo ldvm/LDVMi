@@ -18,7 +18,7 @@ export const GET_LATEST_PUBLISHED_APPS_SUCCESS = GET_LATEST_PUBLISHED_APPS + '_S
 export const GET_LATEST_PUBLISHED_APPS_RESET = GET_LATEST_PUBLISHED_APPS + '_RESET';
 
 export function getLatestPublishedApps() {
-    const promise = api.getPublishedApps(new PaginationInfo({ skipCount: 0, pageSize: 5 }));
+    const promise = api.getPublishedApps(new PaginationInfo({ skipCount: 0, pageSize: 6 }));
     return createAction(GET_LATEST_PUBLISHED_APPS, { promise });
 }
 
