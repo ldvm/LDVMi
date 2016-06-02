@@ -31,7 +31,9 @@ const Menu = ({ user, signIn, signUp, signOut }) => {
         <Link to={platformRoutes.catalogUrl()} style={noDecorationStyle}>
           <Button label="Catalog" inverted />
         </Link>
-        <Button label="About" inverted />
+        <Link to={platformRoutes.aboutUrl()} style={noDecorationStyle}>
+          <Button label="About" inverted />
+        </Link>
         <IconMenu {...buttonPositioning} iconButtonElement={<Button icon="person" label={user.name} inverted />}>
           <MenuItem primaryText="Sign out" onTouchTap={signOut} />
         </IconMenu>
@@ -41,7 +43,9 @@ const Menu = ({ user, signIn, signUp, signOut }) => {
         <Link to={platformRoutes.catalogUrl()} style={noDecorationStyle}>
           <Button label="Catalog" inverted />
         </Link>
-        <Button label="About" inverted />
+        <Link to={platformRoutes.aboutUrl()} style={noDecorationStyle}>
+          <Button label="About" inverted />
+        </Link>
         <IconMenu {...buttonPositioning} iconButtonElement={<Button label="" icon="person_outline" color="white" inverted style={{ minWidth: '50px'}} />}>
           <MenuItem primaryText="Sign up" onTouchTap={signUp} />
           <MenuItem primaryText="Sign in" onTouchTap={signIn} />

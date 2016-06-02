@@ -9,6 +9,7 @@ import Platform from './containers/Platform'
 import Home from './pages/Home'
 import NotFound from './pages/NotFound'
 import Catalog from './pages/Catalog'
+import About from './pages/About'
 import { getUser } from '../auth/ducks/user'
 import { getVisualizers } from '../core/ducks/visualizers'
 
@@ -20,6 +21,7 @@ export default function createRoutes(dispatch) {
     }}>
       <IndexRoute component={Home} />
       <Route component={Catalog} path="catalog(/:page)" />
+      <Route component={About} path="about" />
       {authRoutes(dispatch)}
       {createAppRoutes(dispatch)}
       {manageAppRoutes(dispatch)}
@@ -38,3 +40,12 @@ export function catalogUrl(page = null) {
 export function catalog(page = null) {
   return routeActions.push(catalogUrl(page));
 }
+
+export function aboutUrl() {
+  return '/about';
+}
+
+export function about() {
+  return routeActions.push(aboutUrl);
+}
+

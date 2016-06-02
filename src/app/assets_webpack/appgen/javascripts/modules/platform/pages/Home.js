@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router'
 import Helmet from 'react-helmet'
 import { Grid,  Row, Col } from 'react-flexbox-grid'
 import PaperCard from '../../../components/PaperCard'
@@ -7,6 +8,8 @@ import Headline from '../../../components/Headline'
 import Subheadline from '../../../components/Subheadline'
 import LatestPublishedApps from '../containers/LatestPublishedApps'
 import Userbox from '../components/Userbox'
+import AboutSharedInfo from '../components/AboutSharedInfo'
+import * as routes from '../routes'
 
 const Home = () =>
   <NarrowedLayout>
@@ -16,8 +19,12 @@ const Home = () =>
       <Row>
         <Col md={6}>
           <PaperCard title="About" subtitle="LDVMi Application Generator">
-            <div>This generator lets you create interactive apps based on linked RDF data!</div>
-            <p><strong>Check out the latest published applications:</strong></p>
+            <AboutSharedInfo />
+            <p>
+              <Link to={routes.aboutUrl()}>
+                <strong>Read more ></strong>
+              </Link>
+            </p>
           </PaperCard>
         </Col>
         <Col md={6}>
