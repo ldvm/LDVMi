@@ -1,7 +1,6 @@
 import React from 'react'
 import { Route } from 'react-router'
 import { routeActions } from 'redux-simple-router'
-import { getVisualizers } from './../core/ducks/visualizers'
 
 import CreateApp from './pages/CreateApp'
 import SelectSources from './pages/SelectSources'
@@ -11,7 +10,7 @@ const MODULE_PATH = 'create-app';
 
 export default function createRoutes(dispatch) {
   return (
-    <Route component={CreateApp} path={MODULE_PATH} onEnter={() => dispatch(getVisualizers())}>
+    <Route component={CreateApp} path={MODULE_PATH}>
       <Route component={SelectSources} path='select-sources' />
       <Route component={Discovery} path="discovery/:userPipelineDiscoveryId" />
     </Route>

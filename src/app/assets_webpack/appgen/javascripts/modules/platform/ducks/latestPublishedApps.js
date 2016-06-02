@@ -7,6 +7,7 @@ import * as api from '../api'
 import moduleSelector from '../selector'
 import { Application } from '../../app/models'
 import storageReducerFactory from '../../../misc/storageReducerFactory'
+import { PaginationInfo } from '../../core/models'
 
 // Actions
 
@@ -17,7 +18,7 @@ export const GET_LATEST_PUBLISHED_APPS_SUCCESS = GET_LATEST_PUBLISHED_APPS + '_S
 export const GET_LATEST_PUBLISHED_APPS_RESET = GET_LATEST_PUBLISHED_APPS + '_RESET';
 
 export function getLatestPublishedApps() {
-    const promise = api.getLatestPublishedApps();
+    const promise = api.getPublishedApps(new PaginationInfo({ skipCount: 0, pageSize: 5 }));
     return createAction(GET_LATEST_PUBLISHED_APPS, { promise });
 }
 
@@ -32,7 +33,7 @@ export default storageReducerFactory()
   .setResetAction(GET_LATEST_PUBLISHED_APPS_RESET)
   .setUpdateAction(GET_LATEST_PUBLISHED_APPS_SUCCESS)
   .setUpdate((state, payload) => {
-    return (new List(payload))
+    return (new List(payload.items))
       .map(application => new Application(fromJS(application)))
   })
   .create();

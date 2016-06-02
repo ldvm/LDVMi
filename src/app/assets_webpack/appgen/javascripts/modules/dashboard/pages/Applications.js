@@ -12,7 +12,6 @@ import { destroyPaginator, resetPaginator } from '../../core/ducks/pagination'
 import { PromiseStatus } from '../../core/models'
 import ApplicationsTable from '../components/ApplicationsTable'
 import { visualizersSelector } from '../../core/ducks/visualizers'
-import { getVisualizers } from '../../core/ducks/visualizers'
 
 class Applications extends Component {
   static propTypes = {
@@ -26,7 +25,6 @@ class Applications extends Component {
   componentWillMount() {
     const { loadPage, props: { dispatch } } = this;
     // dispatch(resetPaginator(APPLICATIONS_PAGINATOR, { pageSize: 6 }));
-    dispatch(getVisualizers()); // TODO: wait for it to load
     loadPage(this.props);
   }
 

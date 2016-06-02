@@ -2,11 +2,11 @@ import { Record, List } from 'immutable';
 
 const visualizerProps = {
   id: 0,
-  title: '',
+  title: 'Unknown visualizer',
   name: '',
   description: '',
   uri: '',
-  icon: '',
+  icon: 'help',
   supported: false,
   componentTemplateId: 0
 };

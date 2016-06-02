@@ -74,3 +74,8 @@ pre {
 a.linkButton {
   display: inline !important;
 }
+
+/** Paginator page button */
+.paginatorButton > button {
+  min-width: 30px !important;
+}

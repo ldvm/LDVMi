@@ -5,6 +5,7 @@ import MenuItem from 'material-ui/MenuItem';
 import Button from '../../../components/Button'
 import { User } from '../../auth/models'
 import * as dashboardRoutes from '../../dashboard/routes'
+import * as platformRoutes from '../routes'
 import LatestUserAppsMenu from '../containers/LatestUserAppsMenu'
 
 const menuContainerStyle = {
@@ -27,7 +28,9 @@ const Menu = ({ user, signIn, signUp, signOut }) => {
           <Button label="Dashboard" inverted />
         </Link>
         <LatestUserAppsMenu />
-        <Button label="Catalog" inverted />
+        <Link to={platformRoutes.catalogUrl()} style={noDecorationStyle}>
+          <Button label="Catalog" inverted />
+        </Link>
         <Button label="About" inverted />
         <IconMenu {...buttonPositioning} iconButtonElement={<Button icon="person" label={user.name} inverted />}>
           <MenuItem primaryText="Sign out" onTouchTap={signOut} />
@@ -35,7 +38,9 @@ const Menu = ({ user, signIn, signUp, signOut }) => {
       </div>
     ) : (
       <div style={menuContainerStyle}>
-        <Button label="Catalog" inverted />
+        <Link to={platformRoutes.catalogUrl()} style={noDecorationStyle}>
+          <Button label="Catalog" inverted />
+        </Link>
         <Button label="About" inverted />
         <IconMenu {...buttonPositioning} iconButtonElement={<Button label="" icon="person_outline" color="white" inverted style={{ minWidth: '50px'}} />}>
           <MenuItem primaryText="Sign up" onTouchTap={signUp} />

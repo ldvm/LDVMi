@@ -6,9 +6,11 @@ import * as api from '../api'
 import prefix from '../../createApp/prefix'
 import createPromiseReducer, { PRESERVE_STATE } from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
+import { createPromiseStatusSelector } from './promises'
 
 // Actions
 
+export const GET_VISUALIZERS = prefix('GET_VISUALIZERS');
 export const GET_VISUALIZERS_START = prefix('GET_VISUALIZERS_START');
 export const GET_VISUALIZERS_ERROR = prefix('GET_VISUALIZERS_ERROR');
 export const GET_VISUALIZERS_SUCCESS = prefix('GET_VISUALIZERS_SUCCESS');
@@ -35,3 +37,5 @@ export const visualizersSelector = createSelector(
   [selector],
   ({ data }) => data.map(visualizer => new Visualizer(visualizer))
 );
+
+export const visualizersStatusSelector = createPromiseStatusSelector(GET_VISUALIZERS);

@@ -12,10 +12,17 @@ class ApplicationsRepository extends BaseIdRepository[ApplicationId, Application
     byIdFunc(id).filter(_.userId === user.id.get).firstOption
   }
 
-  def findPublished(implicit session: Session): Seq[Application] = {
-    // TODO: use actual date of publishing
-    // TODO: implement sorting
-    query.filter(_.published === true).list
+  def findPublished(paginationInfo: PaginationInfo)(implicit session: Session): Seq[Application] = {
+    query
+      .filter(_.published === true)
+      .sortBy(_.id.desc)
+      .drop(paginationInfo.skipCount)
+      .take(paginationInfo.pageSize)
+      .list
+  }
+
+  def countPublished(implicit session: Session): Int = {
+    query.filter(_.published === true).length.run
   }
 
   def findByUser(user: User)(implicit session: Session): Seq[Application] = {

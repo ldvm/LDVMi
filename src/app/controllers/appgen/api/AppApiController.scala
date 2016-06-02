@@ -43,17 +43,4 @@ class AppApiController(implicit inj: Injector) extends RestController {
       Ok(SuccessResponse(data = Seq("configuration" -> application.configuration)))
     }
   }
-
-  def getLatestPublishedApps = RestAction[EmptyRequest] { implicit request => json =>
-    val applications = applicationsService.findPublished.take(1)
-    Ok(SuccessResponse(data = Seq("latestPublishedApps" -> applications)))
-  }
-
-  def getLatestUserApps = RestAction[EmptyRequest] { implicit request => json =>
-    val applications: Seq[Application] = request.user match {
-      case Some(user) => applicationsService.findByUser(user)
-      case None => Seq.empty[Application]
-    }
-    Ok(SuccessResponse(data = Seq("latestUserApps" -> applications)))
-  }
 }
