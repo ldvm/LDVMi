@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import Tabs from 'material-ui/Tabs/Tabs';
@@ -7,8 +8,11 @@ import Paper from 'material-ui/Paper';
 import { routeActions } from 'redux-simple-router'
 import NarrowedLayout from '../../../components/NarrowedLayout'
 import Headline from '../../../components/Headline'
+import PullRight from '../../../components/PullRight'
+import Button from '../../../components/Button'
 import requireSignedIn from '../../auth/containers/requireSignedIn'
 import * as dashboardRoutes from '../routes'
+import * as createAppRoutes from '../../createApp/routes'
 
 /**
  * Re-construct the default URL of currently selected tab.
@@ -45,6 +49,13 @@ function makeTabUrl(route, routes) {
 
 const Dashboard = ({ dispatch, children, route, routes }) =>
   <NarrowedLayout>
+    <PullRight>
+      <br />
+      <Link to={createAppRoutes.createAppUrl()}>
+        <Button raised success fullWidth icon="add_box" label="Create application" />
+      </Link>
+    </PullRight>
+
     <Helmet title="Dashboard" titleTemplate="%s" />
     <Headline title="Dashboard" icon="dashboard" />
 
