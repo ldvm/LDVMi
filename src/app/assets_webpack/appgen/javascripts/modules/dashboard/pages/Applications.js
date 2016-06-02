@@ -12,6 +12,8 @@ import { destroyPaginator, resetPaginator } from '../../core/ducks/pagination'
 import { PromiseStatus } from '../../core/models'
 import ApplicationsTable from '../components/ApplicationsTable'
 import { visualizersSelector } from '../../core/ducks/visualizers'
+import { createAggregatedPromiseStatusSelector } from '../../core/ducks/promises'
+import { visualizersStatusSelector } from '../../core/ducks/visualizers'
 
 class Applications extends Component {
   static propTypes = {
@@ -85,7 +87,10 @@ const selector = createStructuredSelector({
   page: pageSelector,
   applications: createApplicationsSelector(pageSelector),
   visualizers: visualizersSelector,
-  status: createApplicationsStatusSelector(pageSelector)
+  status: createAggregatedPromiseStatusSelector([
+    createApplicationsStatusSelector(pageSelector),
+    visualizersStatusSelector
+  ])
 });
 
 export default connect(selector)(Applications);

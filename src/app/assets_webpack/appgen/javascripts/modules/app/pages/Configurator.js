@@ -21,15 +21,16 @@ import { dialogName as generalSettingsDialogName } from '../dialogs/GeneralSetti
 import requireSignedIn from '../../auth/containers/requireSignedIn'
 import { userSelector } from '../../auth/ducks/user'
 import { createRouteParamSelector } from '../../core/ducks/routing'
-import { getVisualizers } from '../../core/ducks/visualizers'
+import { getVisualizers, visualizersStatusSelector } from '../../core/ducks/visualizers'
+import { createAggregatedPromiseStatusSelector} from '../../core/ducks/promises'
 
-class Application extends Component {
+class Configurator extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     applicationId: PropTypes.string.isRequired,
     application: PropTypes.instanceOf(ApplicationModel).isRequired,
     visualizer: PropTypes.instanceOf(Visualizer).isRequired,
-    applicationStatus: PropTypes.instanceOf(PromiseStatus).isRequired
+    status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
   componentWillMount() {
@@ -39,9 +40,10 @@ class Application extends Component {
 
   componentWillReceiveProps(props) {
     // In case the application id changes while this component is mounted, we need to reload the
-    // application. Right now it's not happening anywhere (who knows if it even works...).
-    const { application, applicationId, applicationStatus } = props;
-    if (!applicationStatus.isLoading && application.id != applicationId) {
+    // application. Note that applicationId is the URL param and application is currently loaded
+    // application. If they differ, we need to load the proper application.
+    const { application, applicationId, status } = props;
+    if (!status.isLoading && application.id != applicationId) {
       this.loadData(props);
     }
 
@@ -62,17 +64,17 @@ class Application extends Component {
   loadVisualizerConfigurator(props) {
     // If there is no visualizer configurator loaded, we have to chose the right one and redirect
     // to the appropriate url.
-    const { dispatch, application, visualizer, applicationStatus, children } = props;
-    if (applicationStatus.done && !children) {
+    const { dispatch, application, visualizer, status, children } = props;
+    if (status.done && !children) {
       dispatch(routes.visualizerConfigurator(application.id, visualizer));
     }
   }
 
   render() {
-    const { dispatch, user, application, visualizer, applicationStatus, children } = this.props;
+    const { dispatch, user, application, visualizer, status, children } = this.props;
 
-    if (!applicationStatus.done) {
-      return <BodyPadding><PromiseResult status={applicationStatus} /></BodyPadding>
+    if (!status.done) {
+      return <BodyPadding><PromiseResult status={status} /></BodyPadding>
     }
 
     if (application.userId != user.id) {
@@ -112,7 +114,10 @@ const selector = createStructuredSelector({
   applicationId: applicationIdSelector,
   application: applicationSelector,
   visualizer: applicationVisualizerSelector,
-  applicationStatus: applicationStatusSelector
+  status: createAggregatedPromiseStatusSelector([
+    applicationStatusSelector,
+    visualizersStatusSelector
+  ])
 });
 
-export default requireSignedIn(connect(selector)(Application));
+export default requireSignedIn(connect(selector)(Configurator));
