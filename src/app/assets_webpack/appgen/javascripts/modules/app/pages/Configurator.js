@@ -41,7 +41,7 @@ class Application extends Component {
     // In case the application id changes while this component is mounted, we need to reload the
     // application. Right now it's not happening anywhere (who knows if it even works...).
     const { application, applicationId, applicationStatus } = props;
-    if (applicationStatus.done && application.id != applicationId) {
+    if (!applicationStatus.isLoading && application.id != applicationId) {
       this.loadData(props);
     }
 
