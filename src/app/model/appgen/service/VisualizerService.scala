@@ -4,11 +4,15 @@ import model.appgen.entity.Application
 import model.appgen.entity.Visualizer._
 import model.entity._
 import CustomUnicornPlay.driver.simple._
-import scaldi.{Injector, Injectable}
+import model.repository.VisualizationConfigurationRepository
+import scaldi.{Injectable, Injector}
 import play.api.db.slick.Session
+
+import scala.util.Try
 
 
 class VisualizerService(implicit inj: Injector) extends Injectable {
+  val visualizationConfigurationRepository = inject[VisualizationConfigurationRepository]
 
   def getVisualizers(implicit session: Session): Seq[Visualizer] = (for {
       visualizerTemplate <- visualizerTemplatesQuery
@@ -20,5 +24,16 @@ class VisualizerService(implicit inj: Injector) extends Injectable {
 
   def getVisualizer(application: Application)(implicit session: Session): Option[Visualizer] = {
     getVisualizers.find(_.componentTemplateId.get == application.visualizerComponentTemplateId)
+  }
+
+  def getVisualizerComponents(implicit session: Session): Seq[ComponentTemplate] = (for {
+    visualizerTemplate <- visualizerTemplatesQuery
+    componentTemplate <- componentTemplatesQuery if componentTemplate.id === visualizerTemplate.componentTemplateId
+  } yield componentTemplate).list
+
+  def addVisualizationConfiguration(component: ComponentTemplate)(implicit session: Session): Try[Visualizer] = {
+    val configuration = new VisualizationConfiguration(None, component.uri)
+    Try(visualizationConfigurationRepository save configuration)
+      .map({ _ => getVisualizers.filter(_.componentTemplateId == component.id).head })
   }
 }

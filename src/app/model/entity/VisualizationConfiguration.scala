@@ -14,11 +14,11 @@ object VisualizationConfigurationId extends IdCompanion[VisualizationConfigurati
 case class VisualizationConfiguration(
   id: Option[VisualizationConfigurationId],
   visualizerUri: String,
-  visualizationUri: String,
-  priority: Int,
-  appgenName: String,
-  appgenIcon: String,
-  appgenDisabled: Boolean,
+  visualizationUri: String = "",
+  priority: Int = 0,
+  appgenName: String = "",
+  appgenIcon: String = "",
+  appgenDisabled: Boolean = true,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
@@ -37,6 +37,8 @@ class VisualizationConfigurationTable(tag: Tag) extends IdEntityTable[Visualizat
   def appgenIcon = column[String]("appgen_icon", O.NotNull)
 
   def appgenDisabled = column[Boolean]("appgen_disabled", O.Default(false))
+
+  def idx = index("idx_unique_visualizer_uri", visualizerUri, unique = true)
 
   def * = (id.?, visualizerUri, visualizationUri, priority, appgenName, appgenIcon, appgenDisabled, uuid, createdUtc, modifiedUtc) <> (VisualizationConfiguration.tupled, VisualizationConfiguration.unapply)
 }

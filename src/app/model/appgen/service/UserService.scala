@@ -17,7 +17,7 @@ class UserService(implicit inj: Injector) extends Injectable {
   def add(name: String, email: String, password: String)(implicit session: Session): UserAddResult = {
     try {
       val hash = BCrypt.hashpw(password, BCrypt.gensalt())
-      val id = usersRepository save new User(None, name, email, hash)
+      val id = usersRepository save new User(None, name, email, hash, false)
       UserSuccessfullyAdded(id)
     } catch {
       case (e: JdbcSQLException) =>

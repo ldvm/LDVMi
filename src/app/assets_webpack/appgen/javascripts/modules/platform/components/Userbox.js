@@ -20,7 +20,7 @@ const Userbox = ({ user }) =>
     </p>
     <ButtonContainer buttons={[
       <Link to={createAppRoutes.createAppUrl()}>
-        <Button raised success fullWidth icon="add_box" label="Create application" />
+        <Button raised success fullWidth icon="add" label="Create application" />
       </Link>,
       <Link to={dashboardRoutes.dashboardUrl()}>
         <Button raised fullWidth icon="dashboard" label="Dashboard" />

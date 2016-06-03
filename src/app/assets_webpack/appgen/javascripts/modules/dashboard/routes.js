@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Applications from './pages/Applications'
 import DataSources from './pages/DataSources'
 import Discoveries from './pages/Discoveries'
+import Visualizers from './pages/Visualizers'
 
 
 export default function createRoutes(dispatch) {
@@ -13,6 +14,7 @@ export default function createRoutes(dispatch) {
     <Route component={Dashboard} path={MODULE_PREFIX}>
       <Route component={DataSources} path="data-sources(/:page)" />
       <Route component={Discoveries} path="discoveries(/:page)" />
+      <Route component={Visualizers} path="visualizers" />
       <Route component={Applications} path=":page" />
       <IndexRoute component={Applications} />
     </Route>
@@ -51,4 +53,12 @@ export function discoveriesUrl(page = null) {
 
 export function discoveries(page = null) {
   return routeActions.push(discoveriesUrl(page));
+}
+
+export function visualizersUrl() {
+  return dashboardUrl() + '/visualizers';
+}
+
+export function visualizers() {
+  return routeActions.push(visualizersUrl());
 }

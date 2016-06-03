@@ -35,3 +35,13 @@ export async function deleteDataSource(id) {
 export async function updateDataSource(id, values) {
   return await rest('dashboard/updateDataSource/' + id, values);
 }
+
+export async function getVisualizerComponents() {
+  const result = await rest('dashboard/getVisualizerComponents', {});
+  return result.data.visualizerComponents;
+}
+
+export async function addVisualizationConfiguration(componentTemplateUri) {
+  const result = await rest('dashboard/addVisualizationConfiguration', { componentTemplateUri });
+  return result.data.visualizer;
+}

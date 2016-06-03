@@ -130,6 +130,8 @@ POST        /appgen/api/dashboard/deleteAllDiscoveries      @controllers.appgen.
 POST        /appgen/api/dashboard/getDataSources            @controllers.appgen.api.DashboardApiController.getDataSources
 POST        /appgen/api/dashboard/deleteDataSource/:id      @controllers.appgen.api.DashboardApiController.deleteDataSource(id: Long)
 POST        /appgen/api/dashboard/updateDataSource/:id      @controllers.appgen.api.DashboardApiController.updateDataSource(id: Long)
+POST        /appgen/api/dashboard/getVisualizerComponents   @controllers.appgen.api.DashboardApiController.getVisualizerComponents
+POST        /appgen/api/dashboard/addVisualizationConfiguration @controllers.appgen.api.DashboardApiController.addVisualizationConfiguration
 
 POST        /appgen/api/common/getVisualizers               @controllers.appgen.api.CommonApiController.getVisualizers
 

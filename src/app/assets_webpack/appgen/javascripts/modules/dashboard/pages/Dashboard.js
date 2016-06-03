@@ -52,7 +52,7 @@ const Dashboard = ({ dispatch, children, route, routes }) =>
     <PullRight>
       <br />
       <Link to={createAppRoutes.createAppUrl()}>
-        <Button raised success fullWidth icon="add_box" label="Create application" />
+        <Button raised success fullWidth icon="add" label="Create application" />
       </Link>
     </PullRight>
 
@@ -68,6 +68,7 @@ const Dashboard = ({ dispatch, children, route, routes }) =>
         <Tab label="Applications" value={dashboardRoutes.applicationsUrl()} />
         <Tab label="Discoveries" value={dashboardRoutes.discoveriesUrl()} />
         <Tab label="Data sources" value={dashboardRoutes.dataSourcesUrl()} />
+        <Tab label="Visualizers" value={dashboardRoutes.visualizersUrl()} />
       </Tabs>
 
       {children}

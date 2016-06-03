@@ -1,22 +1,31 @@
 package controllers.appgen.api
 
 import play.api.mvc._
+import controllers.api.JsonImplicits._
 import controllers.appgen.api.JsonImplicits._
 import controllers.appgen.api.rest.SecuredRestController
 import model.appgen.entity.{Discovery, UserDataSource, UserDataSourceId, UserPipelineDiscoveryId}
 import model.appgen.repository.UserDataSourcesRepository
+import model.appgen.rest.AddVisualizationConfigurationRequest.AddVisualizationConfigurationRequest
 import model.appgen.rest.EmptyRequest.EmptyRequest
 import model.appgen.rest.PaginatedRequest._
 import scaldi.Injector
 import model.appgen.rest.Response._
 import model.appgen.rest.RestRequestWithUser
 import model.appgen.rest.UpdateDataSourceRequest.UpdateDataSourceRequest
-import model.appgen.service.{ApplicationsService, DiscoveriesService}
+import model.appgen.service.{ApplicationsService, DiscoveriesService, VisualizerService}
+import model.repository.ComponentTemplateRepository
+import org.h2.constant.ErrorCode
+import org.h2.jdbc.JdbcSQLException
+
+import scala.util.{Failure, Success}
 
 class DashboardApiController(implicit inj: Injector) extends SecuredRestController {
   val applicationsService = inject[ApplicationsService]
   val discoveriesService = inject[DiscoveriesService]
   val userDataSourcesRepository = inject[UserDataSourcesRepository]
+  val visualizerService = inject[VisualizerService]
+  val componentTemplateRepository = inject[ComponentTemplateRepository]
 
   def getApplications = RestAction[PaginatedRequest] { implicit request => json =>
     Ok(SuccessResponse(data = Seq(
@@ -90,5 +99,29 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
       case Some(userDataSource) => func(userDataSource)
       case None => BadRequest(ErrorResponse("The data source does not exist or is not accessible"))
     }
+  }
+
+  def getVisualizerComponents = RestAction[EmptyRequest] { implicit request => json =>
+    val visualizerComponents = visualizerService.getVisualizerComponents
+    Ok(SuccessResponse(data = Seq("visualizerComponents" -> visualizerComponents)))
+  }
+
+  def addVisualizationConfiguration = RestAction[AddVisualizationConfigurationRequest] { implicit request => json =>
+    // Send back error response with the form field validation message
+    def fail(message: String) = BadRequest(ErrorResponse(message,
+      Seq("componentTemplateUri" -> message)))
+
+    componentTemplateRepository.findByUri(json.componentTemplateUri) map { component =>
+      visualizerService.addVisualizationConfiguration(component) match {
+        case Success(visualizer) =>
+          Ok(SuccessResponse("The visualizer has been created", data = Seq("visualizer" -> visualizer)))
+        case Failure(e: JdbcSQLException) =>
+          if (e.getErrorCode == ErrorCode.DUPLICATE_KEY_1)
+            fail("A visualizer for this component already exists")
+          else
+            fail(e.getMessage)
+        case Failure(e) => fail(e.getMessage)
+      }
+    } getOrElse { fail("Adding failed. Probably invalid component URI.") }
   }
 }

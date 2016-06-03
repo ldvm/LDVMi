@@ -21,7 +21,7 @@ object UserId extends IdCompanion[UserId]
  * @param name full name
  * @param email user email address
  */
-case class User(id: Option[UserId], name: String, email: String, password: String )
+case class User(id: Option[UserId], name: String, email: String, password: String, isAdmin: Boolean)
   extends WithId[UserId]
 
 
@@ -39,7 +39,9 @@ class Users(tag: Tag) extends IdTable[UserId, User](tag, "appgen_users") {
 
   def password = column[String]("password", O.NotNull)
 
+  def isAdmin = column[Boolean]("isAdmin", O.Default(false))
+
   def idx = index("idx_unique_email", email, unique = true)
 
-  override def * = (id.?, name, email, password) <> (User.tupled, User.unapply)
+  override def * = (id.?, name, email, password, isAdmin) <> (User.tupled, User.unapply)
 }

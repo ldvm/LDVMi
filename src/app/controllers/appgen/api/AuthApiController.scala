@@ -34,7 +34,7 @@ class AuthApiController(implicit inj: Injector) extends SecuredRestController {
       errors => { BadRequest(InvalidJsonResponse(errors)) },
       json => {
         userService.find(json.email, json.password) match {
-          case Some(User(id, name, email, password)) => Ok(
+          case Some(User(id, name, email, password, isAdmin)) => Ok(
             SuccessResponse(data = Seq("id" -> id, "name" -> name, "email" -> email)))
             .withSession("userEmail" -> email)
           case None => BadRequest(ErrorResponse("Invalid e-mail and password combination"))
@@ -48,7 +48,7 @@ class AuthApiController(implicit inj: Injector) extends SecuredRestController {
       errors => { BadRequest(InvalidJsonResponse(errors)) },
       json => {
         userService.googleSignIn(json.token) match {
-          case Some(User(id, name, email, password)) => Ok(
+          case Some(User(id, name, email, password, isAdmin)) => Ok(
             SuccessResponse(data = Seq("id" -> id, "name" -> name, "email" -> email)))
             .withSession("userEmail" -> email)
           case None => BadRequest(ErrorResponse("Google Sign-In failed"))
@@ -59,14 +59,14 @@ class AuthApiController(implicit inj: Injector) extends SecuredRestController {
 
   def getUser = RestAction[EmptyRequest] { implicit request: RestRequestWithUser => json =>
     request.user match {
-      case User(id, name, email, password) =>
+      case User(id, name, email, password, isAdmin) =>
         Ok(SuccessResponse(data = Seq("id" -> id, "name" -> name, "email" -> email)))
     }
   }
 
   def signOut = RestAction[EmptyRequest] { implicit request: RestRequestWithUser => json =>
     request.user match {
-      case User(id, name, email, password) =>
+      case User(id, name, email, password, isAdmin) =>
         Ok(SuccessResponse("You've been signed out")).withNewSession
     }
   }
