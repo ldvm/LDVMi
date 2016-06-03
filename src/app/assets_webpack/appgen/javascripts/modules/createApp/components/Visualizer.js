@@ -36,8 +36,8 @@ const Visualizer = ({ visualizer, dialogOpen, dialogClose, runEvaluation }) => {
       </CardText>
       <CardActions>
         <Button
-          label={visualizer.supported ? 'Show pipelines' : 'Unsupported visualizer'}
-          disabled={!visualizer.supported}
+          label={visualizer.disabled ? 'Unsupported visualizer' : 'Show pipelines'}
+          disabled={visualizer.disabled}
           onTouchTap={() => dialogOpen(dialogInstanceName)}
           primary raised fullWidth
         />

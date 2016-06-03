@@ -16,6 +16,9 @@ case class VisualizationConfiguration(
   visualizerUri: String,
   visualizationUri: String,
   priority: Int,
+  appgenName: String,
+  appgenIcon: String,
+  appgenDisabled: Boolean,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
@@ -29,6 +32,11 @@ class VisualizationConfigurationTable(tag: Tag) extends IdEntityTable[Visualizat
 
   def priority = column[Int]("visualization_priority", O.NotNull)
 
-  def * = (id.?, visualizerUri, visualizationUri, priority, uuid, createdUtc, modifiedUtc) <>(VisualizationConfiguration.tupled, VisualizationConfiguration.unapply)
+  def appgenName = column[String]("appgen_name", O.NotNull)
 
+  def appgenIcon = column[String]("appgen_icon", O.NotNull)
+
+  def appgenDisabled = column[Boolean]("appgen_disabled", O.Default(false))
+
+  def * = (id.?, visualizerUri, visualizationUri, priority, appgenName, appgenIcon, appgenDisabled, uuid, createdUtc, modifiedUtc) <> (VisualizationConfiguration.tupled, VisualizationConfiguration.unapply)
 }
