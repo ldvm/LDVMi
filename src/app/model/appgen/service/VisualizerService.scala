@@ -26,14 +26,18 @@ class VisualizerService(implicit inj: Injector) extends Injectable {
     getVisualizers.find(_.componentTemplateId.get == application.visualizerComponentTemplateId)
   }
 
+  def getVisualizer(component: ComponentTemplate)(implicit session: Session): Option[Visualizer] = {
+    getVisualizers.find(_.componentTemplateId == component.id)
+  }
+
   def getVisualizerComponents(implicit session: Session): Seq[ComponentTemplate] = (for {
     visualizerTemplate <- visualizerTemplatesQuery
     componentTemplate <- componentTemplatesQuery if componentTemplate.id === visualizerTemplate.componentTemplateId
   } yield componentTemplate).list
 
-  def addVisualizationConfiguration(component: ComponentTemplate)(implicit session: Session): Try[Visualizer] = {
+  def addVisualizer(component: ComponentTemplate)(implicit session: Session): Try[Visualizer] = {
     val configuration = new VisualizationConfiguration(None, component.uri)
     Try(visualizationConfigurationRepository save configuration)
-      .map({ _ => getVisualizers.filter(_.componentTemplateId == component.id).head })
+      .map({ _ => getVisualizer(component).head })
   }
 }

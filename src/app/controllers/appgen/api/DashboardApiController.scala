@@ -6,7 +6,7 @@ import controllers.appgen.api.JsonImplicits._
 import controllers.appgen.api.rest.SecuredRestController
 import model.appgen.entity.{Discovery, UserDataSource, UserDataSourceId, UserPipelineDiscoveryId}
 import model.appgen.repository.UserDataSourcesRepository
-import model.appgen.rest.AddVisualizationConfigurationRequest.AddVisualizationConfigurationRequest
+import model.appgen.rest.AddVisualizerRequest._
 import model.appgen.rest.EmptyRequest.EmptyRequest
 import model.appgen.rest.PaginatedRequest._
 import scaldi.Injector
@@ -106,13 +106,13 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
     Ok(SuccessResponse(data = Seq("visualizerComponents" -> visualizerComponents)))
   }
 
-  def addVisualizationConfiguration = RestAction[AddVisualizationConfigurationRequest] { implicit request => json =>
+  def addVisualizer = RestAction[AddVisualizerRequest] { implicit request => json =>
     // Send back error response with the form field validation message
     def fail(message: String) = BadRequest(ErrorResponse(message,
       Seq("componentTemplateUri" -> message)))
 
     componentTemplateRepository.findByUri(json.componentTemplateUri) map { component =>
-      visualizerService.addVisualizationConfiguration(component) match {
+      visualizerService.addVisualizer(component) match {
         case Success(visualizer) =>
           Ok(SuccessResponse("The visualizer has been created", data = Seq("visualizer" -> visualizer)))
         case Failure(e: JdbcSQLException) =>

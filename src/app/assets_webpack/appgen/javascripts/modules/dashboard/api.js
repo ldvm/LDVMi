@@ -41,7 +41,7 @@ export async function getVisualizerComponents() {
   return result.data.visualizerComponents;
 }
 
-export async function addVisualizationConfiguration(componentTemplateUri) {
-  const result = await rest('dashboard/addVisualizationConfiguration', { componentTemplateUri });
+export async function addVisualizer(componentTemplateUri) {
+  const result = await rest('dashboard/addVisualizer', { componentTemplateUri });
   return result.data.visualizer;
 }

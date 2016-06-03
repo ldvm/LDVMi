@@ -46,7 +46,7 @@ class Applications extends Component {
   async handleSubmit(values) {
     const { dispatch } = this.props;
     try {
-      const visualizer = await api.addVisualizationConfiguration(values.componentTemplateUri);
+      const visualizer = await api.addVisualizer(values.componentTemplateUri);
       dispatch(notification('The visualizer has been created'));
       dispatch(dialogClose(addVisualizerDialogName));
       dispatch(addVisualizer(visualizer));
