@@ -11,12 +11,13 @@ class ApplicationsService(implicit inj: Injector) extends Injectable {
   val applicationsRepository = inject[ApplicationsRepository]
 
   def getApplicationIfAccessible(id: ApplicationId, user: Option[User])(implicit session: Session): Option[Application] = {
+    val isAdmin = user.exists(_.isAdmin)
 
     // Return the application only it it exists and is either published or is accessed by its owner
     for {
       application <- applicationsRepository.findById(id)
       owner <- usersRepository.findById(application.userId)
-      accessible <- if (application.published || user.contains(owner)) Some(true) else None
+      accessible <- if (application.published || user.contains(owner) || isAdmin) Some(true) else None
     } yield application
   }
 

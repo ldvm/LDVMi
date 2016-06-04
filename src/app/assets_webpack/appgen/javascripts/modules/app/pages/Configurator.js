@@ -77,7 +77,8 @@ class Configurator extends Component {
       return <BodyPadding><PromiseResult status={status} /></BodyPadding>
     }
 
-    if (application.userId != user.id) {
+    {/* This should be actually already protected by the backend... */}
+    if (application.userId != user.id && !user.isAdmin) {
       return <BodyPadding>
         <Alert danger>You're not permitted to access this application.</Alert>
       </BodyPadding>
