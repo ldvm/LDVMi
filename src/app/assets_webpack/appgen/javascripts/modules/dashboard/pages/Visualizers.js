@@ -21,6 +21,7 @@ import { notification } from '../../core/ducks/notifications'
 import VisualizersTable from '../components/VisualizersTable'
 import { editVisualizer, visualizerToEditSelector } from '../ducks/editVisualizer'
 import { Visualizer } from '../../core/models'
+import requireAdmin from '../../auth/containers/requireAdmin'
 
 
 class Visualizers extends Component {
@@ -152,4 +153,4 @@ const selector = createStructuredSelector({
   ])
 });
 
-export default connect(selector)(Visualizers);
+export default requireAdmin(connect(selector)(Visualizers));

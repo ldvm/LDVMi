@@ -114,31 +114,39 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
     def fail(message: String) = BadRequest(ErrorResponse(message,
       Seq("componentTemplateUri" -> message)))
 
-    componentTemplateRepository.findByUri(json.componentTemplateUri) map { component =>
-      visualizerService.addVisualizer(component) match {
-        case Success(visualizer) =>
-          Ok(SuccessResponse("The visualizer has been created", data = Seq("visualizer" -> visualizer)))
-        case Failure(e: JdbcSQLException) =>
-          if (e.getErrorCode == ErrorCode.DUPLICATE_KEY_1)
-            fail("A visualizer for this component already exists")
-          else
-            fail(e.getMessage)
-        case Failure(e) => fail(e.getMessage)
+    requireAdmin {
+      componentTemplateRepository.findByUri(json.componentTemplateUri) map { component =>
+        visualizerService.addVisualizer(component) match {
+          case Success(visualizer) =>
+            Ok(SuccessResponse("The visualizer has been created", data = Seq("visualizer" -> visualizer)))
+          case Failure(e: JdbcSQLException) =>
+            if (e.getErrorCode == ErrorCode.DUPLICATE_KEY_1)
+              fail("A visualizer for this component already exists")
+            else
+              fail(e.getMessage)
+          case Failure(e) => fail(e.getMessage)
+        }
+      } getOrElse {
+        fail("Adding failed. Probably invalid component URI.")
       }
-    } getOrElse { fail("Adding failed. Probably invalid component URI.") }
+    }
   }
 
   def deleteVisualizer(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
-    withVisualizer(VisualizationConfigurationId(id)) { visualizer =>
-      visualizerService.deleteVisualizer(visualizer)
-      Ok(SuccessResponse("The visualizer has been deleted"))
+    requireAdmin {
+      withVisualizer(VisualizationConfigurationId(id)) { visualizer =>
+        visualizerService.deleteVisualizer(visualizer)
+        Ok(SuccessResponse("The visualizer has been deleted"))
+      }
     }
   }
 
   def updateVisualizer(id: Long) = RestAction[UpdateVisualizerRequest] { implicit request => json =>
-    withVisualizer(VisualizationConfigurationId(id)) { visualizer =>
-      visualizerService.updateVisualizer(visualizer, json)
-      Ok(SuccessResponse("The visualizer has been updated"))
+    requireAdmin {
+      withVisualizer(VisualizationConfigurationId(id)) { visualizer =>
+        visualizerService.updateVisualizer(visualizer, json)
+        Ok(SuccessResponse("The visualizer has been updated"))
+      }
     }
   }
 
@@ -149,5 +157,12 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
       case Some(visualizer) => func(visualizer)
       case None => BadRequest(ErrorResponse("The visualizer does not exist"))
     }
+  }
+
+  private def requireAdmin(func: => Result)(implicit request: RestRequestWithUser): Result = {
+    if (request.user.isAdmin)
+      func
+    else
+      Unauthorized(ErrorResponse("You need to be administrator to perform this operation"))
   }
 }
