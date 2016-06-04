@@ -3,6 +3,7 @@ import { Record, List } from 'immutable';
 const visualizerProps = {
   id: 0,
   uri: '',
+  visualizationUri: '',
   title: 'Unknown visualizer',
   priority: 0,
   name: '',

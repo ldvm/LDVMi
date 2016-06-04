@@ -45,3 +45,11 @@ export async function addVisualizer(componentTemplateUri) {
   const result = await rest('dashboard/addVisualizer', { componentTemplateUri });
   return result.data.visualizer;
 }
+
+export async function deleteVisualizer(id) {
+  return await rest('dashboard/deleteVisualizer/' + id, {});
+}
+
+export async function updateVisualizer(id, values) {
+  return await rest('dashboard/updateVisualizer/' + id, values);
+}

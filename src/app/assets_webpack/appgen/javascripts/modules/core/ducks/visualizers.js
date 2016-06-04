@@ -25,6 +25,16 @@ export function addVisualizer(visualizer) {
   return createAction(ADD_VISUALIZER, { visualizer });
 }
 
+export const DELETE_VISUALIZER = prefix('DELETE_VISUALIZER');
+export function deleteVisualizer(id) {
+  return createAction(DELETE_VISUALIZER, { id });
+}
+
+export const UPDATE_VISUALIZER = prefix('UPDATE_VISUALIZER');
+export function updateVisualizer(id, update ) {
+  return createAction(UPDATE_VISUALIZER, { id, update });
+}
+
 // Reducers
 
 const initialState = new List();
@@ -36,6 +46,14 @@ export default function visualizersReducer(state = initialState, action) {
 
     case ADD_VISUALIZER:
       return state.push(new Visualizer(action.payload.visualizer));
+    
+    case DELETE_VISUALIZER:
+      return state.filter(visualizer => visualizer.id != action.payload.id);
+
+    case UPDATE_VISUALIZER:
+      // It's not a map, so we have to search for the visualizer and then update it.
+      return state.map(visualizer => visualizer.id == action.payload.id ?
+        visualizer.merge(action.payload.update) : visualizer);
   }
 
   return state;

@@ -56,7 +56,7 @@ const Dashboard = ({ dispatch, children, route, routes }) =>
       </Link>
     </PullRight>
 
-    <Helmet title="Dashboard" titleTemplate="%s" />
+    <Helmet title="Dashboard" />
     <Headline title="Dashboard" icon="dashboard" />
 
     <Paper>

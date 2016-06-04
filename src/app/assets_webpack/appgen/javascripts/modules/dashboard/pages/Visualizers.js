@@ -2,34 +2,33 @@ import React, { PropTypes, Component } from 'react'
 import { List, Map } from 'immutable'
 import { connect } from 'react-redux'
 import { createSelector, createStructuredSelector } from 'reselect'
-import * as routes from '../routes'
 import Padding from '../../../components/Padding'
 import PromiseResult from '../../core/components/PromiseResult'
 import Button from '../../../components/Button'
 import PullRight from '../../../components/PullRight'
 import CenteredMessage from '../../../components/CenteredMessage'
 import ClearBoth from '../../../components/ClearBoth'
-import Pagination from '../../core/containers/Pagination'
-import { getApplications, getApplicationsReset, deleteApplication, APPLICATIONS_PAGINATOR, createApplicationsSelector, createApplicationsStatusSelector } from '../ducks/applications'
-import { destroyPaginator, resetPaginator } from '../../core/ducks/pagination'
 import { PromiseStatus } from '../../core/models'
-import ApplicationsTable from '../components/ApplicationsTable'
-import { visualizersSelector } from '../../core/ducks/visualizers'
 import { createAggregatedPromiseStatusSelector } from '../../core/ducks/promises'
-import { visualizersStatusSelector } from '../../core/ducks/visualizers'
+import { addVisualizer, updateVisualizer, visualizersSelector, visualizersStatusSelector } from '../../core/ducks/visualizers'
+import { deleteVisualizer } from '../ducks/visualizers'
 import { getVisualizerComponents, getVisualizerComponentsReset, visualizerComponentsSelector, visualizerComponentsStatusSelector } from '../ducks/visualizerComponents'
 import { dialogOpen, dialogClose } from '../../core/ducks/dialog'
 import AddVisualizerDialog, { dialogName as addVisualizerDialogName } from '../dialogs/AddVisualizerDialog'
+import EditVisualizerDialog, { dialogName as  editVisualizerDialogName} from '../dialogs/EditVisualizerDialog'
 import * as api from '../api'
 import { notification } from '../../core/ducks/notifications'
-import { addVisualizer } from '../../core/ducks/visualizers'
+import VisualizersTable from '../components/VisualizersTable'
+import { editVisualizer, visualizerToEditSelector } from '../ducks/editVisualizer'
+import { Visualizer } from '../../core/models'
 
 
-class Applications extends Component {
+class Visualizers extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     visualizers: PropTypes.instanceOf(List).isRequired,
     visualizerComponents: PropTypes.instanceOf(Map).isRequired,
+    visualizerToEdit: PropTypes.instanceOf(Visualizer).isRequired,
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
@@ -43,7 +42,18 @@ class Applications extends Component {
     dispatch(getVisualizerComponentsReset());
   }
 
-  async handleSubmit(values) {
+  editVisualizer(id) {
+    const { dispatch } = this.props;
+    dispatch(editVisualizer(id));
+    dispatch(dialogOpen(editVisualizerDialogName));
+  }
+
+  deleteVisualizer(id) {
+    const { dispatch } = this.props;
+    dispatch(deleteVisualizer(id));
+  }
+
+  async handleAddVisualizer(values) {
     const { dispatch } = this.props;
     try {
       const visualizer = await api.addVisualizer(values.componentTemplateUri);
@@ -58,33 +68,43 @@ class Applications extends Component {
       }
     }
   }
+  
+  async handleUpdateVisualizer(values) {
+    const { dispatch, visualizerToEdit: { id } } = this.props;
+    try {
+      await api.updateVisualizer(id, values);
+      dispatch(notification('The visualizer been saved'));
+      dispatch(dialogClose(editVisualizerDialogName));
+      dispatch(updateVisualizer(id, values));
+    } catch (e) {
+      const { message, data } = e;
+      dispatch(notification(message));
+      if (data) {
+        throw data; // Errors for the form
+      }
+    }
+  }
 
   render() {
-    const { dispatch, visualizers, visualizerComponents, status } = this.props;
+    const { dispatch, visualizers, visualizerComponents, visualizerToEdit, status } = this.props;
 
     return (
       <div>
         {visualizers.size > 0 &&
-          visualizers.map(visualizer => <div>{visualizer.title}</div>)
-        }
-        {/*
-        {visualizers.size > 0 &&
-          <DataSourcesTable
-            dataSources={dataSources}
-            editDataSource={::this.editDataSource}
-            deleteDataSource={::this.deleteDataSource}
+          <VisualizersTable
+            visualizers={visualizers}
+            editVisualizer={::this.editVisualizer}
+            deleteVisualizer={::this.deleteVisualizer}
           />}
-          */}
 
-        {/*
-        <EditDataSourceDialog
-          onSubmit={::this.handleUpdateDataSource}
-          initialValues={dataSourceToEdit.toJS()}
-          dialogClose={name => dispatch(dialogClose(name))}
+        <EditVisualizerDialog
+          onSubmit={::this.handleUpdateVisualizer}
+          initialValues={visualizerToEdit.toJS()}
+          dialogClose={() => dispatch(dialogClose(editVisualizerDialogName))}
         />
-        */}
+        
         <AddVisualizerDialog
-          onSubmit={::this.handleSubmit}
+          onSubmit={::this.handleAddVisualizer}
           visualizerComponents={visualizerComponents}
           dialogClose={() => dispatch(dialogClose(addVisualizerDialogName))}
         />
@@ -125,10 +145,11 @@ const unusedVisualizerComponentsSelector = createSelector(
 const selector = createStructuredSelector({
   visualizers: visualizersSelector,
   visualizerComponents: unusedVisualizerComponentsSelector,
+  visualizerToEdit: visualizerToEditSelector,
   status: createAggregatedPromiseStatusSelector([
     visualizersStatusSelector,
     visualizerComponentsStatusSelector
   ])
 });
 
-export default connect(selector)(Applications);
+export default connect(selector)(Visualizers);

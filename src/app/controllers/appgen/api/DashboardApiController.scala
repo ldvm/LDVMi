@@ -4,9 +4,11 @@ import play.api.mvc._
 import controllers.api.JsonImplicits._
 import controllers.appgen.api.JsonImplicits._
 import controllers.appgen.api.rest.SecuredRestController
+import model.appgen.entity.Visualizer.Visualizer
 import model.appgen.entity.{Discovery, UserDataSource, UserDataSourceId, UserPipelineDiscoveryId}
 import model.appgen.repository.UserDataSourcesRepository
 import model.appgen.rest.AddVisualizerRequest._
+import model.appgen.rest.UpdateVisualizerRequest._
 import model.appgen.rest.EmptyRequest.EmptyRequest
 import model.appgen.rest.PaginatedRequest._
 import scaldi.Injector
@@ -14,6 +16,7 @@ import model.appgen.rest.Response._
 import model.appgen.rest.RestRequestWithUser
 import model.appgen.rest.UpdateDataSourceRequest.UpdateDataSourceRequest
 import model.appgen.service.{ApplicationsService, DiscoveriesService, VisualizerService}
+import model.entity.VisualizationConfigurationId
 import model.repository.ComponentTemplateRepository
 import org.h2.constant.ErrorCode
 import org.h2.jdbc.JdbcSQLException
@@ -123,5 +126,28 @@ class DashboardApiController(implicit inj: Injector) extends SecuredRestControll
         case Failure(e) => fail(e.getMessage)
       }
     } getOrElse { fail("Adding failed. Probably invalid component URI.") }
+  }
+
+  def deleteVisualizer(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
+    withVisualizer(VisualizationConfigurationId(id)) { visualizer =>
+      visualizerService.deleteVisualizer(visualizer)
+      Ok(SuccessResponse("The visualizer has been deleted"))
+    }
+  }
+
+  def updateVisualizer(id: Long) = RestAction[UpdateVisualizerRequest] { implicit request => json =>
+    withVisualizer(VisualizationConfigurationId(id)) { visualizer =>
+      visualizerService.updateVisualizer(visualizer, json)
+      Ok(SuccessResponse("The visualizer has been updated"))
+    }
+  }
+
+  private def withVisualizer(id: VisualizationConfigurationId)
+    (func: (Visualizer) => Result)
+    (implicit request: RestRequestWithUser): Result = {
+    visualizerService.getVisualizer(id) match {
+      case Some(visualizer) => func(visualizer)
+      case None => BadRequest(ErrorResponse("The visualizer does not exist"))
+    }
   }
 }

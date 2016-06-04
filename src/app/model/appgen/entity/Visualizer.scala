@@ -1,13 +1,14 @@
 package model.appgen.entity
 
-import model.entity.{ComponentTemplate, ComponentTemplateId, VisualizationConfiguration}
+import model.entity.{ComponentTemplate, ComponentTemplateId, VisualizationConfiguration, VisualizationConfigurationId}
 import play.api.libs.json.Json
 
 object Visualizer {
   case class Visualizer(
-    id: Option[ComponentTemplateId],
+    id: Option[VisualizationConfigurationId],
     uri: String,
     title: String,
+    visualizationUri: String = "",
     priority: Int,
     name: String,
     icon: String,
@@ -18,6 +19,6 @@ object Visualizer {
   implicit val visualizerWrites = Json.writes[Visualizer]
 
   def fromComponentTemplate(ct: ComponentTemplate, vc: VisualizationConfiguration) = {
-    Visualizer(ct.id, ct.uri, ct.title, vc.priority, vc.appgenName, vc.appgenIcon, vc.appgenDisabled, ct.description, ct.id)
+    Visualizer(vc.id, ct.uri, ct.title, vc.visualizationUri, vc.priority, vc.appgenName, vc.appgenIcon, vc.appgenDisabled, ct.description, ct.id)
   }
 }
