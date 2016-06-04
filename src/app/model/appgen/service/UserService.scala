@@ -16,8 +16,12 @@ class UserService(implicit inj: Injector) extends Injectable {
 
   def add(name: String, email: String, password: String)(implicit session: Session): UserAddResult = {
     try {
+      // The first user in the database automatically becomes an administrator
+      // (this should run in a transaction but we don't expect things to break here)
+      val isAdmin = usersRepository.findAll().isEmpty
+
       val hash = BCrypt.hashpw(password, BCrypt.gensalt())
-      val id = usersRepository save new User(None, name, email, hash, false)
+      val id = usersRepository save new User(None, name, email, hash, isAdmin)
       UserSuccessfullyAdded(id)
     } catch {
       case (e: JdbcSQLException) =>
