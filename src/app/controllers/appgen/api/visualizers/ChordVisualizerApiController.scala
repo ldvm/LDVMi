@@ -27,31 +27,39 @@ class ChordVisualizerApiController(implicit inj: Injector) extends VisualizerApi
   }
 
   def getNodes(id: Long) = RestAsyncAction[NodeUrisRequest] { implicit  request => json =>
-    withEvaluation(ApplicationId(id)) { evaluation =>
-      val nodes = rgmlService.nodes(evaluation, json.nodeUris)
-      Future(Ok(SuccessResponse(data = Seq("nodes" -> nodes))))
+    cached {
+      withEvaluation(ApplicationId(id)) { evaluation =>
+        val nodes = rgmlService.nodes(evaluation, json.nodeUris)
+        Future(Ok(SuccessResponse(data = Seq("nodes" -> nodes))))
+      }
     }
   }
 
   def getSampleNodes(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
-    withEvaluation(ApplicationId(id)) { evaluation =>
-      val nodes = rgmlService.sampleNodesWithForestFire(evaluation, 30)
-      // val nodes = rgmlService.sampleNodesByHighestDegree(evaluation, 30)
-      Future(Ok(SuccessResponse(data = Seq("nodes" -> nodes))))
+    cached {
+      withEvaluation(ApplicationId(id)) { evaluation =>
+        val nodes = rgmlService.sampleNodesWithForestFire(evaluation, 30)
+        // val nodes = rgmlService.sampleNodesByHighestDegree(evaluation, 30)
+        Future(Ok(SuccessResponse(data = Seq("nodes" -> nodes))))
+      }
     }
   }
 
   def getEdges(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
-    withEvaluation(ApplicationId(id)) { evaluation =>
-      val edges = rgmlService.edges(evaluation)
-      Future(Ok(SuccessResponse(data = Seq("edges" -> edges))))
+    cached {
+      withEvaluation(ApplicationId(id)) { evaluation =>
+        val edges = rgmlService.edges(evaluation)
+        Future(Ok(SuccessResponse(data = Seq("edges" -> edges))))
+      }
     }
   }
 
   def getMatrix(id: Long) = RestAsyncAction[NodeUrisRequest] { implicit request => json =>
-    withEvaluation(ApplicationId(id)) { evaluation =>
-      val matrix = rgmlService.matrix(evaluation, json.nodeUris)
-      Future(Ok(SuccessResponse(data = Seq("matrix" -> matrix))))
+    cached {
+      withEvaluation(ApplicationId(id)) { evaluation =>
+        val matrix = rgmlService.matrix(evaluation, json.nodeUris)
+        Future(Ok(SuccessResponse(data = Seq("matrix" -> matrix))))
+      }
     }
   }
 

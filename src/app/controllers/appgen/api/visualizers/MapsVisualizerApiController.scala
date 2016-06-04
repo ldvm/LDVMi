@@ -18,7 +18,7 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
   val visualizationService = inject[VisualizationService]
 
   def getProperties(id: Long) = RestAsyncAction[EmptyRequest] { implicit request => json =>
-    cached { () =>
+    cached {
       withEvaluation(ApplicationId(id)) { evaluation =>
         geoService.properties(evaluation).map {
           enumerator => enumeratorToResult("properties", enumerator)
@@ -37,9 +37,11 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
   }
 
   def getSkosConceptsCounts(id: Long) = RestAsyncAction[SkosConceptsCountsRequest] { implicit request => json =>
-    withEvaluation(ApplicationId(id)) { evaluation =>
-      val counts = visualizationService.skosConceptsCounts(evaluation, json.propertyUri, json.conceptUris)
-      Future(Ok(SuccessResponse(data = Seq("skosConceptsCounts" -> counts))))
+    cached {
+      withEvaluation(ApplicationId(id)) { evaluation =>
+        val counts = visualizationService.skosConceptsCounts(evaluation, json.propertyUri, json.conceptUris)
+        Future(Ok(SuccessResponse(data = Seq("skosConceptsCounts" -> counts))))
+      }
     }
   }
 

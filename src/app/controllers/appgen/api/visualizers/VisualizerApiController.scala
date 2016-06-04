@@ -1,20 +1,22 @@
 package controllers.appgen.api.visualizers
 
+import java.security.MessageDigest
+
 import controllers.appgen.api.rest.RestController
 import model.appgen.entity._
 import model.appgen.rest.Response._
 import model.appgen.rest.RestRequest
-import model.appgen.service.ApplicationsService
+import model.appgen.service.{ApplicationsService, ResultCacheService}
 import model.entity.PipelineEvaluation
 import model.service.PipelineService
 import play.api.Play.current
-import play.api.cache.Cache
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.iteratee.{Enumeratee, Enumerator, Iteratee}
 import play.api.libs.json.{Writes, _}
 import play.api.mvc._
 import scaldi.Injector
 import utils.PaginationInfo
+import play.api.db.slick._
 
 import scala.concurrent.Future
 import scala.util.Success
@@ -22,26 +24,37 @@ import scala.util.Success
 abstract class VisualizerApiController(implicit inj: Injector) extends RestController {
   val applicationService = inject[ApplicationsService]
   val pipelineService = inject[PipelineService]
+  val resultCacheService = inject[ResultCacheService]
 
   private def cacheKey(implicit request: RestRequest): String = {
     val user = request.user match {
-      case Some(user) => user.id.get
+      case Some(user: User) => user.id.get
       case None => 0
     }
-    request.uri + "|user:" + user + "|body=" + Json.toJson(request.body)
+    val key = request.uri + "|user:" + user + "|body=" + Json.toJson(request.body)
+    // MessageDigest.getInstance("MD5").digest(key.getBytes).map("%02x".format(_)).mkString
+    key
   }
 
   /** Caches request result */
-  protected def cached(func: () => Future[Result])
+  protected def cached(func: => Future[Result])
     (implicit request: RestRequest): Future[Result] = {
-    Cache.getAs[Result](cacheKey) match {
-      case Some(result: Result) => Future(result)
-      case None => func() andThen {
+    resultCacheService.get(cacheKey) match {
+      case Some(result) => Future(result)
+      case None => func andThen {
         case Success(result) => {
-          Cache.set(cacheKey, result)
+          cacheResult(cacheKey, result)
           result
         }
       }
+    }
+  }
+
+  protected def cacheResult(cacheKey: String, result: Result) = {
+    // We get the result as a Future which is the probable reason why at this moment the db
+    // session is already closed. So we need to create a new one.
+    DB.withSession { implicit s =>
+      resultCacheService.set(cacheKey, result)
     }
   }
 

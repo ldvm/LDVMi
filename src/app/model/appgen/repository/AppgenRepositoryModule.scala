@@ -15,4 +15,6 @@ class AppgenRepositoryModule extends Module {
   binding to new ApplicationsService
   binding to new GoogleIdTokenVerifier
   binding to new DiscoveriesService
+  binding to new CacheEntriesRepository
+  binding to new ResultCacheService
 }
