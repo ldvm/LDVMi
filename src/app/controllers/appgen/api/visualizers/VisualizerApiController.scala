@@ -26,35 +26,25 @@ abstract class VisualizerApiController(implicit inj: Injector) extends RestContr
   val pipelineService = inject[PipelineService]
   val resultCacheService = inject[ResultCacheService]
 
-  private def cacheKey(implicit request: RestRequest): String = {
-    val user = request.user match {
-      case Some(user: User) => user.id.get
-      case None => 0
-    }
-    val key = request.uri + "|user:" + user + "|body=" + Json.toJson(request.body)
-    // MessageDigest.getInstance("MD5").digest(key.getBytes).map("%02x".format(_)).mkString
-    key
-  }
-
   /** Caches request result */
   protected def cached(func: => Future[Result])
     (implicit request: RestRequest): Future[Result] = {
-    resultCacheService.get(cacheKey) match {
+    resultCacheService.get(request) match {
       case Some(result) => Future(result)
       case None => func andThen {
         case Success(result) => {
-          cacheResult(cacheKey, result)
+          cacheResult(request, result)
           result
         }
       }
     }
   }
 
-  protected def cacheResult(cacheKey: String, result: Result) = {
+  protected def cacheResult(request: RestRequest, result: Result) = {
     // We get the result as a Future which is the probable reason why at this moment the db
     // session is already closed. So we need to create a new one.
     DB.withSession { implicit s =>
-      resultCacheService.set(cacheKey, result)
+      resultCacheService.set(request, result)
     }
   }
 
