@@ -34,7 +34,7 @@ class CreateAppApiController(implicit inj: Injector) extends SecuredRestControll
   }
 
   def getDataSources = RestAction[EmptyRequest] { implicit request => json =>
-    val dataSources = userDataSourceRepository.find(request.user)
+    val dataSources = userDataSourceRepository.findByUser(request.user)
     Ok(SuccessResponse(data = Seq("dataSources" -> dataSources)))
   }
 
