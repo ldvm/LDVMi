@@ -1,15 +1,14 @@
 import React from 'react';
-import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form';
-import { makeValidator, errorTextFactory } from '../../../misc/formUtils'
-import { dialogClose } from '../../core/ducks/dialog'
-import TextField from 'material-ui/TextField';
-import Checkbox from '../../../components/Checkbox';
+import TextField from 'material-ui/TextField'
+import Checkbox from '../../../components/Checkbox'
 import Button from '../../../components/Button'
-import Dialog from '../../core/containers/Dialog';
+import Dialog from '../../core/containers/Dialog'
+import { makeValidator, errorTextFactory } from '../../../misc/formUtils'
+import prefix from '../prefix'
 
-export const dialogName = 'ADD_DATA_SOURCE_DIALOG';
-export const formName = 'add-data-source';
+export const dialogName = prefix('ADD_DATA_SOURCE_DIALOG');
+export const formName = prefix('add-data-source');
 
 const AddDataSourceDialog = (props) =>  {
   const {dialogClose, fields: {name, url, graphUris, isPublic}, handleSubmit, submitting, submitFailed} = props;
@@ -60,8 +59,5 @@ const DialogComponent = reduxForm({
   fields: ['name', 'url', 'graphUris', 'isPublic'],
   validate
 })(AddDataSourceDialog);
-
-DialogComponent.dialogName = dialogName;
-DialogComponent.formName = formName;
 
 export default DialogComponent;

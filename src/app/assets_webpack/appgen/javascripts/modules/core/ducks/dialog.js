@@ -11,10 +11,16 @@ export const DIALOG_OPEN = prefix("DIALOG_OPEN");
 export const DIALOG_CLOSE = prefix("DIALOG_CLOSE");
 
 export function dialogOpen(name) {
+  if (!name) {
+    console.warn('You did not provide a dialog name!');
+  }
   return createAction(DIALOG_OPEN, { name });
 }
 
 export function dialogClose(name) {
+  if (!name) {
+    console.warn('You did not provide a dialog name!');
+  }
   return createAction(DIALOG_CLOSE, { name });
 }
 

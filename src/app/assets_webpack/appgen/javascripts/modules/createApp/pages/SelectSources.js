@@ -8,8 +8,8 @@ import Button from '../../../components/Button'
 import CenteredMessage from '../../../components/CenteredMessage'
 import PromiseResult from '../../core/components/PromiseResult'
 import ButtonBar from '../../../components/ButtonBar'
-import AddDataSourceDialog from '../dialogs/AddDataSourceDialog'
-import BrowseDataSourcesDialog from '../dialogs/BrowseDataSourcesDialog'
+import AddDataSourceDialog, { dialogName as addDataSourceDialogName, formName as addDataSourceFormName } from '../dialogs/AddDataSourceDialog'
+import BrowseDataSourcesDialog, { dialogName as browseDataSourcesDialogName } from '../dialogs/BrowseDataSourcesDialog'
 import SelectedDataSources from '../components/SelectedDataSources'
 import { dialogOpen, dialogClose } from '../../core/ducks/dialog'
 import { notification } from '../../core/ducks/notifications'
@@ -44,8 +44,8 @@ class SelectSources extends Component {
       // Well... technically it's one event so dispatching a single action should be enough,
       // but only one of them updates the actual state, the rest is just UI.
       dispatch(notification('New data source has been added'));
-      dispatch(resetForm(AddDataSourceDialog.formName));
-      dispatch(dialogClose(AddDataSourceDialog.dialogName));
+      dispatch(resetForm(addDataSourceFormName));
+      dispatch(dialogClose(addDataSourceDialogName));
       dispatch(addDataSource(result));
     }
     catch (e) {
@@ -107,11 +107,11 @@ class SelectSources extends Component {
             left={<div>
               <Button
                 label="Browse"
-                onTouchTap={() => dispatch(dialogOpen(BrowseDataSourcesDialog.dialogName))}
+                onTouchTap={() => dispatch(dialogOpen(browseDataSourcesDialogName))}
                 icon="folder_open" raised />
               <Button
                 label="Add new"
-                onTouchTap={() => dispatch(dialogOpen(AddDataSourceDialog.dialogName))}
+                onTouchTap={() => dispatch(dialogOpen(addDataSourceDialogName))}
                 icon="add" raised success />
               </div>}
             right={<div>
