@@ -1,7 +1,9 @@
 import React from 'react'
+import { Route } from 'react-router'
 import createNotFoundRoutes from './NotFound'
 import { Visualizer, VisualizerWithPipelines } from '../../core/models'
 import { applicationUrl } from '../../app/configuratorRoutes'
+import validateVisualizer from './validateVisualizer'
 
 class ConfiguratorsRouteFactory {
   constructor() {
@@ -27,7 +29,18 @@ class ConfiguratorsRouteFactory {
   
   createRoutes(dispatch) {
     this.routeFactories.push(createNotFoundRoutes);
-    return this.routeFactories.map(createRoutes => createRoutes(dispatch));
+    return this.routeFactories.map(createRoutes => {
+      const routes = createRoutes(dispatch);
+      const path = routes.props.path;
+
+      return (
+        <Route
+          {...routes.props}
+          component={validateVisualizer(routes.props.component, path)}
+          key={path}
+        />
+      )
+    });
   }
 
   getConfiguratorPath(visualizer) {

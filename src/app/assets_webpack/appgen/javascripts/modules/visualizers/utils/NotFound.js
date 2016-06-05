@@ -2,7 +2,6 @@ import React from 'react'
 import { Route } from 'react-router'
 import Alert from '../../../components/Alert'
 import BodyPadding from '../../../components/BodyPadding'
-import validateVisualizer from './validateVisualizer'
 import createConfiguratorRoutes from './createConfiguratorRoutes'
 
 const name = 'notFound';
@@ -15,7 +14,7 @@ const NotFound = () => (
 );
 
 const createRoutes = dispatch => (
-  <Route component={validateVisualizer(NotFound, path)} path={path} key={path} />
+  <Route component={NotFound} path="*" />
 );
 
 export default createConfiguratorRoutes({ name, path }, createRoutes);

@@ -39,6 +39,11 @@ export default function validateVisualizer(VisualizerConfiguratorComponent, path
     }
 
     render() {
+      const { visualizer} = this.props;
+      if (getVisualizerConfiguratorPath(visualizer) != path) {
+        return null;
+      }
+
       return <VisualizerConfiguratorComponent {...this.props} />
     }
   }
