@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import { List, Map } from 'immutable'
 import { connect } from 'react-redux'
 import { createSelector, createStructuredSelector } from 'reselect'
+import Helmet from 'react-helmet'
 import Padding from '../../../components/Padding'
 import PromiseResult from '../../core/components/PromiseResult'
 import Button from '../../../components/Button'
@@ -91,6 +92,8 @@ class Visualizers extends Component {
 
     return (
       <div>
+        <Helmet title="Visualizers" />
+
         {visualizers.size > 0 &&
           <VisualizersTable
             visualizers={visualizers}

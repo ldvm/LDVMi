@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import { List } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import Helmet from 'react-helmet'
 import * as routes from '../routes'
 import Padding from '../../../components/Padding'
 import PullRight from '../../../components/PullRight'
@@ -54,6 +55,8 @@ class Discoveries extends Component {
     const { dispatch, discoveries, page, status } = this.props;
     return (
       <div>
+        <Helmet title="Discoveries" />
+
         {discoveries.size > 0 &&
           <DiscoveriesTable
             discoveries={discoveries}

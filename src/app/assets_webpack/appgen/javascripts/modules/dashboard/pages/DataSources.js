@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import { List } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import Helmet from 'react-helmet'
 import * as routes from '../routes'
 import Padding from '../../../components/Padding'
 import CenteredMessage from '../../../components/CenteredMessage'
@@ -85,6 +86,8 @@ class DataSources extends Component {
     const { dispatch, dataSources, page, status, dataSourceToEdit} = this.props;
     return (
       <div>
+        <Helmet title="Data sources" />
+
         {dataSources.size > 0 &&
           <DataSourcesTable
             dataSources={dataSources}

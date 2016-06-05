@@ -2,6 +2,7 @@ import React, { PropTypes, Component } from 'react'
 import { List } from 'immutable'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
+import Helmet from 'react-helmet'
 import * as routes from '../routes'
 import Padding from '../../../components/Padding'
 import PromiseResult from '../../core/components/PromiseResult'
@@ -56,6 +57,8 @@ class Applications extends Component {
     const { dispatch, applications, visualizers, page, status } = this.props;
     return (
       <div>
+        <Helmet title="Applications" />
+
         {applications.size > 0 &&
           <ApplicationsTable
             applications={applications}
