@@ -9,12 +9,15 @@ import { applicationUrl } from '../app/configuratorRoutes'
 
 const routeFactory = new ConfiguratorsRouteFactory();
 
-// Register all visualizer configurator routes
+// ***Here*** you register all visualizer configurator routes
+
 routeFactory.register(dataCubeRoutes);
 routeFactory.register(googleMapsRoutes);
 routeFactory.register(chordRoutes);
 
 export default dispatch => routeFactory.createRoutes(dispatch);
+
+// "Named" routes
 
 export const getConfiguratorPath = visualizer => {
   if (!(visualizer instanceof Visualizer || visualizer instanceof VisualizerWithPipelines)) {

@@ -19,6 +19,8 @@ class ConfiguratorsRouteFactory {
       const routes = createRoutes(dispatch);
       const path = routes.props.path;
 
+      // Wrap the route with a validation component that makes sure that the loaded visualizer
+      // configurator matches the visualizer required by the application.
       return (
         <Route
           {...routes.props}

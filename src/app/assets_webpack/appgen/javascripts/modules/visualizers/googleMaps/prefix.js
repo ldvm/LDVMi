@@ -1,5 +1,5 @@
 import createPrefixer from '../../../misc/createPrefixer'
-import { name } from './definition'
+import {getModuleName} from '../../../misc/utils'
 
-export const MODULE_PREFIX = name;
+export const MODULE_PREFIX = getModuleName(__filename);
 export default createPrefixer(MODULE_PREFIX);
