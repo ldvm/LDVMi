@@ -18,6 +18,7 @@ import { runDiscovery } from '../ducks/runDiscoveryStatus'
 import { selectDataSource, deselectDataSource, deselectAllDataSources, selectedDataSourcesSelector } from '../ducks/selectedDataSources'
 import * as api from '../api'
 import { runDiscoveryStatusSelector } from '../ducks/runDiscoveryStatus'
+import { userSelector} from '../../auth/ducks/user'
 
 class SelectSources extends Component {
 
@@ -65,7 +66,7 @@ class SelectSources extends Component {
   }
 
   render() {
-    const { dispatch, dataSources, status, runDiscoveryStatus } = this.props;
+    const { dispatch, dataSources, status, runDiscoveryStatus, user } = this.props;
     const initialValues = {
       graphUris: '',
       isPublic: true
@@ -101,6 +102,7 @@ class SelectSources extends Component {
             selectDataSource={id => dispatch(selectDataSource(id))}
             deselectDataSource={id => dispatch(deselectDataSource(id))}
             dataSources={dataSources.all}
+            user={user}
           />
 
           <ButtonBar
@@ -142,7 +144,8 @@ const dataSourcesWithSelectedSelector = createSelector(
 const selector = createStructuredSelector({
   dataSources: dataSourcesWithSelectedSelector,
   status: getDataSourcesStatusSelector,
-  runDiscoveryStatus: runDiscoveryStatusSelector
+  runDiscoveryStatus: runDiscoveryStatusSelector,
+  user: userSelector
 });
 
 export default connect(selector)(SelectSources);

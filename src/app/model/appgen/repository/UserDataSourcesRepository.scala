@@ -5,8 +5,12 @@ import org.virtuslab.unicorn.LongUnicornPlay.driver.simple._
 import utils.PaginationInfo
 
 class UserDataSourcesRepository extends BaseIdRepository[UserDataSourceId, UserDataSource, UserDataSources] (TableQuery[UserDataSources]) {
-  // TODO: add method that fetches user repositories plus public
-  // def findAvailable(user: User)
+  def findAvailable(user: User)(implicit session: Session): Seq[UserDataSource] = {
+    query
+      .filter(dataSource => dataSource.userId === user.id.get || dataSource.isPublic)
+      .sortBy(_.name.asc)
+      .list
+  }
 
   def findByUser(user: User)(implicit session: Session): Seq[UserDataSource] = {
     query
