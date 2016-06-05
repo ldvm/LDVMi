@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { PropTypes } from 'react'
+import { createStructuredSelector } from 'reselect'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
@@ -13,6 +14,8 @@ import Button from '../../../components/Button'
 import requireSignedIn from '../../auth/containers/requireSignedIn'
 import * as dashboardRoutes from '../routes'
 import * as createAppRoutes from '../../createApp/routes'
+import { userSelector } from '../../auth/ducks/user'
+import { User } from '../../auth/models'
 
 /**
  * Re-construct the default URL of currently selected tab.
@@ -47,7 +50,7 @@ function makeTabUrl(route, routes) {
     .replace(/\/$/, '');
 }
 
-const Dashboard = ({ dispatch, children, route, routes }) =>
+const Dashboard = ({ dispatch, children, route, routes, user }) =>
   <NarrowedLayout>
     <PullRight>
       <br />
@@ -68,11 +71,19 @@ const Dashboard = ({ dispatch, children, route, routes }) =>
         <Tab label="Applications" value={dashboardRoutes.applicationsUrl()} />
         <Tab label="Discoveries" value={dashboardRoutes.discoveriesUrl()} />
         <Tab label="Data sources" value={dashboardRoutes.dataSourcesUrl()} />
-        <Tab label="Visualizers" value={dashboardRoutes.visualizersUrl()} />
+        {user.isAdmin && <Tab label="Visualizers" value={dashboardRoutes.visualizersUrl()} />}
       </Tabs>
 
       {children}
     </Paper>
   </NarrowedLayout>;
 
-export default requireSignedIn(connect()(Dashboard));
+Dashboard.propTypes = {
+  user: PropTypes.instanceOf(User).isRequired
+};
+
+const selector = createStructuredSelector({
+  user: userSelector
+});
+
+export default requireSignedIn(connect(selector)(Dashboard));
