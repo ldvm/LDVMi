@@ -1,7 +1,9 @@
 import { Set } from 'immutable'
+import { createSelector } from 'reselect'
 import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
 import { ADD_DATA_SOURCE } from './dataSources'
+import moduleSelector from '../selector'
 
 // Actions
 
@@ -42,3 +44,8 @@ export default function selectedDataSourcesReducer(state = initialState, action)
 
   return state;
 }
+
+// Selectors
+
+export const selectedDataSourcesSelector = createSelector([moduleSelector],
+  state => state.selectedDataSources);

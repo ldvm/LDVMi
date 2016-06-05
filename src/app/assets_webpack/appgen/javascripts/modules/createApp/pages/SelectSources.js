@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Helmet from "react-helmet"
 import { connect } from 'react-redux'
-import { createSelector } from 'reselect'
+import { createSelector, createStructuredSelector } from 'reselect'
 import { reset as resetForm } from 'redux-form';
 import PaperCard from '../../../components/PaperCard'
 import Button from '../../../components/Button'
@@ -13,17 +13,17 @@ import BrowseDataSourcesDialog from '../dialogs/BrowseDataSourcesDialog'
 import SelectedDataSources from '../components/SelectedDataSources'
 import { dialogOpen, dialogClose } from '../../core/ducks/dialog'
 import { notification } from '../../core/ducks/notifications'
-import { getDataSources, addDataSource } from '../ducks/dataSources'
+import { getDataSources, getDataSourcesReset, addDataSource, dataSourcesSelector, getDataSourcesStatusSelector } from '../ducks/dataSources'
 import { runDiscovery } from '../ducks/runDiscoveryStatus'
-import { selectDataSource, deselectDataSource, deselectAllDataSources } from '../ducks/selectedDataSources'
+import { selectDataSource, deselectDataSource, deselectAllDataSources, selectedDataSourcesSelector } from '../ducks/selectedDataSources'
 import * as api from '../api'
-import { dataSourcesSelector } from '../selector'
+import { runDiscoveryStatusSelector } from '../ducks/runDiscoveryStatus'
 
 class SelectSources extends Component {
 
   componentWillMount() {
-    const { dispatch, dataSources } = this.props;
-    if (!dataSources.done) {
+    const { dispatch, status } = this.props;
+    if (!status.done) {
       dispatch(getDataSources());
     }
   }
@@ -31,6 +31,7 @@ class SelectSources extends Component {
   componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch(deselectAllDataSources());
+    dispatch(getDataSourcesReset())
   }
 
   async handleAddDataSource(dataSource) {
@@ -64,7 +65,7 @@ class SelectSources extends Component {
   }
 
   render() {
-    const { dispatch, dataSources, runDiscoveryStatus } = this.props;
+    const { dispatch, dataSources, status, runDiscoveryStatus } = this.props;
     const initialValues = {
       graphUris: '',
       isPublic: true
@@ -73,10 +74,10 @@ class SelectSources extends Component {
     return (
       <PaperCard title="Select data sources" subtitle="Select data sources for your new visualization">
         <Helmet title="Select data sources"  />
-        <PromiseResult isLoading={dataSources.isLoading} error={dataSources.error} />
-        <PromiseResult isLoading={runDiscoveryStatus.isLoading} error={runDiscoveryStatus.error} />
+        <PromiseResult status={status} />
+        <PromiseResult status={runDiscoveryStatus} />
 
-        {dataSources.done && <div>
+        {status.done && <div>
 
           {dataSources.selected.size == 0 &&
             <CenteredMessage>
@@ -94,6 +95,7 @@ class SelectSources extends Component {
             initialValues={initialValues}
             dialogClose={name => dispatch(dialogClose(name))}
           />
+
           <BrowseDataSourcesDialog
             dialogClose={name => dispatch(dialogClose(name))}
             selectDataSource={id => dispatch(selectDataSource(id))}
@@ -124,7 +126,23 @@ class SelectSources extends Component {
       </PaperCard>
     )
   }
-
 }
 
-export default connect(dataSourcesSelector)(SelectSources);
+const dataSourcesWithSelectedSelector = createSelector(
+  [dataSourcesSelector, selectedDataSourcesSelector],
+  (dataSources, selectedDataSources) => {
+    const all = dataSources.map(dataSource => 
+      selectedDataSources.has(dataSource.id) ? 
+        dataSource.set('selected', true) : dataSource).toList();
+    const selected = all.filter(dataSource => dataSource.selected).toList();
+    return { all, selected };
+  }
+);
+
+const selector = createStructuredSelector({
+  dataSources: dataSourcesWithSelectedSelector,
+  status: getDataSourcesStatusSelector,
+  runDiscoveryStatus: runDiscoveryStatusSelector
+});
+
+export default connect(selector)(SelectSources);

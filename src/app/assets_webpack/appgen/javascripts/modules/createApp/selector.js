@@ -7,23 +7,6 @@ import { MODULE_PREFIX } from './prefix'
 export const moduleSelector = createSelector([parentSelector], parentState => parentState[MODULE_PREFIX]);
 export default moduleSelector;
 
-// TODO: move this to the appropriate duck
-export const dataSourcesSelector = createSelector(
-  [moduleSelector],
-  ({dataSources: {error, isLoading, done, data}, selectedDataSources, runDiscoveryStatus }) => ({
-    runDiscoveryStatus,
-    dataSources: {
-      error, isLoading, done,
-      selected: data.toList()
-        .filter(dataSource => selectedDataSources.has(dataSource.get('id')))
-        .map(dataSource => (new DataSource(dataSource)).set('selected', true)),
-      all: data.toList()
-        .map(dataSource =>
-          (new DataSource(dataSource)).set('selected', selectedDataSources.has(dataSource.get('id'))))
-    }
-  })
-);
-
 export const discoverySelector = createSelector(
   [moduleSelector],
   state => state.discovery
