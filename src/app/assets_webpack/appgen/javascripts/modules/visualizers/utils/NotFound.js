@@ -2,7 +2,6 @@ import React from 'react'
 import { Route } from 'react-router'
 import Alert from '../../../components/Alert'
 import BodyPadding from '../../../components/BodyPadding'
-import createConfiguratorRoutes from './createConfiguratorRoutes'
 
 const name = 'notFound';
 const path = 'not-found';
@@ -13,8 +12,8 @@ const NotFound = () => (
   </BodyPadding>
 );
 
-const createRoutes = dispatch => (
-  <Route component={NotFound} path="*" />
-);
-
-export default createConfiguratorRoutes({ name, path }, createRoutes);
+export default function createRoutes(dispatch) {
+  return (
+    <Route component={NotFound} path="*" />
+  );
+}
