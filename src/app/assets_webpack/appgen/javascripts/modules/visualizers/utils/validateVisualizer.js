@@ -7,9 +7,18 @@ import { getConfiguratorPath } from './../routes'
 
 /**
  * High-order component verifying that the visualizer passed through props corresponds to the
- * selected visualizer configurator.
+ * selected visualizer configurator. This component is automatically wrapped around all registered
+ * Configurators by the ConfiguratorsRouteFactory.
+ *
+ * Sample scenario: the user manually enters the URL /appgen/app/1/googleMaps to configure the
+ * application with id = 1. Google Maps visualizer is loaded based on the URL. Nevertheless,
+ * this application is actually a D3.js Chord application. It requires a different visualizer.
+ * The incorrect visualizer object is injected through props into the Google Maps configurator. This
+ * component intercepts that, detects the problem and performs necessary redirection.
+ *
  * @param VisualizerConfiguratorComponent selected visualizer component that should be validated
- * @param path corresponding path to this configurator
+ * @param path - the path of currently rendered visualizer. It has to match the visualizer
+ *  passed through props.
  * @returns {*}
  */
 export default function validateVisualizer(VisualizerConfiguratorComponent, path) {
@@ -32,15 +41,17 @@ export default function validateVisualizer(VisualizerConfiguratorComponent, path
     validate(props) {
       // If the selected application visualizer path doesn't match current path, then redirect
       // back to the main application component which should make the right decision now.
+      // (In case of path == "*", which is the fallback <NotFound /> component, we don't redirect
+      // anywhere, there is no point)
       const { dispatch, application, visualizer } = props;
-      if (getConfiguratorPath(visualizer) != path) {
+      if (getConfiguratorPath(visualizer) != path && path != "*") {
         dispatch(routes.application(application.id));
       }
     }
 
     render() {
       const { visualizer } = this.props;
-      if (getConfiguratorPath(visualizer) != path) {
+      if (getConfiguratorPath(visualizer) != path && path != "*") {
         return null;
       }
 

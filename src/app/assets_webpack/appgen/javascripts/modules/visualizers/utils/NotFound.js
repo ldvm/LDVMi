@@ -8,7 +8,10 @@ const path = 'not-found';
 
 const NotFound = () => (
   <BodyPadding>
-    <Alert danger>Configurator component for this visualizer was not found</Alert>
+    <Alert danger>
+      Configurator component for this visualizer was not found. Is the component correctly
+      registered? Is the visualizer name property correctly configured?
+    </Alert>
   </BodyPadding>
 );
 
