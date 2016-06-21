@@ -93,9 +93,6 @@ module.exports = function makeConfig(isDevelopment) {
   }
 
   return {
-    node: {
-      __filename: true // Enable real __filename (we use it to automatically extract module name)
-    },
     entry: makeEntry(),
     devtool: makeDevtool(),
     output: makeOutput(),

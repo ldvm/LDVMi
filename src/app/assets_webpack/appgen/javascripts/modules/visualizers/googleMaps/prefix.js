@@ -1,5 +1,4 @@
 import createPrefixer from '../../../misc/createPrefixer'
-import {getModuleName} from '../../../misc/utils'
 
-export const MODULE_PREFIX = getModuleName(__filename);
+export const MODULE_PREFIX = 'googleMaps';
 export default createPrefixer(MODULE_PREFIX);
