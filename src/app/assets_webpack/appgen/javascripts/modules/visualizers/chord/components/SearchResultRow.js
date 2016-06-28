@@ -13,7 +13,7 @@ const SearchResultRow = ({ searchableLens, resource }) => {
           <LocalizedValue localizedValue={resource.properties.get(propertyUri)} silent />
         </TableRowColumn>
       )}
-      <TableRowColumn>
+      <TableRowColumn style={{width: '35%'}}>
         <AddToListButtons uri={resource.uri} />
       </TableRowColumn>
     </TableRow>

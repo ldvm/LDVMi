@@ -20,7 +20,7 @@ const SearchResult = ({ searchableLens, result }) => (
               <Label uri={propertyUri} />
             </TableHeaderColumn>
           )}
-          <TableHeaderColumn />
+          <TableHeaderColumn style={{ width: '35%' }} />
         </TableRow>
       </TableHeader>
       <TableBody displayRowCheckbox={false} allowMultiselect>
