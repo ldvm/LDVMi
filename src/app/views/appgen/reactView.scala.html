@@ -1,4 +1,4 @@
-@(title: String, bundleName: String, baseUrl: String, applicationId: Long = 0)
+@(title: String, description: String, bundleName: String, baseUrl: String, applicationId: Long = 0)
 @import play.api.Play.current
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +18,13 @@
         </script>
 	</head>
 	<body>
-		<div id="approot"></div>
+		<div id="approot">
+            <!-- Placeholder text for web crawlers -->
+            <div style="opacity: 0">
+               <h1>@title</h1>
+               @description
+            </div>
+        </div>
 		@Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
 
         @if(play.Play.isDev()) {
