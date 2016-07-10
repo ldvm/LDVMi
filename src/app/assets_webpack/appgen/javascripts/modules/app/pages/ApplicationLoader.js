@@ -35,7 +35,10 @@ class ApplicationLoader extends Component {
     }
 
     return <div>
-      <Helmet title={application.name} />
+      <Helmet
+        title={application.name}
+        titleTemplate="%s | LinkedPipes Application Generator"
+      />
 
       {children ?
         React.cloneElement(children, { application, visualizer }) :
