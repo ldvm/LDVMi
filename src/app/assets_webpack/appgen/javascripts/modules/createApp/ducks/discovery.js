@@ -1,20 +1,21 @@
 import { createSelector } from 'reselect'
-import { fromJS, Map, List } from 'immutable'
+import { Map, List } from 'immutable'
 import * as api from '../api'
 import prefix from '../prefix'
-import createPromiseReducer, { PRESERVE_STATE } from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
-import { discoverySelector as reducerSelector } from '../selector'
+import moduleSelector from '../selector'
 import { visualizersSelector } from './../../core/ducks/visualizers'
 import { evaluationsSelector, promiseSelector as evaluationPromiseSelector } from './evaluations'
 import { Discovery, PipelineWithEvaluations } from '../models'
 import { VisualizerWithPipelines } from '../../core/models'
+import { createPromiseStatusSelector } from '../../core/ducks/promises'
 
 // Actions
 
-export const GET_DISCOVERY_START = prefix('GET_DISCOVERY_START');
-export const GET_DISCOVERY_ERROR = prefix('GET_DISCOVERY_ERROR');
-export const GET_DISCOVERY_SUCCESS = prefix('GET_DISCOVERY_SUCCESS');
+export const GET_DISCOVERY = prefix('GET_DISCOVERY');
+export const GET_DISCOVERY_START = GET_DISCOVERY + '_START';
+export const GET_DISCOVERY_ERROR = GET_DISCOVERY + '_ERROR';
+export const GET_DISCOVERY_SUCCESS = GET_DISCOVERY + '_SUCCESS';
 
 export function getDiscovery(userPipelineDiscoveryId) {
   const promise = api.getDiscovery(userPipelineDiscoveryId);
@@ -25,31 +26,22 @@ export function getDiscovery(userPipelineDiscoveryId) {
 
 const initialState = Map();
 
-const reducer = (state, action) => {
+export default function discoveryReducer(state = initialState, action) {
   switch (action.type) {
     case GET_DISCOVERY_SUCCESS:
-      // Update the local state only if the incoming state is different.
-      // TODO: Immutable.merge would do exactly that
-      const newState = fromJS(action.payload);
-      return state.equals(newState) ? state : newState;
+      return state.mergeDeep(action.payload);
+
+    default:
+      return state;
   }
-
-  return state;
-};
-
-export default createPromiseReducer(initialState, [
-  GET_DISCOVERY_START,
-  GET_DISCOVERY_SUCCESS,
-  GET_DISCOVERY_ERROR], reducer, PRESERVE_STATE);
+}
 
 // Selectors
 
-const promiseSelector = createSelector(
-  [reducerSelector], ({ error, isLoading }) => ({ error, isLoading })
-);
+export const promiseSelector = createPromiseStatusSelector(GET_DISCOVERY);
 
 const dataSelector = createSelector(
-  [reducerSelector], ({ data }) => data
+  [moduleSelector], state => state.discovery
 );
 
 const mergedDiscoverySelector = createSelector(

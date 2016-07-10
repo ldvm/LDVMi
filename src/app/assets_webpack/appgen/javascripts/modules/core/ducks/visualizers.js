@@ -4,7 +4,6 @@ import { Visualizer } from '../models'
 import moduleSelector from '../selector'
 import * as api from '../api'
 import prefix from '../../createApp/prefix'
-import createPromiseReducer, { PRESERVE_STATE } from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
 import { createPromiseStatusSelector } from './promises'
 

@@ -1,7 +1,6 @@
 import { routeActions } from 'redux-simple-router'
 import * as api from '../api'
 import prefix from '../prefix'
-import createPromiseReducer from '../../../misc/promiseReducer'
 import createAction from '../../../misc/createAction'
 import { createPromiseStatusSelector } from '../../core/ducks/promises'
 
