@@ -3,7 +3,7 @@ package model.rdf.sparql.rgml
 import model.entity.PipelineEvaluation
 import model.rdf.sparql.rgml.extractor._
 import model.rdf.sparql.rgml.query._
-import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
+import model.rdf.sparql.{EvaluationToSparqlEndpoint, GenericSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 import model.rdf.sparql.rgml.EdgeDirection._
@@ -36,7 +36,7 @@ import scala.collection.mutable
   *
   * @see http://purl.org/puninj/2001/05/rgml-schema#
   */
-class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injectable {
+class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injectable with EvaluationToSparqlEndpoint {
   var sparqlEndpointService = inject[SparqlEndpointService]
 
   /** Get a graph resource (resource of type rgml:Graph).
@@ -408,12 +408,5 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
 
     // As the sample consists of just node URIs, we fetch the actual resources (with labels)
     nodes(evaluation, makeSample)
-  }
-
-  private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation)(implicit session: Session): GenericSparqlEndpoint = {
-    val evaluationResults = evaluation.results
-    evaluationResults.map { result =>
-      new GenericSparqlEndpoint(result.endpointUrl, List(), result.graphUri.map(_.split("\n").toSeq).getOrElse(Seq()))
-    }.head
   }
 }
