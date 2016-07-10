@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import ScriptjsLoader from 'react-google-maps/lib/async/ScriptjsLoader'
 import throttle from 'lodash/throttle'
-import { GoogleMapLoader, GoogleMap, Marker } from 'react-google-maps'
+import { GoogleMap } from 'react-google-maps'
 import { triggerEvent } from 'react-google-maps/lib/utils'
 import CenteredMessage from './CenteredMessage'
+import { googleMapsApiKey } from '../config'
 
 export default class Map extends Component {
 
@@ -71,7 +72,7 @@ export default class Map extends Component {
       <ScriptjsLoader
         hostname={"maps.googleapis.com"}
         pathname={"/maps/api/js"}
-        query={{v: `3`, libraries: "geometry,drawing,places"}}
+        query={{v: `3`, libraries: "geometry,drawing,places", key: googleMapsApiKey }}
         loadingElement={this.renderLoadingBar()}
         containerElement={this.renderContainer()}
         googleMapElement={this.renderGoogleMap()}
