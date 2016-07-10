@@ -3,9 +3,6 @@ import { Route } from 'react-router'
 import Alert from '../../../components/Alert'
 import BodyPadding from '../../../components/BodyPadding'
 
-const name = 'notFound';
-const path = 'not-found';
-
 const NotFound = () => (
   <BodyPadding>
     <Alert danger>

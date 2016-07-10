@@ -23,6 +23,12 @@ export const getConfiguratorPath = visualizer => {
   if (!(visualizer instanceof Visualizer || visualizer instanceof VisualizerWithPipelines)) {
     throw new Error('This is not a valid Visualizer object!');
   }
+
+  if (!visualizer.name) {
+    console.warn(`Visualizer "${visualizer.title}" has an empty name! Please go to Dashboard an choose a name for this visualizer.`);
+    return 'notFound';
+  }
+
   return visualizer.name;
 };
 
