@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route } from 'react-router'
-import Configurator from './containers/Configurator'
+import Configurator from './pages/Configurator'
 import { MODULE_PREFIX } from './prefix'
 
 export default function createRoutes(dispatch) {

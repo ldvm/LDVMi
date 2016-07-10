@@ -13,7 +13,7 @@ import { getVisualizers } from '../../core/ducks/visualizers'
 import { getApplication } from '../ducks/application'
 import { getApplicationId } from '../../../window'
 
-class Application extends Component {
+class ApplicationLoader extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     application: PropTypes.instanceOf(ApplicationModel).isRequired,
@@ -50,4 +50,4 @@ const selector = createSelector(
   [applicationSelector, applicationVisualizerSelector, applicationStatusSelector],
   (application, visualizer, applicationStatus) => ({ application, visualizer, applicationStatus })
 );
-export default connect(selector)(Application);
+export default connect(selector)(ApplicationLoader);

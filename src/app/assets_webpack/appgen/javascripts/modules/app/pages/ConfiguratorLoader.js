@@ -24,7 +24,7 @@ import { createRouteParamSelector } from '../../core/ducks/routing'
 import { getVisualizers, visualizersStatusSelector } from '../../core/ducks/visualizers'
 import { createAggregatedPromiseStatusSelector} from '../../core/ducks/promises'
 
-class Configurator extends Component {
+class ConfiguratorLoader extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     applicationId: PropTypes.string.isRequired,
@@ -121,4 +121,4 @@ const selector = createStructuredSelector({
   ])
 });
 
-export default requireSignedIn(connect(selector)(Configurator));
+export default requireSignedIn(connect(selector)(ConfiguratorLoader));
