@@ -16,10 +16,15 @@ export const GET_DISCOVERY = prefix('GET_DISCOVERY');
 export const GET_DISCOVERY_START = GET_DISCOVERY + '_START';
 export const GET_DISCOVERY_ERROR = GET_DISCOVERY + '_ERROR';
 export const GET_DISCOVERY_SUCCESS = GET_DISCOVERY + '_SUCCESS';
+export const GET_DISCOVERY_RESET = GET_DISCOVERY + '_RESET';
 
 export function getDiscovery(userPipelineDiscoveryId) {
   const promise = api.getDiscovery(userPipelineDiscoveryId);
-  return createAction(prefix('GET_DISCOVERY'), { promise });
+  return createAction(GET_DISCOVERY, { promise });
+}
+
+export function getDiscoveryReset() {
+  return createAction(GET_DISCOVERY_RESET);
 }
 
 // Reducer
@@ -30,6 +35,9 @@ export default function discoveryReducer(state = initialState, action) {
   switch (action.type) {
     case GET_DISCOVERY_SUCCESS:
       return state.mergeDeep(action.payload);
+
+    case GET_DISCOVERY_RESET:
+      return initialState;
 
     default:
       return state;

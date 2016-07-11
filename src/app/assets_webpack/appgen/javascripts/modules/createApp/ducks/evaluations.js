@@ -13,11 +13,17 @@ export const GET_EVALUATIONS = prefix('GET_EVALUATIONS');
 export const GET_EVALUATIONS_START = GET_EVALUATIONS + '_START';
 export const GET_EVALUATIONS_ERROR = GET_EVALUATIONS + '_ERROR';
 export const GET_EVALUATIONS_SUCCESS = GET_EVALUATIONS + '_SUCCESS';
+export const GET_EVALUATIONS_RESET = GET_EVALUATIONS + '_RESET';
 
 export function getEvaluations(userPipelineDiscoveryId) {
   const promise = api.getEvaluations(userPipelineDiscoveryId);
-  return createAction(prefix('GET_EVALUATIONS'), { promise });
+  return createAction(GET_EVALUATIONS, { promise });
 }
+
+export function getEvaluationsReset() {
+  return createAction(GET_EVALUATIONS_RESET);
+}
+
 // Reducer
 
 const initialState = List();
@@ -26,6 +32,9 @@ export default function evaluationsReducer(state = initialState, action) {
   switch (action.type) {
     case GET_EVALUATIONS_SUCCESS:
       return state.mergeDeep(action.payload);
+
+    case GET_EVALUATIONS_RESET:
+      return initialState;
 
     default:
       return state;

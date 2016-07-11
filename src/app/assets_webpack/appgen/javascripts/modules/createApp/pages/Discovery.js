@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Helmet from "react-helmet"
 import { connect } from 'react-redux'
-import { getDiscovery, discoverySelector } from '../ducks/discovery'
-import { getEvaluations } from '../ducks/evaluations'
+import { getDiscovery, getDiscoveryReset, discoverySelector } from '../ducks/discovery'
+import { getEvaluations, getEvaluationsReset } from '../ducks/evaluations'
 import { dialogOpen, dialogClose } from '../../core/ducks/dialog'
 import { runEvaluation } from '../ducks/runEvaluationStatus'
 import PromiseResult from '../../core/components/PromiseResult'
@@ -19,6 +19,10 @@ class Discovery extends Component {
   componentWillUnmount() {
     clearTimeout(this.discoveryTimeout);
     clearTimeout(this.evaluationsTimeout);
+
+    const { dispatch } = this.props;
+    dispatch(getDiscoveryReset());
+    dispatch(getEvaluationsReset());
   }
 
   componentWillReceiveProps(nextProps) {
