@@ -37,3 +37,6 @@ export const visualizerConfiguratorUrl = (appId, visualizer) =>
 
 export const visualizerConfigurator = (appId, visualizer) =>
   routeActions.push(visualizerConfiguratorUrl(appId, visualizer));
+
+export const getRegisteredPaths = ::routeFactory.getRegisteredPaths;
+export const getRegisteredVisualizerNames = ::routeFactory.getRegisteredPaths; // just an alias

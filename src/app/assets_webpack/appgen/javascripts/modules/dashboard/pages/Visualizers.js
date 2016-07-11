@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import { List, Map } from 'immutable'
+import { OrderedSet, List, Map } from 'immutable'
 import { connect } from 'react-redux'
 import { createSelector, createStructuredSelector } from 'reselect'
 import Helmet from 'react-helmet'
@@ -23,6 +23,7 @@ import VisualizersTable from '../components/VisualizersTable'
 import { editVisualizer, visualizerToEditSelector } from '../ducks/editVisualizer'
 import { Visualizer } from '../../core/models'
 import requireAdmin from '../../auth/containers/requireAdmin'
+import { getRegisteredVisualizerNames } from '../../visualizers/routes'
 
 
 class Visualizers extends Component {
@@ -31,6 +32,7 @@ class Visualizers extends Component {
     visualizers: PropTypes.instanceOf(List).isRequired,
     visualizerComponents: PropTypes.instanceOf(Map).isRequired,
     visualizerToEdit: PropTypes.instanceOf(Visualizer).isRequired,
+    availableVisualizerNames: PropTypes.instanceOf(List).isRequired,
     status: PropTypes.instanceOf(PromiseStatus).isRequired
   };
 
@@ -88,7 +90,7 @@ class Visualizers extends Component {
   }
 
   render() {
-    const { dispatch, visualizers, visualizerComponents, visualizerToEdit, status } = this.props;
+    const { dispatch, visualizers, visualizerComponents, visualizerToEdit, availableVisualizerNames, status } = this.props;
 
     return (
       <div>
@@ -104,6 +106,7 @@ class Visualizers extends Component {
         <EditVisualizerDialog
           onSubmit={::this.handleUpdateVisualizer}
           initialValues={visualizerToEdit.toJS()}
+          availableVisualizerNames={availableVisualizerNames}
           dialogClose={() => dispatch(dialogClose(editVisualizerDialogName))}
         />
         
@@ -146,10 +149,24 @@ const unusedVisualizerComponentsSelector = createSelector(
       unused.delete(visualizer.componentTemplateId), visualizerComponents)
 );
 
+// A visualizer plugin is registered to the codebase under a "name". Using this name, a LDVM
+// visualizer component is mapped to the corresponding plugin. This mapping is managed by the user.
+// This selector returns the names of all registered visualizer plugins minus the ones that
+// are already used.
+const availableVisualizerNamesSelector = createSelector(
+  [visualizersSelector, visualizerToEditSelector, getRegisteredVisualizerNames],
+  (visualizers, visualizerToEdit, registeredNames) => {
+    return visualizers.reduce((available, visualizer) =>
+      available.delete(visualizer.name), new OrderedSet(registeredNames))
+      .add(visualizerToEdit.name).toList();
+  }
+);
+
 const selector = createStructuredSelector({
   visualizers: visualizersSelector,
   visualizerComponents: unusedVisualizerComponentsSelector,
   visualizerToEdit: visualizerToEditSelector,
+  availableVisualizerNames: availableVisualizerNamesSelector,
   status: createAggregatedPromiseStatusSelector([
     visualizersStatusSelector,
     visualizerComponentsStatusSelector

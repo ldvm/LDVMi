@@ -13,9 +13,11 @@ class ConfiguratorsRouteFactory {
   }
   
   createRoutes(dispatch) {
-    this.routeFactories.push(createNotFoundRoutes);
+    // Make a copy & add not found fallback route.
+    const routeFactories = this.routeFactories.slice();
+    routeFactories.push(createNotFoundRoutes);
 
-    return this.routeFactories.map(createRoutes => {
+    return routeFactories.map(createRoutes => {
       const routes = createRoutes(dispatch);
       const path = routes.props.path;
 
@@ -29,6 +31,16 @@ class ConfiguratorsRouteFactory {
         />
       )
     });
+  }
+
+  /**
+   * Return paths of the registered configurators. As the path is also the name of a visualizer
+   * plugin, this essentially returns all registered visualizer plugins.
+   * @returns {Array|*}
+   */
+  getRegisteredPaths() {
+    return this.routeFactories.map(createRoutes =>
+      createRoutes(() => { }).props.path);
   }
 }
 

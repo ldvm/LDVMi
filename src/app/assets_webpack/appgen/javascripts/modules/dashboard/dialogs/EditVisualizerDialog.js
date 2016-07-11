@@ -2,6 +2,8 @@ import React from 'react';
 import { reduxForm } from 'redux-form'
 import { makeValidator, errorTextFactory } from '../../../misc/formUtils'
 import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField'
+import MenuItem from 'material-ui/MenuItem'
 import Checkbox from '../../../components/Checkbox'
 import Button from '../../../components/Button'
 import Dialog from '../../core/containers/Dialog'
@@ -10,8 +12,11 @@ import prefix from '../prefix'
 export const dialogName = prefix('EDIT_VISUALIZER_DIALOG');
 export const formName = prefix('edit-visualizer-source');
 
-const EditVisualizerDialog = (props) =>  {
-  const { dialogClose, fields: { visualizationUri, priority, name, icon, disabled }, handleSubmit, submitting, submitFailed } = props;
+const EditVisualizerDialog = props => {
+  const { fields: { visualizationUri, priority, name, icon, disabled } } = props;
+  const { dialogClose, handleSubmit, submitting, submitFailed } = props;
+  const { availableVisualizerNames } = props;
+
   const errorText = errorTextFactory(submitFailed);
 
   const actions = [
@@ -40,14 +45,20 @@ const EditVisualizerDialog = (props) =>  {
             fullWidth
           />
           <br /><br />
-          <div><strong style={{ color: 'black' }}>Application generator related configuration</strong></div>
-          <TextField
+          <div><strong style={{ color: 'black' }}>Application Generator related configuration</strong></div>
+          <SelectField fullWidth
             floatingLabelText="Name"
+            floatingLabelFixed={true}
             hintText="Name of the bundle and corresponding JavaScript module"
             {...name}
             {...errorText(name)}
-            fullWidth
-          />
+            onChange={(event, index, value) => name.onChange(value)}
+          >
+            <MenuItem value="" primaryText="(none)" />
+            {availableVisualizerNames.map(n =>
+              <MenuItem value={n} primaryText={n} key={n} />
+            )}
+          </SelectField>
           <TextField
             floatingLabelText="Visualizer icon"
             hintText="Material icon name (use underscores instead of spaces)"
@@ -56,7 +67,7 @@ const EditVisualizerDialog = (props) =>  {
             fullWidth
           />
           <br /><br />
-          <Checkbox label="Disable this visualizer (it will not show in the discovery results" {...disabled} />
+          <Checkbox label="Disable this visualizer (it will not show in the discovery results)" {...disabled} />
         </div>
       </form>
     </Dialog>
