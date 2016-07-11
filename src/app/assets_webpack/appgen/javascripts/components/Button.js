@@ -51,6 +51,14 @@ class Button extends Component {
       newProps.className = 'linkButton ' + props.className;
     }
 
+    // Remove unsupported props so that React does not complain
+    for (let p of ['inverted', 'iconStyle', 'raised', 'primary', 'success', 'info', 'warning', 'danger']) {
+      delete newProps[p];
+    }
+    if (!props.raised) {
+      delete newProps.labelColor;
+    }
+
     return <Component {...newProps} />
   }
 }

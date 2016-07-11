@@ -10,7 +10,7 @@ const PreviewButton = ({ application }) => {
 
   return <Button
     label={label} icon={icon}
-    raised linkButton={true}
+    raised
     href={href} target="_blank" />;
 };
 
