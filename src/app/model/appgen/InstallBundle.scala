@@ -22,7 +22,8 @@ object InstallBundle {
   val dataSources = List(
     "Integrated prevention and pollution limitation" -> "https://raw.githubusercontent.com/tobice/appgen-datasets/master/ippc/ippc.ttl",
     "Airline Routes" -> "https://github.com/tobice/appgen-datasets/raw/master/airline_routes/airline_routes.ttl",
-    "Asylum Seekers 2015" -> "https://github.com/tobice/appgen-datasets/raw/master/refugees/refugees_2015.ttl"
+    "Asylum Seekers 2015" -> "https://github.com/tobice/appgen-datasets/raw/master/refugees/refugees_2015.ttl",
+    "Registry of contracts of the Czech Republic - Contracts" -> "https://github.com/tobice/appgen-datasets/raw/master/registry_of_contracts/registry_of_contracts.ttl"
   )
 
   val visualizers = List (
