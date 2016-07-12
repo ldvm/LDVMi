@@ -26,11 +26,10 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
   val dataSourceTemplateRepository = inject[DataSourceTemplateRepository]
   val componentTemplateService = inject[ComponentTemplateService]
 
-  def createDataSourceFromRemoteTtl(urls: Seq[String])(implicit session: Session): Option[DataSourceTemplateId] = {
+  def createDataSourceFromRemoteTtl(urls: Seq[String], dataSourceName: String = "Downloaded RDF")(implicit session: Session): Option[DataSourceTemplateId] = {
 
     urls match {
       case u if u.nonEmpty => withRandomGraphUri { r =>
-        val dataSourceName = "Downloaded RDF"
         val dataSourceDescription = u.mkString(", ")
         val dataSourceId = createDataSource(dataSourceName, Some(dataSourceDescription), r)
 

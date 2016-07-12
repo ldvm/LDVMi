@@ -18,4 +18,10 @@ object InstallBundle {
     "linked.opendata.cz" -> "https://raw.githubusercontent.com/tobice/vocabulary/master/rdf/examples/datasources/ldvm-ds-ldcz.ttl",
     "internal.opendata.cz" -> "https://raw.githubusercontent.com/tobice/vocabulary/master/rdf/examples/datasources/ldvm-ds-int-od-cz.ttl"
   )
+
+  val dataSources = List(
+    "Integrated prevention and pollution limitation" -> "https://raw.githubusercontent.com/tobice/appgen-datasets/master/ippc/ippc.ttl",
+    "Airline Routes" -> "https://github.com/tobice/appgen-datasets/raw/master/airline_routes/airline_routes.ttl",
+    "Asylum Seekers 2015" -> "https://github.com/tobice/appgen-datasets/raw/master/refugees/refugees_2015.ttl"
+  )
 }

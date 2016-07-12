@@ -1,19 +1,25 @@
 package model.appgen.service
 
-import model.appgen.entity.InstallResult
-import model.service.LdvmService
+import model.appgen.entity.{InstallResult, UserDataSource, UserId}
+import model.service.{DataSourceService, LdvmService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
+
 import sys.process._
 import java.net.URL
 import java.io.File
+
 import model.appgen.InstallBundle
+import model.appgen.repository.UserDataSourcesRepository
 
 class InstallService(implicit inj: Injector) extends Injectable {
   val ldvmService = inject[LdvmService]
+  val dataSourceService = inject[DataSourceService]
+  val userDataSourceRepository = inject[UserDataSourcesRepository]
 
   def install(implicit session: Session) = {
-    InstallBundle.ldvmComponents map installLdvmComponent
+    (InstallBundle.ldvmComponents map installLdvmComponent) :::
+    (InstallBundle.dataSources map installDataSource)
   }
 
   private def installLdvmComponent(component: (String, String))(implicit session: Session) = {
@@ -26,6 +32,17 @@ class InstallService(implicit inj: Injector) extends Injectable {
             InstallResult.failure("Component import of '" + name + "' failed")
         }
       }
+    }
+  }
+
+  private def installDataSource(dataSource: (String, String))(implicit session: Session) = {
+    dataSource match { case (name, url) =>
+      dataSourceService.createDataSourceFromRemoteTtl(Seq(url), name) map { dataSourceTemplateId =>
+        userDataSourceRepository save
+          UserDataSource(None, name, isPublic = true, UserId(1), dataSourceTemplateId)
+
+        InstallResult.success("Data source '" + name + "' has been imported")
+      } getOrElse InstallResult.failure("Data source import of '" + name + "' failed")
     }
   }
 
