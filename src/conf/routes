@@ -105,6 +105,8 @@ POST        /appgen/api/auth/googleSignIn                   @controllers.appgen.
 POST        /appgen/api/auth/signOut                        @controllers.appgen.api.AuthApiController.signOut
 POST        /appgen/api/auth/getUser                        @controllers.appgen.api.AuthApiController.getUser
 
+POST        /appgen/api/install                             @controllers.appgen.api.InstallApiController.install
+
 POST        /appgen/api/createApp/addDataSource             @controllers.appgen.api.CreateAppApiController.addDataSource
 POST        /appgen/api/createApp/getDataSources            @controllers.appgen.api.CreateAppApiController.getDataSources
 POST        /appgen/api/createApp/runDiscovery              @controllers.appgen.api.CreateAppApiController.runDiscovery

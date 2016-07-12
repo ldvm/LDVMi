@@ -25,4 +25,5 @@ class ControllerModule extends Module {
   binding to new CommonVisualizerApiController
   binding to new DashboardApiController
   binding to new CatalogApiController
+  binding to new InstallApiController
 }
