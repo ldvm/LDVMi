@@ -24,4 +24,9 @@ object InstallBundle {
     "Airline Routes" -> "https://github.com/tobice/appgen-datasets/raw/master/airline_routes/airline_routes.ttl",
     "Asylum Seekers 2015" -> "https://github.com/tobice/appgen-datasets/raw/master/refugees/refugees_2015.ttl"
   )
+
+  val visualizers = List (
+    ("D3.js Chord Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/chord/ChordVisualizerTemplate", "chord", "donut_large"),
+    ("Google Maps Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate", "googleMaps", "map")
+  )
 }
