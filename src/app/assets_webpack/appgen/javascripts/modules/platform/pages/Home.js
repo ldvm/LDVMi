@@ -9,16 +9,19 @@ import Subheadline from '../../../components/Subheadline'
 import LatestPublishedApps from '../containers/LatestPublishedApps'
 import Userbox from '../components/Userbox'
 import AboutSharedInfo from '../components/AboutSharedInfo'
+import Install from '../containers/Install'
 import * as routes from '../routes'
 
 const Home = () =>
   <NarrowedLayout>
-    <Helmet title="Linked Pipes Application Generator" titleTemplate="%s" />
-    <Headline title="Linked Pipes Application Generator" icon="explore" />
+    <Helmet title="LinkedPipes Application Generator" titleTemplate="%s" />
+    <Headline title="LinkedPipes Application Generator" icon="explore" />
     <Grid>
       <Row>
         <Col md={6}>
-          <PaperCard title="About" subtitle="Linked Pipes Application Generator">
+          <Install />
+          
+          <PaperCard title="About" subtitle="LinkedPipes Application Generator">
             <AboutSharedInfo />
             <p>
               <Link to={routes.aboutUrl()}>

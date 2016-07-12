@@ -17,4 +17,5 @@ class AppgenRepositoryModule extends Module {
   binding to new DiscoveriesService
   binding to new CacheEntriesRepository
   binding to new ResultCacheService
+  binding to new InstallService
 }
