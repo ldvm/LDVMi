@@ -1,46 +1,22 @@
 import React, { PropTypes } from 'react'
 import Divider from 'material-ui/Divider';
-import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { Option } from '../models'
 import EditableLabel from '../../../app/containers/EditableLabel'
-import Padding from '../../../../components/Padding'
-import Icon from '../../../../components/Icon'
+import ClearBoth from '../../../../components/ClearBoth'
 import makePureRender from '../../../../misc/makePureRender'
-import MaterialTheme from '../../../../misc/materialTheme';
 import { optionModes as modes } from  '../models'
-
-const iconMenuStyle = {
-  float: 'right',
-  marginTop: '-12px',
-  marginRight: '-12px',
-  position: 'relative',
-  zIndex: 1
-};
+import SidebarItem from './SidebarItem'
 
 const labelStyle = {
   fontSize: '0.9rem',
   color: 'rgba(0, 0, 0, 0.8)',
-  position: 'relative',
-  zIndex: 0,
-  paddingLeft: MaterialTheme.spacing.desktopGutterMini * 5 + 'px'
-};
-
-const iconStyle = {
-  position: 'absolute',
-  left: 0
 };
 
 const countStyle = {
   fontSize: '0.8rem',
   color: 'rgba(0, 0, 0, 0.6)',
   fontWeight: 'bold'
-};
-
-const dividerStyle = {
-  clear: 'both'
 };
 
 const colors = {
@@ -50,7 +26,7 @@ const colors = {
 };
 
 const icons = {
-  [modes.USER_DEFINED]: 'chevron_right',
+  [modes.USER_DEFINED]: 'face',
   [modes.SELECT_ALWAYS]: 'check',
   [modes.SELECT_NEVER]: 'close'
 };
@@ -67,41 +43,47 @@ const configStyles = {
   }
 };
 
+// Defines the order in which the modes are changed when the user is clicking the item
+const modeLoop = {
+  [modes.USER_DEFINED]: modes.SELECT_ALWAYS,
+  [modes.SELECT_ALWAYS]: modes.SELECT_NEVER,
+  [modes.SELECT_NEVER]: modes.USER_DEFINED
+};
 
 const OptionConfig = ({ option, configureOption }) => {
   const { count, mode, skosConcept } = option;
 
-  return <div>
-    <Padding space={2}>
-      <IconMenu
-        style={iconMenuStyle}
-        iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-        anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-        targetOrigin={{horizontal: 'left', vertical: 'top'}}
+  const menuItems = (
+    <div>
+      <MenuItem
+        primaryText="Select always"
+        disabled={mode == modes.SELECT_ALWAYS}
+        onTouchTap={() => configureOption({ mode: modes.SELECT_ALWAYS })}
+      />
+      <MenuItem
+        primaryText="Select never"
+        disabled={mode == modes.SELECT_NEVER}
+        onTouchTap={() => configureOption({ mode: modes.SELECT_NEVER })}
+      />
+      <MenuItem primaryText="User defined"
+        disabled={mode == modes.USER_DEFINED}
+        onTouchTap={() => configureOption({ mode: modes.USER_DEFINED })}
+      />
+    </div>);
+
+  return (
+    <div style={Object.assign({}, labelStyle, configStyles[mode])}>
+      <SidebarItem
+        icon={icons[mode]} iconColor={colors[mode]}
+        menuItems={menuItems}
+        onClick={() => configureOption({ mode: modeLoop[mode] })}
       >
-        <MenuItem
-          primaryText="Select always"
-          disabled={mode == modes.SELECT_ALWAYS}
-          onTouchTap={() => configureOption({ mode: modes.SELECT_ALWAYS })}
-        />
-        <MenuItem
-          primaryText="Select never"
-          disabled={mode == modes.SELECT_NEVER}
-          onTouchTap={() => configureOption({ mode: modes.SELECT_NEVER })}
-        />
-        <MenuItem primaryText="User defined"
-          disabled={mode == modes.USER_DEFINED}
-          onTouchTap={() => configureOption({ mode: modes.USER_DEFINED })}
-        />
-      </IconMenu>
-      <div style={Object.assign({}, labelStyle, configStyles[mode])}>
-        <Icon icon={icons[mode]} style={iconStyle} color={colors[mode]} />
         <EditableLabel uri={skosConcept.uri} label={skosConcept.label} />
         {count !== null && <span style={countStyle}> ({count})</span>}
-      </div>
-    </Padding>
-    <Divider style={dividerStyle} />
-  </div>
+      </SidebarItem>
+      <ClearBoth />
+      <Divider />
+    </div>);
 };
 
 OptionConfig.propTypes = {
