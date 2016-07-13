@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { List, Set } from 'immutable'
 import { createStructuredSelector } from 'reselect'
-import { connect } from 'react-redux'
+import { connect, Provider } from 'react-redux'
 import { Marker, InfoWindow } from 'react-google-maps'
 import MarkerClusterer from "react-google-maps/lib/addons/MarkerClusterer";
 import GoogleMap from '../../../../components/GoogleMap'
@@ -37,7 +37,9 @@ const MapContainer = ({ dispatch, markers, mapState, toggledMarkers }, context) 
                 key={marker.uri}
                 onCloseclick={() => dispatch(toggleMarker(marker.uri))}>
 
-                <Label uri={marker.uri} label={marker.title} store={context.store} />
+                <Provider store={context.store}>
+                  <Label uri={marker.uri} label={marker.title} />
+                </Provider>
               </InfoWindow>}
           </Marker>
         )}

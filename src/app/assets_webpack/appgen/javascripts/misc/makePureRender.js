@@ -5,13 +5,13 @@ import shouldComponentUpdate from 'react-pure-render/function'
 import proxyFuncs from './proxyFuncs'
 
 export default function makePureRender(Component) {
-  class Wrapper extends PureComponent {
+  class PureRenderWrapper extends PureComponent {
     render() {
       return <Component {...this.props} />;
     }
   }
 
-  return proxyFuncs(Wrapper);
+  return proxyFuncs(PureRenderWrapper);
 }
 
 // Debug version:

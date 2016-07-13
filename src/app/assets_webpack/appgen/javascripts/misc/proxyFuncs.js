@@ -12,7 +12,7 @@ import React from 'react'
  * re-rendered. This approach deals with this problem.)
  */
 export default function proxyFuncs(Component) {
-  return class Wrapper extends React.Component {
+  return class ProxyFuncWrapper extends React.Component {
 
     constructor(props) {
       super(props);
