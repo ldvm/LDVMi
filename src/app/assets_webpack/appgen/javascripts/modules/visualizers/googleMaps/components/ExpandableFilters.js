@@ -29,7 +29,8 @@ class ExpandableFilters extends Component {
     }
   }
 
-  toggleExpanded() {
+  toggleExpanded(e) {
+    e.stopPropagation();
     this.setState({
       expanded: !this.state.expanded
     });
@@ -38,7 +39,7 @@ class ExpandableFilters extends Component {
   renderHeader(expandable, expanded) {
     const style = Object.assign({}, headerStyle, expandable ? { cursor: 'pointer '} : {});
 
-    return <div style={style} onClick={() => this.toggleExpanded()} >
+    return <div style={style} onClick={::this.toggleExpanded} >
         {expandable && this.renderExpandButton(expanded)}
         Available filters
       </div>
@@ -46,10 +47,10 @@ class ExpandableFilters extends Component {
 
   renderExpandButton(expanded) {
     return <IconButton
-      icon={expanded ? 'expand_less' : 'expand_more'}
+      icon={expanded ? 'expand_more' : 'chevron_right'}
       style={iconStyle}
-      iconStyle={{ color: 'white '}}
-      onTouchTap={() => this.toggleExpanded()}
+      iconStyle={{ color: 'white ' }}
+      onClick={::this.toggleExpanded}
     />
   }
 
