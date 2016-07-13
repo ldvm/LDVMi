@@ -39,7 +39,9 @@ const SidebarItem = ({ children, icon, iconColor, menuItems, onClick }) => {
           anchorOrigin={{horizontal: 'left', vertical: 'top'}}
           targetOrigin={{horizontal: 'left', vertical: 'top'}}
         >
-          {menuItems}
+          <div style={{ cursor: 'pointer' }}>
+            {menuItems}
+          </div>
         </IconMenu>
       )}
 

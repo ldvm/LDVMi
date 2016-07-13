@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import Divider from 'material-ui/Divider';
-import MenuItem from 'material-ui/MenuItem';
+import Divider from 'material-ui/Divider'
+import MenuItem from 'material-ui/MenuItem'
 import { Filter } from '../models'
 import EditableLabel from '../../../app/containers/EditableLabel'
 import { filterTypes as types, optionModes as modes } from '../models'
@@ -8,6 +8,11 @@ import SidebarItem from './SidebarItem'
 
 const headerStyle = {
   backgroundColor: '#f7f7f7'
+};
+
+const disabledHeaderStyle = {
+  textDecoration: 'line-through',
+  color: 'rgba(0, 0, 0, 0.3)'
 };
 
 const h3Style = {
@@ -73,7 +78,7 @@ const FilterConfigHeader = ({ filter, configurable, configureAllOptions, configu
     </div>);
 
   return (
-    <div style={headerStyle}>
+    <div style={Object.assign({}, headerStyle, !filter.enabled ? disabledHeaderStyle : {})}>
       <SidebarItem
         icon={filter.expanded ? 'expand_more' : 'chevron_right'}
         menuItems={configurable ? configMenuItems : previewMenuItems}
@@ -83,6 +88,7 @@ const FilterConfigHeader = ({ filter, configurable, configureAllOptions, configu
           <EditableLabel uri={property.uri} label={property.label} />
         </h3>
       </SidebarItem>
+      <Divider />
     </div>);
 };
 
