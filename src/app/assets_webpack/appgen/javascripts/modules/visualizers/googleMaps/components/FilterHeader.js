@@ -22,7 +22,7 @@ const h3Style = {
   padding: 0
 };
 
-const FilterConfigHeader = ({ filter, configurable, configureAllOptions, configureFilter, selectAllOptions }) => {
+const FilterConfigHeader = ({ filter, configurable, configureAllOptions, configureFilter, expandFilter, selectAllOptions }) => {
   const { property } = filter;
 
   const previewMenuItems = (
@@ -82,7 +82,7 @@ const FilterConfigHeader = ({ filter, configurable, configureAllOptions, configu
       <SidebarItem
         icon={filter.expanded ? 'expand_more' : 'chevron_right'}
         menuItems={configurable ? configMenuItems : previewMenuItems}
-        onClick={() => configureFilter({ expanded: !filter.expanded })}
+        onClick={() => expandFilter(!filter.expanded)}
       >
         <h3 style={h3Style}>
           <EditableLabel uri={property.uri} label={property.label} />
@@ -97,6 +97,7 @@ FilterConfigHeader.propTypes = {
   configurable: PropTypes.bool,
   configureAllOptions: PropTypes.func,
   configureFilter: PropTypes.func,
+  expandFilter: PropTypes.func,
   selectAllOptions: PropTypes.func
 };
 

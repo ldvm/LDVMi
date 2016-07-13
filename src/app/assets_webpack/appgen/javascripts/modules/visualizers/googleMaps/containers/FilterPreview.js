@@ -7,7 +7,7 @@ import FilterHeader from '../components/FilterHeader'
 import Option from '../components/Option'
 import { createSkosConceptsStatusSelector } from '../ducks/skosConcepts'
 import { Filter, filterTypes as types, optionModes as modes } from '../models'
-import { configureFilter } from '../ducks/filtersConfig'
+import { configureFilter, expandFilter } from '../ducks/filtersConfig'
 import { selectOption, selectAllOptions } from '../ducks/optionsConfig'
 
 import Padding from '../../../../components/Padding'
@@ -29,6 +29,8 @@ const FilterPreview = ({ dispatch, filter, status }) => {
     <FilterHeader filter={filter}
       configureFilter={settings =>
         dispatch(configureFilter(filter.property.uri, settings))}
+      expandFilter={expanded =>
+        dispatch(expandFilter(filter.property.uri, expanded))}
       selectAllOptions={selected =>
         dispatch(selectAllOptions(filter.property.uri, filter.optionsUris, selected))}
     />

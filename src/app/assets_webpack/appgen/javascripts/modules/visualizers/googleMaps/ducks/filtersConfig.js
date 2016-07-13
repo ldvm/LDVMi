@@ -1,7 +1,6 @@
-import { Map, List, fromJS } from 'immutable'
+import { Map, fromJS } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
-import { Filter, Option } from '../models'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
 import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
@@ -12,6 +11,13 @@ export const CONFIGURE_FILTER = prefix('CONFIGURE_FILTER');
 export function configureFilter(propertyUri, settings) {
   const update = fromJS({ [propertyUri]: settings });
   return createAction(CONFIGURE_FILTER, { propertyUri, update });
+}
+
+export const EXPAND_FILTER = prefix('EXPANED_FILTER');
+
+export function expandFilter(propertyUri, expanded) {
+  const update = fromJS({ [propertyUri]: { expanded }});
+  return createAction(EXPAND_FILTER, { propertyUri, update });
 }
 
 // Reducer
@@ -30,6 +36,7 @@ export default function filtersConfigReducer(state = initialState, action) {
       break;
 
     case CONFIGURE_FILTER:
+    case EXPAND_FILTER:
       return state.mergeDeep(action.payload.update);
   }
 

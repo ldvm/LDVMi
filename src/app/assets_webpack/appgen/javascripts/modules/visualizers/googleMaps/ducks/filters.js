@@ -4,7 +4,7 @@ import moduleSelector from '../selector'
 import propertiesReducer, { GET_PROPERTIES_SUCCESS } from './properties'
 import skosConceptsReducer, { GET_SKOS_CONCEPTS_SUCCESS } from './skosConcepts'
 import skosConceptsCountsReducer, { GET_SKOS_CONCEPTS_COUNTS_SUCCESS } from './skosConceptsCounts'
-import filtersConfigReducer, { CONFIGURE_FILTER } from './filtersConfig'
+import filtersConfigReducer, { CONFIGURE_FILTER, EXPAND_FILTER } from './filtersConfig'
 import optionsConfigReducer, { CONFIGURE_OPTION, CONFIGURE_ALL_OPTIONS, validateOptionsUpdate } from './optionsConfig'
 import { Filter, Option } from '../models'
 import { GET_APPLICATION_START } from '../../../app/ducks/application'
@@ -66,6 +66,10 @@ export default function filtersReducer(state = new Filters(), action) {
         options: new Map(option)
       }));
       return state.update('filters', filters => filters.mergeDeep(update));
+
+    // Perform quick little update when expanding the filter
+    case EXPAND_FILTER:
+      return state.update('filters', filters => filters.mergeDeep(action.payload.update));
   }
 
   return state;

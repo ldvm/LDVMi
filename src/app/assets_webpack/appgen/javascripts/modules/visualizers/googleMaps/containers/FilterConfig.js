@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { PromiseStatus } from '../../../core/models'
 import PromiseResult from '../../../core/components/PromiseResult'
 import { Filter } from '../models'
-import { configureFilter } from '../ducks/filtersConfig'
+import { configureFilter, expandFilter } from '../ducks/filtersConfig'
 import { createSkosConceptsStatusSelector } from '../ducks/skosConcepts'
 import { configureOption, configureAllOptions } from '../ducks/optionsConfig'
 import FilterHeader from '../components/FilterHeader'
@@ -20,6 +20,8 @@ const FilterConfig = ({ dispatch, filter, status }) => {
         dispatch(configureAllOptions(property.uri, filter.optionsUris, settings))}
       configureFilter={settings =>
         dispatch(configureFilter(property.uri, settings))}
+      expandFilter={expanded =>
+        dispatch(expandFilter(filter.property.uri, expanded))}
     />
 
     {!status.done && (
