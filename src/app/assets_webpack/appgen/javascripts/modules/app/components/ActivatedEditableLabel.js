@@ -45,7 +45,8 @@ class ActivatedEditableLabel extends Component {
             icon="mode_edit"
             iconStyle={iconStyle}
             tooltip="Edit custom label"
-            onClick={edit} />
+            onClick={e => e.stopPropagation()}
+            onTouchTap={e => { e.stopPropagation(); edit() }} />
         </div>
       </span>
     )

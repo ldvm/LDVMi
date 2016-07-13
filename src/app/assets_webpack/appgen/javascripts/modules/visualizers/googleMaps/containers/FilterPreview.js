@@ -7,11 +7,14 @@ import FilterHeader from '../components/FilterHeader'
 import Option from '../components/Option'
 import { createSkosConceptsStatusSelector } from '../ducks/skosConcepts'
 import { Filter, filterTypes as types, optionModes as modes } from '../models'
+import { configureFilter } from '../ducks/filtersConfig'
 import { selectOption, selectAllOptions } from '../ducks/optionsConfig'
+
+import Padding from '../../../../components/Padding'
 
 const FilterPreview = ({ dispatch, filter, status }) => {
   if (!filter.enabled) {
-    return <div></div>;
+    return null;
   }
 
   const onSelect = filter.type == types.CHECKBOX ?
@@ -23,15 +26,20 @@ const FilterPreview = ({ dispatch, filter, status }) => {
     };
 
   return <div>
-    <FilterHeader
-      filter={filter}
+    <FilterHeader filter={filter}
+      configureFilter={settings =>
+        dispatch(configureFilter(filter.property.uri, settings))}
       selectAllOptions={selected =>
         dispatch(selectAllOptions(filter.property.uri, filter.optionsUris, selected))}
     />
 
-    {!status.done && <PromiseResult status={status} />}
+    {!status.done && (
+      <Padding space={2}>
+        <PromiseResult status={status} loadingMessage="Loading filter options..." />
+      </Padding>
+    )}
 
-    {status.done && filter.options.filter(option => option.mode != modes.SELECT_NEVER).toList().map(option =>
+    {status.done && filter.expanded && filter.options.filter(option => option.mode != modes.SELECT_NEVER).toList().map(option =>
       <Option
         key={option.skosConcept.uri}
         option={option}

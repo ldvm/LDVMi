@@ -1,16 +1,10 @@
 import React, { PropTypes } from 'react'
 import Divider from 'material-ui/Divider';
-import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import { Filter } from '../models'
-import Padding from '../../../../components/Padding'
 import EditableLabel from '../../../app/containers/EditableLabel'
-import * as theme from '../../../../misc/theme'
-import { filterTypes as types } from  '../models'
-
-// TODO: show the whole value using tooltip
+import { filterTypes as types, optionModes as modes } from '../models'
+import SidebarItem from './SidebarItem'
 
 const headerStyle = {
   backgroundColor: '#f7f7f7'
@@ -19,49 +13,85 @@ const headerStyle = {
 const h3Style = {
   fontWeight: 'normal',
   fontSize: '1.05rem',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
   margin: 0,
   padding: 0
 };
 
-const iconMenuStyle = {
-  float: 'right',
-  marginTop: '-12px',
-  marginRight: '-12px'
-};
+const FilterConfigHeader = ({ filter, configurable, configureAllOptions, configureFilter, selectAllOptions }) => {
+  const { property } = filter;
 
-const FilterHeader = ({ filter, selectAllOptions }) => {
-  return <div style={headerStyle}>
-    <Padding space={2}>
-      <IconMenu
-        style={iconMenuStyle}
-        iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-        anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-        targetOrigin={{horizontal: 'left', vertical: 'top'}}
+  const previewMenuItems = (
+    <div>
+      <MenuItem
+        primaryText="Select all"
+        onTouchTap={() => selectAllOptions(true)}
+        disabled={filter.type == types.RADIO}
+      />
+      <MenuItem
+        primaryText="Select none"
+        onTouchTap={() => selectAllOptions(false)}
+        disabled={filter.type == types.RADIO}
+      />
+    </div>);
+
+  const configMenuItems = (
+    <div>
+      <MenuItem
+        primaryText="All select always"
+        onTouchTap={() => configureAllOptions({ mode: modes.SELECT_ALWAYS })}
+      />
+      <MenuItem
+        primaryText="All select never"
+        onTouchTap={() => configureAllOptions({ mode: modes.SELECT_NEVER })}
+      />
+      <MenuItem
+        primaryText="All user defined"
+        onTouchTap={() => configureAllOptions({ mode: modes.USER_DEFINED })}
+      />
+      <Divider />
+      <MenuItem
+        primaryText="Enable"
+        disabled={filter.enabled}
+        onTouchTap={() => configureFilter({ enabled: true })}
+      />
+      <MenuItem
+        primaryText="Disable"
+        disabled={!filter.enabled}
+        onTouchTap={() => configureFilter({ enabled: false })}
+      />
+      <Divider />
+      <MenuItem
+        primaryText="Checkboxes"
+        disabled={filter.type == types.CHECKBOX}
+        onTouchTap={() => configureFilter({ type: types.CHECKBOX })}
+      />
+      <MenuItem
+        primaryText="Radios"
+        disabled={filter.type == types.RADIO}
+        onTouchTap={() => configureFilter({ type: types.RADIO })}
+      />
+    </div>);
+
+  return (
+    <div style={headerStyle}>
+      <SidebarItem
+        icon={filter.expanded ? 'expand_more' : 'chevron_right'}
+        menuItems={configurable ? configMenuItems : previewMenuItems}
+        onClick={() => configureFilter({ expanded: !filter.expanded })}
       >
-        <MenuItem
-          primaryText="Select all"
-          onTouchTap={() => selectAllOptions(true)}
-          disabled={filter.type == types.RADIO}
-        />
-        <MenuItem
-          primaryText="Select none"
-          onTouchTap={() => selectAllOptions(false)}
-          disabled={filter.type == types.RADIO}
-        />
-      </IconMenu>
-      <h3 style={h3Style}>
-        <EditableLabel uri={filter.property.uri} label={filter.property.label} /><br />
-      </h3>
-    </Padding>
-  </div>
+        <h3 style={h3Style}>
+          <EditableLabel uri={property.uri} label={property.label} />
+        </h3>
+      </SidebarItem>
+    </div>);
 };
 
-FilterHeader.propTypes = {
+FilterConfigHeader.propTypes = {
   filter: PropTypes.instanceOf(Filter).isRequired,
-  selectAllOptions: PropTypes.func.isRequired
+  configurable: PropTypes.bool,
+  configureAllOptions: PropTypes.func,
+  configureFilter: PropTypes.func,
+  selectAllOptions: PropTypes.func
 };
 
-export default FilterHeader;
+export default FilterConfigHeader;
