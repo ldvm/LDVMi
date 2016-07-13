@@ -22,6 +22,12 @@ const h3Style = {
   padding: 0
 };
 
+const countStyle = {
+  fontSize: '0.9rem',
+  color: 'rgba(0, 0, 0, 0.6)',
+  fontWeight: 'bold'
+};
+
 const FilterConfigHeader = ({ filter, configurable, configureAllOptions, configureFilter, expandFilter, selectAllOptions }) => {
   const { property } = filter;
 
@@ -38,6 +44,12 @@ const FilterConfigHeader = ({ filter, configurable, configureAllOptions, configu
         disabled={filter.type == types.RADIO}
       />
     </div>);
+
+  const renderCheckedCount = () => {
+    const checked = filter.options.filter(option => option.selected).size;
+    const total = filter.options.filter(option => option.mode != modes.SELECT_NEVER).size;
+    return <span style={countStyle}>({checked}/{total})</span>
+  };
 
   const configMenuItems = (
     <div>
@@ -85,7 +97,8 @@ const FilterConfigHeader = ({ filter, configurable, configureAllOptions, configu
         onClick={() => expandFilter(!filter.expanded)}
       >
         <h3 style={h3Style}>
-          <EditableLabel uri={property.uri} label={property.label} />
+          <EditableLabel uri={property.uri} label={property.label} />{' '}
+          {!configurable && filter.type == types.CHECKBOX && renderCheckedCount()}
         </h3>
       </SidebarItem>
       <Divider />
