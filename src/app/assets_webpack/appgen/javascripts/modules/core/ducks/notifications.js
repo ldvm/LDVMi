@@ -10,7 +10,7 @@ export const NOTIFICATION_SHOW = prefix('NOTIFICATION_SHOW');
 export const NOTIFICATION_HIDE = prefix('NOTIFICATION_HIDE');
 
 /** Show a user notification for a limited period of time */
-export function notification(message, duration = 3000) {
+export function notification(message, duration = 4000) {
   const id = Math.floor(Math.random() * 100000);
   return dispatch => {
     dispatch(createAction(NOTIFICATION_SHOW, {id, message}));
