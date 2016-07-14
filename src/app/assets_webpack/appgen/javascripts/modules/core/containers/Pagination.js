@@ -10,9 +10,8 @@ const Pagination = ({ paginator, page, changePage }) => {
     return <span />;
   }
 
-  const totalPages = Math.floor((paginator.totalCount + paginator.pageSize - 1) / paginator.pageSize);
-  const firstPage = 1;
-  const lastPage = totalPages + 1;
+  const firstPage = paginator.firstPage();
+  const lastPage = paginator.lastPage();
   const SPACE = -1;
 
   // As there might be too many pages, we just render the current page and the immediate pages
@@ -29,7 +28,7 @@ const Pagination = ({ paginator, page, changePage }) => {
 
   return (
     <div>
-      {page > 1 &&
+      {page > firstPage &&
         <PaginatorPage onTouchTap={() => changePage(page - 1)} label="< Prev" />
       }
       {' '}
@@ -41,7 +40,7 @@ const Pagination = ({ paginator, page, changePage }) => {
             label={i} />
       )}
       {' '}
-      {page < totalPages &&
+      {page < lastPage &&
         <PaginatorPage onTouchTap={() => changePage(page + 1)} label="Next >" />
       }
     </div>

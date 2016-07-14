@@ -23,6 +23,21 @@ export function makePaginationInfo(paginator, page = null) {
   });
 }
 
+/**
+ * Make sure that the page is not out of boundaries
+ * @param {Paginator} paginator
+ * @return {Paginator}
+ */
+function validatePaginatorPage(paginator) {
+  if (paginator.page < paginator.firstPage()) {
+    return paginator.set('page', paginator.firstPage())
+  } else if (paginator.page > paginator.lastPage()) {
+    return paginator.set('page', paginator.lastPage())
+  } else {
+    return paginator;
+  }
+}
+
 // Actions
 
 // Note: This action merely updates paginator's internal state. The reason why it's called RESET
@@ -49,10 +64,10 @@ export function changePage(name, page) {
 function paginatorReducer(paginator = new Paginator(), action) {
   switch (action.type) {
     case RESET_PAGINATOR:
-      return paginator.merge(action.payload.paginator);
+      return validatePaginatorPage(paginator.merge(action.payload.paginator));
 
     case CHANGE_PAGE:
-      return paginator.set('page', action.payload.page);
+      return validatePaginatorPage(paginator.set('page', action.payload.page));
   }
 
   return paginator;

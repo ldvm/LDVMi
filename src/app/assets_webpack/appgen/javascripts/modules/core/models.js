@@ -33,6 +33,18 @@ export const Paginator = Record({
   totalCount: null
 });
 
+Paginator.prototype.totalPages = function () {
+  return Math.floor(((this.totalCount || 0) + this.pageSize - 1) / this.pageSize);
+};
+
+Paginator.prototype.firstPage = function () {
+  return 1;
+};
+
+Paginator.prototype.lastPage = function () {
+  return this.totalPages();
+};
+
 /**
  * Representation of the "intent" to fetch a page of items. We don't really need this record as
  * it to a large extent represents the same information as Paginator. We use it for semantics
