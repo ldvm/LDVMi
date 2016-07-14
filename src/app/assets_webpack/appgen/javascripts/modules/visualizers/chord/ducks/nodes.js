@@ -24,12 +24,18 @@ export const GET_NODES = prefix('GET_NODES');
 export const GET_NODES_START = GET_NODES + '_START';
 export const GET_NODES_ERROR = GET_NODES + '_ERROR';
 export const GET_NODES_SUCCESS = GET_NODES + '_SUCCESS';
+export const GET_NODES_RESET = GET_NODES + '_RESET';
 
 export function getNodes(nodeUris) {
   return withApplicationId(appId => {
     const promise = api.getNodes(appId, nodeUris);
     return createAction(GET_NODES, { promise }, { id: hashNodeUris(nodeUris) });
   });
+}
+
+export function getNodesReset() {
+  // This resets all requests.
+  return createAction(GET_NODES_RESET);
 }
 
 // Reducer

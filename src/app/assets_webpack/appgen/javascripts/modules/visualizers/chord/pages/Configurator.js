@@ -16,6 +16,7 @@ import Visualization from '../containers/Visualization'
 import Layout from '../components/Layout'
 import Toolbar from '../components/Toolbar'
 import ConfiguratorSidebar from '../components/ConfiguratorSidebar'
+import { getNodesReset } from '../ducks/nodes'
 
 class Configurator extends Component {
   static propTypes = {
@@ -38,6 +39,7 @@ class Configurator extends Component {
     dispatch(getGraphReset());
     dispatch(getSearchableLensReset());
     dispatch(getConfigurationReset());
+    dispatch(getNodesReset());
   }
 
   render() {

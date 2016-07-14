@@ -8,7 +8,7 @@ import { Graph } from '../models'
 import D3ChordContainer from './D3ChordContainer'
 import Alert from '../../../../components/Alert'
 import { graphSelector } from '../ducks/graph'
-import { visualizeSampleNodes, visualizedNodesSelector, visualizeSampleNodesStatusSelector } from '../ducks/visualizedNodes'
+import { visualizeSampleNodes, visualizeSampleNodesReset, visualizedNodesSelector, visualizeSampleNodesStatusSelector } from '../ducks/visualizedNodes'
 
 class SampleVisualization extends Component {
   static propTypes = {
@@ -21,6 +21,11 @@ class SampleVisualization extends Component {
   componentWillMount() {
     const { dispatch } = this.props;
     dispatch(visualizeSampleNodes());
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch(visualizeSampleNodesReset());
   }
 
   render() {

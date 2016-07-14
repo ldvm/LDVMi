@@ -15,12 +15,17 @@ export const VISUALIZE_SAMPLE_NODES = prefix('VISUALIZE_SAMPLE_NODES');
 export const VISUALIZE_SAMPLE_NODES_START = VISUALIZE_SAMPLE_NODES + '_START';
 export const VISUALIZE_SAMPLE_NODES_ERROR = VISUALIZE_SAMPLE_NODES + '_ERROR';
 export const VISUALIZE_SAMPLE_NODES_SUCCESS = VISUALIZE_SAMPLE_NODES + '_SUCCESS';
+export const VISUALIZE_SAMPLE_NODES_RESET = VISUALIZE_SAMPLE_NODES + '_RESET';
 
 export function visualizeSampleNodes() {
   return withApplicationId(id => {
     const promise = api.getSampleNodes(id);
     return createAction(VISUALIZE_SAMPLE_NODES, { promise });
   });
+}
+
+export function visualizeSampleNodesReset() {
+  return createAction(VISUALIZE_SAMPLE_NODES_RESET);
 }
 
 export const VISUALIZE_SELECTED_NODES = prefix('VISUALIZE_SELECTED_NODES');
