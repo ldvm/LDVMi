@@ -28,7 +28,7 @@ const PublishSettingsMenu = ({ updatePublishSettings, publishSettings, graph }) 
     <MenuItem
       checked={allowSelectingNodes}
       onTouchTap={() => updatePublishSettings({ allowSelectingNodes: !allowSelectingNodes })}
-      primaryText="Allow selecting lists"
+      primaryText="Allow selecting nodes"
       insetChildren={true}
     />
     {graph.directed &&
