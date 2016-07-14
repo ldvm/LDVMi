@@ -140,6 +140,8 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     * @param useWeights if true, an edge is counted as its weight value instead of just 1.
     */
   def matrix(evaluation: PipelineEvaluation, nodeUris: Seq[String], useWeights: Boolean = true)(implicit session: Session): Option[Seq[Seq[Double]]] = {
+    if (nodeUris.isEmpty) return Some(Seq(Seq()))
+
     for {
       graph <- graph(evaluation)
       edges <- Some(nodeUris
