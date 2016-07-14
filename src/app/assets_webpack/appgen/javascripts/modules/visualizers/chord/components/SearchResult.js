@@ -9,6 +9,10 @@ import { Lens } from '../models'
 import Label from '../../../app/containers/Label'
 import IgnoreDialogPadding from '../../../../components/IgnoreDialogPadding'
 import SearchResultRow from './SearchResultRow'
+import prefix from '../prefix'
+import paginate from '../../../core/containers/paginate'
+
+export const paginatorName = prefix('SEARCH_RESULTS');
 
 const SearchResult = ({ searchableLens, result }) => (
   <IgnoreDialogPadding horizontal bottom>
@@ -41,4 +45,9 @@ SearchResult.propTypes = {
   result: PropTypes.instanceOf(List).isRequired
 };
 
-export default SearchResult;
+export default paginate({
+  paginatorName,
+  itemsSelector: (_, props) => props.result,
+  pageSize: 5,
+  pageContentProp: 'result'
+}, SearchResult);

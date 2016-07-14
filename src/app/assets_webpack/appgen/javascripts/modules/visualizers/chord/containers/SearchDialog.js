@@ -8,18 +8,25 @@ import Button from '../../../../components/Button'
 import Dialog from '../../../core/containers/Dialog';
 import { dialogClose } from '../../../core/ducks/dialog'
 import SearchInput from '../components/SearchInput'
-import SearchResult from '../components/SearchResult'
+import SearchResult, { paginatorName as searchResultsPaginatorName } from '../components/SearchResult'
 import { searchableLensSelector } from '../ducks/searchableLens'
 import { search, searchSelector, searchStatusSelector } from '../ducks/search'
 import { PromiseStatus } from '../../../core/models'
 import { Lens } from '../models'
 import Alert from '../../../../components/Alert'
+import PullLeft from '../../../../components/PullLeft'
+import Pagination from '../../../core/containers/Pagination'
 
 export const dialogName = prefix('SEARCH_DIALOG');
 
 const SearchDialog = ({ dispatch, searchableLens, searchResult, searchStatus }) => {
 
-  const actions = [ <Button label="Close" onTouchTap={() => dispatch(dialogClose(dialogName))} /> ];
+  const actions = [
+    <PullLeft>
+      <Pagination name={searchResultsPaginatorName} />
+    </PullLeft>,
+    <Button label="Close" onTouchTap={() => dispatch(dialogClose(dialogName))} />
+  ];
 
   return (
     <Dialog name={dialogName} title="Search graph data" actions={actions} width={1000}>
