@@ -50,16 +50,24 @@ export default function loadNodes(ComposedComponent) {
   }
 
   const nodeUrisSelector = (_, props) => props.nodeUris; // Should be Immutable.OrderedSet
-  const nodesStatusSelector = createNodesStatusSelector((_, props) => props.nodeUris.toJS());
+
+  const missingNodeUrisSelector = createSelector(
+    [nodesSelector, nodeUrisSelector],
+    (nodes, nodeUris) => nodeUris.filter(uri => !nodes.has(uri))
+  );
+
+  // Get the status of the current request fetching the missing nodes. The promise status is
+  // identified with missing nodes being fetched. So we have to pass the missing nodes to the
+  // status selector.
+  const nodesStatusSelector = createNodesStatusSelector((state, props) =>
+    missingNodeUrisSelector(state, props).toJS());
 
   const selector = createSelector(
-    [nodesSelector, nodesStatusSelector, nodeUrisSelector],
-    (nodes, status, nodeUris) => {
+    [nodesSelector, nodesStatusSelector, nodeUrisSelector, missingNodeUrisSelector],
+    (nodes, status, nodeUris, missingNodeUris) => {
       const selectedNodes = nodeUris
         .map(uri => nodes.get(uri))
         .filter(node => node != null);
-      const missingNodeUris = nodeUris
-        .filter(uri => !nodes.has(uri));
       const completed = missingNodeUris.size === 0;
 
       let finalStatus;
@@ -68,6 +76,8 @@ export default function loadNodes(ComposedComponent) {
       } else {
         finalStatus = status;
       }
+
+      console.log(status.toJS());
 
       return {
         nodes: selectedNodes,
