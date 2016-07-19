@@ -85,7 +85,7 @@ lazy val buildAppgenJs = taskKey[Unit]("Build appgen JavaScript frontend")
 
 buildAppgenJs := {
   println("Building appgen JavaScript frontend...")
-  "npm install" #&& "npm run appgen-build" !
+  "npm install" #&& "npm update" #&& "npm run appgen-build" !
 }
 
 stage <<= stage dependsOn buildAppgenJs
