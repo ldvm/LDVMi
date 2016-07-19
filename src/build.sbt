@@ -78,15 +78,16 @@ JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
 
 //pipelineStages := Seq(rjs, digest, gzip)
 
-
 // Custom task that compiles appgen JavaScript frontend (React) files using webpack. The simplest
 // way is to execute it as an external command (it's probably not going to work on Windows machines
 // but whatever).
 lazy val buildAppgenJs = taskKey[Unit]("Build appgen JavaScript frontend")
+
 buildAppgenJs := {
   println("Building appgen JavaScript frontend...")
   "npm install" #&& "npm run appgen-build" !
 }
 
 stage <<= stage dependsOn buildAppgenJs
+
 dist <<= dist dependsOn buildAppgenJs
