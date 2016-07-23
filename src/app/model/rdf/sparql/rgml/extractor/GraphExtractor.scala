@@ -11,15 +11,14 @@ class GraphExtractor extends QueryExecutionResultExtractor[GraphQuery, Graph] {
   def extract(input: QueryExecution): Option[Graph] = {
 
     try {
-      val resultSet = input.execSelect()
+      val resultSet = input.execSelect
+      val solution = if (resultSet.hasNext) Some(resultSet.next) else None
 
-      if (!resultSet.hasNext) return None
-
-      val solution = resultSet.nextSolution()
-      Some(Graph(
+      solution map { solution => Graph(
         solution.getLiteral("directed").getBoolean,
         solution.getLiteral("nodeCount").getInt,
-        solution.getLiteral("edgeCount").getInt))
+        solution.getLiteral("edgeCount").getInt)
+      }
     } catch {
       case e: org.apache.jena.sparql.engine.http.QueryExceptionHTTP => {
         None
