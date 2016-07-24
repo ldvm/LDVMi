@@ -88,7 +88,7 @@ v-graph-r:GraphFeature a ldvm:MandatoryFeature ;
 
 As you can see, this *feature* is *mandatory* which means that the input data must meet the requirements defined by the *feature descriptor*. So let us have a look at it.
 
-```js
+```
 v-graph-r:GraphDescriptor a ldvm:Descriptor ;
     dcterms:title "Graph presence check" ;
     ldvm:query """
@@ -347,7 +347,7 @@ We said that our *visualizer* would show the number of vertices and edges in the
 
 Since it is RDF data, we will use SPARQL queries to fetch the information we need.
 
-```js
+```
 package model.rdf.sparql.rgml.query
 import model.rdf.sparql.query.SparqlQuery
 
