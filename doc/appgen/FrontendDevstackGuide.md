@@ -237,7 +237,7 @@ Now let us see how we bind this to a React component.
 
 This way we *connected* the component to the *store*. The *dispatch* function is automatically injected to the component as a *prop* which means that we can start *dispatching* actions to modify the *state*. The *state* (in our case just a single integer) is also injected to the component through the *props* but we have to specifically define how that should happen using the `mapStateToProps` function.
 
-The process makes up a circle. The user clicks the button in the component and an *action* is *dispatched* to the *reducer*. The *reducer* updates the *state* and the *store* notifies the component of a change. The component re-renders with the updated value. As the *state* can be changed only using *actions*, the system behavior is predictable and very explicit. Redux offers a development mode in which it is very easy to monitor the *actions* flowing through the system and how they change the *state* (Figure \[fig:graph-visualizer\]).
+The process makes up a circle. The user clicks the button in the component and an *action* is *dispatched* to the *reducer*. The *reducer* updates the *state* and the *store* notifies the component of a change. The component re-renders with the updated value. As the *state* can be changed only using *actions*, the system behavior is predictable and very explicit. Redux offers a development mode in which it is very easy to monitor the *actions* flowing through the system and how they change the *state*.
 
 The *reducers* can be composed and combined. Let us now add another reducer that will simply count the number of clicks.
 
