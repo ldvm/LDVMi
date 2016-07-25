@@ -49,7 +49,11 @@ const validate = makeValidator({
       message: 'Please specify an endpoint'
     },
     graphUris: {
-      allowEmpty: true
+      allowEmpty: true,
+      pattern: /^[^ ]*$/,
+      messages: {
+        pattern: 'There must be no spaces in graph URIs'
+      }
     }
   }
 });

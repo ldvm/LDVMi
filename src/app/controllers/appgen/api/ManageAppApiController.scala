@@ -57,7 +57,7 @@ class ManageAppApiController(implicit inj: Injector) extends SecuredRestControll
       }
     }
   }
-      Ok(SuccessResponse("The application has been deleted"))
+  
   def deleteApp(id: Long) = RestAction[EmptyRequest] { implicit request => json =>
     withApplication(ApplicationId(id)) { application =>
       applicationsRepository.deleteById(application.id.get)
