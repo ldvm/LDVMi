@@ -76,7 +76,7 @@ libraryDependencies ++= Seq(
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
 
-//pipelineStages := Seq(rjs, digest, gzip)
+pipelineStages := Seq(gzip)
 
 // Custom task that compiles appgen JavaScript frontend (React) files using webpack. The simplest
 // way is to execute it as an external command (it's probably not going to work on Windows machines
