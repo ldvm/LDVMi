@@ -91,3 +91,11 @@ buildAppgenJs := {
 stage <<= stage dependsOn buildAppgenJs
 
 dist <<= dist dependsOn buildAppgenJs
+
+lazy val printWebpackWarning = taskKey[Unit]("Print Webpack warning")
+
+printWebpackWarning := {
+  println("You're in dev mode. Run 'npm run appgen-dev' to start Webpack server for frontend development of the application generator.")
+}
+
+run in Compile <<= run in Compile dependsOn printWebpackWarning
