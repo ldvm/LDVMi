@@ -9,6 +9,7 @@ import FillInScreen from '../../../../components/FillInScreen'
 import Padding from '../../../../components/Padding'
 import FilterConfig from '../containers/FilterConfig'
 import FilterPreview from '../containers/FilterPreview'
+import NoFiltersAvailable from './NoFiltersAvailable'
 
 class SidebarTabs extends Component {
   static propTypes = {
@@ -24,6 +25,7 @@ class SidebarTabs extends Component {
         <Tab label="Configure">
           <FillInScreen marginBottom={100}>
             <div>
+              {filters.size == 0 && <NoFiltersAvailable />}
               {filters.toList().map(filter =>
                 <div key={filter.property.uri}>
                   <FilterConfig filter={filter} />
@@ -38,6 +40,7 @@ class SidebarTabs extends Component {
         <Tab label="Preview">
           <FillInScreen marginBottom={100}>
             <div>
+              {filters.size == 0 && <NoFiltersAvailable />}
               {filters.toList().map(filter =>
                 <div key={filter.property.uri}>
                   <FilterPreview filter={filter} />

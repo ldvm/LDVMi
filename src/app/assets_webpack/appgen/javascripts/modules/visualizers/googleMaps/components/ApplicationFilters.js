@@ -6,6 +6,7 @@ import FillInScreen from '../../../../components/FillInScreen'
 import Padding from '../../../../components/Padding'
 import FilterPreview from '../containers/FilterPreview'
 import ExpandableFilters from './ExpandableFilters'
+import NoFiltersAvailable from './NoFiltersAvailable'
 
 const ApplicationFilters = ({ filters, expandable }) => {
 
@@ -13,6 +14,7 @@ const ApplicationFilters = ({ filters, expandable }) => {
       <ExpandableFilters expandable={expandable}>
         <FillInScreen marginBottom={100}>
           <div>
+            {filters.size == 0 && <NoFiltersAvailable />}
             {filters.toList().map(filter =>
               <div key={filter.property.uri}>
                 <FilterPreview filter={filter} />
