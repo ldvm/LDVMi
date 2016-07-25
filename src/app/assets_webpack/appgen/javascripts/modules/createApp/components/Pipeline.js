@@ -13,15 +13,16 @@ import { notification } from '../../core/ducks/notifications'
 import * as api from '../api'
 import * as routes from '../../app/configuratorRoutes'
 import { getLatestUserApps } from '../../platform/ducks/latestUserApps'
+import ProgressIndicator, { IN_PROGRESS, ERROR, SUCCESS } from '../../../components/ProgressIndicator'
 
 const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus, dispatch}) => {
-  const lastEvaluation = pipeline.evaluations.get(0);
+  const lastEvaluation = pipeline.evaluations.last();
   const createAppDialogName = 'CREATE_APP_DIALOG_' + pipeline.id;
 
-  let statusIcon = '';
+  let status = '';
   if (lastEvaluation != null) {
-    statusIcon = lastEvaluation.isFinished ?
-      (lastEvaluation.isSuccess ? 'done' : 'error') : 'hourglass_empty'
+    status = lastEvaluation.isFinished ?
+      (lastEvaluation.isSuccess ? SUCCESS : ERROR) : IN_PROGRESS;
   }
 
   const isRunning = runEvaluationStatus.isLoading || (lastEvaluation != null && !lastEvaluation.isFinished);
@@ -43,7 +44,7 @@ const Pipeline = ({pipeline, runEvaluation, runEvaluationStatus, dispatch}) => {
   return <TableRow key={pipeline.id}>
     <TableRowColumn>{pipeline.title}</TableRowColumn>
     <TableRowColumn width={100}>
-      {lastEvaluation != null && <IconButton icon={statusIcon} />}
+      {lastEvaluation != null && <ProgressIndicator status={status} />}
     </TableRowColumn>
     <TableRowColumn width={400}>
       <Button warning raised icon="play_arrow"
