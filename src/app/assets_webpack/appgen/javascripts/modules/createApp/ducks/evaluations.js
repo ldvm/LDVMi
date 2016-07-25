@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { List } from 'immutable'
+import { List, fromJS } from 'immutable'
 import * as api from '../api'
 import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
@@ -31,7 +31,8 @@ const initialState = List();
 export default function evaluationsReducer(state = initialState, action) {
   switch (action.type) {
     case GET_EVALUATIONS_SUCCESS:
-      return state.mergeDeep(action.payload);
+      // Cannot merge, we need to create a new instance to indicate that it is actually new data
+      return fromJS(action.payload);
 
     case GET_EVALUATIONS_RESET:
       return initialState;

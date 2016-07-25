@@ -1,5 +1,5 @@
 import { createSelector, createStructuredSelector } from 'reselect'
-import { Map, List } from 'immutable'
+import { Map, List, fromJS } from 'immutable'
 import * as api from '../api'
 import prefix from '../prefix'
 import createAction from '../../../misc/createAction'
@@ -35,7 +35,8 @@ const initialState = Map();
 export default function discoveryReducer(state = initialState, action) {
   switch (action.type) {
     case GET_DISCOVERY_SUCCESS:
-      return state.mergeDeep(action.payload);
+      // Cannot merge, we need to create a new instance to indicate that it is actually new data
+      return fromJS(action.payload);
 
     case GET_DISCOVERY_RESET:
       return initialState;
