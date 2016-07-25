@@ -13,6 +13,7 @@ import IfLoading from '../../core/containers/IfLoading'
 import AppLoadingBar from '../components/AppLoadingBar'
 import DelayedRender from '../../../components/DelayedRender'
 import { getLatestUserApps, latestUserAppsSelector, latestUserAppsStatusSelector } from '../ducks/latestUserApps'
+import VirtuosoStatus from '../../core/containers/VirtuosoStatus'
 
 class Platform extends Component {
   static propTypes = {
@@ -53,6 +54,8 @@ class Platform extends Component {
           signUp={() => dispatch(signUp())}
           signOut={() => dispatch(signOut())}
         />
+
+        <VirtuosoStatus />
 
         {children}
 
