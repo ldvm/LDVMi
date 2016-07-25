@@ -21,14 +21,14 @@ const dialogStyle = {
 export const dialogName = 'SHOW_PIPELINES_DIALOG';
 
 const ShowPipelinesDialog = (props) =>  {
-  const {dialogClose, runEvaluation, pipelines, dialogInstanceName} = props;
+  const { dialogClose, runEvaluation, pipelines } = props;
 
   const actions = [
-    <Button label="Close" onTouchTap={() => dialogClose(dialogInstanceName)} />
+    <Button label="Close" onTouchTap={() => dialogClose(dialogName)} />
   ];
 
   return (
-    <Dialog name={dialogInstanceName} title="Select pipeline" actions={actions} modal={false} contentStyle={dialogStyle}>
+    <Dialog name={dialogName} title="Select pipeline" actions={actions} modal={false} contentStyle={dialogStyle}>
       <Table selectable={false}>
         <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
           <TableRow>
@@ -49,7 +49,6 @@ const ShowPipelinesDialog = (props) =>  {
 ShowPipelinesDialog.dialogName = dialogName;
 
 ShowPipelinesDialog.propTypes = {
-  dialogInstanceName: PropTypes.string.isRequired,
   pipelines: PropTypes.instanceOf(List).isRequired,
   dialogClose: PropTypes.func.isRequired,
   runEvaluation: PropTypes.func.isRequired

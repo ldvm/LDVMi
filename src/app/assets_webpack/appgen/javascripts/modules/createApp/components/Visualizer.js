@@ -7,8 +7,8 @@ import CardActions from 'material-ui/Card/CardActions';
 import Button from '../../../components/Button'
 import Icon from '../../../components/Icon'
 import { VisualizerWithPipelines } from '../../core/models'
-import MaterialTheme from '../../../misc/materialTheme';
-import ShowPipelinesDialog from '../dialogs/ShowPipelinesDialog'
+import MaterialTheme from '../../../misc/materialTheme'
+import makePureRender from '../../../misc/makePureRender'
 
 const cardStyle = {
   marginBottom: MaterialTheme.spacing.desktopGutterLess + 'px'
@@ -21,8 +21,7 @@ const iconStyle = {
   display: 'block'
 };
 
-const Visualizer = ({ visualizer, dialogOpen, dialogClose, runEvaluation }) => {
-  const dialogInstanceName = ShowPipelinesDialog.dialogName + '_' + visualizer.id;
+const Visualizer = ({ visualizer, showPipelines }) => {
 
   return <Col md={3}>
     <Card style={cardStyle}>
@@ -38,14 +37,9 @@ const Visualizer = ({ visualizer, dialogOpen, dialogClose, runEvaluation }) => {
         <Button
           label={visualizer.disabled ? 'Unsupported visualizer' : 'Show pipelines'}
           disabled={visualizer.disabled}
-          onTouchTap={() => dialogOpen(dialogInstanceName)}
+          onTouchTap={() => showPipelines()}
           primary raised fullWidth
         />
-        <ShowPipelinesDialog
-          dialogInstanceName={dialogInstanceName}
-          dialogClose={dialogClose}
-          pipelines={visualizer.pipelines}
-          runEvaluation={runEvaluation} />
       </CardActions>
     </Card>
     </Col>
@@ -53,9 +47,7 @@ const Visualizer = ({ visualizer, dialogOpen, dialogClose, runEvaluation }) => {
 
 Visualizer.propTypes = {
   visualizer: PropTypes.instanceOf(VisualizerWithPipelines).isRequired,
-  dialogOpen: PropTypes.func.isRequired,
-  dialogClose: PropTypes.func.isRequired,
-  runEvaluation: PropTypes.func.isRequired
+  showPipelines: PropTypes.func.isRequired
 };
 
-export default Visualizer;
+export default makePureRender(Visualizer);

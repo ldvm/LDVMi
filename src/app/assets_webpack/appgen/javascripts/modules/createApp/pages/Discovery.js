@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
-import Helmet from "react-helmet"
+import React, { Component, PropTypes } from 'react'
+import { List } from 'immutable'
+import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { getDiscovery, getDiscoveryReset, discoverySelector } from '../ducks/discovery'
 import { getEvaluations, getEvaluationsReset } from '../ducks/evaluations'
@@ -9,8 +10,21 @@ import PromiseResult from '../../core/components/PromiseResult'
 import CenteredMessage from '../../../components/CenteredMessage'
 import DiscoveryStatus from '../components/DiscoveryStatus'
 import Visualizers from '../components/Visualizers'
+import ShowPipelinesDialog, { dialogName as showPipelinesDialogName } from '../dialogs/ShowPipelinesDialog'
+import { selectVisualizer } from '../ducks/selectedVisualizer'
+import { PromiseStatus, VisualizerWithPipelines } from '../../core/models'
+import { Discovery as DiscoveryModel } from '../models'
 
 class Discovery extends Component {
+  static propTypes = {
+    status: PropTypes.instanceOf(PromiseStatus).isRequired,
+    discovery: PropTypes.instanceOf(DiscoveryModel),
+    pipelines: PropTypes.instanceOf(List).isRequired,
+    visualizers: PropTypes.instanceOf(List).isRequired,
+    evaluations: PropTypes.instanceOf(List).isRequired,
+    selectedVisualizer: PropTypes.instanceOf(VisualizerWithPipelines).isRequired
+  };
+
   componentWillMount() {
     this.getDiscovery();
     this.getEvaluations();
@@ -59,30 +73,43 @@ class Discovery extends Component {
     dispatch(getEvaluations(userPipelineDiscoveryId));
   }
 
-  render() {
-    const {dispatch, isLoading, error, discovery, pipelines, visualizers} = this.props;
+  showPipelines(visualizer) {
+    const { dispatch } = this.props;
+    dispatch(selectVisualizer(visualizer.id));
+    dispatch(dialogOpen(showPipelinesDialogName));
+  }
 
-    return <div>
-      {!discovery && <div>
-        <Helmet title="Loading discovery..."  />
-        <PromiseResult isLoading={isLoading} error={error} />
-      </div>}
-      {discovery && <div>
-        <Helmet title={"Discovery of " + discovery.name} />
-        <DiscoveryStatus discovery={discovery} />
-        {visualizers.size > 0 ?
-          <Visualizers
-            visualizers={visualizers}
-            dialogOpen={name => dispatch(dialogOpen(name))}
+  render() {
+    const { dispatch, status, discovery, visualizers, selectedVisualizer } = this.props;
+
+    return (
+      <div>
+        {!discovery && <div>
+          <Helmet title="Loading discovery..."  />
+          <PromiseResult status={status} />
+        </div>}
+
+        {discovery && <div>
+          <Helmet title={"Discovery of " + discovery.name} />
+          <DiscoveryStatus discovery={discovery} />
+          {visualizers.size > 0 ?
+            <Visualizers
+              visualizers={visualizers}
+              showPipelines={::this.showPipelines}
+            /> :
+            <CenteredMessage>
+              No pipelines found {discovery.isFinished ? '.' : ' (yet).'}
+            </CenteredMessage>
+          }
+
+          <ShowPipelinesDialog
+            pipelines={selectedVisualizer.pipelines}
             dialogClose={name => dispatch(dialogClose(name))}
             runEvaluation={pipelineId => dispatch(runEvaluation(discovery.id, pipelineId))}
-          /> :
-          <CenteredMessage>
-            No pipelines found {discovery.isFinished ? '.' : ' (yet).'}
-          </CenteredMessage>
-        }
-      </div>}
-    </div>
+          />
+        </div>}
+      </div>
+    );
   }
 }
 

@@ -1,4 +1,4 @@
-import { createSelector } from 'reselect'
+import { createSelector, createStructuredSelector } from 'reselect'
 import { Map, List } from 'immutable'
 import * as api from '../api'
 import prefix from '../prefix'
@@ -9,6 +9,7 @@ import { evaluationsSelector, promiseSelector as evaluationPromiseSelector } fro
 import { Discovery, PipelineWithEvaluations } from '../models'
 import { VisualizerWithPipelines } from '../../core/models'
 import { createPromiseStatusSelector } from '../../core/ducks/promises'
+import {selectedVisualizerIdSelector} from "./selectedVisualizer";
 
 // Actions
 
@@ -84,10 +85,16 @@ const pipelineVisualizersSelector = createSelector(
     .filter(visualizer => visualizer.pipelines.size > 0)
 );
 
-// This rather complex hierarchy of selectors makes sure that the memoization works correctly.
-export const discoverySelector = createSelector(
-  [promiseSelector, mergedDiscoverySelector, pipelinesSelector, pipelineVisualizersSelector, evaluationsSelector, evaluationPromiseSelector], // TODO: evaluationPromiseSelector is also very ugly, let's do something with that in the next step
-  ({error, isLoading}, discovery, pipelines, visualizers, evaluations, evaluationsPromise) => ({
-    error, isLoading, discovery, pipelines, visualizers, evaluations, evaluationsPromise
-  })
+const selectedVisualizerSelector = createSelector(
+  [selectedVisualizerIdSelector, pipelineVisualizersSelector],
+  (id, visualizers) => visualizers.find(visualizer => visualizer.id == id) || new VisualizerWithPipelines()
 );
+
+export const discoverySelector = createStructuredSelector({
+  status: promiseSelector,
+  discovery: mergedDiscoverySelector,
+  pipelines: pipelinesSelector,
+  visualizers: pipelineVisualizersSelector,
+  evaluations: evaluationsSelector,
+  selectedVisualizer: selectedVisualizerSelector
+});
