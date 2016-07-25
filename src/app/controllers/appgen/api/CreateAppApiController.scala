@@ -16,30 +16,31 @@ import model.service.{DataSourceService, PipelineService}
 import scaldi.Injector
 import model.appgen.rest.Response._
 import model.appgen.rest.RestRequestWithUser
+import model.appgen.service.UserDataSourcesService
 import utils.PaginationInfo
 
 class CreateAppApiController(implicit inj: Injector) extends SecuredRestController {
   val dataSourceService = inject[DataSourceService]
-  val userDataSourceRepository = inject[UserDataSourcesRepository]
+  val userDataSourcesRepository = inject[UserDataSourcesRepository]
+  val userDataSourcesService = inject[UserDataSourcesService]
   val applicationsRepository = inject[ApplicationsRepository]
   val userPipelineDiscoveryRepository = inject[UserPipelineDiscoveryRepository]
   val pipelineService = inject[PipelineService]
 
   def addDataSource = RestAction[AddDataSourceRequest] { implicit request => json =>
     val dataSourceTemplateId = dataSourceService.createDataSourceFromUris(json.url, json.graphUris).get
-    val id = userDataSourceRepository save
-      new UserDataSource(None, json.name, json.isPublic, request.user.id.get, dataSourceTemplateId)
+    val id = userDataSourcesService.add(dataSourceTemplateId, json.name, json.isPublic, request.user.id.get)
     Ok(SuccessResponse("Data source has been added",
-      data = Seq("dataSource" -> userDataSourceRepository.findById(id).get)))
+      data = Seq("dataSource" -> userDataSourcesRepository.findById(id).get)))
   }
 
   def getDataSources = RestAction[EmptyRequest] { implicit request => json =>
-    val dataSources = userDataSourceRepository.findAvailable(request.user)
+    val dataSources = userDataSourcesRepository.findAvailable(request.user)
     Ok(SuccessResponse(data = Seq("dataSources" -> dataSources)))
   }
 
   def runDiscovery = RestAction[RunDiscoveryRequest] { implicit request => json =>
-    val dataSources = userDataSourceRepository.findByIds(json.getIds).toList
+    val dataSources = userDataSourcesRepository.findByIds(json.getIds).toList
     val discoveryName = dataSources.map(s => s.name) mkString ", "
 
     // Run the discovery on data sources and remember discovery id

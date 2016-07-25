@@ -1,6 +1,6 @@
 package model.appgen.service
 
-import model.appgen.entity.{InstallResult, UserDataSource, UserId}
+import model.appgen.entity.{InstallResult, UserId}
 import model.service.{DataSourceService, LdvmService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
@@ -10,7 +10,6 @@ import java.net.URL
 import java.io.File
 
 import model.appgen.InstallBundle
-import model.appgen.repository.UserDataSourcesRepository
 import model.appgen.rest.UpdateVisualizerRequest.UpdateVisualizerRequest
 import model.repository.ComponentTemplateRepository
 
@@ -19,7 +18,7 @@ import scala.util.{Failure, Success}
 class InstallService(implicit inj: Injector) extends Injectable {
   val ldvmService = inject[LdvmService]
   val dataSourceService = inject[DataSourceService]
-  val userDataSourceRepository = inject[UserDataSourcesRepository]
+  val userDataSourcesService = inject[UserDataSourcesService]
   val visualizerService = inject[VisualizerService]
   val componentTemplateRepository = inject[ComponentTemplateRepository]
 
@@ -50,8 +49,7 @@ class InstallService(implicit inj: Injector) extends Injectable {
     // application generator (we use the admin user with id 1 as the data source owner).
     dataSource match { case (name, url) =>
       dataSourceService.createDataSourceFromRemoteTtl(Seq(url), name) map { dataSourceTemplateId =>
-        userDataSourceRepository save
-          UserDataSource(None, name, isPublic = true, UserId(1), dataSourceTemplateId)
+        userDataSourcesService.add(dataSourceTemplateId, name, isPublic = true, UserId(1))
         InstallResult.success("Data source '" + name + "' has been imported")
       } getOrElse InstallResult.failure("Data source import of '" + name + "' failed")
     }

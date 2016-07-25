@@ -1,11 +1,10 @@
-package model.appgen.repository
+package model.appgen
 
+import model.appgen.repository._
 import model.appgen.service._
 import scaldi.Module
 
-// TODO: move file to a more appropriate location (it contains both repositories and services)
-
-class AppgenRepositoryModule extends Module {
+class AppgenModule extends Module {
   binding to new UsersRepository
   binding to new UserService
   binding to new UserDataSourcesRepository
@@ -18,4 +17,5 @@ class AppgenRepositoryModule extends Module {
   binding to new CacheEntriesRepository
   binding to new ResultCacheService
   binding to new InstallService
+  binding to new UserDataSourcesService
 }
