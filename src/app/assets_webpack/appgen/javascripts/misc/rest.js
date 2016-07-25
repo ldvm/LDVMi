@@ -21,7 +21,9 @@ export default async function rest(url, payload = null, method = 'POST') {
   } catch (response) {
     debug('API call failed with status ' + response.status);
 
-    if (response.status === 404) {
+    if (response.status === 0) {
+      throw new Error('API endpoint did not respond. Is backend running?');
+    } else if (response.status === 404) {
       throw new Error('API endpoint did not recognize this call (404 Not Found)');
     } else if (response.status === 200) {
       throw new Error('API call failed but the HTTP status is 200. Probably invalid JSON?');
@@ -33,8 +35,8 @@ export default async function rest(url, payload = null, method = 'POST') {
       } catch (_) {
         // Json parsing failed, let's say we got back some HTML
         const message =
-          response.responseText.match(/<p id="detail" class="pre">([^<]+)<\/p>/)[1] || // Scala error
-          response.responseText.match(/<title[^>]*>([^<]+)<\/title>/)[1] || // page title
+          extractMessage(response, /<p id="detail" class="pre">([^<]+)<\/p>/) || // Scala error
+          extractMessage(response, /<title[^>]*>([^<]+)<\/title>/) || // page title
           'Request failed for unknown reason';
         error = new Error(message)
       }
@@ -43,3 +45,12 @@ export default async function rest(url, payload = null, method = 'POST') {
     }
   }
 };
+
+function extractMessage(response, pattern) {
+  const matches = response.responseText.match(pattern);
+  if (matches == null) {
+    return false;
+  } else {
+    return matches[1];
+  }
+}
