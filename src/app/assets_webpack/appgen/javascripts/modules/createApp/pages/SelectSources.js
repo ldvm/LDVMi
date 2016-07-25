@@ -55,7 +55,7 @@ class SelectSources extends Component {
     }
   }
 
-  handleRunAnalysis() {
+  handleRunDiscovery() {
     const { dispatch, dataSources } = this.props;
     const ids = dataSources.selected.map(dataSource => dataSource.id);
     if (ids.size == 0) {
@@ -118,9 +118,9 @@ class SelectSources extends Component {
               </div>}
             right={<div>
               <Button
-                label="Run analysis"
+                label="Run discovery"
                 icon="play_arrow" raised warning
-                onTouchTap={::this.handleRunAnalysis}
+                onTouchTap={::this.handleRunDiscovery}
                 disabled={dataSources.selected.size == 0 || runDiscoveryStatus.isLoading } />
               </div>}
           />

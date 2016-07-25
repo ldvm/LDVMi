@@ -1,40 +1,34 @@
 import React, { PropTypes } from 'react'
 import { List } from 'immutable';
-import Paper from 'material-ui/Paper';
-import Divider from 'material-ui/Divider';
-import Button from '../../../components/Button';
-import IconButton from '../../../components/IconButton';
-import MaterialTheme from '../../../misc/materialTheme';
-
-const spacing = MaterialTheme.spacing.desktopGutterLess + 'px';
+import Divider from 'material-ui/Divider'
+import Chip from 'material-ui/Chip'
+import MaterialTheme from '../../../misc/materialTheme'
+import ClearBoth from '../../../components/ClearBoth'
 
 const dataSourceStyle = {
   float: 'left',
-  lineHeight: '48px',
-  paddingLeft: spacing,
-  marginRight: spacing,
-  marginBottom: spacing
-};
-
-const iconStyle = {
-  float: 'right',
-  marginLeft: spacing
+  marginRight: MaterialTheme.spacing.desktopGutterMini,
+  marginBottom: MaterialTheme.spacing.desktopGutterMini
 };
 
 const dividerStyle = {
-  marginBottom: spacing,
-  clear: 'both'
+  marginTop: MaterialTheme.spacing.desktopGutterMini,
+  marginBottom: MaterialTheme.spacing.desktopGutterLess,
 };
 
 const SelectedDataSources = ({ dataSources, deselectDataSource }) => {
   return <div>
     {dataSources.map(dataSource =>
-      <Paper style={dataSourceStyle} key={dataSource.id}>
+      <Chip
+        key={dataSource.id}
+        onRequestDelete={() => deselectDataSource(dataSource.id)}
+        style={dataSourceStyle}
+      >
         {dataSource.name}
-        <IconButton icon="remove_circle" tooltip="Remove data source" style={iconStyle}
-                    onTouchTap={() => deselectDataSource(dataSource.id)}/>
-      </Paper>
+      </Chip>
     )}
+
+    <ClearBoth />
     <Divider style={dividerStyle}/>
   </div>
 };
