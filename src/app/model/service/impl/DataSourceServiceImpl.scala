@@ -122,15 +122,16 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     model
   }
 
-  def createDataSourceFromUris(endpointUrl: String, graphUris: Option[Seq[String]])(implicit session: Session): Option[DataSourceTemplateId] = {
+  def createDataSourceFromUris(endpointUrl: String, graphUris: Option[Seq[String]], maybeDataSourceName: Option[String] = None)(implicit session: Session): Option[DataSourceTemplateId] = {
 
     val resourceUri = endpointUrl
     val dataPortTemplate = model.dto.DataPortTemplate(resourceUri + "/output", None, None)
     val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
+    val dataSourceName = maybeDataSourceName getOrElse endpointUrl
 
     val componentTemplate = model.dto.ComponentTemplate(
       resourceUri,
-      Some(endpointUrl),
+      Some(dataSourceName),
       None,
       Some(config(endpointUrl, graphUris.map(_.filter(_.trim.nonEmpty)))),
       Seq(),

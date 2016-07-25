@@ -28,7 +28,7 @@ class CreateAppApiController(implicit inj: Injector) extends SecuredRestControll
   val pipelineService = inject[PipelineService]
 
   def addDataSource = RestAction[AddDataSourceRequest] { implicit request => json =>
-    val dataSourceTemplateId = dataSourceService.createDataSourceFromUris(json.url, json.graphUris).get
+    val dataSourceTemplateId = dataSourceService.createDataSourceFromUris(json.url, json.graphUris, Some(json.name)).get
     val id = userDataSourcesService.add(dataSourceTemplateId, json.name, json.isPublic, request.user.id.get)
     Ok(SuccessResponse("Data source has been added",
       data = Seq("dataSource" -> userDataSourcesRepository.findById(id).get)))
