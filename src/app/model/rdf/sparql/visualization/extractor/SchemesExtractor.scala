@@ -28,8 +28,12 @@ class SchemesExtractor extends QueryExecutionResultExtractor[SchemesQuery, Seq[S
         }
 
         val map = literals.reverse.map(l => (l.getLanguage, l.getString)).toMap
+        val localizedLabel = map.isEmpty match {
+          case false => LocalizedValue(map)
+          case true => LocalizedValue(Map(("nolang", "No label")))
+        }
 
-        Scheme(schemeResource.getURI, Some(LocalizedValue(map)), None)
+        Scheme(schemeResource.getURI, Some(localizedLabel), None)
       })
     } catch {
       case e: org.apache.jena.sparql.engine.http.QueryExceptionHTTP => {
