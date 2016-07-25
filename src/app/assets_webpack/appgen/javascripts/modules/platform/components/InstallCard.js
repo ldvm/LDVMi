@@ -26,7 +26,7 @@ const InstallCard = ({ install, installResults, installStatus }) => {
               <Alert key={i} info>{result.get('message')}</Alert> :
               <Alert key={i} danger>{result.get('message')}</Alert>
           )}
-          <Alert success>Installation successfully finished. Please refresh this page</Alert>
+          <Alert success>Installation successfully finished.</Alert>
         </div>
         :
         <div>

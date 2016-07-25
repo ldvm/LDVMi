@@ -18,7 +18,7 @@ class Install extends Component {
 
   render() {
     const { dispatch, visualizers, visualizersStatus, installResults, installStatus } = this.props;
-    return visualizersStatus.done && visualizers.size == 0 ?
+    return (visualizersStatus.done && visualizers.size == 0) || installStatus.done ?
       <InstallCard
         install={() => dispatch(install())}
         installResults={installResults}

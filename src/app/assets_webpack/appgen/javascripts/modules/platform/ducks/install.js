@@ -6,6 +6,7 @@ import * as api from '../api'
 import createAction from '../../../misc/createAction'
 import storageReducerFactory from '../../../misc/storageReducerFactory'
 import moduleSelector from '../selector'
+import { getVisualizers } from '../../core/ducks/visualizers'
 
 // Actions
 
@@ -15,8 +16,11 @@ export const INSTALL_ERROR = INSTALL + '_ERROR';
 export const INSTALL_SUCCESS = INSTALL + '_SUCCESS';
 
 export function install() {
-  const promise = api.install();
-  return createAction(INSTALL, { promise });
+  return dispatch => {
+    const promise = api.install();
+    promise.then(() => dispatch(getVisualizers()));
+    dispatch(createAction(INSTALL, { promise }));
+  }
 }
 
 // Reducer
