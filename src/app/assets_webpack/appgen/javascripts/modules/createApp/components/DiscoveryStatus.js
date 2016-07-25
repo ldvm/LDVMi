@@ -9,14 +9,19 @@ import makePureRender from '../../../misc/makePureRender'
 // kept to minimum to increase the smoothness. Smart selectors and pure render component will
 // do the trick.
 
-const DiscoveryStatus = ({ discovery }) => (
+const DiscoveryStatus = ({ discovery, unsupportedPipelinesCount }) => (
   <PaperCard
     title={"Discovery of " + discovery.name}
     subtitle="Generating all possible visualizations of input data sources"
   >
     {discovery.isFinished ?
       discovery.isSuccess ?
-        <Alert success>The discovery successfully finished</Alert> :
+        <Alert success>
+          The discovery has successfully finished
+          with <strong>{discovery.pipelinesDiscoveredCount - unsupportedPipelinesCount}</strong> pipeline(s) discovered
+          {unsupportedPipelinesCount > 0 ?
+            <span> (plus {unsupportedPipelinesCount} unsupported)</span> : <span />}.
+        </Alert> :
         <Alert danger>The discovery failed. Please try again</Alert> :
       <div>
         The discovery is in progress. You may leave this page and come back later.
@@ -27,7 +32,8 @@ const DiscoveryStatus = ({ discovery }) => (
 );
 
 DiscoveryStatus.propTypes = {
-  discovery: PropTypes.instanceOf(Discovery).isRequired
+  discovery: PropTypes.instanceOf(Discovery).isRequired,
+  unsupportedPipelinesCount: PropTypes.number.isRequired
 };
 
 export default makePureRender(DiscoveryStatus);

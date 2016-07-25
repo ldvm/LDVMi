@@ -20,6 +20,7 @@ class Discovery extends Component {
     status: PropTypes.instanceOf(PromiseStatus).isRequired,
     discovery: PropTypes.instanceOf(DiscoveryModel),
     pipelines: PropTypes.instanceOf(List).isRequired,
+    unsupportedPipelines: PropTypes.instanceOf(List).isRequired,
     visualizers: PropTypes.instanceOf(List).isRequired,
     evaluations: PropTypes.instanceOf(List).isRequired,
     selectedVisualizer: PropTypes.instanceOf(VisualizerWithPipelines).isRequired
@@ -80,7 +81,7 @@ class Discovery extends Component {
   }
 
   render() {
-    const { dispatch, status, discovery, visualizers, selectedVisualizer } = this.props;
+    const { dispatch, unsupportedPipelines, status, discovery, visualizers, selectedVisualizer } = this.props;
 
     return (
       <div>
@@ -91,7 +92,11 @@ class Discovery extends Component {
 
         {discovery && <div>
           <Helmet title={"Discovery of " + discovery.name} />
-          <DiscoveryStatus discovery={discovery} />
+          <DiscoveryStatus
+            discovery={discovery}
+            unsupportedPipelinesCount={unsupportedPipelines.size}
+          />
+
           {visualizers.size > 0 ?
             <Visualizers
               visualizers={visualizers}

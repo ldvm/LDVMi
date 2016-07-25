@@ -86,6 +86,13 @@ const pipelineVisualizersSelector = createSelector(
     .filter(visualizer => visualizer.pipelines.size > 0)
 );
 
+const unsupportedPipelinesSelector = createSelector(
+  [pipelinesSelector, visualizersSelector],
+  (pipelines, visualizers) => pipelines.filter(pipeline =>
+    visualizers.find(visualizer =>
+      visualizer.componentTemplateId == pipeline.visualizerComponentTemplateId) == null)
+);
+
 const selectedVisualizerSelector = createSelector(
   [selectedVisualizerIdSelector, pipelineVisualizersSelector],
   (id, visualizers) => visualizers.find(visualizer => visualizer.id == id) || new VisualizerWithPipelines()
@@ -95,6 +102,7 @@ export const discoverySelector = createStructuredSelector({
   status: promiseSelector,
   discovery: mergedDiscoverySelector,
   pipelines: pipelinesSelector,
+  unsupportedPipelines: unsupportedPipelinesSelector,
   visualizers: pipelineVisualizersSelector,
   evaluations: evaluationsSelector,
   selectedVisualizer: selectedVisualizerSelector
