@@ -16,7 +16,7 @@ export const paginatorName = prefix('SEARCH_RESULTS');
 
 const SearchResult = ({ searchableLens, result }) => (
   <IgnoreDialogPadding horizontal bottom>
-    <Table selectable={false} height="300px">
+    <Table selectable={false}>
       <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
         <TableRow>
           {searchableLens.showProperties.map(propertyUri =>
