@@ -1,5 +1,10 @@
 Frontend development stack
 ==========================
+*Extracted Attachment A from the [thesis text](https://github.com/tobice/thesis-text/releases/latest).*
+
+*The [Frontend Architecture](./FrontendArchitecture.md) contains 
+essentially the same info but on the conceptional level. Both texts
+complement each other.*
 
 The following sections present a short extract from documentations of individual tools that were used for the *application generator* frontend. Their purpose is not to substitute the documentation but merely to provide the reader with enough information so that he can understand our code.
 

@@ -1,5 +1,6 @@
 Advanced framework features
 ===========================
+*Extracted Section 5.6 from the [thesis text](https://github.com/tobice/thesis-text/releases/latest).*
 
 While we were demonstrating how a new *visualizer* can be integrated into our *application generator*, we showed couple of available features that the developer can use to speed up the process. Namely, we described the prepared solution for saving and loading application configuration and we also showed how we can easily extract RDF data from the *pipeline evaluation*. Here we will briefly mention couple more examples.
 

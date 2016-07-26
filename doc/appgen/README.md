@@ -6,7 +6,7 @@ based on linked RDF data. It is built on top of the
 [LinkedPipes Visualization](http://visualization.linkedpipes.com/)
 project showcasing its capabilities.
 
-Author: [Tobiáš Potoček](http://www.tobice.cz) <[tobiaspotocek@gmail.com](tobiaspotocek@gmail.com)>.
+Author: [Tobiáš Potoček](http://www.tobice.cz) <[tobiaspotocek@gmail.com](mailto:tobiaspotocek@gmail.com)>.
 
 The author developed this software as his master thesis under the 
 supervison of [RNDr. Jiří Helmich](http://helmich.cz/). The text
@@ -39,8 +39,8 @@ The Scala backend is implemented in Scala packages `model.appgen` and `model.con
 To see the Application Generator in action, check out the following YouTube videos:
 
 * [Platform Walkthrough](https://youtu.be/CZKJwnsOVDU)
-* [Google Maps Visualizer](https://youtu.be/CZKJwnsOVDU)
-* [D3.js Chord Visualizer](https://youtu.be/CZKJwnsOVDU)
+* [Google Maps Visualizer](https://youtu.be/hLb3EIg-xfg)
+* [D3.js Chord Visualizer](https://youtu.be/dv7bGmsRboY)
 
 ## Guides
 
@@ -68,7 +68,7 @@ during the conversion from Latex to Markdown (links, citations, figures...).
 
 If you come across a bug or weird behavior, 
 [report an issue](https://github.com/tobice/LDVMi/issues). There 
-is a good chance that we are aware of it.
+is a good chance that we are already aware of it.
 
 ## Links
 

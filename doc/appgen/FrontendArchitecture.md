@@ -1,5 +1,11 @@
 Frontend architecture
 =====================
+*Extracted Section 4.6.3 from the [thesis text](https://github.com/tobice/thesis-text/releases/latest).*
+
+*The following text describes the concepts behind the tools React, Redux,
+Reselect and React-Router that power the frontend. The 
+[Frontend Development Stack Guide](./FrontendDevstackGuide.md) 
+contains essentially the same info but on the implementation level.*
 
 The frontend itself can be viewed as a standalone application that has its own inner architecture. It is responsible for rendering the user interface which involves many not so simple tasks, including transitions between individual screen, processing user input, processing backend responses (including the the failed ones) and of course visualizations themselves. The architecture is also important because it defines the way the frontend can be extended with new *visualizers*.
 
