@@ -1,8 +1,7 @@
-import { createSelector } from 'reselect'
 import { Map } from 'immutable'
 import prefix from '../prefix'
 import { arrayToObject } from '../../../../misc/utils'
-import { createPromiseStatusSelector, createPromiseStatusesSelector, createAllPromiseStatusSelector } from '../../../core/ducks/promises'
+import { createPromiseStatusSelector, createPromiseStatusesSelector } from '../../../core/ducks/promises'
 import { SkosConcept } from '../models'
 import { GET_APPLICATION_START } from '../../../app/ducks/application'
 

@@ -100,7 +100,7 @@ export function createPromiseStatusSelector(name, idSelector = () => DEFAULT_ID)
 /** Return statuses of all promises of given name. */
 export function createPromiseStatusesSelector(name) {
   return createSelector([selector], state =>
-    state.get(name) || new Map());
+    state.get(name) || new Map({ [DEFAULT_ID]: new PromiseStatus() }));
 }
 
 /**
