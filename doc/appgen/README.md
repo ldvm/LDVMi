@@ -11,7 +11,8 @@ Author: [Tobiáš Potoček](http://www.tobice.cz) <[tobiaspotocek@gmail.com](mai
 The author developed this software as his master thesis under the 
 supervison of [RNDr. Jiří Helmich](http://helmich.cz/). The text
 can be found [here](https://github.com/tobice/thesis-text)
-([PDF](https://github.com/tobice/thesis-text/releases/latest)).
+([PDF](https://github.com/tobice/thesis-text/releases/latest)). The
+official thesis name is "Data-Driven Web Application Generator".
 
 ![Application Generator Screenshot: Google Maps Visualizer configurator](img/06_map_configuration_preview.png)
 
@@ -73,11 +74,11 @@ is a good chance that we are already aware of it.
 ## Links
 
 * [Live demo](http://xrg12.projekty.ms.mff.cuni.cz:58080/appgen)
-* [Original LinkedPipes Visualization repository](https://github.com/ldvm/LDVMi)
 * [Application Generator repository](https://github.com/tobice/LDVMi)
 * [Issues](https://github.com/tobice/LDVMi/issues)
 * [Repository with LDVM vocabulary and sample LDVM component definitions](https://github.com/tobice/vocabulary)
 * [Repository with sample data sets for the Application Generator](https://github.com/tobice/appgen-datasets)
-* [Master thesis text](https://github.com/tobice/thesis-text) (and [PDF](https://github.com/tobice/thesis-text/releases/latest))
+* [Repository with thesis text](https://github.com/tobice/thesis-text) (and [PDF](https://github.com/tobice/thesis-text/releases/latest))
+* [Original LinkedPipes Visualization repository](https://github.com/ldvm/LDVMi)
 * [LinkedPipes Visualization project page](http://visualization.linkedpipes.com/)
 * [Author's homepage](http://tobice.cz/)
