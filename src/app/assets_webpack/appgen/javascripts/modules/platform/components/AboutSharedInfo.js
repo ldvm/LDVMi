@@ -7,12 +7,12 @@ const AboutSharedInfo = () => (
       It is built on top of the <a href="http://visualization.linkedpipes.com/" target="_blank">
       LinkedPipes Visualization</a> project showcasing its capabilities.
     </div>
-    {/*
-    <p>
-      <strong>Check out this <a href="https://www.youtube.com/watch?v=d8eberZU_kY&feature=youtu.be" target="_blank">
-      YouTube video</a> to see what you can do with this generator!</strong>
-    </p>
-      */}
+    <p><strong>Not sure what do do? Check out following YouTube videos!</strong></p>
+    <ul>
+      <li><a href="https://youtu.be/CZKJwnsOVDU" target="_blank">Platform Walkthrough</a></li>
+      <li><a href="https://youtu.be/hLb3EIg-xfg" target="_blank">Google Maps Visualizer</a></li>
+      <li><a href="https://youtu.be/dv7bGmsRboY" target="_blank">D3.js Chord Visualizer</a></li>
+    </ul>
   </div>
 );
 
