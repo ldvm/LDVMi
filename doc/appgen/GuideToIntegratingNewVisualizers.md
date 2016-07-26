@@ -4,9 +4,11 @@ Framework usage: A guide to integrating new visualizers
 
 
 *We recommend getting familiar with [Frontend Architecture](./FrontendArchitecture.md),
-[Frontend Development Stack](./FrontendDevelopmentStack.md) and 
+[Frontend Development Stack Guide](./FrontendDevstackGuide.md) and 
 [Frontend Conventions](./FrontendFrameworkConventions.md) before 
 reading this text.*
+
+*Sources for this guide can be found in the [graph](https://github.com/tobice/LDVMi/tree/graph/src/app/assets_webpack/appgen/javascripts/modules/visualizers/graph) branch of this repo.*
 
 Now that the reader is equipped with all the necessary knowledge, we will walk him through the process of creating a brand new *visualizer* to demonstrate the abilities of our framework. The *visualizer* will be visualizing a graph (as understood in the graph theory) represented with the RGML vocabulary (which makes it very similar to the D3.js Chord Visualizer that will be properly described later, including the vocabulary). The purpose of this section is merely to get the reader familiar with the basic integration steps. The presented *visualizer* will simply display number of vertices and edges of the graph and let the user configure the graph label.
 

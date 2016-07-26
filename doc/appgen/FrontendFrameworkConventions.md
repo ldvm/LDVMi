@@ -3,7 +3,7 @@ Frontend framework conventions
 *Extracted Section 5.4 from the [thesis text](https://github.com/tobice/thesis-text/releases/latest).*
 
 *We recommend getting familiar with [Frontend Architecture](./FrontendArchitecture.md)
-and [Frontend Development Stack](./FrontendDevelopmentStack.md) before 
+and [Frontend Development Stack Guide](./FrontendDevstackGuide.md) before 
 reading this text.*
 
 The tools that we have chosen for our frontend define the overall frontend architecture and the internal mechanisms. Clearly, there is no monolithic framework. Each tool solves only one problem and even though they have been all designed to work well together and complement each other, there is missing an overall architecture and design patterns for large scale applications (something that a monolithic framework, such as Play Framework that we use in backend, usually offers).
