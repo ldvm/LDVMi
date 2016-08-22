@@ -6,7 +6,7 @@ import model.rdf.sparql.visualization.Scheme
 import model.rdf.sparql.visualization.query.SchemesQuery
 import model.rdf.vocabulary.SKOS
 import org.apache.jena.query.QueryExecution
-import org.apache.jena.vocabulary.{RDF, RDFS}
+import org.apache.jena.vocabulary.{DCTerms, RDF, RDFS}
 
 import scala.collection.JavaConversions._
 
@@ -21,7 +21,7 @@ class SchemesExtractor extends QueryExecutionResultExtractor[SchemesQuery, Seq[S
       Some(schemeStatements.map { s =>
         val schemeResource = s.asResource()
 
-        val possibleLabels = Seq(SKOS.prefLabel, RDFS.label)
+        val possibleLabels = Seq(SKOS.prefLabel, DCTerms.title, RDFS.label)
         val literals = possibleLabels.flatMap { labelProperty =>
           val properties = schemeResource.listProperties(labelProperty).toList
           properties.map(_.getObject.asLiteral())
@@ -30,7 +30,7 @@ class SchemesExtractor extends QueryExecutionResultExtractor[SchemesQuery, Seq[S
         val map = literals.reverse.map(l => (l.getLanguage, l.getString)).toMap
         val localizedLabel = map.isEmpty match {
           case false => LocalizedValue(map)
-          case true => LocalizedValue(Map(("nolang", "No label")))
+          case true => LocalizedValue(Map(("nolang", schemeResource.getURI.split("[/#]").lastOption.getOrElse(schemeResource.getURI))))
         }
 
         Scheme(schemeResource.getURI, Some(localizedLabel), None)

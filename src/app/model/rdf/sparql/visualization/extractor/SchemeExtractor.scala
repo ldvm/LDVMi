@@ -7,7 +7,7 @@ import model.rdf.sparql.visualization.query.SchemeQuery
 import model.rdf.vocabulary.SKOS
 import org.apache.jena.query.QueryExecution
 import org.apache.jena.rdf.model.{Literal, Model, Resource}
-import org.apache.jena.vocabulary.{RDF, RDFS}
+import org.apache.jena.vocabulary.{DCTerms, RDF, RDFS}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
@@ -46,7 +46,7 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
 
     val maybeResource = Option(schemeResource)
 
-    val possibleLabels = Seq(SKOS.prefLabel, RDFS.label)
+    val possibleLabels = Seq(SKOS.prefLabel, DCTerms.title, RDFS.label)
     val literals = maybeResource.map { r =>
       possibleLabels.flatMap { labelProperty =>
         val properties = r.listProperties(labelProperty).toList
@@ -80,10 +80,11 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
   }
 
   private def getNode(model: Model, nodeResource: Resource): HierarchyNode = {
+    val dctNameNodes = model.listObjectsOfProperty(nodeResource, DCTerms.title).toSeq.map(o => o.asLiteral())
     val nameNodes = model.listObjectsOfProperty(nodeResource, SKOS.prefLabel).toSeq.map(o => o.asLiteral())
-    val name = nameNodes.size match {
+    val name = (nameNodes++dctNameNodes).size match {
       case 0 => LocalizedValue.create(("nolang", nodeResource.getURI))
-      case _ => LocalizedValue.create(nameNodes)
+      case _ => LocalizedValue.create(nameNodes++dctNameNodes)
     }
 
     val value = model.getProperty(nodeResource, RDF.value)
@@ -101,7 +102,7 @@ class SchemeExtractor(schemeUri: String) extends QueryExecutionResultExtractor[S
         childrenList.map(buildSubtree).collect { case Some(t) => t }
       }
 
-      val size = if (maybeChildren.isEmpty) {Some(1)} else {None}
+      val size = if (maybeChildren.isEmpty) {Some(1)} else None
       HierarchyNode(n.name, n.uri, size, maybeChildren)
     }
 
