@@ -26,11 +26,10 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
   val dataSourceTemplateRepository = inject[DataSourceTemplateRepository]
   val componentTemplateService = inject[ComponentTemplateService]
 
-  def createDataSourceFromRemoteTtl(urls: Seq[String])(implicit session: Session): Option[DataSourceTemplateId] = {
+  def createDataSourceFromRemoteTtl(urls: Seq[String], dataSourceName: String = "Downloaded RDF")(implicit session: Session): Option[DataSourceTemplateId] = {
 
     urls match {
       case u if u.nonEmpty => withRandomGraphUri { r =>
-        val dataSourceName = "Downloaded RDF"
         val dataSourceDescription = u.mkString(", ")
         val dataSourceId = createDataSource(dataSourceName, Some(dataSourceDescription), r)
 
@@ -123,15 +122,16 @@ class DataSourceServiceImpl(implicit inj: Injector) extends DataSourceService wi
     model
   }
 
-  def createDataSourceFromUris(endpointUrl: String, graphUris: Option[Seq[String]])(implicit session: Session): Option[DataSourceTemplateId] = {
+  def createDataSourceFromUris(endpointUrl: String, graphUris: Option[Seq[String]], maybeDataSourceName: Option[String] = None)(implicit session: Session): Option[DataSourceTemplateId] = {
 
     val resourceUri = endpointUrl
     val dataPortTemplate = model.dto.DataPortTemplate(resourceUri + "/output", None, None)
     val outputTemplate = model.dto.OutputTemplate(dataPortTemplate, None)
+    val dataSourceName = maybeDataSourceName getOrElse endpointUrl
 
     val componentTemplate = model.dto.ComponentTemplate(
       resourceUri,
-      Some(endpointUrl),
+      Some(dataSourceName),
       None,
       Some(config(endpointUrl, graphUris.map(_.filter(_.trim.nonEmpty)))),
       Seq(),

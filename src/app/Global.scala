@@ -1,12 +1,16 @@
-import java.security.{cert, SecureRandom}
+import java.security.{SecureRandom, cert}
 import javax.net.ssl._
+
 import controllers.ControllerModule
 import controllers.api.ApiModule
+import model.appgen.AppgenModule
+import model.repository._
 import model.rdf.RdfModule
 import play.api._
 import play.api.mvc.WithFilters
 import play.filters.gzip.GzipFilter
 import scaldi.play.ScaldiSupport
+
 import collection.JavaConversions._
 
 
@@ -18,7 +22,7 @@ object Global extends WithFilters(
     )
   )
 ) with ScaldiSupport with GlobalSettings {
-  def applicationModule = new RepositoryModule :: new ServiceModule :: new RdfModule :: new ControllerModule :: new ApiModule
+  def applicationModule = new RepositoryModule :: new ServiceModule :: new RdfModule :: new ControllerModule :: new ApiModule :: new AppgenModule
 
   override def onStart(app: Application) = {
     super.onStart(app)

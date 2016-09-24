@@ -85,7 +85,7 @@ class GraphStoreProtocol {
 
     reporter.foreach(r => r ! "pushing to "+requestUri + " ["+(model.size() + " statements")+"]")
 
-    val stringData = Graph(model).toTTL
+    val stringData = Graph(model).toRdfXml
 
     val credentials = new UsernamePasswordCredentials("dba", "dba")
     val httpClient = new DefaultHttpClient()

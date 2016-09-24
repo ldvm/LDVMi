@@ -70,9 +70,32 @@ libraryDependencies ++= Seq(
   "org.webjars" % "codemirror" % "5.0",
   "org.webjars" % "ui-codemirror" % "0.1.5",
   "org.webjars" % "bootstrap-growl" % "2.0.1",
-  "org.webjars" % "flot" % "0.8.3"
+  "org.webjars" % "flot" % "0.8.3",
+  "org.mindrot" % "jbcrypt" % "0.3m"
 )
 
 JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
 
-//pipelineStages := Seq(rjs, digest, gzip)
+pipelineStages := Seq(gzip)
+
+// Custom task that compiles appgen JavaScript frontend (React) files using webpack. The simplest
+// way is to execute it as an external command (it's probably not going to work on Windows machines
+// but whatever).
+lazy val buildAppgenJs = taskKey[Unit]("Build appgen JavaScript frontend")
+
+buildAppgenJs := {
+  println("Building appgen JavaScript frontend...")
+  "npm install" #&& "npm update" #&& "npm run appgen-build" !
+}
+
+stage <<= stage dependsOn buildAppgenJs
+
+dist <<= dist dependsOn buildAppgenJs
+
+lazy val printWebpackWarning = taskKey[Unit]("Print Webpack warning")
+
+printWebpackWarning := {
+  println("You're in dev mode. Run 'npm run appgen-dev' to start Webpack server for frontend development of the application generator.")
+}
+
+run in Compile <<= run in Compile dependsOn printWebpackWarning

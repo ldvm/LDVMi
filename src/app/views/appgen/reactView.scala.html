@@ -1,0 +1,37 @@
+@(title: String, description: String, bundleName: String, baseUrl: String, applicationId: Long = 0)
+@import play.api.Play.current
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        @Html(com.newrelic.api.agent.NewRelic.getBrowserTimingHeader())
+        <title>@title</title>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("../../../public/images/favicon.png")">
+        <script>
+            window.appgen = {
+                baseUrl: '@baseUrl',
+                applicationId: @applicationId,
+                googleClientId: '@current.configuration.getString("google.clientId")'
+            }
+        </script>
+	</head>
+	<body>
+		<div id="approot">
+            <!-- Placeholder text for web crawlers -->
+            <div style="opacity: 0">
+               <h1>@title</h1>
+               @description
+            </div>
+        </div>
+		@Html(com.newrelic.api.agent.NewRelic.getBrowserTimingFooter())
+
+        @if(play.Play.isDev()) {
+            <script src="http://localhost:9090/webpack-dev-server.js"></script>
+            <script src="http://localhost:9090/build/@{bundleName}.bundle.js"></script>
+        } else {
+            <script src="@routes.Assets.versioned("javascripts/appgen/" + bundleName + ".bundle.js")"></script>
+        }
+	</body>
+</html>

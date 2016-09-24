@@ -1,0 +1,82 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,700,700italic,300,500,400italic&subset=latin,latin-ext);
+
+// Should be kept in sync with Material UI Theme (somehow)
+$gutter: 16px;
+$primaryColor: #009688;
+$accentColor: #ec407a;
+$fontSize: 16px;
+
+html {
+  font-family: Roboto, serif;
+  font-size: $fontSize;
+}
+body {
+  margin: 0;
+  background-color: #f2f2f2;
+  color: rgba(0, 0, 0, 0.87);
+}
+a {
+ color: $accentColor;
+}
+a:hover {
+  color: $primaryColor;
+  text-decoration: none;
+}
+.appbar {
+}
+.appbar-logo {
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 1.2 * $fontSize;
+  color: white;
+  text-decoration: none;
+}
+.appbar-logo:hover {
+  text-decoration: none;
+  color: white;
+}
+.bodyPadding {
+  padding: 1.5 * $gutter;
+}
+pre {
+  font-size: 0.9 * $fontSize;
+  overflow-x: scroll;
+}
+
+/** Paper Card */
+// TODO: make this an inline style
+.paper-card {
+  margin: 0 auto $gutter;
+}
+.paper-card-header {
+  background-color: #f7f7f7;
+  padding: 1.5 * $gutter;
+}
+.paper-card-header h2 {
+  font-weight: normal;
+  font-size: 1.2 * $fontSize;
+  margin: 0;
+  padding: 0;
+}
+.paper-card-header h2 small {
+  font-size: 0.9 * $fontSize;
+  color: #aeaeae;
+  display: block;
+}
+.paper-card-body {
+  padding: 1.5 * $gutter;
+}
+
+/** Fixing link button */
+// Material UI button used as a link is not vertically aligned with the rest of the buttons.
+// The problem should have been fixed in newer versions of the library but it still isn't.
+// For now, there is this hacky fix.
+// See: https://github.com/callemall/material-ui/issues/2801
+.linkButton > a {
+  display: inline !important;
+}
+
+/** Paginator page button */
+.paginatorButton > button {
+  min-width: 30px !important;
+}

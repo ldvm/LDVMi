@@ -60,6 +60,13 @@ class VisualizationServiceImpl(implicit val inj: Injector) extends Visualization
     sparqlEndpointService.dereference(uri, new LabelsDereferenceQuery(uri), new LabelsExtractor)
   }
 
+  def getLabels(evaluation: PipelineEvaluation, uri: String): Option[LocalizedValue] = {
+    sparqlEndpointService.getResult(
+      evaluationToSparqlEndpoint(evaluation),
+      new LabelsDereferenceQuery(uri),
+      new LabelsExtractor)
+  }
+
   private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation): GenericSparqlEndpoint = {
     withSession { implicit session =>
       val evaluationResults = evaluation.results

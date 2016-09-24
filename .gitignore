@@ -1,3 +1,5 @@
+/src/app/org/virtuslab/unicorn
+/src/public/javascripts/appgen/*
 logs
 project/project
 project/target
@@ -8,6 +10,7 @@ dist
 /.idea
 /*.iml
 /out
+.idea
 /.idea_modules
 /.classpath
 /.project
@@ -30,3 +33,5 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
+
+src/node_modules

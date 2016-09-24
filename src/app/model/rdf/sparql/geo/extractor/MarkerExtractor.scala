@@ -3,9 +3,10 @@ package model.rdf.sparql.geo.extractor
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.geo.query.MarkerQuery
 import model.rdf.sparql.geo.{Coordinates, MapQueryData, Marker}
-import org.apache.jena.query.{QuerySolution, QueryExecution}
+import org.apache.jena.query.{QueryExecution, QuerySolution}
 
 import scala.collection.JavaConversions._
+import scala.util.Try
 
 class MarkerExtractor(queryData: MapQueryData) extends QueryExecutionResultExtractor[MarkerQuery, Seq[Marker]] {
   override def extract(input: QueryExecution): Option[Seq[Marker]] = {
@@ -15,12 +16,16 @@ class MarkerExtractor(queryData: MapQueryData) extends QueryExecutionResultExtra
       Marker(
         querySolution.getResource("s").getURI,
         Coordinates(
-          querySolution.getLiteral("lat").getString.toFloat,
-          querySolution.getLiteral("lng").getString.toFloat
+          // The data might be corrupted and the coordinates might not always be valid numeric values.
+          Try(querySolution.getLiteral("lat").getString.toFloat).getOrElse(Float.MaxValue),
+          Try(querySolution.getLiteral("lng").getString.toFloat).getOrElse(Float.MaxValue)
         ),
         label(querySolution),
         description(querySolution)
       )
+    } filter {
+      // Skip markers with invalid coordinates.
+      marker => marker.coordinates.lat != Float.MaxValue && marker.coordinates.lng != Float.MaxValue
     }
 
     Some(markerIterator.toSeq)

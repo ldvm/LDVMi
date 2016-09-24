@@ -4,9 +4,11 @@ import akka.actor.Props
 import model.actor.CheckCompatibilityResponse
 import model.entity._
 import model.rdf.sparql.ValueFilter
+import model.rdf.sparql.rgml.{Edge, Graph, Node, NodeWithDegree}
 import model.rdf.sparql.datacube._
+import model.rdf.sparql.fresnel.{Lens, ResourceThroughLens}
 import model.rdf.sparql.geo._
-import model.rdf.sparql.visualization.{Scheme, Concept, HierarchyNode}
+import model.rdf.sparql.visualization.{Concept, HierarchyNode, Scheme}
 import model.rdf.{LocalizedValue, Property}
 import model.service.component.DataReference
 import play.api.db
@@ -15,6 +17,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc.WebSocket
 import play.api.Play.current
+import utils.PaginationInfo
 
 package object api {
 
@@ -97,6 +100,12 @@ package object api {
     implicit val visualizerWrites = Json.writes[ComponentTemplate]
     implicit val coordWrites = Json.writes[Coordinates]
     implicit val markerWrites = Json.writes[Marker]
+    implicit val graphWrites = Json.writes[Graph]
+    implicit val nodeWrites = Json.writes[Node]
+    implicit val nodeWithDegreeWrites = Json.writes[NodeWithDegree]
+    implicit val edgeWrites = Json.writes[Edge]
+    implicit val lensWrites = Json.writes[Lens]
+    implicit val resourceThroughLensWrites = Json.writes[ResourceThroughLens]
 
     /*implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
       visualizationEagerBox =>
@@ -141,6 +150,11 @@ package object api {
     implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData)
 
     implicit val polygonQueryReads: Reads[MapQueryData] = (JsPath \ "filters").read[Map[String, Seq[ValueFilter]]].map(MapQueryData)
+
+    implicit val paginationInfoReads: Reads[PaginationInfo] = (
+      (JsPath \ "skipCount").read[Int] and
+      (JsPath \ "pageSize").read[Int]
+    )(PaginationInfo.apply _)
   }
 
 }

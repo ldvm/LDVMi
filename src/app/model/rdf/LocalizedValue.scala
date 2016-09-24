@@ -1,5 +1,6 @@
 package model.rdf
 
+import scala.collection.JavaConversions._
 import scala.collection.mutable
 
 class LocalizedValue {
@@ -32,6 +33,7 @@ class LocalizedValue {
     }
   }
 
+  def size = languageMap.size
 }
 
 object LocalizedValue {
@@ -54,6 +56,12 @@ object LocalizedValue {
 
   def create(literals: Seq[org.apache.jena.rdf.model.Literal]): LocalizedValue = {
     apply(literals.map(l => (l.getLanguage, l.getString)).toMap)
+  }
+
+  def create(resource: org.apache.jena.rdf.model.Resource, property: org.apache.jena.rdf.model.Property): LocalizedValue = {
+    apply(resource.listProperties(property).toList
+      .map(_.getObject.asLiteral()).reverse
+      .map(l => (l.getLanguage, l.getString)).toMap)
   }
 
   def unapply(l: LocalizedValue): Option[Map[String, String]] = {
