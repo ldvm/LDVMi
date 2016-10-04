@@ -1,7 +1,7 @@
 package controllers
 
-import controllers.appgen.api._
-import controllers.appgen.api.visualizers.{ChordVisualizerApiController, CommonVisualizerApiController, MapsVisualizerApiController}
+import controllers.assistant.api._
+import controllers.assistant.api.visualizers.{ChordVisualizerApiController, CommonVisualizerApiController, MapsVisualizerApiController}
 import controllers.util.AngularController
 import scaldi.Module
 
@@ -13,8 +13,8 @@ class ControllerModule extends Module {
   binding to new VisualizationController
   binding to new AngularController
 
-  binding to new appgen.PlatformController
-  binding to new appgen.ApplicationController
+  binding to new assistant.PlatformController
+  binding to new assistant.ApplicationController
   binding to new AuthApiController
   binding to new CreateAppApiController
   binding to new AppApiController

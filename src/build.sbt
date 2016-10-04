@@ -78,24 +78,24 @@ JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
 
 pipelineStages := Seq(gzip)
 
-// Custom task that compiles appgen JavaScript frontend (React) files using webpack. The simplest
+// Custom task that compiles assistant JavaScript frontend (React) files using webpack. The simplest
 // way is to execute it as an external command (it's probably not going to work on Windows machines
 // but whatever).
-lazy val buildAppgenJs = taskKey[Unit]("Build appgen JavaScript frontend")
+lazy val buildAssistantJs = taskKey[Unit]("Build assistant JavaScript frontend")
 
-buildAppgenJs := {
-  println("Building appgen JavaScript frontend...")
-  "npm install" #&& "npm update" #&& "npm run appgen-build" !
+buildAssistantJs := {
+  println("Building assistant JavaScript frontend...")
+  "npm install" #&& "npm update" #&& "npm run assistant-build" !
 }
 
-stage <<= stage dependsOn buildAppgenJs
+stage <<= stage dependsOn buildAssistantJs
 
-dist <<= dist dependsOn buildAppgenJs
+dist <<= dist dependsOn buildAssistantJs
 
 lazy val printWebpackWarning = taskKey[Unit]("Print Webpack warning")
 
 printWebpackWarning := {
-  println("You're in dev mode. Run 'npm run appgen-dev' to start Webpack server for frontend development of the application generator.")
+  println("You're in dev mode. Run 'npm run assistant-dev' to start Webpack server for frontend development of the assistant.")
 }
 
 run in Compile <<= run in Compile dependsOn printWebpackWarning

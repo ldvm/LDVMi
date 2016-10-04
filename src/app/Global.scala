@@ -3,7 +3,7 @@ import javax.net.ssl._
 
 import controllers.ControllerModule
 import controllers.api.ApiModule
-import model.appgen.AppgenModule
+import model.assistant.AssistantModule
 import model.repository._
 import model.rdf.RdfModule
 import play.api._
@@ -22,7 +22,7 @@ object Global extends WithFilters(
     )
   )
 ) with ScaldiSupport with GlobalSettings {
-  def applicationModule = new RepositoryModule :: new ServiceModule :: new RdfModule :: new ControllerModule :: new ApiModule :: new AppgenModule
+  def applicationModule = new RepositoryModule :: new ServiceModule :: new RdfModule :: new ControllerModule :: new ApiModule :: new AssistantModule
 
   override def onStart(app: Application) = {
     super.onStart(app)

@@ -16,9 +16,9 @@ case class VisualizationConfiguration(
   visualizerUri: String,
   visualizationUri: String = "",
   priority: Int = 0,
-  appgenName: String = "",
-  appgenIcon: String = "",
-  appgenDisabled: Boolean = true,
+  assistantName: String = "",
+  assistantIcon: String = "",
+  assistantDisabled: Boolean = true,
   var uuid: String = UUID.randomUUID().toString,
   var createdUtc: Option[DateTime] = None,
   var modifiedUtc: Option[DateTime] = None
@@ -32,13 +32,13 @@ class VisualizationConfigurationTable(tag: Tag) extends IdEntityTable[Visualizat
 
   def priority = column[Int]("visualization_priority", O.NotNull)
 
-  def appgenName = column[String]("appgen_name", O.NotNull)
+  def assistantName = column[String]("assistant_name", O.NotNull)
 
-  def appgenIcon = column[String]("appgen_icon", O.NotNull)
+  def assistantIcon = column[String]("assistant_icon", O.NotNull)
 
-  def appgenDisabled = column[Boolean]("appgen_disabled", O.Default(false))
+  def assistantDisabled = column[Boolean]("assistant_disabled", O.Default(false))
 
   def idx = index("idx_unique_visualizer_uri", visualizerUri, unique = true)
 
-  def * = (id.?, visualizerUri, visualizationUri, priority, appgenName, appgenIcon, appgenDisabled, uuid, createdUtc, modifiedUtc) <> (VisualizationConfiguration.tupled, VisualizationConfiguration.unapply)
+  def * = (id.?, visualizerUri, visualizationUri, priority, assistantName, assistantIcon, assistantDisabled, uuid, createdUtc, modifiedUtc) <> (VisualizationConfiguration.tupled, VisualizationConfiguration.unapply)
 }

@@ -2,8 +2,8 @@ var webpack = require('webpack');
 var autoprefixer = require('autoprefixer');
 var loadEntries = require('./loadEntries');
 
-var SOURCE_DIR = __dirname + '/../../app/assets_webpack/appgen/javascripts';
-var TARGET_DIR = __dirname + '/../../public/javascripts/appgen';
+var SOURCE_DIR = __dirname + '/../../app/assets_webpack/assistant/javascripts';
+var TARGET_DIR = __dirname + '/../../public/javascripts/assistant';
 
 module.exports = function makeConfig(isDevelopment) {
   function makeEntry()  {
@@ -21,7 +21,7 @@ module.exports = function makeConfig(isDevelopment) {
       // The publicPath configuration is used in production mode when asynchronously loading
       // javascript bundles. We don't use that feature so this directive is useful only in
       // development mode.
-      publicPath: isDevelopment ? 'http://localhost:9090/build/' : '/assets/javascripts/appgen'
+      publicPath: isDevelopment ? 'http://localhost:9090/build/' : '/assets/javascripts/assistant'
     }
   }
 

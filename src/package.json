@@ -2,9 +2,9 @@
   "name": "payola-viz",
   "version": "1.0.0",
   "scripts": {
-    "appgen-dev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./conf/webpack/appgen-dev.js --progress --colors --port 9090 --hot --inline",
-    "appgen-build": "./node_modules/webpack/bin/webpack.js --config ./conf/webpack/appgen-build.js --progress --colors",
-    "appgen-test": "./node_modules/.bin/mocha --compilers js:babel-core/register --recursive ./app/assets_webpack/appgen/tests"
+    "assistant-dev": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config ./conf/webpack/assistant-dev.js --progress --colors --port 9090 --hot --inline",
+    "assistant-build": "./node_modules/webpack/bin/webpack.js --config ./conf/webpack/assistant-build.js --progress --colors",
+    "assistant-test": "./node_modules/.bin/mocha --compilers js:babel-core/register --recursive ./app/assets_webpack/assistant/tests"
   },
   "dependencies": {
     "babel-polyfill": "6.3.x",
