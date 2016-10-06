@@ -329,6 +329,21 @@ define(['angular', 'underscorejs'], function (ng, _) {
                     DataCubeService.getValues({visualizationId: $id}, {uris: uris}, function (data) {
                         $scope.queryingDataset = null;
                         $scope.values = data;
+
+                        if (!$permanentToken) {
+                            var dimensions = _.filter($scope.activeDataset.dataStructure.components, function (c) {
+                                return c.dimension;
+                            });
+                            if (dimensions.length == 1) {
+                                _.forEach(data[dimensions[0].dimension.uri], function (v) {
+                                    v.isActive = true;
+                                });
+                                console.log("a");
+                                computeSlicing();
+                                $scope.refresh();
+                            }
+                        }
+
                         fillEntityRegistry();
 
                         if (callback) {
