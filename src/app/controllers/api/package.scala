@@ -107,28 +107,6 @@ package object api {
     implicit val lensWrites = Json.writes[Lens]
     implicit val resourceThroughLensWrites = Json.writes[ResourceThroughLens]
 
-    /*implicit val visualizationEagerBoxWrites: Writes[VisualizationEagerBox] = Writes {
-      visualizationEagerBox =>
-        JsObject(
-          Seq(
-            ("visualization", Json.toJson(visualizationEagerBox.visualization)),
-            ("datasource", Json.toJson(visualizationEagerBox.datasource)),
-            ("token", Json.toJson(visualizationEagerBox.token))
-          )
-        )
-    }
-
-    implicit val visualizerCompatibilityEagerBoxWrites: Writes[ComponentCompatibilityEagerBox] = Writes {
-      visualizationEagerBox =>
-        JsObject(
-          Seq(
-            ("visualizerCompatibility", Json.toJson(visualizationEagerBox.visualizerCompatibility)),
-            ("visualizer", Json.toJson(visualizationEagerBox.visualizer))
-          )
-        )
-    }*/
-
-
     val filterPath = (JsPath \ "label").readNullable[String] and
       (JsPath \ "dataType").readNullable[String] and
       (JsPath \ "uri").readNullable[String] and
@@ -143,8 +121,8 @@ package object api {
         (JsPath \ "order").readNullable[Int]
       )(DataCubeQueryComponentFilter.apply _)
     implicit val cubeQueryFiltersReads: Reads[DataCubeQueryFilter] = (
-      (JsPath \ "dsdUri").readNullable[String] and
-        (JsPath \ "components").read[Seq[DataCubeQueryComponentFilter]]
+        (JsPath \ "components").read[Seq[DataCubeQueryComponentFilter]] and
+          (JsPath \ "datasetUri").read[String]
       )(DataCubeQueryFilter.apply _)
 
     implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData)

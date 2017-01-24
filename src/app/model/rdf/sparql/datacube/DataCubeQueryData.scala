@@ -17,6 +17,6 @@ case class DataCubeQueryData(filters: DataCubeQueryFilter) {
   }
 }
 
-case class DataCubeQueryFilter(dsdUri: Option[String], components: Seq[DataCubeQueryComponentFilter])
+case class DataCubeQueryFilter(components: Seq[DataCubeQueryComponentFilter], datasetUri: String)
 
 case class DataCubeQueryComponentFilter(componentUri: String, `type`: String, values: Seq[ValueFilter], isActive: Option[Boolean] = Some(false), order: Option[Int] = None)
