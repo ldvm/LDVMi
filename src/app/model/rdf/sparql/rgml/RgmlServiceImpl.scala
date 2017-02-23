@@ -411,4 +411,11 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     // As the sample consists of just node URIs, we fetch the actual resources (with labels)
     nodes(evaluation, makeSample)
   }
+
+  def events(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Event]] = {
+    sparqlEndpointService.getResult(
+      evaluationToSparqlEndpoint(evaluation),
+      new EventQuery(),
+      new EventExtractor())
+  }
 }

@@ -16,4 +16,5 @@ trait RgmlService {
   def adjacentNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: Option[EdgeDirection] = None)(implicit session: Session): Option[Seq[Node]]
   def sampleNodesByHighestDegree(evaluation: PipelineEvaluation, size: Int)(implicit session: Session): Option[Seq[Node]]
   def sampleNodesWithForestFire( evaluation: PipelineEvaluation, size: Int, useWeights: Boolean = true, pF: Double = 0.2, pB: Double = 0.05)(implicit session: Session): Option[Seq[Node]]
+  def events(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Event]]
 }
