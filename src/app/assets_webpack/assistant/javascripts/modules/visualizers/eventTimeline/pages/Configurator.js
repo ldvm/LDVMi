@@ -2,6 +2,11 @@ import React, { Component, PropTypes } from 'react'
 import BodyPadding from '../../../../components/BodyPadding'
 import { Application } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
+import { EventLoader } from '../containers/EventLoader'
+import { getConfiguration, getConfigurationReset } from '../ducks/configuration'
+import EditableLabel from '../../../app/containers/EditableLabel'
+import SaveButton from '../containers/SaveButton'
+
 
 class Configurator extends Component {
     static propTypes = {
@@ -16,8 +21,21 @@ class Configurator extends Component {
                 <p>This is the graph visualizer configurator.</p>
                 <p>{application.name}</p>
                 <p>{visualizer.title}</p>
+            <EventLoader/>
+            <EditableLabel/>
+            <SaveButton/>
             </BodyPadding>
         )
+    }
+
+    componentWillMount() {
+        const { dispatch } = this.props;
+        dispatch(getConfiguration());
+    }
+
+    componentWillUnmount() {
+        const { dispatch } = this.props;
+        dispatch(getConfigurationReset());
     }
 }
 

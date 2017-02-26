@@ -106,7 +106,7 @@ package object api {
     implicit val edgeWrites = Json.writes[Edge]
     implicit val lensWrites = Json.writes[Lens]
     implicit val resourceThroughLensWrites = Json.writes[ResourceThroughLens]
-    implicit val eventsWrites = Json.writes[Event]
+    implicit val eventWrites = Json.writes[Event]
 
     val filterPath = (JsPath \ "label").readNullable[String] and
       (JsPath \ "dataType").readNullable[String] and
