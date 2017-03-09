@@ -1,18 +1,17 @@
 package model.rdf.sparql.rgml.query
 import model.rdf.sparql.query.SparqlQuery
 
-class EventPeopleQuery(events: Seq[String]) extends SparqlQuery {
+class EventPeopleQuery(event: String) extends SparqlQuery {
   def get: String = {
-    val eventUris = events.map(e => "<" + e + ">").mkString(" ")
     """
       |PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       |PREFIX sch: <http://schema.org/>
       |PREFIX dbo: <http://dbpedia.org/ontology/>
       |PREFIX foaf: <http://xmlns.com/foaf/0.1/>
       |
-      |SELECT DISTINCT ?person ?personName ?personInfo ?event WHERE {
+      |SELECT DISTINCT ?person ?personName ?personInfo WHERE {
       |	?event rdf:type sch:Event ;
-      | VALUES ?event { @eventUrls }
+      | VALUES ?event { <@eventUrl> }
       | ?person rdf:type sch:Person ;
       |		foaf:name ?personName ;
       |		foaf:isPrimaryTopicOf ?personInfo .
@@ -21,6 +20,6 @@ class EventPeopleQuery(events: Seq[String]) extends SparqlQuery {
       |}
     """
       .stripMargin
-      .replace("@eventUrls", eventUris)
+      .replace("@eventUrl", event)
   }
 }

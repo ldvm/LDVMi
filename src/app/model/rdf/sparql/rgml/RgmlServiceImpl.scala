@@ -418,4 +418,11 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
       new EventQuery(),
       new EventExtractor())
   }
+
+  def eventPeople(evaluation: PipelineEvaluation, event: String)(implicit session: Session): Option[Seq[Person]] = {
+    sparqlEndpointService.getResult(
+      evaluationToSparqlEndpoint(evaluation),
+      new EventPeopleQuery(event),
+      new PersonExtractor())
+  }
 }

@@ -5,7 +5,6 @@ import model.rdf.sparql.rgml.Event
 import model.rdf.sparql.rgml.query.EventQuery
 import org.apache.jena.query.QueryExecution
 import org.joda.time.DateTime
-
 import scala.collection.JavaConversions._
 
 
