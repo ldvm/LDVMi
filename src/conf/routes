@@ -156,6 +156,9 @@ POST        /assistant/api/chordVisualizer/getSearchableLens/:id        @control
 POST        /assistant/api/chordVisualizer/searchNodes/:id              @controllers.assistant.api.visualizers.ChordVisualizerApiController.searchNodes(id: Long)
 POST        /assistant/api/chordVisualizer/getRelatedNodes/:id          @controllers.assistant.api.visualizers.ChordVisualizerApiController.getRelatedNodes(id: Long)
 
+POST        /assistant/api/eventVisualizer/getEvents/:id                @controllers.assistant.api.visualizers.EventVisualizerApiController.getEvents(id: Long)
+POST        /assistant/api/eventVisualizer/getEventPeople/:id           @controllers.assistant.api.visualizers.EventVisualizerApiController.getEventPeople(id: Long)
+
 GET         /assistant$any<.*>                                          @controllers.assistant.PlatformController.index(any)
 GET         /app/:id/:uid                                               @controllers.assistant.ApplicationController.index(id: Long, uid: String, any = null)
 GET         /app/:id/:uid/$any<.*>                                      @controllers.assistant.ApplicationController.index(id: Long, uid: String, any)

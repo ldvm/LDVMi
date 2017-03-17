@@ -2,7 +2,6 @@ import createAction from '../../../../misc/createAction'
 import withApplicationId from '../../../app/misc/withApplicationId'
 import prefix from '../prefix'
 import * as api from '../api'
-
 import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import { Event } from '../models'
 
@@ -38,7 +37,6 @@ export default function eventReducer(state = initialState, action) {
         case GET_APPLICATION_START:
         case GET_EVENT_RESET:
             return initialState;
-
         case GET_EVENT_SUCCESS:
             return new Event(action.payload);
     }

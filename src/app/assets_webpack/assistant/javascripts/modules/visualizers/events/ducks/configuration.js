@@ -1,5 +1,6 @@
 import prefix from '../prefix'
 import moduleSelector from '../selector'
+import { createSelector } from 'reselect'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import {
     createGetConfiguration, createGetConfigurationReset, createSaveConfiguration
