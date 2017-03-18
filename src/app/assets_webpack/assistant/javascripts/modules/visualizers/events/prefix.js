@@ -1,4 +1,4 @@
 import createPrefixer from '../../../misc/createPrefixer'
 
-export const MODULE_PREFIX = 'eventTimeline';
+export const MODULE_PREFIX = 'events';
 export default createPrefixer(MODULE_PREFIX);

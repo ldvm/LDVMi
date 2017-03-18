@@ -1,6 +1,6 @@
 import rest from '../../../misc/rest'
 
 export async function getEvents(applicationId) {
-    const result = await rest('eventVisualizer/getEvent/' + applicationId, {});
-    return result.data.event;
+    const result = await rest('eventVisualizer/getEvents/' + applicationId, {});
+    return result.data.events;
 }

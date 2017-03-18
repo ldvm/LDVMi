@@ -2,10 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import BodyPadding from '../../../../components/BodyPadding'
 import { Application } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
-import { EventLoader } from '../containers/EventLoader'
+import EventLoader from '../containers/EventLoader'
 import { getConfiguration, getConfigurationReset } from '../ducks/configuration'
-import EditableLabel from '../../../app/containers/EditableLabel'
-import SaveButton from '../containers/SaveButton'
 
 
 class Configurator extends Component {
@@ -22,8 +20,6 @@ class Configurator extends Component {
                 <p>{application.name}</p>
                 <p>{visualizer.title}</p>
             <EventLoader/>
-            <EditableLabel/>
-            <SaveButton/>
             </BodyPadding>
         )
     }

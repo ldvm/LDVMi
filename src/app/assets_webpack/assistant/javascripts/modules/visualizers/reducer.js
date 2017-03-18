@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 import googleMaps from './googleMaps/reducer'
 import chord from './chord/reducer'
-import eventTimeline from './eventTimeline/reducer'
+import events from './events/reducer'
 
 const rootReducer = combineReducers({
     googleMaps,
     chord,
-    eventTimeline
+    events
 });
 export default rootReducer;

@@ -4,7 +4,7 @@ import ConfiguratorsRouteFactory from './utils/ConfiguratorsRouteFactory'
 import dataCubeRoutes from './datacube/configuratorRoutes'
 import googleMapsRoutes from './googleMaps/configuratorRoutes'
 import chordRoutes from './chord/configuratorRoutes'
-import eventTimelineRoutes from './eventTimeline/configuratorRoutes'
+import eventTimelineRoutes from './events/configuratorRoutes'
 import { Visualizer, VisualizerWithPipelines } from '../core/models'
 import { applicationUrl } from '../app/configuratorRoutes'
 
