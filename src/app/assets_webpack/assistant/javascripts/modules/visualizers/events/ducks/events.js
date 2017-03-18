@@ -36,17 +36,11 @@ export default function eventsReducer(state = initialState, action) {
             return initialState;
 
         case GET_EVENTS_SUCCESS:
-            return action.payload.map(ev=>new EventInfo(
-                ev.url,
-                ev.name,
-                new Date(ev.start),
-                new Date(ev.end),
-                ev.info)
-            );
+            return action.payload.map(ev=>new EventInfo(ev));
     }
     return state;
 };
 
 // Selectors
 export const eventsStatusSelector = createPromiseStatusSelector(GET_EVENTS);
-export const eventsSelector = createSelector([moduleSelector], state => state);
+export const eventsSelector = createSelector([moduleSelector], state => state.events);

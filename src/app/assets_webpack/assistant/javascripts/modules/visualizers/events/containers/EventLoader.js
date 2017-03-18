@@ -28,15 +28,9 @@ class EventLoader extends Component {
         if (!status.done) {
             return <PromiseResult status={status} loadingMessage="Loading base events info..."/>
         }
-
-        let event = events[0];
         return (
             <div>
-                <p><strong>Graph info</strong></p>
-                <p>Event info: {event.info }</p>
-                <p>Event name: {event.name}</p>
-                <p>Start : {event.start} </p>
-                <p>End: {event.end} </p>
+                <p>{ events.forEach(ev=>{ return ev.name + "\n"}) }</p>
             </div>
         )
     }

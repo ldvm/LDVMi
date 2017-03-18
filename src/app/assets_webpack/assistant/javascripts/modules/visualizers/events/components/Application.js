@@ -20,6 +20,7 @@ class Application extends Component {
                 <p>It runs in {embed ? 'embed' : 'standalone'} mode</p>
                 <p>{application.name}</p>
                 <p>{visualizer.title}</p>
+                <EventLoader/>
             </BodyPadding>
         )
     }
