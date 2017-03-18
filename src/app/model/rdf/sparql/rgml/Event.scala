@@ -1,4 +1,4 @@
 package model.rdf.sparql.rgml
-import org.joda.time.DateTime
+import java.util.Date
 
-case class Event(url:String,name:String,start:DateTime,end:DateTime,info:String)
+case class Event(url:String,name:String,start:Date,end:Date,info:String)

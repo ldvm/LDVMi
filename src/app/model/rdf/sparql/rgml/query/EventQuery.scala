@@ -16,11 +16,12 @@ class EventQuery extends SparqlQuery{
         |		dbo:endDate  ?end ;
         |		dbo:wikiPageExternalLink ?eventLink .
         |
-        | ?person rdf:type sch:Person ;
-        |		foaf:name ?personName ;
-        |		foaf:isPrimaryTopicOf ?personLink .
-        |
-        |	FILTER EXISTS { ?event ?relation ?person }
+        |	FILTER EXISTS {
+        |   ?event ?relation ?person .
+        |   ?person rdf:type sch:Person ;
+        |		  foaf:name ?personName ;
+        |		  foaf:isPrimaryTopicOf ?personLink .
+        |   }
         |} LIMIT 100
       """
         .stripMargin
