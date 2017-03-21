@@ -19,6 +19,7 @@ class Configurator extends Component {
                 <p>This is the graph visualizer configurator.</p>
                 <p>{application.name}</p>
                 <p>{visualizer.title}</p>
+                <div id="chart_placeholder" width="100" height="100"/>
             <EventLoader/>
             </BodyPadding>
         )
