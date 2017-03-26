@@ -1,5 +1,6 @@
 package model.rdf.sparql.rgml
 
+import java.util.Date
 import model.entity.PipelineEvaluation
 import play.api.db.slick.Session
 import model.rdf.sparql.rgml.EdgeDirection._
@@ -16,6 +17,6 @@ trait RgmlService {
   def adjacentNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: Option[EdgeDirection] = None)(implicit session: Session): Option[Seq[Node]]
   def sampleNodesByHighestDegree(evaluation: PipelineEvaluation, size: Int)(implicit session: Session): Option[Seq[Node]]
   def sampleNodesWithForestFire( evaluation: PipelineEvaluation, size: Int, useWeights: Boolean = true, pF: Double = 0.2, pB: Double = 0.05)(implicit session: Session): Option[Seq[Node]]
-  def events(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Event]]
+  def events(evaluation: PipelineEvaluation, start: Date, end: Date, limit: Int)(implicit session: Session): Option[Seq[Event]]
   def eventPeople(evaluation: PipelineEvaluation, event: String)(implicit session: Session) : Option[Seq[Person]]
 }

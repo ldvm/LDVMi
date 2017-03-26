@@ -15,7 +15,7 @@ class EventVisualizerApiController(implicit inj: Injector) extends VisualizerApi
 
   def getEvents(id: Long) = RestAsyncAction[EventRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val events = rgmlService.events(evaluation)
+      val events = rgmlService.events(evaluation, json.start, json.end, json.limit)
       Future(Ok(SuccessResponse(data = Seq("events" -> events))))
     }
   }
