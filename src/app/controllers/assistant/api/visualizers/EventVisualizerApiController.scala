@@ -20,9 +20,11 @@ class EventVisualizerApiController(implicit inj: Injector) extends VisualizerApi
     }
   }
   def getEventPeople(id: Long) = RestAsyncAction[EventPeopleRequest] { implicit request => json =>
-    withEvaluation(ApplicationId(id)) { evaluation =>
-      var people = rgmlService.eventPeople(evaluation, json.event)
-      Future(Ok(SuccessResponse(data = Seq("people" -> people))))
+    cached {
+      withEvaluation(ApplicationId(id)) { evaluation =>
+        var people = rgmlService.eventPeople(evaluation, json.event)
+        Future(Ok(SuccessResponse(data = Seq("people" -> people))))
+      }
     }
   }
 }

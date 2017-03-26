@@ -4,9 +4,9 @@ import prefix from '../prefix'
 import * as api from '../api'
 import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import { EventInfo } from '../models'
-
 import { createSelector } from 'reselect'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
+import storageReducerFactory from '../../../../misc/storageReducerFactory'
 import moduleSelector from '../selector'
 
 // Actions
@@ -16,9 +16,9 @@ export const GET_EVENTS_ERROR = GET_EVENTS + '_ERROR';
 export const GET_EVENTS_SUCCESS = GET_EVENTS + '_SUCCESS';
 export const GET_EVENTS_RESET = GET_EVENTS + '_RESET';
 
-export function getEvents() {
+export function getEvents(start,end,limit) {
     return withApplicationId(id => {
-        const promise = api.getEvents(id);
+        const promise = api.getEvents(id,start,end,limit);
         return createAction(GET_EVENTS, { promise });
     });
 }
@@ -32,9 +32,11 @@ const initialState = [];
 export default function eventsReducer(state = initialState, action) {
     switch (action.type) {
         case GET_APPLICATION_START:
+            return initialState;
         case GET_EVENTS_RESET:
             return initialState;
-
+        case GET_EVENTS_ERROR:
+            return action.payload;
         case GET_EVENTS_SUCCESS:
             return action.payload.map(ev=>new EventInfo(ev));
     }

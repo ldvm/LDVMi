@@ -8,4 +8,12 @@ export const EventInfo = Record({
     info: "info"
 });
 
+export const PersonInfo = Record({
+    url: "url",
+    name: "name",
+    description: "description",
+    image: "image_url",
+    info: "info"
+});
+
 
