@@ -31,14 +31,17 @@ const initialState = [];
 export default function peopleReducer(state = initialState, action) {
     switch (action.type) {
         case GET_APPLICATION_START:
+            return initialState;
         case GET_PEOPLE_RESET:
             return initialState;
+        case GET_PEOPLE_ERROR:
+            return action.payload;
         case GET_PEOPLE_SUCCESS:
-            return action.payload.map(ev=>new PersonInfo(ev));
+            return action.payload.map(p=>new PersonInfo(p));
     }
     return state;
 };
 
 // Selectors
 export const peopleStatusSelector = createPromiseStatusSelector(GET_PEOPLE);
-export const peopleSelector = createSelector([moduleSelector], state => state.events);
+export const peopleSelector = createSelector([moduleSelector], state => state.people);

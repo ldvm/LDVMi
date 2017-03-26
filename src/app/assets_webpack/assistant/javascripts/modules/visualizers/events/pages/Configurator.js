@@ -3,6 +3,7 @@ import BodyPadding from '../../../../components/BodyPadding'
 import { Application } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
 import EventLoader from '../containers/EventLoader'
+import PeopleLoader from '../containers/PeopleLoader'
 import { getConfiguration, getConfigurationReset } from '../ducks/configuration'
 
 class Configurator extends Component {
@@ -16,6 +17,7 @@ class Configurator extends Component {
         return (
             <BodyPadding>
                 <EventLoader/>
+                <PeopleLoader/>
             </BodyPadding>
         )
     }

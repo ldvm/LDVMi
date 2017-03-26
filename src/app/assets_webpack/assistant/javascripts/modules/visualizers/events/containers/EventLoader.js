@@ -29,12 +29,12 @@ class EventLoader extends Component {
             return <PromiseResult status={status} error={status.error} loadingMessage="Loading events..."/>
         }
 
-        if (events.length == 0) {
+        if (events == null || events.length == 0) {
             return <p>No events loaded - nothing to visualize.</p>
         }
 
         const listItems = events.map((ev) =>
-            <li>{ev.name}</li>
+            <li key={ev.url}>{ev.name}</li>
         );
 
         return (

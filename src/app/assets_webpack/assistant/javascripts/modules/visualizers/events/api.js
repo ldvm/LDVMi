@@ -7,6 +7,6 @@ export async function getEvents(applicationId, start, end, limit) {
 }
 
 export async function getEventPeople(applicationId, event) {
-    const result = await rest('eventVisualizer/getEventPeople/' + applicationId, {"event" : event.url});
+    const result = await rest('eventVisualizer/getEventPeople/' + applicationId, {"event" : event});
     return result.data.people;
 }

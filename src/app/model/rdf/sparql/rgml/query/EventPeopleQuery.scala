@@ -19,7 +19,7 @@ class EventPeopleQuery(event: String) extends SparqlQuery {
       | ?person rdf:type sch:Person ;
       |   foaf:name ?personName;
       |   foaf:isPrimaryTopicOf ?personLink;
-      |   foaf:depiction ?personImage;s
+      |   foaf:depiction ?personImage;
       |   dbp:shortDescription ?personDescription;
       |   ?relation ?event .
       |}
