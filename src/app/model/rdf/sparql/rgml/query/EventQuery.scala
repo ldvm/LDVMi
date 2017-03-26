@@ -23,7 +23,7 @@ class EventQuery(start: Date, end: Date, limit: Int) extends SparqlQuery{
         |        dbo:wikiPageExternalLink ?eventLink .
         |
         |    FILTER (?eventStart > "@start"^^xsd:date)
-        |    FILTER (?eventEnd 	 < "@end"^^xsd:date)
+        |    FILTER (?eventStart < "@end"^^xsd:date)
         |
         |    FILTER EXISTS {
         |        ?person rdf:type sch:Person ;

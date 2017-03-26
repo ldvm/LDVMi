@@ -4,7 +4,6 @@ import { createStructuredSelector } from 'reselect'
 import { getEvents, getEventsReset, eventsSelector, eventsStatusSelector } from '../ducks/events'
 import { PromiseStatus } from '../../../core/models'
 import PromiseResult from '../../../core/components/PromiseResult'
-import TimelineChart from 'd3-timeline-chart'
 
 class EventLoader extends Component {
     static propTypes = {
@@ -15,7 +14,7 @@ class EventLoader extends Component {
 
     componentWillMount() {
         const {dispatch} = this.props;
-        dispatch(getEvents());
+        dispatch(getEvents((new Date("1900-01-01")),(new Date("2017-01-01")),20));
     }
 
     componentWillUnmount() {
@@ -27,35 +26,20 @@ class EventLoader extends Component {
         const {events, status} = this.props;
 
         if (!status.done) {
-            return <PromiseResult status={status} loadingMessage="Loading base events info..."/>
+            return <PromiseResult status={status} error={status.error} loadingMessage="Loading events..."/>
         }
 
-        const element = document.getElementById("chart_placeholder");
-        const data = [{
-            label: 'Name',
-            data: [ {
-                label: 'I\'m a label',
-                type: TimelineChart.TYPE.INTERVAL,
-                from: new Date([2015, 2, 1]),
-                to: new Date([2015, 3, 1])
-            }]
-        }, { label: 'Event', data: {
-                label: 'I\'m a label II',
-                type: TimelineChart.TYPE.INTERVAL,
-                from: new Date([2015, 2, 20]),
-                to: new Date([2015, 3, 20])
-            }
-        }];
+        if (events.length == 0) {
+            return <p>No events loaded - nothing to visualize.</p>
+        }
 
-        var chart = new TimelineChart(element, data, {
-            tip: function(d) {
-                return d.at || `${d.from}<br>${d.to}`;
-            },
-            width: 1000,
-            height: 1000
-        });
+        const listItems = events.map((ev) =>
+            <li>{ev.name}</li>
+        );
 
-        return <div/>;
+        return (
+            <ul>{listItems}</ul>
+        );
     }
 }
 
