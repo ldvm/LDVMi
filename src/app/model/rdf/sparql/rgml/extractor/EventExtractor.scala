@@ -2,13 +2,11 @@ package model.rdf.sparql.rgml.extractor
 
 import java.util.Date
 import java.text.SimpleDateFormat
-
+import scala.collection.JavaConversions._
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.rgml.Event
 import model.rdf.sparql.rgml.query.EventQuery
 import org.apache.jena.query.{QueryExecution, QuerySolution}
-
-import scala.collection.JavaConversions._
 
 class EventExtractor extends QueryExecutionResultExtractor[EventQuery, Seq[Event]] {
 
@@ -17,10 +15,10 @@ class EventExtractor extends QueryExecutionResultExtractor[EventQuery, Seq[Event
       val resList = input.execSelect().toList
       Some(resList.map(e => new Event(
         e.getResource("event").getURI,
-        e.getLiteral("eventName").getString,
+        e.getLiteral("name").getString,
         getDate(e, "start"),
         getDate(e, "end"),
-        e.getResource("eventLink").getURI
+        e.getResource("link").getURI
       )))
     }
     catch {

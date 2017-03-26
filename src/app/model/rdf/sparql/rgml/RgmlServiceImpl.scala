@@ -1,5 +1,6 @@
 package model.rdf.sparql.rgml
 
+import java.util.Date
 import model.entity.PipelineEvaluation
 import model.rdf.sparql.rgml.extractor._
 import model.rdf.sparql.rgml.query._
@@ -7,7 +8,6 @@ import model.rdf.sparql.{EvaluationToSparqlEndpoint, GenericSparqlEndpoint, Spar
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 import model.rdf.sparql.rgml.EdgeDirection._
-import utils.Profiler
 
 import scala.collection.mutable
 
@@ -412,10 +412,10 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     nodes(evaluation, makeSample)
   }
 
-  def events(evaluation: PipelineEvaluation)(implicit session: Session): Option[Seq[Event]] = {
+  def events(evaluation: PipelineEvaluation, start: Date, end: Date, limit: Int)(implicit session: Session): Option[Seq[Event]] = {
     sparqlEndpointService.getResult(
       evaluationToSparqlEndpoint(evaluation),
-      new EventQuery(),
+      new EventQuery(start,end,limit),
       new EventExtractor())
   }
 
@@ -423,6 +423,6 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     sparqlEndpointService.getResult(
       evaluationToSparqlEndpoint(evaluation),
       new EventPeopleQuery(event),
-      new PersonExtractor())
+      new PeopleExtractor())
   }
 }
