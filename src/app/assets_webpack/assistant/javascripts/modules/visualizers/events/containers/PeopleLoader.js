@@ -32,12 +32,9 @@ class PeopleLoader extends Component {
         if (people==null || people.length == 0) {
             return <p>No people loaded - nothing to visualize.</p>
         }
-        const listItems = people.map((p) =>
-            <li key={p.url}>{p.name}</li>
-        );
 
         return (
-            <ul>{listItems}</ul>
+           <p>{people[0].name}</p>
         );
     }
 }
