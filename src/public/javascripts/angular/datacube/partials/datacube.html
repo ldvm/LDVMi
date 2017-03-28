@@ -74,8 +74,7 @@
                         <div class="media-body">
                             <div>
                                 <span ng-if="component.order && type.key == 'dimension'">{{component.order}}.</span>
-                                {{component.label.variants[language] || component.label.variants["en"] ||
-                                component.label.variants["nolang"] || component[type.key].uri}}
+                                {{component | label:language:availableLanguages}}
                             </div>
                         </div>
                     </div>
