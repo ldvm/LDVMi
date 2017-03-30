@@ -3,7 +3,10 @@ import moduleSelector from '../selector'
 import { createDirtyReducer } from '../../../app/ducks/dirty'
 
 // Reducer
-const actions = [ ];
+const actions = [
+
+
+];
 
 export default createDirtyReducer(actions);
 

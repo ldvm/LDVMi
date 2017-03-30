@@ -37,6 +37,7 @@
     "reselect": "2.0.x",
     "revalidator": "0.3.x",
     "scriptjs": "2.5.x",
+    "underscore": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz",
     "when": "3.7.x"
   },
   "devDependencies": {
