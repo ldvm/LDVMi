@@ -1,10 +1,10 @@
+import { createSelector } from 'reselect'
 import prefix from '../prefix'
 import moduleSelector from '../selector'
-import { createSelector } from 'reselect'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import { createGetConfiguration, createGetConfigurationReset, createSaveConfiguration } from '../../../app/ducks/configuration'
+import {Configuration} from "../models";
 
-// Actions
 export const SAVE_CONFIGURATION = prefix('SAVE_CONFIGURATION');
 export const SAVE_CONFIGURATION_START = SAVE_CONFIGURATION + '_START';
 export const SAVE_CONFIGURATION_ERROR = SAVE_CONFIGURATION + '_ERROR';
@@ -20,15 +20,11 @@ export const GET_CONFIGURATION_RESET = GET_CONFIGURATION + '_RESET';
 export const saveConfigurationStatusSelector = createPromiseStatusSelector(SAVE_CONFIGURATION);
 export const getConfigurationStatusSelector = createPromiseStatusSelector(GET_CONFIGURATION);
 
-export const configurationSelector = createSelector(
-    [moduleSelector],
-    state => ({  })
+export const configurationSelector = createSelector([moduleSelector], state => new Configuration(state.configuration)
 );
 
 // Actual actions created using factories
-export const saveConfiguration =
-    createSaveConfiguration(SAVE_CONFIGURATION, configurationSelector);
-export const getConfiguration =
-    createGetConfiguration(GET_CONFIGURATION);
-export const getConfigurationReset =
-    createGetConfigurationReset(GET_CONFIGURATION_RESET);
+export const saveConfiguration = createSaveConfiguration(SAVE_CONFIGURATION, configurationSelector);
+export const getConfiguration = createGetConfiguration(GET_CONFIGURATION);
+export const getConfigurationReset = createGetConfigurationReset(GET_CONFIGURATION_RESET);
+

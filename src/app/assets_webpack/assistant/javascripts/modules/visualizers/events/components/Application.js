@@ -2,10 +2,10 @@ import React, { Component, PropTypes } from 'react'
 import BodyPadding from '../../../../components/BodyPadding'
 import { Application as ApplicationModel } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
-import EventLoader from '../containers/EventLoader'
+import Visualization from '../components/Visualization'
 import SaveButton from '../components/SaveButton'
 import { getConfiguration, getConfigurationReset } from '../ducks/configuration'
-
+import ConfigToolbar from "./ConfigToolbar";
 
 class Application extends Component {
     static propTypes = {
@@ -25,11 +25,12 @@ class Application extends Component {
     }
 
     render() {
-        const { application, visualizer, embed } = this.props;
+        const { embed } = this.props;
         return (
             <BodyPadding>
-                <p>This is the {visualizer.name} in {application.name} in {embed ? 'embed' : 'standalone'} mode.</p>
-                <EventLoader/>
+                <p>{embed ? 'Embed' : 'Standalone'} mode.</p>
+                <ConfigToolbar/>
+                <Visualization/>
                 <SaveButton/>
             </BodyPadding>
         )

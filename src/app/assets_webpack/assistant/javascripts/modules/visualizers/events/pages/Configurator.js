@@ -2,10 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import BodyPadding from '../../../../components/BodyPadding'
 import { Application } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
-import EventLoader from '../containers/EventLoader'
-import PeopleLoader from '../containers/PeopleLoader' //TODO
+import Visualization from '../components/Visualization'
+import ConfigToolbar from '../components/ConfigToolbar'
 import SaveButton from '../components/SaveButton'
-import { getConfiguration, getConfigurationReset } from '../ducks/configuration'
 
 class Configurator extends Component {
     static propTypes = {
@@ -14,24 +13,13 @@ class Configurator extends Component {
     };
 
     render() {
-        const { application, visualizer } = this.props;
         return (
             <BodyPadding>
-                <EventLoader/>
+                <ConfigToolbar/>
+                <Visualization/>
                 <SaveButton/>
             </BodyPadding>
         )
     }
-
-    componentWillMount() {
-        const { dispatch } = this.props;
-        dispatch(getConfiguration());
-    }
-
-    componentWillUnmount() {
-        const { dispatch } = this.props;
-        dispatch(getConfigurationReset());
-    }
 }
-
 export default Configurator;
