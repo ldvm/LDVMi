@@ -17,9 +17,14 @@ export const PersonInfo = Record({
 });
 
 export const Configuration = Record({
-    start: new Date("01 01 2010"),
+    start: new Date("01 01 2000"),
     end: new Date("01 01 2018"),
     limit: 100
+});
+
+export const SelectedEvent = Record({
+    isValid: false,
+    event: new EventInfo
 });
 
 

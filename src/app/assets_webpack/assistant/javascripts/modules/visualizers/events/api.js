@@ -6,12 +6,11 @@ export async function getEvents(applicationId, config) {
     var limit = parseInt(config.limit);
 
     let payload = {"start":start, "end":end, "limit":limit};
-    debugger;
     const result = await rest('eventVisualizer/getEvents/' + applicationId,payload);
     return result.data.events;
 }
 
-export async function getEventPeople(applicationId, eventUrl) {
-    const result = await rest('eventVisualizer/getEventPeople/' + applicationId, {event : eventUrl});
+export async function getEventPeople(applicationId, event) {
+    const result = await rest('eventVisualizer/getEventPeople/' + applicationId, {"event" : event});
     return result.data.people;
 }

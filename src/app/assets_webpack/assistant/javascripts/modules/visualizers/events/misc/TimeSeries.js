@@ -2,10 +2,9 @@ import d3 from 'd3'
 import moment from 'moment'
 import * as _ from 'underscore'
 import {getAvailableVerticalSpace} from "../../../../components/FillInScreen";
-import {log} from "debug";
 
 class TimeSeries {
-    constructor(spaced, data, enableBrush) {
+    constructor(spaced, data, enableBrush, callback) {
         var classd = spaced.replace(new RegExp(" "), ".");
         render(classd, spaced, data, enableBrush);
 
@@ -152,8 +151,8 @@ class TimeSeries {
                 })
                 .attr("r", 9)
                 .on("click", function (d) {
-                    log(new Date(d.start));
-                })
+                    callback(d);
+                });
 
             // ----------------------------------------- Brush ---------------------------------------------
 

@@ -4,7 +4,6 @@ import { Application } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
 import Visualization from '../components/Visualization'
 import ConfigToolbar from '../components/ConfigToolbar'
-import SaveButton from '../components/SaveButton'
 
 class Configurator extends Component {
     static propTypes = {

@@ -3,7 +3,6 @@ import BodyPadding from '../../../../components/BodyPadding'
 import { Application as ApplicationModel } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
 import Visualization from '../components/Visualization'
-import SaveButton from '../components/SaveButton'
 import { getConfiguration, getConfigurationReset } from '../ducks/configuration'
 import ConfigToolbar from "./ConfigToolbar";
 

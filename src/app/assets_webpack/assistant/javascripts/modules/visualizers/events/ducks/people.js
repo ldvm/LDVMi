@@ -17,7 +17,7 @@ export const GET_PEOPLE_RESET = GET_PEOPLE + '_RESET';
 
 export function getEventPeople(event) {
     return withApplicationId(id => {
-        const promise = api.getEventPeople(id,event);
+        const promise = api.getEventPeople(id,event.url);
         return createAction(GET_PEOPLE, { promise });
     });
 }
@@ -35,7 +35,7 @@ export default function peopleReducer(state = initialState, action) {
         case GET_PEOPLE_RESET:
             return initialState;
         case GET_PEOPLE_ERROR:
-            return action.payload;
+            return [action.payload];
         case GET_PEOPLE_SUCCESS:
             return action.payload.map(p=>new PersonInfo(p));
     }

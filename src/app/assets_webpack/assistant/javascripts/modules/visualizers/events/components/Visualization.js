@@ -2,10 +2,10 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import {createStructuredSelector} from "reselect";
 import { configSelector } from '../ducks/configuration'
-import {selectedEventSelector} from "../ducks/selectedEvents";
+import {getSelectedEvent, getSelectedEventReset, selectedEventSelector} from "../ducks/selectedEvent";
 import TimelineContainer from '../containers/TimelineContainer'
 import EventInfoContainer from '../containers/EventInfoContainer'
-import {Configuration, EventInfo} from '../models'
+import {Configuration, SelectedEvent} from '../models'
 import { getConfiguration, getConfigurationReset} from '../ducks/configuration'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import VisualizationMessage from '../components/VisualizationMessage'
@@ -13,17 +13,24 @@ import VisualizationMessage from '../components/VisualizationMessage'
 class Visualization extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
-        selectedEvent: PropTypes.instanceOf(EventInfo),
+        selectedEvent: PropTypes.instanceOf(SelectedEvent).isRequired,
         configuration: PropTypes.instanceOf(Configuration).isRequired
     };
 
+    componentWillMount(){
+        const {dispatch} = this.props;
+        dispatch(getSelectedEvent());
+    }
+
     componentWillUpdate(){
         const { dispatch } = this.props;
+        dispatch(getSelectedEvent());
         dispatch(getConfiguration());
     }
 
     componentWillUnmount() {
         const { dispatch } = this.props;
+        dispatch(getSelectedEventReset());
         dispatch(getConfigurationReset());
     }
 
@@ -36,7 +43,7 @@ class Visualization extends Component {
         }
         return <div>
             <TimelineContainer configuration={configuration}/>
-            <EventInfoContainer eventInfo={selectedEvent}/>
+            <EventInfoContainer selectedEvent={selectedEvent}/>
         </div>
     }
 }
