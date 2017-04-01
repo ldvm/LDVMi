@@ -16,9 +16,9 @@ export const GET_EVENTS_ERROR = GET_EVENTS + '_ERROR';
 export const GET_EVENTS_SUCCESS = GET_EVENTS + '_SUCCESS';
 export const GET_EVENTS_RESET = GET_EVENTS + '_RESET';
 
-export function getEvents(start,end,limit) {
+export function getEvents(config) {
     return withApplicationId(id => {
-        const promise = api.getEvents(id,start,end,limit);
+        const promise = api.getEvents(id,config);
         return createAction(GET_EVENTS, { promise });
     });
 }
@@ -36,7 +36,7 @@ export default function eventsReducer(state = initialState, action) {
         case GET_EVENTS_RESET:
             return initialState;
         case GET_EVENTS_ERROR:
-            return action.payload;
+            return initialState;
         case GET_EVENTS_SUCCESS:
             return action.payload.map(ev=>new EventInfo(ev));
     }

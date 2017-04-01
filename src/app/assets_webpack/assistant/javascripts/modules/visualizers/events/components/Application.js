@@ -31,7 +31,6 @@ class Application extends Component {
                 <p>{embed ? 'Embed' : 'Standalone'} mode.</p>
                 <ConfigToolbar/>
                 <Visualization/>
-                <SaveButton/>
             </BodyPadding>
         )
     }

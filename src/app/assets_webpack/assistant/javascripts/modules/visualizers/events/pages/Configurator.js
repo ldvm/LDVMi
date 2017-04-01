@@ -17,7 +17,6 @@ class Configurator extends Component {
             <BodyPadding>
                 <ConfigToolbar/>
                 <Visualization/>
-                <SaveButton/>
             </BodyPadding>
         )
     }

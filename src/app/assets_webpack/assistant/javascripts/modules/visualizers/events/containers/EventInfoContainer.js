@@ -17,7 +17,7 @@ class PeopleLoader extends Component {
         status: PropTypes.instanceOf(PromiseStatus).isRequired
     };
 
-    componentWillMount() {
+    componentWillUpdate() {
         const { dispatch, event } = this.props.dispatch;
         if (event) {
             dispatch(getEventPeople(event.url));

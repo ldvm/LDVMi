@@ -4,4 +4,4 @@ import { dirtySelector } from '../ducks/dirty'
 
 import createSaveButton from '../../../app/containers/createSaveButton'
 
-export default createSaveButton(saveConfiguration, saveConfigurationStatusSelector, dirtySelector);
+//export default createSaveButton(saveConfiguration, saveConfigurationStatusSelector, dirtySelector);

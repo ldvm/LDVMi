@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import {createStructuredSelector} from "reselect";
-import { configurationSelector } from '../ducks/configuration'
+import { configSelector } from '../ducks/configuration'
 import {selectedEventSelector} from "../ducks/selectedEvents";
 import TimelineContainer from '../containers/TimelineContainer'
 import EventInfoContainer from '../containers/EventInfoContainer'
 import {Configuration, EventInfo} from '../models'
-import { getConfiguration, getConfigurationReset } from '../ducks/configuration'
+import { getConfiguration, getConfigurationReset} from '../ducks/configuration'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import VisualizationMessage from '../components/VisualizationMessage'
 
@@ -17,7 +17,7 @@ class Visualization extends Component {
         configuration: PropTypes.instanceOf(Configuration).isRequired
     };
 
-    componentWillMount() {
+    componentWillUpdate(){
         const { dispatch } = this.props;
         dispatch(getConfiguration());
     }
@@ -41,7 +41,7 @@ class Visualization extends Component {
     }
 }
 const selector = createStructuredSelector({
-    configuration: configurationSelector,
+    configuration: configSelector,
     selectedEvent: selectedEventSelector
 });
 

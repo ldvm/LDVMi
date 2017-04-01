@@ -1,30 +1,42 @@
-import { createSelector } from 'reselect'
+import createAction from '../../../../misc/createAction'
 import prefix from '../prefix'
+import { GET_APPLICATION_START } from '../../../app/ducks/application'
+import { Configuration } from '../models'
+import { createSelector } from 'reselect'
 import moduleSelector from '../selector'
-import { createPromiseStatusSelector } from '../../../core/ducks/promises'
-import { createGetConfiguration, createGetConfigurationReset, createSaveConfiguration } from '../../../app/ducks/configuration'
-import {Configuration} from "../models";
 
-export const SAVE_CONFIGURATION = prefix('SAVE_CONFIGURATION');
-export const SAVE_CONFIGURATION_START = SAVE_CONFIGURATION + '_START';
-export const SAVE_CONFIGURATION_ERROR = SAVE_CONFIGURATION + '_ERROR';
-export const SAVE_CONFIGURATION_SUCCESS = SAVE_CONFIGURATION + '_SUCCESS';
+// Actions
+export const GET_CONFIG = prefix('GET_CONFIG');
+export const SET_CONFIG = prefix('SET_CONFIG');
+export const GET_CONFIG_RESET = GET_CONFIG + '_RESET';
 
-export const GET_CONFIGURATION = prefix('GET_CONFIGURATION');
-export const GET_CONFIGURATION_START = GET_CONFIGURATION + '_START';
-export const GET_CONFIGURATION_ERROR = GET_CONFIGURATION + '_ERROR';
-export const GET_CONFIGURATION_SUCCESS = GET_CONFIGURATION + '_SUCCESS';
-export const GET_CONFIGURATION_RESET = GET_CONFIGURATION + '_RESET';
+export function getConfiguration() {
+    return createAction(GET_CONFIG);
+}
+export function setConfiguration(config) {
+    return createAction(SET_CONFIG, {config})
+}
+export function getConfigurationReset() {
+    return createAction(GET_CONFIG_RESET);
+}
+
+// Reducer
+const initialState = new Configuration();
+export default function configReducer(state = initialState, action) {
+    switch (action.type) {
+        case GET_APPLICATION_START:
+            return initialState;
+        case GET_CONFIG_RESET:
+            return initialState;
+        case SET_CONFIG:
+            return Configuration(action.payload.config);
+        case GET_CONFIG:
+            return new Configuration(state);
+        default:
+            return state;
+    }
+};
 
 // Selectors
-export const saveConfigurationStatusSelector = createPromiseStatusSelector(SAVE_CONFIGURATION);
-export const getConfigurationStatusSelector = createPromiseStatusSelector(GET_CONFIGURATION);
-
-export const configurationSelector = createSelector([moduleSelector], state => new Configuration(state.configuration)
-);
-
-// Actual actions created using factories
-export const saveConfiguration = createSaveConfiguration(SAVE_CONFIGURATION, configurationSelector);
-export const getConfiguration = createGetConfiguration(GET_CONFIGURATION);
-export const getConfigurationReset = createGetConfigurationReset(GET_CONFIGURATION_RESET);
+export const configSelector = createSelector([moduleSelector], state => state.config);
 

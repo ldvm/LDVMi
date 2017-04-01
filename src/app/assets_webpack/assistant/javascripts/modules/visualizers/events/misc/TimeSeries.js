@@ -185,7 +185,7 @@ class TimeSeries {
                         d3.select('.brush-info')[0][0].innerText = "";
                         d3.select('.clear-brush').style("display", "none");
                     }
-                })
+                });
 
                 TimeSeries.getBrushExtent = function () {
                     if (brush)
@@ -194,17 +194,15 @@ class TimeSeries {
             }
         }
     }
-    /* Use this function, in conjunction to setting a time element to 'selected', to highlight the
-     data point on the timeseries. */
-    redraw() {
-        d3.selectAll(".circ")
-            .transition(10)
-            .style("opacity", function(d) {
-                return d.selected ? 1 : 0.6;
-            })
-            .attr("r", function(d) {
-                return d.selected ? 15 : 7;
-            });
+    exists(spaced) {
+        var classd = spaced.replace(new RegExp(" "), ".");
+        if (d3.select("." + classd).select("svg")) return true;
+        return false;
+    }
+
+    destroy(spaced) {
+        var classd = spaced.replace(new RegExp(" "), ".");
+        d3.select("." + classd).select("svg").remove();
     }
 }
 export default TimeSeries;

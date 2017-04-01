@@ -4,8 +4,6 @@ import { getEvents, getEventsReset, eventsSelector, eventsStatusSelector } from 
 import { PromiseStatus } from '../../../core/models'
 import PromiseResult from '../../../core/components/PromiseResult'
 import TimeSeries from '../misc/TimeSeries'
-import CenteredMessage from '../../../../components/CenteredMessage'
-import VisualizationMessage from '../components/VisualizationMessage'
 import {createStructuredSelector} from "reselect";
 import {Configuration} from "../models"
 
@@ -19,39 +17,42 @@ class TimelineContainer extends Component {
 
     componentWillMount(){
         const {dispatch, configuration} = this.props;
+        dispatch(getEvents(configuration));
         this.className = 'timeseries-chart';
-        dispatch(getEvents(configuration.start,configuration.end,configuration.limit));
+    }
+
+    componentWillReceiveProps(nextProps){
+        const {dispatch, configuration} = nextProps;
+        if (this.props.configuration != configuration) {
+            dispatch(getEvents(configuration));
+        }
     }
 
     componentDidUpdate(){
-        const {events} = this.props;
-        var elements = document.getElementsByClassName(this.className);
-        if (elements.length > 0) {
-            if (this.chart != null) {
-                this.chart.redraw();
-            }
-            else {
-                this.chart = new TimeSeries(this.className, events, true);
-            }
+        const {events, status} = this.props;
+
+        if (this.chart && this.chart.exists(this.className)) {
+            this.chart.destroy(this.className)
+        }
+
+        if (status.done) {
+            this.chart = new TimeSeries(this.className, events, true);
         }
     }
+
     componentWillUnmount() {
         const {dispatch} = this.props;
         dispatch(getEventsReset());
     }
+
     render() {
-        const {events, status} = this.props;
-        require('../misc/TimeSeriesStyle.css');
+        const {status} = this.props;
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error} loadingMessage="Loading events..."/>
         }
 
-        if (!events || events.length == 0) {
-            return <VisualizationMessage>
-                <CenteredMessage>No events were loaded. Check the configuration.</CenteredMessage>
-            </VisualizationMessage>
-        }
+        require('../misc/TimeSeriesStyle.css');
         return <div className={this.className}/>
     }
 }
