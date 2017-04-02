@@ -6,7 +6,6 @@ import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import { EventInfo } from '../models'
 import { createSelector } from 'reselect'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
-import storageReducerFactory from '../../../../misc/storageReducerFactory'
 import moduleSelector from '../selector'
 
 // Actions

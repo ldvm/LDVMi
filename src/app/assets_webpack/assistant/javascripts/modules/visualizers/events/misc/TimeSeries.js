@@ -75,7 +75,7 @@ class TimeSeries {
 
         function render(classd, spaced, data, enableBrush) {
 
-            var padding = timeRangePad(_.pluck(data, 'start'));
+            var padding = timeRangePad(_.pluck(data, 'date'));
 
             var margin = {
                 top: 10,
@@ -144,10 +144,10 @@ class TimeSeries {
                 .enter().append("circle")
                 .attr("class", "circ")
                 .attr("cx", function (d) {
-                    return (lessThanDay(padding.pad)) ? x(d.start) : x(getDate(d.start));
+                    return (lessThanDay(padding.pad)) ? x(d.date) : x(getDate(d.date));
                 })
                 .attr("cy", function (d, i) {
-                    return (lessThanDay(padding.pad)) ? y(getDate(d.start)) : y(getTime(d.start));
+                    return (lessThanDay(padding.pad)) ? y(getDate(d.date)) : y(getTime(d.date));
                 })
                 .attr("r", 9)
                 .on("click", function (d) {

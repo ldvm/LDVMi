@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import {createStructuredSelector} from "reselect";
-import {configSelector, setConfiguration} from '../ducks/configuration'
+import {configSelector, getConfigurationReset, setConfiguration} from '../ducks/configuration'
 import { Configuration } from '../models'
 import moment from "moment";
 
@@ -14,6 +14,11 @@ class ConfigToolbar extends Component {
     componentWillMount() {
         const { dispatch } = this.props;
         dispatch(setConfiguration(new Configuration()));
+    }
+
+    componentWillUnmount(){
+        const {dispatch} = this.props;
+        dispatch(getConfigurationReset())
     }
 
     handleNewConfig(){

@@ -16,8 +16,7 @@ class EventExtractor extends QueryExecutionResultExtractor[EventQuery, Seq[Event
       Some(resList.map(e => new Event(
         e.getResource("event").getURI,
         e.getLiteral("name").getString,
-        getDate(e, "start"),
-        getDate(e, "end"),
+        getDate(e, "date"),
         e.getResource("link").getURI
       )))
     }

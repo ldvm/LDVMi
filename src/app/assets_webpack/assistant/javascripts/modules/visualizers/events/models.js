@@ -3,8 +3,7 @@ import { Record } from 'immutable';
 export const EventInfo = Record({
     url: "url",
     name: "name",
-    start: "start",
-    end: "end",
+    date: new Date("2001-01-01"),
     info: "info"
 });
 

@@ -13,15 +13,14 @@ class EventPeopleQuery(event: String) extends SparqlQuery {
       |PREFIX dbp: <http://dbpedia.org/property/>
       |SELECT ?person (SAMPLE(?personName) AS ?name) (SAMPLE(?personDescription) AS ?description) (SAMPLE(?personLink) AS ?link) (SAMPLE(?personImage) AS ?image)
       |WHERE {
-      |	?event rdf:type sch:Event .
-      |    VALUES ?event { <@event> }
-      |
       | ?person rdf:type sch:Person ;
-      |   foaf:name ?personName;
-      |   foaf:isPrimaryTopicOf ?personLink;
-      |   foaf:depiction ?personImage;
-      |   dbp:shortDescription ?personDescription;
-      |   ?relation ?event .
+      |   foaf:name ?personName.
+      |
+      |  OPTIONAL {?person foaf:isPrimaryTopicOf ?personLink}
+      |  OPTIONAL {?person dbp:shortDescription ?personDescription}
+      |  OPTIONAL {?person foaf:depiction ?personImage}
+      |
+      |  <@event> ?relation ?person.
       |}
       |GROUP BY ?person
     """

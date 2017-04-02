@@ -7,6 +7,8 @@ import PromiseResult from '../../../core/components/PromiseResult'
 import TimeSeries from '../misc/TimeSeries'
 import {createStructuredSelector} from "reselect";
 import {Configuration} from "../models"
+import CenteredMessage from '../../../../components/CenteredMessage'
+import VisualizationMessage from '../components/VisualizationMessage'
 
 class TimelineContainer extends Component {
     static propTypes = {
@@ -51,10 +53,16 @@ class TimelineContainer extends Component {
     }
 
     render() {
-        const {status} = this.props;
+        const {status, events} = this.props;
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error} loadingMessage="Loading events..."/>
+        }
+
+        if (events.length == 0) {
+            return <VisualizationMessage>
+                <CenteredMessage>Could not load people for selected event.</CenteredMessage>
+            </VisualizationMessage>
         }
 
         require('../misc/TimeSeriesStyle.css');

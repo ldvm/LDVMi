@@ -32,56 +32,58 @@ class EventInfoContainer extends Component {
     render() {
         const {people, selectedEvent, status} = this.props;
 
-        if(!selectedEvent.isValid){
-            return <VisualizationMessage>
-                <CenteredMessage>To view more information about events, click on them in the timeline.</CenteredMessage>
-            </VisualizationMessage>
-        }
+        // EVENT INFO:
+        var eventComponent = <VisualizationMessage>
+            <CenteredMessage>To view more information about events, click on them in the timeline.</CenteredMessage>
+        </VisualizationMessage>;
 
-        if (!status.done) {
-            return <PromiseResult status={status} error={status.error} loadingMessage="Loading event people..."/>
-        }
+        if(selectedEvent.isValid){
+            var event = selectedEvent.event;
+            var dateString = moment(event.date).format('DD.MM.YYYY');
 
-        if (people.length == 0){
-            return <VisualizationMessage>
-                <CenteredMessage>Could not load people for selected event.</CenteredMessage>
-            </VisualizationMessage>
-        }
-
-        var renderPerson = function(person){
-            var style = {width: 100, height:150, "object-fit": 'contain'};
-            return <tr key={person.url}>
-                <td><img src={person.image} alt="Person Image" style={style}/></td>
-                <td>
-                    <p><b>{person.name}</b></p>
-                    <p>{person.description}</p>
-                    <a href={person.info}>Wiki Link</a>
-                </td>
-            </tr>
-        };
-
-        var event = selectedEvent.event;
-        var startString = moment(event.start).format('DD.MM.YYYY');
-        var endString = moment(event.end).format('DD.MM.YYYY');
-
-        return  <div>
-            <div>
+            eventComponent = <div>
+                <h3>Event info:</h3>
                 <p><b>{event.name}</b></p>
                 <p>{event.description}</p>
-                <p>From {startString} to {endString}</p>
+                <p>{dateString}</p>
                 <a href={event.info}>Event Link</a>
-            </div>
-            <hr/>
-            <div>
+            </div>;
+        }
+
+        // EVENT PEOPLE:
+        var peopleComponent = <VisualizationMessage>
+            <CenteredMessage>Could not load people for selected event.</CenteredMessage>
+        </VisualizationMessage>;
+
+        if (!status.done) {
+            peopleComponent = <PromiseResult status={status} error={status.error} loadingMessage="Loading event people..."/>
+        }
+        if (people.length > 0) {
+            var renderPerson = function (person) {
+                var style = {width: 100, height: 150, "objectFit": 'contain'};
+                return <tr key={person.url}>
+                    <td><img src={person.image} alt="No image available" style={style}/></td>
+                    <td>
+                        <p><b>{person.name}</b></p>
+                        <p>{person.description}</p>
+                        <a href={person.info}>Wiki Link</a>
+                    </td>
+                </tr>
+            };
+
+            peopleComponent = <div>
+                <h3>People associated with this event</h3>
                 <table>
-                    <thead>
-                    <tr key="header">
-                        <th>People associated with this event:</th>
-                    </tr>
-                    </thead>
                     <tbody>{people.map(p=>renderPerson(p))}</tbody>
                 </table>
             </div>
+        }
+
+        // RENDER
+        return  <div>
+            {eventComponent}
+            <hr/>
+            {peopleComponent}
         </div>
     }
 }

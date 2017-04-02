@@ -3,7 +3,6 @@ import BodyPadding from '../../../../components/BodyPadding'
 import { Application as ApplicationModel } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
 import Visualization from '../components/Visualization'
-import { getConfiguration, getConfigurationReset } from '../ducks/configuration'
 import ConfigToolbar from "./ConfigToolbar";
 
 class Application extends Component {
@@ -12,16 +11,6 @@ class Application extends Component {
         visualizer: PropTypes.instanceOf(Visualizer).isRequired,
         embed: PropTypes.bool
     };
-
-    componentWillMount() {
-        const { dispatch } = this.props;
-        dispatch(getConfiguration());
-    }
-
-    componentWillUnmount() {
-        const { dispatch } = this.props;
-        dispatch(getConfigurationReset());
-    }
 
     render() {
         const { embed } = this.props;
