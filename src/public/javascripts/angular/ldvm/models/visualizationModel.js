@@ -51,7 +51,9 @@ define(['angular', './models'], function (ng) {
                                        onProgress,
                                        onDone,
                                        errors) {
-                            var uri = "ws://" + window.location.host + "/api/v1/pipelines/discover";
+                            var isSsl = location.protocol === 'https:';
+                            var wsProtocol = isSsl ? "wss" : "ws";
+                            var uri = wsProtocol + "://" + window.location.host + "/api/v1/pipelines/discover";
                             var queryString = dataSourceIds.map(function (p) {
                                 return "dataSourceTemplateIds=" + p;
                             });
