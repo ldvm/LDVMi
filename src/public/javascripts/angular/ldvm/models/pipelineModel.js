@@ -37,7 +37,7 @@ define(['angular', './models'], function (ng) {
                     },
                     evaluate: function (pipeline, onEvaluationIdAssigned, onDone) {
                         
-                        var isSsl = location.protocol === 'https:';
+                        var isSsl = window.location.protocol === 'https:';
                         var wsProtocol = isSsl ? "wss" : "ws";
                         var uri = wsProtocol + "://" + window.location.host + "/api/v1/pipelines/evaluate/" + pipeline.id;
 
