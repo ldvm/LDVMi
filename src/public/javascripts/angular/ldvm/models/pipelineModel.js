@@ -36,7 +36,10 @@ define(['angular', './models'], function (ng) {
                         return pipelineApi.getSingle({discoveryId: discoveryId}).$promise;
                     },
                     evaluate: function (pipeline, onEvaluationIdAssigned, onDone) {
-                        var uri = "ws://" + window.location.host + "/api/v1/pipelines/evaluate/" + pipeline.id;
+                        
+                        var isSsl = location.protocol === 'https:';
+                        var wsProtocol = isSsl ? "wss" : "ws";
+                        var uri = wsProtocol + "://" + window.location.host + "/api/v1/pipelines/evaluate/" + pipeline.id;
 
                         var connection = $connection(uri);
                         connection.listen(
