@@ -14,7 +14,8 @@ define(['angular', './controllers'], function (ng) {
 
                 var l = window.location;
                 var isSsl = location.protocol === 'https:';
-                var connection = $connection("ws" + (isSsl ? "s" : "") + "://" + l.host + "/api/v1/pipelines/evaluate/" + $routeParams.id);
+                var wsProtocol = isSsl ? "wss" : "ws";
+                var connection = $connection(wsProtocol + "://" + l.host + "/api/v1/pipelines/evaluate/" + $routeParams.id);
                 connection.listen(function () {
                     return true
                 }, function (data) {
