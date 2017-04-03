@@ -18,8 +18,7 @@ define(['angular', './controllers'], function (ng) {
                 $scope.data = [];
 
                 var l = window.location;
-
-                var isSsl = location.protocol === 'https:';
+                var isSsl = l.protocol === 'https:';
                 var wsProtocol = isSsl ? "wss" : "ws";
                 var uri = wsProtocol + "://" + l.host + "/api/v1/pipelines/discover";
                 if ("dataSourceTemplateIds" in $routeParams && $routeParams.dataSourceTemplateIds) {
