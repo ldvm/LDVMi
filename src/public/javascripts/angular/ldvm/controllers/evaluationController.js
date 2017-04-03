@@ -13,7 +13,7 @@ define(['angular', './controllers'], function (ng) {
                 var id = null;
 
                 var l = window.location;
-                var isSsl = location.protocol === 'https:';
+                var isSsl = l.protocol === 'https:';
                 var wsProtocol = isSsl ? "wss" : "ws";
                 var connection = $connection(wsProtocol + "://" + l.host + "/api/v1/pipelines/evaluate/" + $routeParams.id);
                 connection.listen(function () {
