@@ -13,7 +13,8 @@ define(['angular', './controllers'], function (ng) {
                 var id = null;
 
                 var l = window.location;
-                var connection = $connection("ws://" + l.host + "/api/v1/pipelines/evaluate/" + $routeParams.id);
+                var isSsl = location.protocol === 'https:';
+                var connection = $connection("ws" + (isSsl ? "s" : "") + "://" + l.host + "/api/v1/pipelines/evaluate/" + $routeParams.id);
                 connection.listen(function () {
                     return true
                 }, function (data) {
