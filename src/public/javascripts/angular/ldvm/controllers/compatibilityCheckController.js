@@ -11,7 +11,7 @@ define(['angular', './controllers'], function (ng) {
 
                 var pipelineId = $routeParams.id;
                 var l = window.location;
-                var isSsl = location.protocol === 'https:';
+                var isSsl = l.protocol === 'https:';
                 var wsProtocol = isSsl ? "wss" : "ws";
                 var url = wsProtocol + "://" + l.host + "/api/v1/compatibility/check/" + pipelineId;
 
