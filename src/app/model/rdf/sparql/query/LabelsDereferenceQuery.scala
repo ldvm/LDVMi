@@ -9,8 +9,9 @@ class LabelsDereferenceQuery(val uri: String) extends SparqlQuery {
       | PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       | PREFIX schema: <http://schema.org/>
       | PREFIX dcterms: <http://purl.org/dc/terms/>
+      | PREFIX gr: <http://purl.org/goodrelations/v1#>
       |
-      | SELECT DISTINCT ?l ?spl ?sn ?sna ?st
+      | SELECT DISTINCT ?l ?spl ?sn ?sna ?st ?ln
       | WHERE {
       |     OPTIONAL { <$uri> rdfs:label ?l . }
       |     OPTIONAL { <$uri> skos:prefLabel ?spl . }
@@ -18,6 +19,7 @@ class LabelsDereferenceQuery(val uri: String) extends SparqlQuery {
       |     OPTIONAL { <$uri> schema:name ?sna . }
       |     OPTIONAL { <$uri> schema:title ?st . }
       |     OPTIONAL { <$uri> dcterms:title ?st . }
+      |     OPTIONAL { <$uri> gr:legalName ?ln . }
       | }
     """.stripMargin.replaceAll("[\n\r]", "")
 

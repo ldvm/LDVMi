@@ -12,7 +12,8 @@ import scaldi.{Injectable, Injector}
 class VisualizationApiController(implicit inj: Injector) extends ApiController with Injectable {
 
   def dereferenceLabels(uri: String) = Action {
-    Ok(Json.toJson(visualizationService.getLabels(uri)))
+    val labels = visualizationService.getLabels(uri)
+    Ok(Json.toJson(labels))
   }
 
   def getCachedResult(id: Long, permalinkToken: String) = Action { r =>
