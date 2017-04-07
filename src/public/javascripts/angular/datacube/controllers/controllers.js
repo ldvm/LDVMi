@@ -209,11 +209,20 @@ define(['angular', 'underscorejs'], function (ng, _) {
                 $scope.loadDatasetStructure = function (dataset, callback) {
                     $scope.queryingDataset = "dataset structure";
                     DataCubeService.getStructure({id: $id, uri: dataset.uri}, function (data) {
+
+                        console.log(data);
+
                         $scope.queryingDataset = null;
                         dataset.dataStructure = {components: data.components};
 
+                        registerLanguages(data);
+
                         var measures = _.filter(dataset.dataStructure.components, function (c) {
                             return c.measure;
+                        });
+
+                        _.forEach(dataset.dataStructure.components, function (c) {
+                            registerLanguages(c);
                         });
 
                         if (measures.length == 1) {
@@ -338,7 +347,6 @@ define(['angular', 'underscorejs'], function (ng, _) {
                                 _.forEach(data[dimensions[0].dimension.uri], function (v) {
                                     v.isActive = true;
                                 });
-                                console.log("a");
                                 computeSlicing();
                                 $scope.refresh();
                             }
