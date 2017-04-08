@@ -15,7 +15,7 @@ export const PersonInfo = Record({
     info: "info"
 });
 
-export const Configuration = Record({
+export const Settings = Record({
     start: new Date("01 01 2000"),
     end: new Date("01 01 2018"),
     limit: 100

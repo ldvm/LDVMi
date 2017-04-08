@@ -15,9 +15,9 @@ export const GET_EVENTS_ERROR = GET_EVENTS + '_ERROR';
 export const GET_EVENTS_SUCCESS = GET_EVENTS + '_SUCCESS';
 export const GET_EVENTS_RESET = GET_EVENTS + '_RESET';
 
-export function getEvents(config) {
+export function getEvents(settings) {
     return withApplicationId(id => {
-        const promise = api.getEvents(id,config);
+        const promise = api.getEvents(id,settings);
         return createAction(GET_EVENTS, { promise });
     });
 }

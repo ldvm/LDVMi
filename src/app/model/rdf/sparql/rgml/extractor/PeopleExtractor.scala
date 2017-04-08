@@ -12,9 +12,9 @@ class PeopleExtractor extends QueryExecutionResultExtractor[EventPeopleQuery, Se
     try {
       val resList = input.execSelect().toList
       Some(resList.map(p => {
-        var description = if (p.contains("description")) p.getLiteral("description").getString else "no_description"
-        var image = if (p.contains("image")) p.getResource("image").getURI else "no_image"
-        var link = if (p.contains("link")) p.getResource("link").getURI else "no_link"
+        var description = if (p.contains("description")) p.getLiteral("description").getString else "No description available."
+        var image = if (p.contains("image")) p.getResource("image").getURI else ""
+        var link = if (p.contains("link")) p.getResource("link").getURI else ""
 
         new Person(
           p.getResource("person").getURI,

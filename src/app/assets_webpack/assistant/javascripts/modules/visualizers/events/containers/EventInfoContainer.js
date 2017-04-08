@@ -19,8 +19,13 @@ class EventInfoContainer extends Component {
 
     componentWillReceiveProps(nextProps){
         const {dispatch, selectedEvent} = nextProps;
-        if (selectedEvent.isValid && this.props.selectedEvent != selectedEvent) {
-            dispatch(getEventPeople(selectedEvent.event));
+        if (this.props.selectedEvent != selectedEvent) {
+            if (selectedEvent.isValid) {
+                dispatch(getEventPeople(selectedEvent.event));
+            }
+            else {
+                dispatch(getEventPeopleReset());
+            }
         }
     }
 

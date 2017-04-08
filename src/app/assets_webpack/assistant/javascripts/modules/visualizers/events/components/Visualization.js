@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import {createStructuredSelector} from "reselect";
-import { configSelector } from '../ducks/configuration'
+import { settingsSelector } from '../ducks/settings'
 import {getSelectedEvent, getSelectedEventReset, selectedEventSelector} from "../ducks/selectedEvent";
 import TimelineContainer from '../containers/TimelineContainer'
 import EventInfoContainer from '../containers/EventInfoContainer'
-import {Configuration, SelectedEvent} from '../models'
-import { getConfiguration, getConfigurationReset} from '../ducks/configuration'
+import {Settings, SelectedEvent} from '../models'
+import { getSettings, getSettingsReset} from '../ducks/settings'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import VisualizationMessage from '../components/VisualizationMessage'
 
@@ -14,41 +14,36 @@ class Visualization extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         selectedEvent: PropTypes.instanceOf(SelectedEvent).isRequired,
-        configuration: PropTypes.instanceOf(Configuration).isRequired
+        settings: PropTypes.instanceOf(Settings).isRequired
     };
-
-    componentWillMount(){
-        const {dispatch} = this.props;
-        dispatch(getSelectedEvent());
-    }
 
     componentWillUpdate(){
         const { dispatch } = this.props;
         dispatch(getSelectedEvent());
-        dispatch(getConfiguration());
+        dispatch(getSettings());
     }
 
     componentWillUnmount() {
         const { dispatch } = this.props;
         dispatch(getSelectedEventReset());
-        dispatch(getConfigurationReset());
+        dispatch(getSettingsReset());
     }
 
     render() {
-        const {configuration, selectedEvent} = this.props;
-        if(!configuration){
+        const {settings, selectedEvent} = this.props;
+        if(!settings){
             return <VisualizationMessage>
                 <CenteredMessage>An error occurred while loading the configuration.</CenteredMessage>
             </VisualizationMessage>
         }
         return <div>
-            <TimelineContainer configuration={configuration}/>
+            <TimelineContainer settings={settings}/>
             <EventInfoContainer selectedEvent={selectedEvent}/>
         </div>
     }
 }
 const selector = createStructuredSelector({
-    configuration: configSelector,
+    settings: settingsSelector,
     selectedEvent: selectedEventSelector
 });
 

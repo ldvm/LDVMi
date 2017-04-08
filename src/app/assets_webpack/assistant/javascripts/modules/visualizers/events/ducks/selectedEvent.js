@@ -4,6 +4,7 @@ import createAction from '../../../../misc/createAction'
 import moduleSelector from '../selector'
 import { GET_APPLICATION_START } from '../../../app/ducks/application'
 import {SelectedEvent} from "../models";
+import {GET_CONFIGURATION_SUCCESS} from "./configuration";
 
 // Actions
 export const SET_SELECTED_EVENT = prefix('SET_SELECTED_EVENT');
@@ -30,6 +31,9 @@ export default function selectedEventReducer(state = initialState, action) {
             return initialState;
         case GET_SELECTED_EVENT:
             return new SelectedEvent(state);
+        case GET_CONFIGURATION_SUCCESS:
+            if ("selectedEvent" in action.payload) return new SelectedEvent(action.payload.selectedEvent);
+            else return state;
         case SET_SELECTED_EVENT:
             return new SelectedEvent({isValid: true, event: action.payload.selectedEvent});
         default:

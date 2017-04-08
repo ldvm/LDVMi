@@ -6,7 +6,7 @@ import { PromiseStatus } from '../../../core/models'
 import PromiseResult from '../../../core/components/PromiseResult'
 import TimeSeries from '../misc/TimeSeries'
 import {createStructuredSelector} from "reselect";
-import {Configuration} from "../models"
+import {Settings} from "../models"
 import CenteredMessage from '../../../../components/CenteredMessage'
 import VisualizationMessage from '../components/VisualizationMessage'
 
@@ -14,24 +14,22 @@ class TimelineContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         events: PropTypes.instanceOf(Array).isRequired,
-        configuration: PropTypes.instanceOf(Configuration).isRequired,
+        settings: PropTypes.instanceOf(Settings).isRequired,
         status: PropTypes.instanceOf(PromiseStatus).isRequired
     };
 
     componentWillMount(){
-        const {dispatch, configuration} = this.props;
+        const {dispatch} = this.props;
 
         this.className = 'timeseries-chart';
         this.callBack = (ev)=>dispatch(selectEvent(ev));
-
-        dispatch(getEvents(configuration));
     }
 
     componentWillReceiveProps(nextProps){
-        const {dispatch, configuration} = nextProps;
+        const {dispatch, settings} = nextProps;
 
-        if (this.props.configuration != configuration) {
-            dispatch(getEvents(configuration));
+        if (this.props.settings != settings) {
+            dispatch(getEvents(settings));
         }
     }
 
@@ -61,7 +59,7 @@ class TimelineContainer extends Component {
 
         if (events.length == 0) {
             return <VisualizationMessage>
-                <CenteredMessage>Could not load people for selected event.</CenteredMessage>
+                <CenteredMessage>No events were loaded. Check the settings please.</CenteredMessage>
             </VisualizationMessage>
         }
 
