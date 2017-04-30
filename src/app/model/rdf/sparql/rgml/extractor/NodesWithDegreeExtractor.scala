@@ -3,7 +3,7 @@ package model.rdf.sparql.rgml.extractor
 import model.rdf.LocalizedValue
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.rgml.query.{NodesQuery, NodesWithDegreeQuery}
-import model.rdf.sparql.rgml.{Graph, NodeWithDegree}
+import model.rdf.sparql.rgml.models.{Graph, NodeWithDegree}
 import model.rdf.vocabulary.RGML
 import org.apache.jena.query.QueryExecution
 import org.apache.jena.vocabulary.{RDF, RDFS}

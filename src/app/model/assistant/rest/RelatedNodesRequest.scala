@@ -1,5 +1,5 @@
 package model.assistant.rest
-import model.rdf.sparql.rgml.EdgeDirection._
+import model.rdf.sparql.rgml.models.EdgeDirection._
 
 import play.api.libs.json.Json
 

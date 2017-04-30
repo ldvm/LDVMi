@@ -8,6 +8,7 @@ import model.rdf.sparql.rgml._
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.fresnel.{Lens, ResourceThroughLens}
 import model.rdf.sparql.geo._
+import model.rdf.sparql.rgml.models.{Edge, Graph, Node, NodeWithDegree}
 import model.rdf.sparql.visualization.{Concept, HierarchyNode, Scheme}
 import model.rdf.{LocalizedValue, Property}
 import model.service.component.DataReference

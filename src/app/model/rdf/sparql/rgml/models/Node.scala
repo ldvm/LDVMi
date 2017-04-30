@@ -1,4 +1,4 @@
-package model.rdf.sparql.rgml
+package model.rdf.sparql.rgml.models
 
 import model.rdf.LocalizedValue
 

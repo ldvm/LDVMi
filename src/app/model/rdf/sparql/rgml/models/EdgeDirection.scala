@@ -1,4 +1,5 @@
-package model.rdf.sparql.rgml
+package model.rdf.sparql.rgml.models
+
 import play.api.libs.json._
 
 object EdgeDirection extends Enumeration {

@@ -1,7 +1,7 @@
 package model.rdf.sparql.rgml.query
 
-import model.rdf.sparql.rgml.Graph
-import model.rdf.sparql.rgml.EdgeDirection._
+import model.rdf.sparql.rgml.models.EdgeDirection._
+import model.rdf.sparql.rgml.models.Graph
 
 class AdjacentNodesQuery(nodeUri: String, direction: EdgeDirection = Outgoing) extends NodesQuery {
 

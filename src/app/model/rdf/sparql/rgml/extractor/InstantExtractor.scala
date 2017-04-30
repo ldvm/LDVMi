@@ -4,20 +4,18 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import scala.collection.JavaConversions._
 import model.rdf.extractor.QueryExecutionResultExtractor
-import model.rdf.sparql.rgml.Event
-import model.rdf.sparql.rgml.query.EventQuery
+import model.rdf.sparql.rgml.models.Instant
+import model.rdf.sparql.rgml.query.InstantQuery
 import org.apache.jena.query.{QueryExecution, QuerySolution}
 
-class EventExtractor extends QueryExecutionResultExtractor[EventQuery, Seq[Event]] {
+class InstantExtractor extends QueryExecutionResultExtractor[InstantQuery, Seq[Instant]] {
 
-  def extract(input: QueryExecution): Option[Seq[Event]] = {
+  def extract(input: QueryExecution): Option[Seq[Instant]] = {
     try {
       val resList = input.execSelect().toList
-      Some(resList.map(e => new Event(
-        e.getResource("event").getURI,
-        e.getLiteral("name").getString,
-        getDate(e, "date"),
-        e.getResource("link").getURI
+      Some(resList.map(e => new Instant(
+        e.getResource("url").getURI,
+        getDate(e, "date")
       )))
     }
     catch {
@@ -30,6 +28,6 @@ class EventExtractor extends QueryExecutionResultExtractor[EventQuery, Seq[Event
   private def getDate(qs: QuerySolution, fieldName: String): Date = {
     val dateFormat = new SimpleDateFormat("YYYY-MM-DD")
     val fieldValue = qs.getLiteral(fieldName).getString()
-    if (!fieldValue.isEmpty()) dateFormat.parse(fieldValue) else new Date
+    return dateFormat.parse(fieldValue)
   }
 }
