@@ -4,13 +4,12 @@ import akka.actor.Props
 import model.actor.CheckCompatibilityResponse
 import model.entity._
 import model.rdf.sparql.ValueFilter
-import model.rdf.sparql.rgml._
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.fresnel.{Lens, ResourceThroughLens}
 import model.rdf.sparql.geo._
-import model.rdf.sparql.rgml.models.{Edge, Graph, Node, NodeWithDegree}
+import model.rdf.sparql.rgml.models._
 import model.rdf.sparql.visualization.{Concept, HierarchyNode, Scheme}
-import model.rdf.{LocalizedValue, Property}
+import model.rdf.{Count, LocalizedValue, Property}
 import model.service.component.DataReference
 import play.api.db
 import play.api.db.slick._
@@ -107,8 +106,11 @@ package object api {
     implicit val edgeWrites = Json.writes[Edge]
     implicit val lensWrites = Json.writes[Lens]
     implicit val resourceThroughLensWrites = Json.writes[ResourceThroughLens]
-    implicit val eventWrites = Json.writes[Event]
-    implicit val personWrites = Json.writes[Person]
+
+    implicit val countWrites = Json.writes[Count]
+    implicit val intervalWrites = Json.writes[Interval]
+    implicit val instantWrites = Json.writes[Instant]
+    implicit val connectonWrites = Json.writes[Connection]
 
     val filterPath = (JsPath \ "label").readNullable[String] and
       (JsPath \ "dataType").readNullable[String] and

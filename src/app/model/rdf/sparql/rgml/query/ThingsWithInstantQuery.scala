@@ -1,8 +1,8 @@
 package model.rdf.sparql.rgml.query
 
-import model.rdf.sparql.query.{SparqlCountQuery, SparqlQuery}
+import model.rdf.sparql.query.{SparqlCountQuery}
 
-class ThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]], maybeConnectionUrls: Option[Seq[String]], maybeLimit: Option[Integer]) extends SparqlQuery with SparqlCountQuery {
+class ThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]], maybeConnectionUrls: Option[Seq[String]], maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
     val select = "SELECT ?thing ?connection ?instant"
     val group  = "GROUP BY ?thing ?connection ?instant"

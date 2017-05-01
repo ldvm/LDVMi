@@ -1,5 +1,5 @@
 package model.rdf.sparql.query
 
-trait SparqlCountQuery {
+trait SparqlCountQuery extends SparqlQuery{
   def getCount : String
 }

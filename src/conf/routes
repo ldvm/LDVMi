@@ -98,7 +98,7 @@ POST        /api/v1/datacube/slices/:id                                         
 
 GET         /dereference/labels                                                           @controllers.api.VisualizationApiController.dereferenceLabels(uri: String)
 
-# Assistant
+# === ASSISTANT ===
 POST        /assistant/api/auth/signUp                         @controllers.assistant.api.AuthApiController.signUp
 POST        /assistant/api/auth/signIn                         @controllers.assistant.api.AuthApiController.signIn
 POST        /assistant/api/auth/googleSignIn                   @controllers.assistant.api.AuthApiController.googleSignIn
@@ -142,11 +142,13 @@ POST        /assistant/api/common/getVirtuosoStatus            @controllers.assi
 
 POST        /assistant/api/commonVisualizer/getLabels/:id      @controllers.assistant.api.visualizers.CommonVisualizerApiController.getLabels(id: Long)
 
+#maps
 POST        /assistant/api/mapsVisualizer/getProperties/:id             @controllers.assistant.api.visualizers.MapsVisualizerApiController.getProperties(id: Long)
 POST        /assistant/api/mapsVisualizer/getSkosConcepts/:id           @controllers.assistant.api.visualizers.MapsVisualizerApiController.getSkosConcepts(id: Long)
 POST        /assistant/api/mapsVisualizer/getSkosConceptsCounts/:id     @controllers.assistant.api.visualizers.MapsVisualizerApiController.getSkosConceptsCounts(id: Long)
 POST        /assistant/api/mapsVisualizer/getMarkers/:id                @controllers.assistant.api.visualizers.MapsVisualizerApiController.getMarkers(id: Long)
 
+#chord
 POST        /assistant/api/chordVisualizer/getGraph/:id                 @controllers.assistant.api.visualizers.ChordVisualizerApiController.getGraph(id: Long)
 POST        /assistant/api/chordVisualizer/getSampleNodes/:id           @controllers.assistant.api.visualizers.ChordVisualizerApiController.getSampleNodes(id: Long)
 POST        /assistant/api/chordVisualizer/getNodes/:id                 @controllers.assistant.api.visualizers.ChordVisualizerApiController.getNodes(id: Long)
@@ -156,8 +158,21 @@ POST        /assistant/api/chordVisualizer/getSearchableLens/:id        @control
 POST        /assistant/api/chordVisualizer/searchNodes/:id              @controllers.assistant.api.visualizers.ChordVisualizerApiController.searchNodes(id: Long)
 POST        /assistant/api/chordVisualizer/getRelatedNodes/:id          @controllers.assistant.api.visualizers.ChordVisualizerApiController.getRelatedNodes(id: Long)
 
-POST        /assistant/api/eventVisualizer/getEvents/:id                @controllers.assistant.api.visualizers.EventVisualizerApiController.getEvents(id: Long)
-POST        /assistant/api/eventVisualizer/getEventPeople/:id           @controllers.assistant.api.visualizers.EventVisualizerApiController.getEventPeople(id: Long)
+#timeline - getters
+POST        /assistant/api/timeLineVisualizer/getIntervals/:id                  @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getIntervals(id: Long)
+POST        /assistant/api/timeLineVisualizer/getInstants/:id                   @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getInstants(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWIntervals/:id           @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingWithIntervals(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWInstants/:id            @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithInstants(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWThingsWIntervals/:id    @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithThingsWithIntervals(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWThingsWInstants/:id     @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithThingsWithInstants(id: Long)
+
+#timeline - counts
+POST        /assistant/api/timeLineVisualizer/getIntervals/count/:id                  @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getIntervalsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getInstants/count/:id                   @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getInstantsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWIntervals/count/:id           @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithIntervalsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWInstants/count/:id            @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithInstantsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWThingsWIntervals/count/:id    @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithThingsWithIntervalsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWThingsWInstants/count/:id     @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithThingsWithInstantsCount(id: Long)
 
 GET         /assistant$any<.*>                                          @controllers.assistant.PlatformController.index(any)
 GET         /app/:id/:uid                                               @controllers.assistant.ApplicationController.index(id: Long, uid: String, any = null)

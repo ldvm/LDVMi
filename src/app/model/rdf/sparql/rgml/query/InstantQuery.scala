@@ -1,11 +1,9 @@
 package model.rdf.sparql.rgml.query
 
 import java.util.Date
-import java.text.SimpleDateFormat
+import model.rdf.sparql.query.{SparqlCountQuery}
 
-import model.rdf.sparql.query.{SparqlCountQuery, SparqlQuery}
-
-class InstantQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInstantUrls: Option[Seq[String]], maybeLimit: Option[Integer]) extends SparqlQuery with SparqlCountQuery {
+class InstantQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInstantUrls: Option[Seq[String]], maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
     val select = "SELECT ?instant ?date"
     val group  = "GROUP BY ?instant ?date"

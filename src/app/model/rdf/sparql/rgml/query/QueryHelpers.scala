@@ -14,7 +14,7 @@ object QueryHelpers {
     }
   }
 
-  def limit(maybeLimit: Option[Integer]) : String = {
+  def limit(maybeLimit: Option[Int]) : String = {
     maybeLimit match {
       case Some(value) => s"LIMIT $value"
       case None => ""

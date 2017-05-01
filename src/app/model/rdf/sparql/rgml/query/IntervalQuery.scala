@@ -1,11 +1,9 @@
 package model.rdf.sparql.rgml.query
 
 import java.util.Date
-import java.text.SimpleDateFormat
+import model.rdf.sparql.query.{SparqlCountQuery}
 
-import model.rdf.sparql.query.{SparqlCountQuery, SparqlQuery}
-
-class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeIntervalUrls: Option[Seq[String]], maybeLimit: Option[Integer]) extends SparqlQuery with SparqlCountQuery {
+class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeIntervalUrls: Option[Seq[String]], maybeLimit: Option[Int])  extends SparqlCountQuery {
   def get: String = {
     val select = "SELECT ?interval ?start ?end"
     val group  = "GROUP BY ?interval ?start ?end"
@@ -43,22 +41,18 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
 
 
   private def startFilter: String = {
-    val dateFormat = new SimpleDateFormat("YYYY-MM-DD")
     maybeStart match {
       case Some(start) => {
-        val startString = dateFormat.format(start)
-        return s"""FILTER (xsd:dateTime(?begin) > xsd:dateTime("$startString"))"""
+        return s"""FILTER (xsd:dateTime(?begin) > xsd:dateTime("${QueryHelpers.dateToString(start)}"))"""
       }
       case None => ""
     }
   }
 
   private def endFilter: String = {
-    val dateFormat = new SimpleDateFormat("YYYY-MM-DD")
     maybeEnd match {
       case Some(end) => {
-        val endString = dateFormat.format(end)
-        return s"""FILTER (xsd:dateTime(?end) < xsd:dateTime("$endString"))"""
+        return s"""FILTER (xsd:dateTime(?end) < xsd:dateTime("${QueryHelpers.dateToString(end)}"))"""
       }
       case None => ""
     }

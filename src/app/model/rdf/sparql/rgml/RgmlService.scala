@@ -1,9 +1,11 @@
 package model.rdf.sparql.rgml
 
 import java.util.Date
+
 import model.entity.PipelineEvaluation
 import play.api.db.slick.Session
-import model.rdf.sparql.rgml.EdgeDirection._
+import model.rdf.sparql.rgml.models._
+import model.rdf.sparql.rgml.models.EdgeDirection._
 
 trait RgmlService {
   def graph(evaluation: PipelineEvaluation)(implicit session: Session): Option[Graph]
@@ -17,6 +19,10 @@ trait RgmlService {
   def adjacentNodes(evaluation: PipelineEvaluation, nodeUri: String, direction: Option[EdgeDirection] = None)(implicit session: Session): Option[Seq[Node]]
   def sampleNodesByHighestDegree(evaluation: PipelineEvaluation, size: Int)(implicit session: Session): Option[Seq[Node]]
   def sampleNodesWithForestFire( evaluation: PipelineEvaluation, size: Int, useWeights: Boolean = true, pF: Double = 0.2, pB: Double = 0.05)(implicit session: Session): Option[Seq[Node]]
-  def events(evaluation: PipelineEvaluation, start: Date, end: Date, limit: Int)(implicit session: Session): Option[Seq[Event]]
-  def eventPeople(evaluation: PipelineEvaluation, event: String)(implicit session: Session) : Option[Seq[Person]]
+  def intervals(evaluation: PipelineEvaluation, start: Date, end: Date, urls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Interval]]
+  def instants(evaluation: PipelineEvaluation, start: Date, end: Date, urls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Instant]]
+  def thingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]]
+  def thingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]]
+  def thingsWithThingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]]
+  def thingsWithThingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]]
 }
