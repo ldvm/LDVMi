@@ -4,7 +4,7 @@ import {createStructuredSelector} from "reselect";
 import { settingsSelector } from '../ducks/settings'
 import {getSelectedEvent, getSelectedEventReset, selectedEventSelector} from "../ducks/selectedEvent";
 import TimelineContainer from '../containers/TimelineContainer'
-import EventInfoContainer from '../containers/EventInfoContainer'
+import EventInfoContainer from '../containers/InfoContainer'
 import {Settings, SelectedEvent} from '../models'
 import { getSettings, getSettingsReset} from '../ducks/settings'
 import CenteredMessage from '../../../../components/CenteredMessage'
@@ -19,13 +19,13 @@ class Visualization extends Component {
 
     componentWillUpdate(){
         const { dispatch } = this.props;
-        dispatch(getSelectedEvent());
+        dispatch(getSelected());
         dispatch(getSettings());
     }
 
     componentWillUnmount() {
         const { dispatch } = this.props;
-        dispatch(getSelectedEventReset());
+        dispatch(getSelected());
         dispatch(getSettingsReset());
     }
 

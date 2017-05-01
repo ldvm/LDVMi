@@ -9,7 +9,7 @@ import moment from "moment";
 import CenteredMessage from '../../../../components/CenteredMessage'
 import VisualizationMessage from '../components/VisualizationMessage'
 
-class EventInfoContainer extends Component {
+class InfoContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         selectedEvent: PropTypes.instanceOf(SelectedEvent).isRequired,
@@ -98,4 +98,4 @@ const selector = createStructuredSelector({
     status: peopleStatusSelector
 });
 
-export default connect(selector)(EventInfoContainer);
+export default connect(selector)(InfoContainer);
