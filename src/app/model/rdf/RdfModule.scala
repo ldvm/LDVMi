@@ -8,7 +8,7 @@ import scaldi.Module
 import model.rdf.sparql.datacube.{DataCubeService, DataCubeServiceImpl}
 import model.rdf.sparql.fresnel.{FresnelService, FresnelServiceImpl}
 import model.rdf.sparql.geo.{GeoService, GeoServiceImpl}
-import model.rdf.sparql.rgml.{RgmlService, RgmlServiceImpl}
+import model.rdf.sparql.rgml.{RgmlCountService, RgmlCountServiceImpl, RgmlService, RgmlServiceImpl}
 import model.rdf.sparql.{SparqlEndpointService, SparqlEndpointServiceImpl}
 
 class RdfModule extends Module {
@@ -17,6 +17,7 @@ class RdfModule extends Module {
   bind [VisualizationService] to new VisualizationServiceImpl
   bind [GeoService] to new GeoServiceImpl
   bind [RgmlService] to new RgmlServiceImpl
+  bind [RgmlCountService] to new RgmlCountServiceImpl
   bind [FresnelService] to new FresnelServiceImpl
 
   bind [PipelineExtractor] to new PipelineExtractor

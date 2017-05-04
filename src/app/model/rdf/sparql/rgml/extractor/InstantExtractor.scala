@@ -14,7 +14,7 @@ class InstantExtractor extends QueryExecutionResultExtractor[InstantQuery, Seq[I
     try {
       val resList = input.execSelect().toList
       Some(resList.map(e => new Instant(
-        e.getResource("url").getURI,
+        e.getResource("instant").getURI,
         getDate(e, "date")
       )))
     }

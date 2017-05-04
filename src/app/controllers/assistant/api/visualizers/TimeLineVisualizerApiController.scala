@@ -10,7 +10,7 @@ import model.rdf.sparql.rgml.{RgmlCountService, RgmlService}
 import scaldi.Injector
 import scala.concurrent.Future
 
-class TimeLineVisualizerApiController(implicit inj: Injector) extends VisualizerApiController {
+class TimeLineVisualizerApiController(implicit val inj: Injector) extends VisualizerApiController {
   val rgmlService = inject[RgmlService]
   val rgmlCountService = inject[RgmlCountService]
 

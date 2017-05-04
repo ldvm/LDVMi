@@ -14,7 +14,7 @@ class IntervalExtractor extends QueryExecutionResultExtractor[IntervalQuery, Seq
     try {
       val resList = input.execSelect().toList
       Some(resList.map(e => new Interval(
-        e.getResource("url").getURI,
+        e.getResource("interval").getURI,
         getDate(e, "start"),
         getDate(e, "end")
       )))
