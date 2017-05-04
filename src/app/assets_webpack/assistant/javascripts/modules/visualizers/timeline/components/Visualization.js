@@ -1,3 +1,4 @@
+/*
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import {createStructuredSelector} from "reselect";
@@ -36,6 +37,7 @@ class Visualization extends Component {
                 <CenteredMessage>An error occurred while loading the configuration.</CenteredMessage>
             </VisualizationMessage>
         }
+
         return <div>
             <TimelineContainer settings={settings}/>
             <EventInfoContainer selectedEvent={selectedEvent}/>
@@ -48,3 +50,5 @@ const selector = createStructuredSelector({
 });
 
 export default connect(selector)(Visualization);
+
+*/

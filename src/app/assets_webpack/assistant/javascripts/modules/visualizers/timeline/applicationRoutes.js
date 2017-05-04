@@ -8,7 +8,7 @@ import Embed from './pages/Embed'
 export default function createRoutes(dispatch) {
     return (
         <Route component={ApplicationLoader} path='/'>
-            <IndexRoute component={Standalone} route="event-timeline"/>
+            <IndexRoute component={Standalone} route="timeline"/>
             <Route component={Embed} path='embed' />
             <Route component={NotFound} path='*' />
         </Route>

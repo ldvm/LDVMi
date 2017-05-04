@@ -2,8 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import BodyPadding from '../../../../components/BodyPadding'
 import { Application as ApplicationModel } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
-import Visualization from '../components/Visualization'
-import ConfigToolbar from "./ConfigToolbar";
+import TimelineContainer from '../containers/TimelineContainer'
 
 class Application extends Component {
     static propTypes = {
@@ -17,8 +16,7 @@ class Application extends Component {
         return (
             <BodyPadding>
                 <p>{embed ? 'Embed' : 'Standalone'} mode.</p>
-                <ConfigToolbar/>
-                <Visualization/>
+                <TimelineContainer/>
             </BodyPadding>
         )
     }

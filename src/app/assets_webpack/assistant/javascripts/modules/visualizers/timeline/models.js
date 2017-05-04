@@ -8,8 +8,7 @@ export const Interval = Record({
 
 export const Instant = Record({
     url: "url",
-    start: new Date(),
-    end: new Date()
+    date: new Date()
 });
 
 export const Connection = Record({

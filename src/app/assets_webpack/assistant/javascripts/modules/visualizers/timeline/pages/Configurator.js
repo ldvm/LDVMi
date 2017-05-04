@@ -2,10 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import BodyPadding from '../../../../components/BodyPadding'
 import { Application } from '../../../app/models'
 import { Visualizer } from '../../../core/models'
-import Visualization from '../components/Visualization'
-import ConfigToolbar from '../components/ConfigToolbar'
-import SaveButton from '../containers/SaveButton'
-import {getConfiguration, getConfigurationReset} from "../ducks/configuration";
+import TimelineContainer from '../containers/TimelineContainer'
 
 class Configurator extends Component {
     static propTypes = {
@@ -13,7 +10,7 @@ class Configurator extends Component {
         visualizer: PropTypes.instanceOf(Visualizer).isRequired
     };
 
-    componentWillMount() {
+   /* componentWillMount() {
         const { dispatch } = this.props;
         dispatch(getConfiguration());
     }
@@ -21,16 +18,17 @@ class Configurator extends Component {
     componentWillUnmount() {
         const { dispatch } = this.props;
         dispatch(getConfigurationReset());
-    }
+    }*/
 
     render() {
         return (
-            <BodyPadding>
-                <ConfigToolbar/>
-                <Visualization/>
-                <SaveButton/>
-            </BodyPadding>
+            <BodyPadding><TimelineContainer/></BodyPadding>
         )
+        /*return (
+            <BodyPadding>
+                <Visualization/>
+            </BodyPadding>
+        )*/
     }
 }
 export default Configurator;

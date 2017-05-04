@@ -935,11 +935,6 @@
       "from": "scriptjs@>=2.5.0 <2.6.0",
       "resolved": "https://registry.npmjs.org/scriptjs/-/scriptjs-2.5.8.tgz"
     },
-    "underscore": {
-      "version": "1.8.3",
-      "from": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz",
-      "resolved": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz"
-    },
     "when": {
       "version": "3.7.7",
       "from": "when@>=3.7.0 <3.8.0",
