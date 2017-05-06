@@ -11,7 +11,7 @@ class ThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]], maybeConnecti
   }
 
   def getCount: String = {
-    val select = "COUNT(?thing) AS ?count"
+    val select = "SELECT COUNT(?thing) AS ?count"
     val group = ""
     val limit = ""
     return query(select,group,limit)

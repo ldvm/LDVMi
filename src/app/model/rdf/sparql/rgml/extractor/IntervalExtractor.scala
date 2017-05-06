@@ -15,7 +15,7 @@ class IntervalExtractor extends QueryExecutionResultExtractor[IntervalQuery, Seq
       val resList = input.execSelect().toList
       Some(resList.map(e => new Interval(
         e.getResource("interval").getURI,
-        getDate(e, "start"),
+        getDate(e, "begin"),
         getDate(e, "end")
       )))
     }
@@ -27,8 +27,9 @@ class IntervalExtractor extends QueryExecutionResultExtractor[IntervalQuery, Seq
   }
 
   private def getDate(qs: QuerySolution, fieldName: String): Date = {
-    val dateFormat = new SimpleDateFormat("YYYY-MM-DD")
+    val dateFormat = new SimpleDateFormat("yyyy-MM-DD")
     val fieldValue = qs.getLiteral(fieldName).getString()
-    return dateFormat.parse(fieldValue)
+    val date =  dateFormat.parse(fieldValue)
+    return date;
   }
 }

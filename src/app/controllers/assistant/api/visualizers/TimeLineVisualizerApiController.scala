@@ -16,28 +16,28 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
 
   def getIntervals(id: Long) = RestAsyncAction[UrlsStartEndRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val intervals = rgmlService.intervals(evaluation, json.start, json.end, json.urls, json.limit)
+      val intervals = rgmlService.intervals(evaluation, json.begin, json.end, json.urls, json.limit)
       Future(Ok(SuccessResponse(data = Seq("intervals" -> intervals))))
     }
   }
 
   def getIntervalsCount(id: Long) = RestAsyncAction[UrlsStartEndRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val count = rgmlCountService.intervals(evaluation, json.start, json.end, json.urls, json.limit)
+      val count = rgmlCountService.intervals(evaluation, json.begin, json.end, json.urls, json.limit)
       Future(Ok(SuccessResponse(data = Seq("count" -> count))))
     }
   }
 
   def getInstants(id: Long) = RestAsyncAction[UrlsStartEndRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val instants = rgmlService.instants(evaluation, json.start, json.end, json.urls, json.limit)
+      val instants = rgmlService.instants(evaluation, json.begin, json.end, json.urls, json.limit)
       Future(Ok(SuccessResponse(data = Seq("instants" -> instants))))
     }
   }
 
   def getInstantsCount(id: Long) = RestAsyncAction[UrlsStartEndRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val count = rgmlCountService.instants(evaluation, json.start, json.end, json.urls, json.limit)
+      val count = rgmlCountService.instants(evaluation, json.begin, json.end, json.urls, json.limit)
       Future(Ok(SuccessResponse(data = Seq("count" -> count))))
     }
   }

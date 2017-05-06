@@ -5,14 +5,14 @@ import model.rdf.sparql.query.{SparqlCountQuery}
 
 class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeIntervalUrls: Option[Seq[String]], maybeLimit: Option[Int])  extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?interval ?start ?end"
-    val group  = "GROUP BY ?interval ?start ?end"
+    val select = "SELECT ?interval ?begin ?end"
+    val group  = "GROUP BY ?interval ?begin ?end"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select,group,limit)
   }
 
   def getCount: String = {
-    val select = "COUNT(?interval) AS ?count"
+    val select = "SELECT COUNT(?interval) AS ?count"
     val group = ""
     val limit = ""
     return query(select, group, limit)
@@ -25,8 +25,11 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
        |
        |${select}
        |WHERE {
-       |  ?interval time:hasBeginning ?beginning .
-       |  ?interval time:hasEnd ?end .
+       |  ?interval time:hasBeginning ?begin_url .
+       |  ?interval time:hasEnd ?end_url .
+       |
+       |  ?begin_url time:inXSDDateTime ?begin.
+       |  ?end_url time:inXSDDateTime ?end.
        |
        |  ${startFilter}
        |  ${endFilter}

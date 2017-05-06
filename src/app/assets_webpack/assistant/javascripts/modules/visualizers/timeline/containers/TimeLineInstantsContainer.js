@@ -12,6 +12,7 @@ class TimelineContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         instants: PropTypes.instanceOf(Array).isRequired,
+        urls: PropTypes.instanceOf(Array).isRequired,
         status: PropTypes.instanceOf(PromiseStatus).isRequired
     };
 

@@ -26,7 +26,7 @@ class InstantExtractor extends QueryExecutionResultExtractor[InstantQuery, Seq[I
   }
 
   private def getDate(qs: QuerySolution, fieldName: String): Date = {
-    val dateFormat = new SimpleDateFormat("YYYY-MM-DD")
+    val dateFormat = new SimpleDateFormat("yyyy-MM-DD")
     val fieldValue = qs.getLiteral(fieldName).getString()
     return dateFormat.parse(fieldValue)
   }
