@@ -15,7 +15,7 @@ export const GET_INTERVALS_RESET = GET_INTERVALS + '_RESET';
 
 export function getIntervals() {
     return withApplicationId(id => {
-        const promise = api.getIntervals(id,[],new Date("01-01-2000"), new Date("01-01-2010"),100);
+        const promise = api.getIntervals(id,[],new Date("2000-01-01"), new Date("2018-01-01"),100);
         return createAction(GET_INTERVALS, { promise });
     });
 }

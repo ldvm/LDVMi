@@ -1,13 +1,13 @@
 import rest from '../../../misc/rest'
 
-export async function getIntervals(applicationId, urls, start, end, limit) {
-    let payload = {"urls":urls, "start":start.getTime(), "end":end.getTime(), "limit":limit};
+export async function getIntervals(applicationId, urls, begin, end, limit) {
+    let payload = {"urls":urls, "begin":begin.getTime(), "end":end.getTime(), "limit":limit};
     const result = await rest('timeLineVisualizer/getIntervals/' + applicationId, payload);
     return result.data.intervals;
 }
 
-export async function getInstants(applicationId, urls, start, end, limit) {
-    let payload = {"urls":urls, "start":start.getTime(), "end":end.getTime(), "limit":limit};
+export async function getInstants(applicationId, urls, begin, end, limit) {
+    let payload = {"urls":urls, "begin":begin.getTime(), "end":end.getTime(), "limit":limit};
     const result = await rest('timeLineVisualizer/getInstants/' + applicationId, payload);
     return result.data.instants;
 }
@@ -33,14 +33,14 @@ export async function getThingsWThingsWInstants(applicationId, things, connectio
     return result.data.instants;
 }
 
-export async function getIntervalsCount(applicationId, urls, start, end, limit) {
-    let payload = {"urls":urls, "start":start.getTime(), "end":end.getTime(), "limit":limit};
+export async function getIntervalsCount(applicationId, urls, begin, end, limit) {
+    let payload = {"urls":urls, "begin":begin.getTime(), "end":end.getTime(), "limit":limit};
     const result = await rest('timeLineVisualizer/getIntervals/count/' + applicationId, payload);
     return result.data.count;
 }
 
-export async function getInstantsCount(applicationId, urls, start, end, limit) {
-    let payload = {"urls":urls, "start":start.getTime(), "end":end.getTime(), "limit":limit};
+export async function getInstantsCount(applicationId, urls, begin, end, limit) {
+    let payload = {"urls":urls, "begin":begin.getTime(), "end":end.getTime(), "limit":limit};
     const result = await rest('timeLineVisualizer/getInstants/count/' + applicationId, payload);
     return result.data.count;
 }

@@ -1,8 +1,10 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from 'redux'
 import instants from './ducks/instants'
+import intervals from './ducks/intervals'
 
 const rootReducer = combineReducers({
-    instants
+    instants,
+    intervals,
 });
 
 export default rootReducer;

@@ -8,7 +8,7 @@ import {createStructuredSelector} from "reselect";
 import CenteredMessage from '../../../../components/CenteredMessage'
 import VisualizationMessage from '../components/VisualizationMessage'
 
-class TimelineContainer extends Component {
+class TimeLineInstantsContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         instants: PropTypes.instanceOf(Array).isRequired,
@@ -18,18 +18,16 @@ class TimelineContainer extends Component {
 
     componentWillMount(){
         const {dispatch} = this.props;
-        dispatch(getInstants())
-        this.className = 'timeseries-chart';
+        this.className = "timeseries-chart";
         this.chart = new TimeLine(this.className, ()=>{}) // TODO: callback
+        dispatch(getInstants()); // TODO: urls, settings.
     }
 
-    componentWillReceiveProps(nextProps){
-        if (this.props.instants == null) return;
-
-        const {instants} = nextProps;
-        if (this.props.instants != instants) {
+    componentDidUpdate() {
+        const {instants} = this.props;
+        if (instants.length > 0) {
             this.chart.destroy();
-            this.chart.instants(instants);
+            this.chart.instants(this.props.instants);
         }
     }
 
@@ -43,12 +41,12 @@ class TimelineContainer extends Component {
         const {status, instants} = this.props;
 
         if (!status.done) {
-            return <PromiseResult status={status} error={status.error} loadingMessage="Loading events..."/>
+            return <PromiseResult status={status} error={status.error} loadingMessage="Loading instants..."/>
         }
 
-        if (instants.length == 0) {
+        else if (instants.length == 0) {
             return <VisualizationMessage>
-                <CenteredMessage>No events were loaded. Check the settings please.</CenteredMessage>
+                <CenteredMessage>No instants were loaded. Check the settings please.</CenteredMessage>
             </VisualizationMessage>
         }
 
@@ -62,4 +60,4 @@ const selector = createStructuredSelector({
     status: instantsStatusSelector
 });
 
-export default connect(selector)(TimelineContainer);
+export default connect(selector)(TimeLineInstantsContainer);

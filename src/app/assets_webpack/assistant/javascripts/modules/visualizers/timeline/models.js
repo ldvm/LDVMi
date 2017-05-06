@@ -2,7 +2,7 @@ import { Record } from 'immutable';
 
 export const Interval = Record({
     url: "url",
-    start: new Date(),
+    begin: new Date(),
     end: new Date()
 });
 

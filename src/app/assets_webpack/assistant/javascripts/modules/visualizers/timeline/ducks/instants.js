@@ -15,7 +15,7 @@ export const GET_INSTANTS_RESET = GET_INSTANTS + '_RESET';
 
 export function getInstants() {
     return withApplicationId(id => {
-        const promise = api.getInstants(id,[],new Date("01-01-0000"), new Date("01-01-2010"),100);
+        const promise = api.getInstants(id,[],new Date("2000-01-01"), new Date("2018-01-01"),100);
         return createAction(GET_INSTANTS, { promise });
     });
 }
