@@ -13,6 +13,7 @@ class ThingToIntervalConnectionExtractor extends QueryExecutionResultExtractor[T
       val resList = input.execSelect().toList
       Some(resList.map(e => new Connection(
         e.getResource("thing").getURI,
+        e.getResource("thingType").getURI,
         e.getResource("connection").getURI,
         e.getResource("interval").getURI
       )))

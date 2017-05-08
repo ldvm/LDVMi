@@ -2,10 +2,13 @@ package model.rdf.sparql.rgml.query
 
 import model.rdf.sparql.query.{SparqlCountQuery}
 
-class ThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]], maybeConnectionUrls: Option[Seq[String]], maybeLimit: Option[Int])  extends SparqlCountQuery {
+class ThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]],
+                              maybeThingsTypes: Option[Seq[String]],
+                              maybeConnectionUrls: Option[Seq[String]],
+                              maybeLimit: Option[Int])  extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?thing ?connection ?interval"
-    val group  = "GROUP BY ?thing ?connection ?interval"
+    val select = "SELECT ?thing ?thingType ?connection ?interval"
+    val group  = "GROUP BY ?thing ?thingType ?connection ?interval"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select,group,limit)
   }
@@ -24,11 +27,13 @@ class ThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]], maybeConnect
        |${select}
        |WHERE {
        |  ?thing ?connection ?interval.
+       |  ?thing a ?thingType.
        |
        |  ?interval time:hasBeginning ?beginning .
        |  ?interval time:hasEnd ?end .
        |
        |  ${QueryHelpers.limitValues("thing", maybeThingsUrls)}
+       |  ${QueryHelpers.limitValues("thingType", maybeThingsTypes)}
        |  ${QueryHelpers.limitValues("connection", maybeConnectionUrls)}
        |}
        |

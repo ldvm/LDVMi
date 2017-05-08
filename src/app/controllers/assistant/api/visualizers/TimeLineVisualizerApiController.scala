@@ -44,56 +44,56 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
 
   def getThingWithIntervals(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val thingsWithIntervals = rgmlService.thingsWithIntervals(evaluation, json.things, json.connections, json.limit)
+      val thingsWithIntervals = rgmlService.thingsWithIntervals(evaluation, json.things, json.thingTypes, json.connections, json.limit)
       Future(Ok(SuccessResponse(data = Seq("thingsWithIntervals" -> thingsWithIntervals))))
     }
   }
 
   def getThingsWithIntervalsCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val count = rgmlCountService.thingsWithIntervals(evaluation, json.things, json.connections, json.limit)
+      val count = rgmlCountService.thingsWithIntervals(evaluation, json.things, json.thingTypes, json.connections, json.limit)
       Future(Ok(SuccessResponse(data = Seq("count" -> count))))
     }
   }
 
   def getThingsWithInstants(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val thingsWithInstants = rgmlService.thingsWithInstants(evaluation, json.things, json.connections, json.limit)
+      val thingsWithInstants = rgmlService.thingsWithInstants(evaluation, json.things, json.thingTypes, json.connections, json.limit)
       Future(Ok(SuccessResponse(data = Seq("thingsWithInstants" -> thingsWithInstants))))
     }
   }
 
   def getThingsWithInstantsCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val count = rgmlCountService.thingsWithInstants(evaluation, json.things, json.connections, json.limit)
+      val count = rgmlCountService.thingsWithInstants(evaluation, json.things, json.thingTypes, json.connections, json.limit)
       Future(Ok(SuccessResponse(data = Seq("count" -> count))))
     }
   }
 
   def getThingsWithThingsWithIntervals(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val thingsWithThingsWithIntervals = rgmlService.thingsWithThingsWithIntervals(evaluation, json.things, json.connections, json.limit)
+      val thingsWithThingsWithIntervals = rgmlService.thingsWithThingsWithIntervals(evaluation, json.things, json.thingTypes, json.connections, json.limit)
       Future(Ok(SuccessResponse(data = Seq("thingsWithThingsWithIntervals" -> thingsWithThingsWithIntervals))))
     }
   }
 
   def getThingsWithThingsWithIntervalsCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val count = rgmlCountService.thingsWithThingsWithIntervals(evaluation, json.things, json.connections, json.limit)
+      val count = rgmlCountService.thingsWithThingsWithIntervals(evaluation, json.things, json.thingTypes, json.connections, json.limit)
       Future(Ok(SuccessResponse(data = Seq("count" -> count))))
     }
   }
 
   def getThingsWithThingsWithInstants(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val thingsWithThingsWithInstants = rgmlService.thingsWithThingsWithInstants(evaluation, json.things, json.connections, json.limit)
+      val thingsWithThingsWithInstants = rgmlService.thingsWithThingsWithInstants(evaluation, json.things, json.thingTypes, json.connections, json.limit)
       Future(Ok(SuccessResponse(data = Seq("thingsWithThingsWithInstants" -> thingsWithThingsWithInstants))))
     }
   }
 
   def getThingsWithThingsWithInstantsCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request => json =>
     withEvaluation(ApplicationId(id)) { evaluation =>
-      val count = rgmlCountService.thingsWithThingsWithInstants(evaluation, json.things, json.connections, json.limit)
+      val count = rgmlCountService.thingsWithThingsWithInstants(evaluation, json.things, json.thingTypes, json.connections, json.limit)
       Future(Ok(SuccessResponse(data = Seq("count" -> count))))
     }
   }

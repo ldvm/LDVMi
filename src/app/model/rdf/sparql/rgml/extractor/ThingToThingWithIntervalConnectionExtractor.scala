@@ -14,6 +14,7 @@ class ThingToThingWithIntervalConnectionExtractor
       val resList = input.execSelect().toList
       Some(resList.map(e => new Connection(
         e.getResource("outerThing").getURI,
+        e.getResource("outerThingType").getURI,
         e.getResource("connection").getURI,
         e.getResource("innerThing").getURI
       )))

@@ -2,10 +2,13 @@ package model.rdf.sparql.rgml.query
 
 import model.rdf.sparql.query.{SparqlCountQuery}
 
-class ThingsWithThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]], maybeConnectionUrls: Option[Seq[String]], maybeLimit: Option[Int])  extends SparqlCountQuery {
+class ThingsWithThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]],
+                                        maybeThingsTypes: Option[Seq[String]],
+                                        maybeConnectionUrls: Option[Seq[String]],
+                                        maybeLimit: Option[Int])  extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?outerThing ?connection ?innerThing"
-    val group = "GROUP BY ?outerThing ?connection ?innerThing"
+    val select = "SELECT ?outerThing ?outerThingType ?connection ?innerThing"
+    val group  = "GROUP BY ?outerThing ?outerThingType ?connection ?innerThing"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select,group,limit)
   }
@@ -25,13 +28,16 @@ class ThingsWithThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]], ma
        |WHERE {
        |  ?outerThing ?connection ?innerThing.
        |
+       |  ?outerThing a ?outerThingType.
+       |
        |  ?innerThing ?hasInterval ?interval.
        |
        |  ?interval time:hasBeginning ?beginning .
        |  ?interval time:hasEnd ?end .
        |
-       |  ${QueryHelpers.limitValues("outerThing",maybeThingsUrls)}
-       |  ${QueryHelpers.limitValues("connection",maybeConnectionUrls)}
+       |  ${QueryHelpers.limitValues("outerThing", maybeThingsUrls)}
+       |  ${QueryHelpers.limitValues("outerThingType", maybeThingsTypes)}
+       |  ${QueryHelpers.limitValues("connection", maybeConnectionUrls)}
        |}
        |
        |${group}
