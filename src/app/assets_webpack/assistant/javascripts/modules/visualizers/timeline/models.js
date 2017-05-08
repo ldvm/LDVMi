@@ -18,13 +18,4 @@ export const Connection = Record({
     inner: "thing_url"
 });
 
-export const Count = Record({
-    value: 123
-});
-
-
-export const Limit = Record({
-    value: 100
-});
-
 
