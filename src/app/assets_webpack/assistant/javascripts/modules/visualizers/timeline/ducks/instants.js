@@ -13,9 +13,9 @@ export const GET_INSTANTS = prefix('GET_INSTANTS');
 export const GET_INSTANTS_SUCCESS = GET_INSTANTS + '_SUCCESS';
 export const GET_INSTANTS_RESET = GET_INSTANTS + '_RESET';
 
-export function getInstants() {
+export function getInstants(urls, start, end, limit) {
     return withApplicationId(id => {
-        const promise = api.getInstants(id,[],new Date("2000-01-01"), new Date("2018-01-01"),100);
+        const promise = api.getInstants(id, urls, start, end, limit);
         return createAction(GET_INSTANTS, { promise });
     });
 }

@@ -13,9 +13,9 @@ export const GET_INTERVALS = prefix('GET_INTERVALS');
 export const GET_INTERVALS_SUCCESS = GET_INTERVALS + '_SUCCESS';
 export const GET_INTERVALS_RESET = GET_INTERVALS + '_RESET';
 
-export function getIntervals() {
+export function getIntervals(urls, start, end, limit) {
     return withApplicationId(id => {
-        const promise = api.getIntervals(id,[],new Date("2000-01-01"), new Date("2018-01-01"),100);
+        const promise = api.getIntervals(id, urls, start, end, limit);
         return createAction(GET_INTERVALS, { promise });
     });
 }

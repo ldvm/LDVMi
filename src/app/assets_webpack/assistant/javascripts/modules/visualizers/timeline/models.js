@@ -12,9 +12,10 @@ export const Instant = Record({
 });
 
 export const Connection = Record({
-    outerThing: "url",
+    outer: "thing_url",
+    outerType: "type_url",
     connection: "url",
-    innerThing: "url"
+    inner: "thing_url"
 });
 
 export const Count = Record({

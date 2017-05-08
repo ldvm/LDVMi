@@ -186,7 +186,7 @@ class TimeLine {
     }
 
     intervals(data) {
-        var begins = data.map(d=>d.begin)
+        var begins = data.map(d=>d.begin);
         var ends = data.map(d=>d.end);
         var padding = this.timeRangePad(begins.concat(ends));
 
