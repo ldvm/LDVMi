@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { getSecondLevelReset, secondLevelSelector, secondLevelStatusSelector } from '../ducks/secondLevel'
+import { limitSelector } from '../ducks/limit'
 import { setSelectThingSL, setUnSelectThingSL, getSelectedThingSLReset, selectedThingSLSelector } from '../ducks/selectedThingSecondLevel'
 import { setSelectConnSL, setUnSelectConnSL, getSelectedConnSLReset, selectedConnSLSelector } from '../ducks/selectedConnSecondLevel'
 import { PromiseStatus } from '../../../core/models'
@@ -10,6 +11,7 @@ import PromiseResult from '../../../core/components/PromiseResult'
 import ConfigToolbar from '../misc/ConfigToolbar'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import VisualizationMessage from '../components/VisualizationMessage'
+import Button from "../../../../components/Button";
 
 class SecondLevelConnectionContainer extends Component {
     static propTypes = {
@@ -24,9 +26,9 @@ class SecondLevelConnectionContainer extends Component {
 
         // Value selectors
         selectedThingSL: PropTypes.instanceOf(Array).isRequired,
-        selectedConnSL: PropTypes.instanceOf(Array).isRequired
+        selectedConnSL: PropTypes.instanceOf(Array).isRequired,
 
-        //TODO Limiter
+        limit: PropTypes.instanceOf(Number).isRequired
     };
 
     componentWillMount(){
@@ -42,17 +44,17 @@ class SecondLevelConnectionContainer extends Component {
     }
 
     load(){
-        const{dispatch, secondLevelLoader, selectedThingSL, selectedConnSL} = this.props;
-        dispatch(secondLevelLoader(selectedThingSL, [], selectedConnSL, 100));
+        const{dispatch, secondLevelLoader, selectedThingSL, selectedConnSL, limit} = this.props;
+        dispatch(secondLevelLoader(selectedThingSL, [], selectedConnSL, limit));
     }
 
     reset(){
-        const{dispatch, secondLevelLoader} = this.props;
+        const{dispatch, secondLevelLoader, limit} = this.props;
 
         dispatch(getSelectedThingSLReset());
         dispatch(getSelectedConnSLReset());
 
-        dispatch(secondLevelLoader([],[],[],100))
+        dispatch(secondLevelLoader([],[],[],limit))
     }
 
     render() {
@@ -68,10 +70,12 @@ class SecondLevelConnectionContainer extends Component {
             </VisualizationMessage>
         }
 
+        var buttonsEnabled = selectedThingSL.length > 0 || selectedConnSL.length > 0;
+
         return <div>
             <ConfigToolbar
                 things={secondLevel}
-                label={"THINGS"}
+                header="Things With Things With Time Values:"
                 getKey={t=>t.outer}
                 getValue={t=>t.outer}
                 selectedKeys={selectedThingSL}
@@ -80,15 +84,23 @@ class SecondLevelConnectionContainer extends Component {
             />
             <ConfigToolbar
                 things={secondLevel}
-                label={"CONNECTIONS"}
+                header="Connection Types:"
                 getKey={t=>t.connection}
                 getValue={t=>t.connection}
                 selectedKeys={selectedConnSL}
                 onChecked={k=>dispatch(setSelectConnSL(k))}
                 onUnchecked={k=>dispatch(setUnSelectConnSL(k))}
             />
-            <input type="button" name="load_second" value="LOAD" onClick={()=>this.load()}/>
-            <input type="button" name="reset_second" value="RESET" onClick={()=>this.reset()}/>
+            <Button raised={false}
+                    onTouchTap={()=>this.load()}
+                    disabled={!buttonsEnabled}
+                    label="LOAD"
+            />
+            <Button raised={false}
+                    onTouchTap={()=>this.reset()}
+                    disabled={!buttonsEnabled}
+                    label="RESET"
+            />
         </div>
     }
 }
@@ -97,7 +109,8 @@ const selector = createStructuredSelector({
     secondLevel: secondLevelSelector,
     status: secondLevelStatusSelector,
     selectedThingSL: selectedThingSLSelector,
-    selectedConnSL: selectedConnSLSelector
+    selectedConnSL: selectedConnSLSelector,
+    limit: limitSelector
 });
 
 export default connect(selector)(SecondLevelConnectionContainer);

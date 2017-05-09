@@ -1,9 +1,13 @@
 import React, { Component, PropTypes } from 'react'
+import Checkbox from "../../../../components/Checkbox"
+import Button from "../../../../components/Button"
+import SubHeadLine from "../../../../components/Subheadline"
+import CenteredMessage from "../../../../components/CenteredMessage";
 
 class ConfigToolbar extends Component {
     static propTypes = {
         things: PropTypes.array.isRequired,
-        label: PropTypes.string.isRequired,
+        header: PropTypes.string.isRequired,
 
         getKey: PropTypes.func.isRequired,
         getValue: PropTypes.func.isRequired,
@@ -35,19 +39,16 @@ class ConfigToolbar extends Component {
     }
 
     getMapToRender(){
-        const {things,getKey, getValue} = this.props;
+        const {things, getKey, getValue} = this.props;
 
         // Deduplication
-        function getKVP(t){
-            return [getKey(t), getValue(t)];
-        }
-        var map = new Map(things.map(t => getKVP(t)));
+        var map = new Map(things.map(t => [getKey(t), getValue(t)]));
 
         // Search
         var matchingValues = new Map();
         if (this.needle && this.needle != '') {
             for (var [key,value] of map) {
-                if (value.toLowerCase().startsWith(this.needle)) {
+                if (value.toLowerCase().includes(this.needle)) {
                     matchingValues.set(key, value);
                 }
             }
@@ -89,7 +90,7 @@ class ConfigToolbar extends Component {
                 // Row render
                 rows.push(
                     <tr key={key}>
-                        <td><input type='checkbox' onChange={()=>onChange(key)} defaultChecked={checked}/></td>
+                        <td><Checkbox onChange={()=>onChange(key)} defaultChecked={checked}/></td>
                         <td>{value}</td>
                     </tr>
                 );
@@ -98,7 +99,7 @@ class ConfigToolbar extends Component {
             }
         }
         else rows = <tr>
-            <td>No values found. Try increasing the limit.</td>
+            <td><CenteredMessage>No values found.</CenteredMessage></td>
         </tr>;
 
         return rows;
@@ -109,27 +110,32 @@ class ConfigToolbar extends Component {
         var values = this.getMapToRender();
         var rows = this.getCheckboxRows(values);
 
+        var resetEnabled = (this.needle && this.needle != '');
+
         return <div>
+            <SubHeadLine title={this.props.header}/>
             <table>
-                <thead>
+                <tbody>
                 <tr>
-                    <th><input type="text"   name="search"/></th>
-                    <th><input type="button" name="search_go"    value="SEARCH" onClick={()=>this.setNeedle()}/></th>
-                    <th><input type="button" name="search_reset" value="RESET"  onClick={()=>this.resetNeedle()}/></th>
+                    <td>SEARCH:</td>
+                    <td><input type="text" name="search" onChange={()=>this.setNeedle()}/></td>
+                    <td  align="left">
+                        <Button raised={resetEnabled}
+                                onTouchTap={()=>this.resetNeedle()}
+                                disabled={!resetEnabled}
+                                label="RESET"
+                                align="left"
+                        />
+                    </td>
+                    <td/>
                 </tr>
-                </thead>
+                </tbody>
             </table>
-
             <br/>
-
             <table>
-                <thead>
-                <tr>
-                    <th>SELECT</th>
-                    <th>{this.props.label}</th>
-                </tr>
-                </thead>
-                <tbody>{rows}</tbody>
+                <tbody>
+                {rows}
+                </tbody>
             </table>
         </div>
     }

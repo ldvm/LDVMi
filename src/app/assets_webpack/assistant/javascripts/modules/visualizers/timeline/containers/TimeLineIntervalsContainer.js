@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { getIntervals, getIntervalsReset, intervalsSelector, intervalsStatusSelector } from '../ducks/intervals'
+import { limitSelector } from '../ducks/limit'
 import { firstLevelSelector } from '../ducks/firstLevel'
 import { PromiseStatus } from '../../../core/models'
 import {createStructuredSelector} from "reselect";
@@ -19,42 +20,41 @@ class TimeLineIntervalsContainer extends Component {
 
         // Intervals loading
         intervals: PropTypes.instanceOf(Array).isRequired,
-        status: PropTypes.instanceOf(PromiseStatus).isRequired
+        status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
-        // TODO limit
+        limit: PropTypes.instanceOf(Number).isRequired
     };
 
     componentWillMount(){
+        const {dispatch, limit} = this.props;
+
         this.className = "timeseries-chart";
         this.chart = new TimeLine(this.className, ()=>{}); // TODO: callback
 
         this.begin = new Date("2000-01-01");
         this.end = new Date("2018-01-01");
 
-        this.props.dispatch(getIntervals([], this.start, this.end, 100))
+        dispatch(getIntervals([], this.start, this.end, limit))
     }
 
     componentWillReceiveProps(nextProps) {
-        const {dispatch, firstLevel} = this.props;
+        const {dispatch, firstLevel, limit} = this.props;
 
         if (firstLevel != nextProps.firstLevel) {
             var urls = nextProps.firstLevel.map(t => t.inner);
-            dispatch(getIntervals(urls, this.begin, this.end, 100));
+            dispatch(getIntervals(urls, this.begin, this.end, limit));
+        }
+
+        if (nextProps.status.done && nextProps.intervals != this.props.intervals) {
+            this.needChartUpdate = true;
         }
     }
 
     componentDidUpdate() {
-        const { intervals, status } = this.props;
-        if (status.done && intervals.length > 0) {
-            this.chart.destroy();
-            this.chart.intervals(this.props.intervals);
+        const { intervals } = this.props;
+        if (this.needChartUpdate) {
+            this.chart.intervals(intervals);
         }
-    }
-
-    componentWillUnmount() {
-        const {dispatch} = this.props;
-        dispatch(getIntervalsReset());
-        this.chart.destroy();
     }
 
 
@@ -79,7 +79,8 @@ class TimeLineIntervalsContainer extends Component {
 const selector = createStructuredSelector({
     intervals: intervalsSelector,
     status: intervalsStatusSelector,
-    firstLevel: firstLevelSelector
+    firstLevel: firstLevelSelector,
+    limit: limitSelector
 });
 
 export default connect(selector)(TimeLineIntervalsContainer);

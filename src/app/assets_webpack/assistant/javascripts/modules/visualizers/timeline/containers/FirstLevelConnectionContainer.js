@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { getFirstLevelReset, firstLevelSelector, firstLevelStatusSelector } from '../ducks/firstLevel'
 import { secondLevelSelector } from '../ducks/secondLevel'
+import { limitSelector } from '../ducks/limit'
 import { setSelectTypeFL, setUnSelectTypeFL, getSelectedTypeFLReset, selectedTypeFLSelector } from '../ducks/selectedTypeFirstLevel'
 import { setSelectConnFL, setUnSelectConnFL, getSelectedConnFLReset, selectedConnFLSelector } from '../ducks/selectedConnFirstLevel'
 import { PromiseStatus } from '../../../core/models'
@@ -11,6 +12,8 @@ import PromiseResult from '../../../core/components/PromiseResult'
 import ConfigToolbar from '../misc/ConfigToolbar'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import VisualizationMessage from '../components/VisualizationMessage'
+import Button from "../../../../components/Button";
+
 
 class FirstLevelConnectionContainer extends Component {
     static propTypes = {
@@ -22,17 +25,30 @@ class FirstLevelConnectionContainer extends Component {
 
         // Level loading
         firstLevelLoader: PropTypes.func.isRequired,
+        firstLevelCount: PropTypes.func.isRequired,
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         // Value selectors
         selectedTypeFL: PropTypes.instanceOf(Array).isRequired,
-        selectedConnFL: PropTypes.instanceOf(Array).isRequired
+        selectedConnFL: PropTypes.instanceOf(Array).isRequired,
 
-        //TODO Limiter
+        limit: PropTypes.instanceOf(Number).isRequired
     };
 
     componentWillMount(){
         this.load();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
+        if (secondLevel != nextProps.secondLevel) {
+            dispatch(getSelectedTypeFLReset());
+            dispatch(getSelectedConnFLReset());
+
+            var urls = nextProps.secondLevel.map(l=>l.inner);
+            dispatch(firstLevelLoader(urls, [], [], limit));
+            dispatch(firstLevelCount(urls, [], []));
+        }
     }
 
     componentWillUnmount() {
@@ -44,20 +60,22 @@ class FirstLevelConnectionContainer extends Component {
     }
 
     load(){
-        const{dispatch, firstLevelLoader, secondLevel, selectedTypeFL, selectedConnFL} = this.props;
+        const{dispatch, firstLevelLoader, firstLevelCount, secondLevel, selectedTypeFL, selectedConnFL, limit} = this.props;
 
         var urls = secondLevel.map(l=>l.inner);
-        dispatch(firstLevelLoader(urls, selectedTypeFL, selectedConnFL, 100));
+        dispatch(firstLevelLoader(urls, selectedTypeFL, selectedConnFL, limit));
+        dispatch(firstLevelCount(urls, selectedTypeFL, selectedConnFL))
     }
 
     reset(){
-        const{dispatch, firstLevelLoader, secondLevel} = this.props;
+        const{dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
 
         dispatch(getSelectedTypeFLReset());
         dispatch(getSelectedConnFLReset());
 
         var urls = secondLevel.map(l=>l.inner);
-        dispatch(firstLevelLoader(urls, [], [], 100))
+        dispatch(firstLevelLoader(urls, [], [], limit.value));
+        dispatch(firstLevelCount(urls, [], []));
     }
 
     render() {
@@ -73,10 +91,12 @@ class FirstLevelConnectionContainer extends Component {
             </VisualizationMessage>
         }
 
+        var buttonsEnabled = selectedTypeFL.length > 0 || selectedConnFL.length > 0;
+
         return <div>
             <ConfigToolbar
                 things={firstLevel}
-                label={"TYPES"}
+                header="Thing With Time Value Types:"
                 getKey={t=>t.outerType}
                 getValue={t=>t.outerType}
                 selectedKeys={selectedTypeFL}
@@ -85,15 +105,23 @@ class FirstLevelConnectionContainer extends Component {
             />
             <ConfigToolbar
                 things={firstLevel}
-                label={"CONNECTIONS"}
+                header="Connection Types:"
                 getKey={t=>t.connection}
                 getValue={t=>t.connection}
                 selectedKeys={selectedConnFL}
                 onChecked={k=>dispatch(setSelectConnFL(k))}
                 onUnchecked={k=>dispatch(setUnSelectConnFL(k))}
             />
-            <input type="button" name="load_first" value="LOAD" onClick={()=>this.load()}/>
-            <input type="button" name="reset_first" value="RESET" onClick={()=>this.reset()}/>
+            <Button raised={false}
+                    onTouchTap={()=>this.load()}
+                    disabled={!buttonsEnabled}
+                    label="LOAD"
+            />
+            <Button raised={false}
+                    onTouchTap={()=>this.reset()}
+                    disabled={!buttonsEnabled}
+                    label="RESET"
+            />
         </div>
     }
 }
@@ -103,7 +131,8 @@ const selector = createStructuredSelector({
     secondLevel: secondLevelSelector,
     status: firstLevelStatusSelector,
     selectedTypeFL: selectedTypeFLSelector,
-    selectedConnFL: selectedConnFLSelector
+    selectedConnFL: selectedConnFLSelector,
+    limit: limitSelector
 });
 
 export default connect(selector)(FirstLevelConnectionContainer);

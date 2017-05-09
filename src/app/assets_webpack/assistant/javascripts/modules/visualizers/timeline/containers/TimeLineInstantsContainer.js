@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { getInstants, getInstantsReset, instantsSelector, instantsStatusSelector } from '../ducks/instants'
+import { limitSelector } from '../ducks/limit'
 import { firstLevelSelector } from '../ducks/firstLevel'
 import { PromiseStatus } from '../../../core/models'
 import {createStructuredSelector} from "reselect";
@@ -19,35 +20,40 @@ class TimeLineInstantsContainer extends Component {
 
         // Instants loading
         instants: PropTypes.instanceOf(Array).isRequired,
-        status: PropTypes.instanceOf(PromiseStatus).isRequired
+        status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
-        // TODO limit
+        limit: PropTypes.instanceOf(Number).isRequired
     };
 
     componentWillMount(){
+        const {dispatch, limit} = this.props;
+
         this.className = "timeseries-chart";
         this.chart = new TimeLine(this.className, ()=>{}); // TODO: callback
 
         this.begin = new Date("2000-01-01");
         this.end = new Date("2018-01-01");
 
-        this.props.dispatch(getInstants([], this.start, this.end, 100))
+        dispatch(getInstants([], this.start, this.end, limit));
     }
 
     componentWillReceiveProps(nextProps) {
-        const {dispatch, firstLevel} = this.props;
+        const {dispatch, firstLevel, limit} = this.props;
 
         if (firstLevel != nextProps.firstLevel) {
             var urls = nextProps.firstLevel.map(t => t.inner);
-            dispatch(getInstants(urls, this.begin, this.end, 100));
+            dispatch(getInstants(urls, this.begin, this.end, limit));
+        }
+
+        if (nextProps.status.done && nextProps.instants != this.props.instants) {
+            this.needChartUpdate = true;
         }
     }
 
     componentDidUpdate() {
-        const { instants, status } = this.props;
-        if (status.done && instants.length > 0) {
-            this.chart.destroy();
-            this.chart.instants(this.props.instants);
+        const { instants } = this.props;
+        if (this.needChartUpdate) {
+            this.chart.instants(instants);
         }
     }
 
@@ -78,7 +84,8 @@ class TimeLineInstantsContainer extends Component {
 const selector = createStructuredSelector({
     instants: instantsSelector,
     status: instantsStatusSelector,
-    firstLevel: firstLevelSelector
+    firstLevel: firstLevelSelector,
+    limit: limitSelector
 });
 
 export default connect(selector)(TimeLineInstantsContainer);
