@@ -9,7 +9,7 @@ import { PromiseStatus } from '../../../core/models'
 import { createStructuredSelector } from "reselect";
 
 import PromiseResult from '../../../core/components/PromiseResult'
-import ConfigToolbar from '../misc/ConfigToolbar'
+import ConfigToolbar from '../misc/ValueSelector'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import Button from "../../../../components/Button";
 
@@ -74,7 +74,7 @@ class FirstLevelConnectionContainer extends Component {
         dispatch(getSelectedConnFLReset());
 
         var urls = secondLevel.map(l=>l.inner);
-        dispatch(firstLevelLoader(urls, [], [], limit.value));
+        dispatch(firstLevelLoader(urls, [], [], limit));
         dispatch(firstLevelCount(urls, [], []));
     }
 
@@ -94,7 +94,7 @@ class FirstLevelConnectionContainer extends Component {
         return <div>
             <ConfigToolbar
                 things={firstLevel}
-                header="Thing With Time Value Types:"
+                header="First Level Records Types:"
                 getKey={t=>t.outerType}
                 getValue={t=>t.outerType}
                 selectedKeys={selectedTypeFL}

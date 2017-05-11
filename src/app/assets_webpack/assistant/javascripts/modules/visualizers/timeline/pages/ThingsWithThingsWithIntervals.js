@@ -14,6 +14,7 @@ import CountSecondLevelContainer from '../containers/CountSecondLevelContainer'
 import CountFirstLevelContainer from '../containers/CountFirstLevelContainer'
 import CountZeroLevelContainer from '../containers/CountZeroLevelContainer'
 import LimiterContainer from '../containers/LimiterContainer'
+import LanguageSwitch from "../../../app/containers/LanguageSwitch";
 
 class Configurator extends Component {
     static propTypes = {
@@ -29,6 +30,7 @@ class Configurator extends Component {
                     <tbody>
                     <tr>
                         <td><LimiterContainer/></td>
+                        <td><LanguageSwitch/></td>
                     </tr>
                     <tr>
                         <td style={{"vertical-align" : "top"}} >

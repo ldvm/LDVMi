@@ -8,7 +8,7 @@ import { PromiseStatus } from '../../../core/models'
 import { createStructuredSelector } from "reselect";
 
 import PromiseResult from '../../../core/components/PromiseResult'
-import ConfigToolbar from '../misc/ConfigToolbar'
+import ConfigToolbar from '../misc/ValueSelector'
 import CenteredMessage from '../../../../components/CenteredMessage'
 import Button from "../../../../components/Button";
 
@@ -76,7 +76,7 @@ class SecondLevelConnectionContainer extends Component {
         return <div>
             <ConfigToolbar
                 things={secondLevel}
-                header="Things With Things With Time Values:"
+                header="Second Level Records:"
                 getKey={t=>t.outer}
                 getValue={t=>t.outer}
                 selectedKeys={selectedThingSL}
