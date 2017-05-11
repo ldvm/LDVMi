@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { getIntervals, getIntervalsReset, intervalsSelector, intervalsStatusSelector } from '../ducks/intervals'
+import { getIntervalsCount } from '../ducks/count'
 import { limitSelector } from '../ducks/limit'
 import { firstLevelSelector } from '../ducks/firstLevel'
 import { PromiseStatus } from '../../../core/models'
@@ -9,11 +10,11 @@ import {createStructuredSelector} from "reselect";
 import PromiseResult from '../../../core/components/PromiseResult'
 import TimeLine from '../misc/TimeLine'
 import CenteredMessage from '../../../../components/CenteredMessage'
-import VisualizationMessage from '../components/VisualizationMessage'
 
 class TimeLineIntervalsContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
+        isInitial: PropTypes.instanceOf(Boolean),
 
         // Levels
         firstLevel: PropTypes.instanceOf(Array).isRequired,
@@ -25,16 +26,20 @@ class TimeLineIntervalsContainer extends Component {
         limit: PropTypes.instanceOf(Number).isRequired
     };
 
-    componentWillMount(){
+    componentWillMount() {
         const {dispatch, limit} = this.props;
 
         this.className = "timeseries-chart";
-        this.chart = new TimeLine(this.className, ()=>{}); // TODO: callback
+        this.chart = new TimeLine(this.className, () => {
+        }); // TODO: callback
 
         this.begin = new Date("2000-01-01");
         this.end = new Date("2018-01-01");
 
-        dispatch(getIntervals([], this.start, this.end, limit))
+        if (this.props.isInitial) {
+            dispatch(getIntervals([], this.start, this.end, limit))
+            dispatch(getIntervalsCount([], this.start, this.end, this.limit));
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -43,6 +48,7 @@ class TimeLineIntervalsContainer extends Component {
         if (firstLevel != nextProps.firstLevel) {
             var urls = nextProps.firstLevel.map(t => t.inner);
             dispatch(getIntervals(urls, this.begin, this.end, limit));
+            dispatch(getIntervalsCount(urls, this.begin, this.end, limit));
         }
 
         if (nextProps.status.done && nextProps.intervals != this.props.intervals) {
@@ -57,6 +63,11 @@ class TimeLineIntervalsContainer extends Component {
         }
     }
 
+    componentWillUnmount(){
+        const {dispatch} = this.props;
+        dispatch(getIntervalsReset());
+        this.chart.destroy();
+    }
 
     render() {
         const {status, intervals} = this.props;
@@ -66,9 +77,7 @@ class TimeLineIntervalsContainer extends Component {
         }
 
         else if (intervals.length == 0) {
-            return <VisualizationMessage>
-                <CenteredMessage>No intervals were loaded. Check the settings please.</CenteredMessage>
-            </VisualizationMessage>
+            return <CenteredMessage>No intervals were loaded. Check the settings please.</CenteredMessage>
         }
 
         require('../misc/TimeLineStyle.css');

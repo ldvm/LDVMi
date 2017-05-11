@@ -14,7 +14,7 @@ class ThingsWithThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]],
   }
 
   def getCount: String = {
-    val select = "SELECT COUNT(?outerThing) AS ?count"
+    val select = "SELECT (count(distinct(?outerThing)) AS ?count)"
     val group = ""
     val limit = ""
     return query(select,group,limit)

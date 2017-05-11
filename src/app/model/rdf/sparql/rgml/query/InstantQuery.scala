@@ -12,7 +12,7 @@ class InstantQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInstan
   }
 
   def getCount: String = {
-    val select = "SELECT COUNT(?instant) AS ?count"
+    val select = "SELECT (count(distinct(?instant)) AS ?count)"
     val group = ""
     val limit = ""
     return query(select, group, limit)

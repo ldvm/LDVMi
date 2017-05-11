@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { getInstants, getInstantsReset, instantsSelector, instantsStatusSelector } from '../ducks/instants'
+import { getInstantsCount } from '../ducks/count'
 import { limitSelector } from '../ducks/limit'
 import { firstLevelSelector } from '../ducks/firstLevel'
 import { PromiseStatus } from '../../../core/models'
@@ -9,11 +10,11 @@ import {createStructuredSelector} from "reselect";
 import PromiseResult from '../../../core/components/PromiseResult'
 import TimeLine from '../misc/TimeLine'
 import CenteredMessage from '../../../../components/CenteredMessage'
-import VisualizationMessage from '../components/VisualizationMessage'
 
 class TimeLineInstantsContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
+        isInitial: PropTypes.instanceOf(Boolean),
 
         // Levels
         firstLevel: PropTypes.instanceOf(Array).isRequired,
@@ -25,16 +26,19 @@ class TimeLineInstantsContainer extends Component {
         limit: PropTypes.instanceOf(Number).isRequired
     };
 
-    componentWillMount(){
+    componentWillMount() {
         const {dispatch, limit} = this.props;
 
         this.className = "timeseries-chart";
-        this.chart = new TimeLine(this.className, ()=>{}); // TODO: callback
+        this.chart = new TimeLine(this.className, () => {
+        }); // TODO: callback
 
         this.begin = new Date("2000-01-01");
         this.end = new Date("2018-01-01");
-
-        dispatch(getInstants([], this.start, this.end, limit));
+        if (this.props.isInitial) {
+            dispatch(getInstants([], this.start, this.end, limit));
+            dispatch(getInstantsCount([], this.start, this.end, limit));
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -43,6 +47,7 @@ class TimeLineInstantsContainer extends Component {
         if (firstLevel != nextProps.firstLevel) {
             var urls = nextProps.firstLevel.map(t => t.inner);
             dispatch(getInstants(urls, this.begin, this.end, limit));
+            dispatch(getInstantsCount(urls, this.begin, this.end, limit));
         }
 
         if (nextProps.status.done && nextProps.instants != this.props.instants) {
@@ -71,9 +76,7 @@ class TimeLineInstantsContainer extends Component {
         }
 
         else if (instants.length == 0) {
-            return <VisualizationMessage>
-                <CenteredMessage>No instants were loaded. Check the settings please.</CenteredMessage>
-            </VisualizationMessage>
+            return <CenteredMessage>No instants were loaded. Check the settings please.</CenteredMessage>
         }
 
         require('../misc/TimeLineStyle.css');

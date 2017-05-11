@@ -180,29 +180,26 @@ class TimeLine {
     }
 
     instants(data) {
-        this.destroy();
-
         var padding = this.timeRangePad(data.map(d=>d.date));
         var drawFunc = () => this.circles(data);
 
+        this.destroy();
         this.render(padding,drawFunc);
     }
 
     intervals(data) {
-        this.destroy();
-
         var begins = data.map(d=>d.begin);
         var ends = data.map(d=>d.end);
         var padding = this.timeRangePad(begins.concat(ends));
         var drawFunc = () => this.rectangles(data);
 
+        this.destroy();
         this.render(padding,drawFunc);
     }
 
     // SVG destroying
     destroy(){
-        debugger;
-        var elements = d3.selectAll("svg");
+        var elements = d3.selectAll("." + this.classd).selectAll("svg");
         if (elements != null && elements.length > 0){
             elements.remove();
         }

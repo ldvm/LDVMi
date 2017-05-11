@@ -33,35 +33,35 @@ export async function getThingsWThingsWInstants(applicationId, things, thingType
     return result.data.thingsWithThingsWithInstants;
 }
 
-export async function getIntervalsCount(applicationId, urls, begin, end, limit) {
-    let payload = {"urls":urls, "begin":begin.getTime(), "end":end.getTime(), "limit":limit};
+export async function getIntervalsCount(applicationId, urls, begin, end) {
+    let payload = {"urls":urls, "begin":begin.getTime(), "end":end.getTime(), "limit": -1};
     const result = await rest('timeLineVisualizer/getIntervals/count/' + applicationId, payload);
-    return result.data.count;
+    return result.data.count.value;
 }
 
-export async function getInstantsCount(applicationId, urls, begin, end, limit) {
-    let payload = {"urls":urls, "begin":begin.getTime(), "end":end.getTime(), "limit":limit};
+export async function getInstantsCount(applicationId, urls, begin, end) {
+    let payload = {"urls":urls, "begin":begin.getTime(), "end":end.getTime(), "limit": -1};
     const result = await rest('timeLineVisualizer/getInstants/count/' + applicationId, payload);
-    return result.data.count;
+    return result.data.count.value;
 }
 
-export async function getThingsWIntervalsCount(applicationId, things, thingTypes, connections, limit) {
-    let payload = {"things":things, "thingTypes":thingTypes, "connections":connections, "limit":limit};
+export async function getThingsWIntervalsCount(applicationId, things, thingTypes, connections) {
+    let payload = {"things":things, "thingTypes":thingTypes, "connections":connections, "limit": -1};
     const result = await rest('timeLineVisualizer/getThingsWIntervals/count/' + applicationId, payload);
-    return result.data.count;
+    return result.data.count.value;
 }
-export async function getThingsWInstantsCount(applicationId, things, thingTypes, connections, limit) {
-    let payload = {"things":things, "thingTypes":thingTypes, "connections":connections, "limit":limit};
+export async function getThingsWInstantsCount(applicationId, things, thingTypes, connections) {
+    let payload = {"things":things, "thingTypes":thingTypes, "connections":connections, "limit": -1};
     const result = await rest('timeLineVisualizer/getThingsWInstants/count/' + applicationId, payload);
-    return result.data.count;
+    return result.data.count.value;
 }
-export async function getThingsWThingsWIntervalsCount(applicationId, things, thingTypes, connections, limit) {
-    let payload = {"things": things, "thingTypes":thingTypes, "connections": connections, "limit": limit};
+export async function getThingsWThingsWIntervalsCount(applicationId, things, thingTypes, connections) {
+    let payload = {"things": things, "thingTypes":thingTypes, "connections": connections, "limit": -1};
     const result = await rest('timeLineVisualizer/getThingsWThingsWIntervals/count/' + applicationId, payload);
-    return result.data.count;
+    return result.data.count.value;
 }
-export async function getThingsWThingsWInstantsCount(applicationId, things, thingTypes, connections, limit) {
-    let payload = {"things": things, "thingTypes":thingTypes, "connections": connections, "limit": limit};
+export async function getThingsWThingsWInstantsCount(applicationId, things, thingTypes, connections) {
+    let payload = {"things": things, "thingTypes":thingTypes, "connections": connections, "limit": -1};
     const result = await rest('timeLineVisualizer/getThingsWThingsWInstants/count/' + applicationId, payload);
-    return result.data.count;
+    return result.data.count.value;
 }

@@ -12,7 +12,7 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
   }
 
   def getCount: String = {
-    val select = "SELECT COUNT(?interval) AS ?count"
+    val select = "SELECT (count(distinct(?interval)) AS ?count)"
     val group = ""
     val limit = ""
     return query(select, group, limit)

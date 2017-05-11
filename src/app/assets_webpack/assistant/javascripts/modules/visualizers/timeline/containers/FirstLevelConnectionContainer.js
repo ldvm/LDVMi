@@ -11,13 +11,13 @@ import { createStructuredSelector } from "reselect";
 import PromiseResult from '../../../core/components/PromiseResult'
 import ConfigToolbar from '../misc/ConfigToolbar'
 import CenteredMessage from '../../../../components/CenteredMessage'
-import VisualizationMessage from '../components/VisualizationMessage'
 import Button from "../../../../components/Button";
 
 
 class FirstLevelConnectionContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
+        isInitial: PropTypes.instanceOf(Boolean),
 
         // Levels
         firstLevel: PropTypes.instanceOf(Array).isRequired,
@@ -36,7 +36,7 @@ class FirstLevelConnectionContainer extends Component {
     };
 
     componentWillMount(){
-        this.load();
+        if (this.props.isInitial) this.load();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -86,9 +86,7 @@ class FirstLevelConnectionContainer extends Component {
         }
 
         else if (firstLevel.length == 0) {
-            return <VisualizationMessage>
-                <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
-            </VisualizationMessage>
+            return <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
         }
 
         var buttonsEnabled = selectedTypeFL.length > 0 || selectedConnFL.length > 0;

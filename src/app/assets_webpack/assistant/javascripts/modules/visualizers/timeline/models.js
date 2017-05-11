@@ -18,4 +18,10 @@ export const Connection = Record({
     inner: "thing_url"
 });
 
+export const Count = Record({
+    zero: 0,
+    first: 0,
+    second:0
+});
+
 

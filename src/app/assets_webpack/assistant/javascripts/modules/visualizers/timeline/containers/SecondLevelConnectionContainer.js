@@ -10,18 +10,19 @@ import { createStructuredSelector } from "reselect";
 import PromiseResult from '../../../core/components/PromiseResult'
 import ConfigToolbar from '../misc/ConfigToolbar'
 import CenteredMessage from '../../../../components/CenteredMessage'
-import VisualizationMessage from '../components/VisualizationMessage'
 import Button from "../../../../components/Button";
 
 class SecondLevelConnectionContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
+        isInitial: PropTypes.instanceOf(Boolean),
 
         // Levels
         secondLevel: PropTypes.instanceOf(Array).isRequired,
 
         // Level loading
         secondLevelLoader: PropTypes.func.isRequired,
+        secondLevelCount: PropTypes.func.isRequired,
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         // Value selectors
@@ -32,7 +33,7 @@ class SecondLevelConnectionContainer extends Component {
     };
 
     componentWillMount(){
-        this.load();
+        if (this.props.isInitial) this.load();
     }
 
     componentWillUnmount() {
@@ -44,17 +45,19 @@ class SecondLevelConnectionContainer extends Component {
     }
 
     load(){
-        const{dispatch, secondLevelLoader, selectedThingSL, selectedConnSL, limit} = this.props;
+        const{dispatch, secondLevelLoader, secondLevelCount, selectedThingSL, selectedConnSL, limit} = this.props;
         dispatch(secondLevelLoader(selectedThingSL, [], selectedConnSL, limit));
+        dispatch(secondLevelCount(selectedThingSL, [], selectedConnSL));
     }
 
     reset(){
-        const{dispatch, secondLevelLoader, limit} = this.props;
+        const{dispatch, secondLevelLoader, secondLevelCount, limit} = this.props;
 
         dispatch(getSelectedThingSLReset());
         dispatch(getSelectedConnSLReset());
 
-        dispatch(secondLevelLoader([],[],[],limit))
+        dispatch(secondLevelLoader([],[],[],limit));
+        dispatch(secondLevelCount([],[],[]));
     }
 
     render() {
@@ -65,9 +68,7 @@ class SecondLevelConnectionContainer extends Component {
         }
 
         else if (secondLevel.length == 0) {
-            return <VisualizationMessage>
-                <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
-            </VisualizationMessage>
+            return <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
         }
 
         var buttonsEnabled = selectedThingSL.length > 0 || selectedConnSL.length > 0;
