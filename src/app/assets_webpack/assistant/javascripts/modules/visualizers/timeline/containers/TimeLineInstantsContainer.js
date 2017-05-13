@@ -1,11 +1,15 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { createStructuredSelector } from "reselect";
+import { PromiseStatus } from '../../../core/models'
+import { TimeRange } from "../models";
+
 import { getInstants, getInstantsReset, instantsSelector, instantsStatusSelector } from '../ducks/instants'
 import { getInstantsCount } from '../ducks/count'
 import { limitSelector } from '../ducks/limit'
+import { timeRangeSelector } from '../ducks/timeRange'
 import { firstLevelSelector } from '../ducks/firstLevel'
-import { PromiseStatus } from '../../../core/models'
-import {createStructuredSelector} from "reselect";
+import { setSelectTimeRecord, getSelectTimeRecordReset } from '../ducks/selectedTimeRecord'
 
 import PromiseResult from '../../../core/components/PromiseResult'
 import TimeLine from '../misc/TimeLine'
@@ -14,7 +18,7 @@ import CenteredMessage from '../../../../components/CenteredMessage'
 class TimeLineInstantsContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
-        isInitial: PropTypes.instanceOf(Boolean),
+        isInitial: PropTypes.bool,
 
         // Levels
         firstLevel: PropTypes.instanceOf(Array).isRequired,
@@ -23,34 +27,36 @@ class TimeLineInstantsContainer extends Component {
         instants: PropTypes.instanceOf(Array).isRequired,
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
-        limit: PropTypes.instanceOf(Number).isRequired
+        // Loading settings
+        timeRange: PropTypes.instanceOf(TimeRange).isRequired,
+        limit: PropTypes.number.isRequired
     };
 
     componentWillMount() {
-        const {dispatch, limit} = this.props;
+        const {dispatch, timeRange, limit} = this.props;
 
         this.className = "timeseries-chart";
-        this.chart = new TimeLine(this.className, () => {
-        }); // TODO: callback
+        this.chart = new TimeLine(this.className, (r)=>dispatch(setSelectTimeRecord(r)));
 
-        this.begin = new Date("2000-01-01");
-        this.end = new Date("2018-01-01");
         if (this.props.isInitial) {
-            dispatch(getInstants([], this.start, this.end, limit));
-            dispatch(getInstantsCount([], this.start, this.end, limit));
+            dispatch(getInstants([], timeRange, limit));
+            dispatch(getInstantsCount([], timeRange));
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        const {dispatch, firstLevel, limit} = this.props;
+        const {dispatch, firstLevel, timeRange, limit} = this.props;
 
-        if (firstLevel != nextProps.firstLevel) {
+        var needUpdate = (firstLevel != nextProps.firstLevel || timeRange != nextProps.timeRange);
+
+        if (needUpdate) {
             var urls = nextProps.firstLevel.map(t => t.inner);
-            dispatch(getInstants(urls, this.begin, this.end, limit));
-            dispatch(getInstantsCount(urls, this.begin, this.end, limit));
+            dispatch(getInstants(urls, nextProps.timeRange, limit));
+            dispatch(getInstantsCount(urls, nextProps.timeRange));
         }
 
         if (nextProps.status.done && nextProps.instants != this.props.instants) {
+            dispatch(getSelectTimeRecordReset());
             this.needChartUpdate = true;
         }
     }
@@ -59,12 +65,16 @@ class TimeLineInstantsContainer extends Component {
         const { instants } = this.props;
         if (this.needChartUpdate) {
             this.chart.instants(instants);
+            this.needChartUpdate = false;
         }
     }
 
     componentWillUnmount() {
         const {dispatch} = this.props;
+
         dispatch(getInstantsReset());
+        dispatch(getSelectTimeRecordReset());
+
         this.chart.destroy();
     }
 
@@ -85,10 +95,11 @@ class TimeLineInstantsContainer extends Component {
 }
 
 const selector = createStructuredSelector({
-    instants: instantsSelector,
-    status: instantsStatusSelector,
+    instants:   instantsSelector,
+    status:     instantsStatusSelector,
     firstLevel: firstLevelSelector,
-    limit: limitSelector
+    timeRange:  timeRangeSelector,
+    limit:      limitSelector
 });
 
 export default connect(selector)(TimeLineInstantsContainer);

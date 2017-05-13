@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { createStructuredSelector } from "reselect";
+import { PromiseStatus } from "../../../core/models";
+
 import { getCountReset, countZeroSelector, countZeroStatusSelector} from '../ducks/count'
 import { intervalsSelector, intervalsStatusSelector} from '../ducks/intervals'
 import { instantsSelector, instantsStatusSelector} from '../ducks/instants'
-import { createStructuredSelector } from "reselect";
-import { PromiseStatus } from "../../../core/models";
 
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
@@ -13,7 +14,7 @@ class CountZeroLevelContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
-        count: PropTypes.instanceOf(Number).isRequired,
+        count: PropTypes.number.isRequired,
         countStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         intervals: PropTypes.instanceOf(Array).isRequired,

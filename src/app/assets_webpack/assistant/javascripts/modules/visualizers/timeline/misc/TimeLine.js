@@ -142,9 +142,7 @@ class TimeLine {
                         return y(getTime(d.date));
                     })
                     .attr("r", size.radius)
-                    .on("click", function (d) {
-                        callback(d);
-                    });
+                    .on("click", callback);
             };
 
             // intervals => rectangles
@@ -170,9 +168,7 @@ class TimeLine {
                         return ( e - b ) + 20; // TODO: No data, fixed intervals.
                     })
                     .attr("height", size.height)
-                    .on("click", function (d) {
-                        callback(d);
-                    });
+                    .on("click", callback);
             };
 
             drawFunc();

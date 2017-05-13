@@ -24,4 +24,9 @@ export const Count = Record({
     second:0
 });
 
+export const TimeRange = Record({
+    begin: new Date("2000-01-01"),
+    end: new Date("2018-01-01")
+})
+
 

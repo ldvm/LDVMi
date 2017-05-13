@@ -14,16 +14,16 @@ import moduleSelector from '../selector'
 export const GET_COUNT_ZERO = prefix('GET_COUNT_ZERO');
 export const GET_COUNT_ZERO_SUCCESS = GET_COUNT_ZERO + "_SUCCESS";
 
-export function getIntervalsCount(urls,begin,end){
+export function getIntervalsCount(urls, timeRange){
     return withApplicationId(id => {
-        const promise = api.getIntervalsCount(id, urls, begin, end);
+        const promise = api.getIntervalsCount(id, urls, timeRange);
         return createAction(GET_COUNT_ZERO, { promise });
     });
 }
 
-export function getInstantsCount(urls,begin,end){
+export function getInstantsCount(urls, timeRange){
     return withApplicationId(id => {
-        const promise = api.getInstantsCount(id, urls, begin, end);
+        const promise = api.getInstantsCount(id, urls, timeRange);
         return createAction(GET_COUNT_ZERO, { promise });
     });
 }
@@ -78,11 +78,11 @@ export default function countReducer(state = initialState, action) {
         case GET_COUNT_RES:
             return initialState;
         case GET_COUNT_ZERO_SUCCESS:
-            return new Count({"zero": action.payload, "first": state.first,    "second":state.second});
+            return new Count({"zero": action.payload.value, "first": state.first, "second":state.second});
         case GET_COUNT_FIRST_SUCCESS:
-            return new Count({"zero": state.zero,     "first": action.payload, "second":state.second});
+            return new Count({"zero": state.zero, "first": action.payload.value, "second":state.second});
         case GET_COUNT_SECOND_SUCCESS:
-            return new Count({"zero": state.zero,     "first": state.first,    "second":action.payload});
+            return new Count({"zero": state.zero, "first": state.first, "second":action.payload.value});
     }
     return state;
 };

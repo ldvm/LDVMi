@@ -4,6 +4,8 @@ import { createStructuredSelector } from "reselect";
 import { getLabels, labelsSelector} from "../../../app/ducks/labels"
 import { langSelector } from "../../../app/ducks/lang"
 
+import { Map  as immutableMap} from 'immutable'
+
 import Checkbox from "../../../../components/Checkbox"
 import Button from "../../../../components/Button"
 import SubHeadLine from "../../../../components/Subheadline"
@@ -15,8 +17,8 @@ class ValueSelector extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
-        labels: PropTypes.instanceOf(Map).isRequired,
-        language: PropTypes.instanceOf(Object).isRequired,
+        labels: PropTypes.instanceOf(immutableMap).isRequired,
+        language: PropTypes.string.isRequired,
 
         things: PropTypes.array.isRequired,
         header: PropTypes.string.isRequired,
@@ -56,12 +58,11 @@ class ValueSelector extends Component {
             <tr>
                 <td>SEARCH:</td>
                 <td><input type="text" name="search" onChange={()=>this.setNeedle()}/></td>
-                <td  align="left">
+                <td>
                     <Button raised={resetEnabled}
                             onTouchTap={()=>this.resetNeedle()}
                             disabled={!resetEnabled}
                             label="RESET"
-                            align="left"
                     />
                 </td>
                 <td/>
@@ -95,9 +96,9 @@ class ValueSelector extends Component {
     getMatchingRecords(map) {
         var matchingValues = new Map();
 
-        for (var [key, label] of map) {
-            if (label.toLowerCase().contains(this.needle)) {
-                matchingValues.set(key, label);
+        for (const [key, value] of map) {
+            if (value.toLowerCase().includes(this.needle)) {
+                matchingValues.set(key, value);
             }
         }
 
@@ -129,7 +130,7 @@ class ValueSelector extends Component {
         var rows = [];
 
         if (valuesMap.size > 0) {
-            for (const [key,label] of valuesMap) {
+            for (const [key,value] of valuesMap) {
 
                 // Checkbox props
                 const checked = this.isChecked(key);
@@ -142,7 +143,7 @@ class ValueSelector extends Component {
                 rows.push(
                     <tr key={key}>
                         <td><Checkbox onChange={()=>onChange(key)} defaultChecked={checked}/></td>
-                        <td><LocalizedValue localizedValue={label} defaultValue={key}/></td>
+                        <td><LocalizedValue localizedValue={value} defaultValue={key}/></td>
                     </tr>
                 );
 

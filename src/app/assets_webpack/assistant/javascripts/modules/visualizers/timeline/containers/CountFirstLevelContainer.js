@@ -1,9 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { getCountReset, countFirstSelector, countFirstStatusSelector} from '../ducks/count'
-import { firstLevelSelector, firstLevelStatusSelector} from '../ducks/firstLevel'
 import { createStructuredSelector } from "reselect";
 import { PromiseStatus } from "../../../core/models";
+
+import { getCountReset, countFirstSelector, countFirstStatusSelector} from '../ducks/count'
+import { firstLevelSelector, firstLevelStatusSelector} from '../ducks/firstLevel'
 
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
@@ -12,7 +13,7 @@ class CountFirstLevelContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
-        count: PropTypes.instanceOf(Number).isRequired,
+        count: PropTypes.number.isRequired,
         countStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         things: PropTypes.instanceOf(Array).isRequired,

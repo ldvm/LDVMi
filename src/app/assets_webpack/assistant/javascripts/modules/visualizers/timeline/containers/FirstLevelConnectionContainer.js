@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { PromiseStatus } from '../../../core/models'
+import { createStructuredSelector } from "reselect";
+
 import { getFirstLevelReset, firstLevelSelector, firstLevelStatusSelector } from '../ducks/firstLevel'
 import { secondLevelSelector } from '../ducks/secondLevel'
 import { limitSelector } from '../ducks/limit'
 import { setSelectTypeFL, setUnSelectTypeFL, getSelectedTypeFLReset, selectedTypeFLSelector } from '../ducks/selectedTypeFirstLevel'
 import { setSelectConnFL, setUnSelectConnFL, getSelectedConnFLReset, selectedConnFLSelector } from '../ducks/selectedConnFirstLevel'
-import { PromiseStatus } from '../../../core/models'
-import { createStructuredSelector } from "reselect";
 
 import PromiseResult from '../../../core/components/PromiseResult'
 import ConfigToolbar from '../misc/ValueSelector'
@@ -17,7 +18,7 @@ import Button from "../../../../components/Button";
 class FirstLevelConnectionContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
-        isInitial: PropTypes.instanceOf(Boolean),
+        isInitial: PropTypes.bool,
 
         // Levels
         firstLevel: PropTypes.instanceOf(Array).isRequired,
@@ -32,7 +33,7 @@ class FirstLevelConnectionContainer extends Component {
         selectedTypeFL: PropTypes.instanceOf(Array).isRequired,
         selectedConnFL: PropTypes.instanceOf(Array).isRequired,
 
-        limit: PropTypes.instanceOf(Number).isRequired
+        limit: PropTypes.number.isRequired
     };
 
     componentWillMount(){

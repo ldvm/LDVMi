@@ -1,13 +1,15 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { getLimitReset, setLimit, limitSelector, limit_default} from '../ducks/limit'
 import { createStructuredSelector } from "reselect";
+
+import { getLimitReset, setLimit, limitSelector, limit_default} from '../ducks/limit'
+
 import Button from "../../../../components/Button";
 
 class LimiterContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
-        limit: PropTypes.instanceOf(Number).isRequired
+        limit: PropTypes.number.isRequired
     };
 
     componentWillUnmount() {
@@ -42,6 +44,7 @@ class LimiterContainer extends Component {
         var resetEnabled = limit != limit_default;
         return <div>
             <table>
+                <tbody>
                 <tr>
                     <th>LIMIT</th>
                     <th><input type="value"  name="limit" defaultValue={limit} onChange={()=>this.setLimit()}/></th>
@@ -51,6 +54,7 @@ class LimiterContainer extends Component {
                                 label="RESET"
                     /></th>
                 </tr>
+                </tbody>
             </table>
         </div>
 

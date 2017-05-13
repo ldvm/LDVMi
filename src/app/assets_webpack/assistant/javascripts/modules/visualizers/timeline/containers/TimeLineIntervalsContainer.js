@@ -1,11 +1,15 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { createStructuredSelector } from "reselect";
+import { PromiseStatus } from '../../../core/models'
+import { TimeRange } from "../models";
+
 import { getIntervals, getIntervalsReset, intervalsSelector, intervalsStatusSelector } from '../ducks/intervals'
 import { getIntervalsCount } from '../ducks/count'
 import { limitSelector } from '../ducks/limit'
+import { timeRangeSelector } from '../ducks/timeRange'
 import { firstLevelSelector } from '../ducks/firstLevel'
-import { PromiseStatus } from '../../../core/models'
-import {createStructuredSelector} from "reselect";
+import { setSelectTimeRecord, getSelectTimeRecordReset } from '../ducks/selectedTimeRecord'
 
 import PromiseResult from '../../../core/components/PromiseResult'
 import TimeLine from '../misc/TimeLine'
@@ -14,58 +18,66 @@ import CenteredMessage from '../../../../components/CenteredMessage'
 class TimeLineIntervalsContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
-        isInitial: PropTypes.instanceOf(Boolean),
+        isInitial: PropTypes.bool,
 
         // Levels
         firstLevel: PropTypes.instanceOf(Array).isRequired,
 
-        // Intervals loading
+        // Instants loading
         intervals: PropTypes.instanceOf(Array).isRequired,
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
-        limit: PropTypes.instanceOf(Number).isRequired
+        // Loading settings
+        timeRange: PropTypes.instanceOf(TimeRange).isRequired,
+        limit: PropTypes.number.isRequired
     };
 
     componentWillMount() {
-        const {dispatch, limit} = this.props;
+        const {dispatch, timeRange, limit} = this.props;
 
         this.className = "timeseries-chart";
-        this.chart = new TimeLine(this.className, () => {
-        }); // TODO: callback
-
-        this.begin = new Date("2000-01-01");
-        this.end = new Date("2018-01-01");
+        this.chart = new TimeLine(this.className, (r)=>dispatch(setSelectTimeRecord(r)));
 
         if (this.props.isInitial) {
-            dispatch(getIntervals([], this.start, this.end, limit))
-            dispatch(getIntervalsCount([], this.start, this.end, this.limit));
+            dispatch(getIntervals([], timeRange, limit))
+            dispatch(getIntervalsCount([], timeRange, this.limit));
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        const {dispatch, firstLevel, limit} = this.props;
+        const {dispatch, intervals, firstLevel, timeRange, limit} = this.props;
 
-        if (firstLevel != nextProps.firstLevel) {
+        var needUpdate = (firstLevel != nextProps.firstLevel || timeRange != nextProps.timeRange);
+
+        if (needUpdate){
             var urls = nextProps.firstLevel.map(t => t.inner);
-            dispatch(getIntervals(urls, this.begin, this.end, limit));
-            dispatch(getIntervalsCount(urls, this.begin, this.end, limit));
+            dispatch(getIntervals(urls, nextProps.timeRange, limit));
+            dispatch(getIntervalsCount(urls, nextProps.timeRange, limit));
         }
 
-        if (nextProps.status.done && nextProps.intervals != this.props.intervals) {
-            this.needChartUpdate = true;
+        if (nextProps.status.done) {
+            if (nextProps.intervals != intervals || nextProps.timeRange != timeRange) {
+                dispatch(getSelectTimeRecordReset());
+                this.needChartUpdate = true;
+            }
         }
     }
 
     componentDidUpdate() {
         const { intervals } = this.props;
+
         if (this.needChartUpdate) {
             this.chart.intervals(intervals);
+            this.needChartUpdate = false;
         }
     }
 
     componentWillUnmount(){
         const {dispatch} = this.props;
+
         dispatch(getIntervalsReset());
+        dispatch(getSelectTimeRecordReset());
+
         this.chart.destroy();
     }
 
@@ -86,10 +98,11 @@ class TimeLineIntervalsContainer extends Component {
 }
 
 const selector = createStructuredSelector({
-    intervals: intervalsSelector,
-    status: intervalsStatusSelector,
+    intervals:  intervalsSelector,
+    status:     intervalsStatusSelector,
     firstLevel: firstLevelSelector,
-    limit: limitSelector
+    timeRange:  timeRangeSelector,
+    limit:      limitSelector
 });
 
 export default connect(selector)(TimeLineIntervalsContainer);

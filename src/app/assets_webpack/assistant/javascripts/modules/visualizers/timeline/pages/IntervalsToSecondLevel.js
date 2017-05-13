@@ -1,6 +1,5 @@
-import React, { Component, PropTypes } from 'react'
-import { Application } from '../../../app/models'
-import { Visualizer } from '../../../core/models'
+import React, { Component } from 'react'
+
 import { getFirstLevelIntervals } from '../ducks/firstLevel'
 import { getFirstLevelIntervalsCount, getSecondLevelIntervalsCount} from '../ducks/count'
 import { getSecondLevelIntervals } from '../ducks/secondLevel'
@@ -14,26 +13,20 @@ import CountSecondLevelContainer from '../containers/CountSecondLevelContainer'
 import CountFirstLevelContainer from '../containers/CountFirstLevelContainer'
 import CountZeroLevelContainer from '../containers/CountZeroLevelContainer'
 import LimiterContainer from '../containers/LimiterContainer'
-import LanguageSwitch from "../../../app/containers/LanguageSwitch";
+import IntervalVisualizer from '../containers/IntervalVisualizer'
+import TimeRangeContainer from "../containers/TimeRangeContainer";
 
-class Configurator extends Component {
-    static propTypes = {
-        application: PropTypes.instanceOf(Application).isRequired,
-        visualizer: PropTypes.instanceOf(Visualizer).isRequired
-    };
-
+class IntervalsToSecondLevel extends Component {
     render() {
-
         return (
             <BodyPadding>
                 <table>
                     <tbody>
                     <tr>
                         <td><LimiterContainer/></td>
-                        <td><LanguageSwitch/></td>
                     </tr>
                     <tr>
-                        <td style={{"vertical-align" : "top"}} >
+                        <td style={{"verticalAlign" : "top"}} >
                             <SecondLevelConnectionContainer
                                 isInitial={true}
                                 secondLevelLoader={getSecondLevelIntervals}
@@ -41,7 +34,7 @@ class Configurator extends Component {
                             />
                             <CountSecondLevelContainer/>
                         </td>
-                        <td style={{"vertical-align" : "top"}} >
+                        <td style={{"verticalAlign" : "top", "textAlign":"right"}} >
                             <FirstLevelConnectionContainer
                                 firstLevelLoader={getFirstLevelIntervals}
                                 firstLevelCount={getFirstLevelIntervalsCount}
@@ -51,11 +44,16 @@ class Configurator extends Component {
                     </tr>
                     </tbody>
                 </table>
+
                 <hr/>
+                <TimeRangeContainer/>
                 <TimeLineIntervalsContainer/>
                 <CountZeroLevelContainer/>
+
+                <hr/>
+                <IntervalVisualizer/>
             </BodyPadding>
         )
     }
 }
-export default Configurator;
+export default IntervalsToSecondLevel;

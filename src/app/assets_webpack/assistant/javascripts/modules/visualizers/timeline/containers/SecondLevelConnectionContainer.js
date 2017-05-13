@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+
 import { getSecondLevelReset, secondLevelSelector, secondLevelStatusSelector } from '../ducks/secondLevel'
 import { limitSelector } from '../ducks/limit'
 import { setSelectThingSL, setUnSelectThingSL, getSelectedThingSLReset, selectedThingSLSelector } from '../ducks/selectedThingSecondLevel'
@@ -15,7 +16,7 @@ import Button from "../../../../components/Button";
 class SecondLevelConnectionContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
-        isInitial: PropTypes.instanceOf(Boolean),
+        isInitial: PropTypes.bool,
 
         // Levels
         secondLevel: PropTypes.instanceOf(Array).isRequired,
@@ -29,7 +30,7 @@ class SecondLevelConnectionContainer extends Component {
         selectedThingSL: PropTypes.instanceOf(Array).isRequired,
         selectedConnSL: PropTypes.instanceOf(Array).isRequired,
 
-        limit: PropTypes.instanceOf(Number).isRequired
+        limit: PropTypes.number.isRequired
     };
 
     componentWillMount(){
