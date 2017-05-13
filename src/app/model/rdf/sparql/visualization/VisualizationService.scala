@@ -13,6 +13,10 @@ trait VisualizationService {
 
   def getLabels(evaluation: PipelineEvaluation, uri: String): Option[LocalizedValue]
 
+  def getComments(uri: String): Option[LocalizedValue]
+
+  def getComments(evaluation: PipelineEvaluation, uri: String): Option[LocalizedValue]
+
   def skosScheme(evaluation: PipelineEvaluation, schemeUri: String): Option[HierarchyNode]
 
   def skosSchemes(evaluation: PipelineEvaluation, tolerant: Boolean)(implicit session: Session): Option[Seq[Scheme]]

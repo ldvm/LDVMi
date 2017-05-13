@@ -32,3 +32,8 @@ export async function getLabels(appId, resourceUris) {
   const result = await rest('commonVisualizer/getLabels/' + appId, { resourceUris });
   return result.data.labels;
 }
+
+export async function getComments(appId, resourceUris) {
+  const result = await rest('commonVisualizer/getComments/' + appId, { resourceUris });
+  return result.data.comments;
+}
