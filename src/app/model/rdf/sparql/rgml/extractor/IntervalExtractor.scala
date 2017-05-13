@@ -27,7 +27,7 @@ class IntervalExtractor extends QueryExecutionResultExtractor[IntervalQuery, Seq
   }
 
   private def getDate(qs: QuerySolution, fieldName: String): Date = {
-    val dateFormat = new SimpleDateFormat("yyyy-MM-DD")
+    val dateFormat = new SimpleDateFormat("yyyy-MM-dd")
     val fieldValue = qs.getLiteral(fieldName).getString()
     val date =  dateFormat.parse(fieldValue)
     return date;

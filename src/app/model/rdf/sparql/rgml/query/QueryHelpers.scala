@@ -36,6 +36,6 @@ object QueryHelpers {
   }
 
   def dateToString(date: Date): String = {
-    new SimpleDateFormat("YYYY-MM-DD" ).format(date)
+    new SimpleDateFormat("yyyy-MM-dd" ).format(date)
   }
 }
