@@ -8,6 +8,7 @@ import { secondLevelSelector } from '../ducks/secondLevel'
 
 import Label from "../../../app/containers/Label";
 import SubHeadLine from "../../../../components/Subheadline"
+import Comment from "../../../app/containers/Comment";
 
 class LevelsVisualizer extends Component {
     static propTypes = {
@@ -21,19 +22,31 @@ class LevelsVisualizer extends Component {
             <table>
                 <tbody>
                 <tr>
-                    <td>Name: </td>
+                    <td><b>Name: </b></td>
                     <td><Label uri={conn.outer}/></td>
                 </tr>
                 <tr>
-                    <td>Type: </td>
+                    <td><b>Description: </b></td>
+                    <td><Comment uri={conn.outer}/></td>
+                </tr>
+                <tr>
+                    <td><b>Type: </b></td>
                     <td><Label uri={conn.outerType}/></td>
                 </tr>
                 <tr>
-                    <td>Connected by: </td>
+                    <td><b>Type description: </b></td>
+                    <td><Comment uri={conn.outerType}/></td>
+                </tr>
+                <tr>
+                    <td><b>Connection: </b></td>
                     <td><Label uri={conn.connection}/></td>
                 </tr>
                 <tr>
-                    <td>Connected to: </td>
+                    <td><b>Connection description: </b></td>
+                    <td><Comment uri={conn.connection}/></td>
+                </tr>
+                <tr>
+                    <td><b>Connected to: </b></td>
                     <td><Label uri={conn.inner}/></td>
                 </tr>
                 </tbody>

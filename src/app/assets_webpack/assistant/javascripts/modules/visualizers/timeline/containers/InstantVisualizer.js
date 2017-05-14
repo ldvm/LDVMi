@@ -6,7 +6,9 @@ import CenteredMessage from "../../../../components/CenteredMessage";
 import { selectedTimeRecordSelector } from '../ducks/selectedTimeRecord'
 
 import Label from "../../../app/containers/Label";
+import Comment from "../../../app/containers/Comment"
 import LevelsVisualizer from "./LevelsVisualizer";
+import makePureRender from "../../../../misc/makePureRender";
 
 class InstantVisualizer extends Component {
     static propTypes = {
@@ -25,11 +27,15 @@ class InstantVisualizer extends Component {
             <table>
                 <tbody>
                 <tr>
-                    <td>Name: </td>
+                    <td><b>Name: </b></td>
                     <td><Label uri={instant.url}/></td>
                 </tr>
                 <tr>
-                    <td>Date:</td>
+                    <td><b>Description: </b></td>
+                    <td><Comment uri={instant.url}/></td>
+                </tr>
+                <tr>
+                    <td><b>Date: </b></td>
                     <td>{new Date(instant.date).toDateString()}</td>
                 </tr>
                 </tbody>
@@ -43,4 +49,4 @@ const selector = createStructuredSelector({
     selectedTimeRecord: selectedTimeRecordSelector,
 });
 
-export default connect(selector)(InstantVisualizer);
+export default connect(selector)(makePureRender(InstantVisualizer));

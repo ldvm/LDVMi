@@ -23,7 +23,7 @@ class IntervalsToFirstLevel extends Component {
                         <td><LimiterContainer/></td>
                     </tr>
                     <tr>
-                        <td style={{"verticalAlign" : "top", "textAlign":"right"}} >
+                        <td style={{"verticalAlign" : "top"}} >
                             <FirstLevelConnectionContainer
                                 isInitial={true}
                                 firstLevelLoader={getFirstLevelIntervals}

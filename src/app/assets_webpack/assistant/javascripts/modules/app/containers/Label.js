@@ -15,7 +15,7 @@ class Label extends Component {
     availableLabels: PropTypes.instanceOf(Map).isRequired
   };
 
-  componentDidMount() {
+  componentDidUpdate() {
     // Prop 'label' might be a "custom label" or passed down from wherever, we don't care,
     // if it's missing, we will try to load a new one from the server.
     const { dispatch, uri, label, availableLabels } = this.props;

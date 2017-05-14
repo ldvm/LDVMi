@@ -7,6 +7,7 @@ import { selectedTimeRecordSelector } from '../ducks/selectedTimeRecord'
 
 import Label from "../../../app/containers/Label";
 import LevelsVisualizer from "./LevelsVisualizer";
+import Comment from "../../../app/containers/Comment";
 
 class IntervalVisualizer extends Component {
     static propTypes = {
@@ -25,15 +26,19 @@ class IntervalVisualizer extends Component {
             <table>
                 <tbody>
                 <tr>
-                    <td>Name: </td>
+                    <td><b>Name: </b></td>
                     <td><Label uri={interval.url}/></td>
                 </tr>
                 <tr>
-                    <td>Begin:</td>
+                    <td><b>Description: </b></td>
+                    <td><Comment uri={interval.url}/></td>
+                </tr>
+                <tr>
+                    <td><b>Begin: </b></td>
                     <td>{new Date(interval.begin).toDateString()}</td>
                 </tr>
                 <tr>
-                    <td>End:</td>
+                    <td><b>End: </b></td>
                     <td>{new Date(interval.end).toDateString()}</td>
                 </tr>
                 </tbody>

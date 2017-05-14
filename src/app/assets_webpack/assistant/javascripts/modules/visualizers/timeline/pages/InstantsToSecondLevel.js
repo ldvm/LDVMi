@@ -33,7 +33,7 @@ class InstantsToSecondLevel extends Component {
                             />
                             <CountSecondLevelContainer/>
                         </td>
-                        <td style={{"verticalAlign" : "top", "float":"right"}} >
+                        <td style={{"verticalAlign" : "top"}} >
                             <FirstLevelConnectionContainer
                                 firstLevelLoader={getFirstLevelInstants}
                                 firstLevelCount={getFirstLevelInstantsCount}

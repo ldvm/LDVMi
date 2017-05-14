@@ -15,7 +15,7 @@ class Comment extends Component {
         availableComments: PropTypes.instanceOf(Map).isRequired
     };
 
-    componentDidMount() {
+    componentDidUpdate() {
         // Prop 'comment' might be a "custom comment" or passed down from wherever, we don't care,
         // if it's missing, we will try to load a new one from the server.
         const { dispatch, uri, comment, availableComments } = this.props;

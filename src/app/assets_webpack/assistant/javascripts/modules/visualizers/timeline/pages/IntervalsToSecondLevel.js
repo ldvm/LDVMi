@@ -34,7 +34,7 @@ class IntervalsToSecondLevel extends Component {
                             />
                             <CountSecondLevelContainer/>
                         </td>
-                        <td style={{"verticalAlign" : "top", "textAlign":"right"}} >
+                        <td style={{"verticalAlign" : "top"}} >
                             <FirstLevelConnectionContainer
                                 firstLevelLoader={getFirstLevelIntervals}
                                 firstLevelCount={getFirstLevelIntervalsCount}
