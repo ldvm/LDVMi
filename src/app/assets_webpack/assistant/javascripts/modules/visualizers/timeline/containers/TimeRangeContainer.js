@@ -29,6 +29,22 @@ class TimeRangeContainer extends Component {
         dispatch(setSelectTime(new Date(begin), new Date(end)));
     }
 
+    resetTimeRange(){
+        const { dispatch } = this.props;
+
+        dispatch(getSelectedTimeReset());
+    }
+
+    componentDidUpdate(){
+        const { timeRange } = this.props;
+
+        var beginString = moment(timeRange.begin).format('YYYY-MM-DD');
+        var endString = moment(timeRange.end).format('YYYY-MM-DD');
+
+        document.getElementsByName("begin_input")[0].value = beginString;
+        document.getElementsByName("end_input")[0].value = endString;
+    }
+
     render() {
         const { timeRange } = this.props;
 
@@ -53,7 +69,7 @@ class TimeRangeContainer extends Component {
                     </td>
                     <td>
                         <Button raised={true}
-                                onTouchTap={getSelectedTimeReset}
+                                onTouchTap={()=>this.resetTimeRange()}
                                 disabled={false}
                                 label="RESET"
                         />

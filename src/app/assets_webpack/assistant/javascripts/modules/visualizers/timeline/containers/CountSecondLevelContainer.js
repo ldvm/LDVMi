@@ -13,7 +13,7 @@ class CountSecondLevelContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
-        count: PropTypes.number.isRequired,
+        count: PropTypes.number,
         countStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         things: PropTypes.instanceOf(Array).isRequired,
