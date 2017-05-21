@@ -1,10 +1,10 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from "reselect";
-import { PromiseStatus } from "../../../core/models";
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {createStructuredSelector} from "reselect";
+import {PromiseStatus} from "../../../core/models";
 
-import { getCountReset, countFirstSelector, countFirstStatusSelector} from '../ducks/count'
-import { firstLevelSelector, firstLevelStatusSelector} from '../ducks/firstLevel'
+import {countFirstSelector, countFirstStatusSelector, getCountReset} from "../ducks/count";
+import {firstLevelSelector, firstLevelStatusSelector} from "../ducks/firstLevel";
 
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
@@ -33,8 +33,9 @@ class CountFirstLevelContainer extends Component {
             return <PromiseResult status={countStatus} error={countStatus.error} loadingMessage="Loading count..."/>
         }
 
-        if (!thingsStatus.done){
-            return <PromiseResult status={countStatus} error={countStatus.error} loadingMessage="Loading connected records..."/>
+        if (!thingsStatus.done) {
+            return <PromiseResult status={countStatus} error={countStatus.error}
+                                  loadingMessage="Loading connected records..."/>
         }
 
         var loaded = things.length;

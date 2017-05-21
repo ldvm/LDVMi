@@ -4,7 +4,12 @@ import ConfiguratorsRouteFactory from './utils/ConfiguratorsRouteFactory'
 import dataCubeRoutes from './datacube/configuratorRoutes'
 import googleMapsRoutes from './googleMaps/configuratorRoutes'
 import chordRoutes from './chord/configuratorRoutes'
-import timelineRoutes from './timeline/configuratorRoutes'
+import timelineInstantsRoutes from './timeline/components/instants/configuratorRoutes'
+import timelineIntervalsRoutes from './timeline/components/intervals/configuratorRoutes'
+import timelineThingsInstantsRoutes from './timeline/components/thingsInstants/configuratorRoutes'
+import timelineThingsIntervalsRoutes from './timeline/components/thingsIntervals/configuratorRoutes'
+import timelineThingsThingsInstantsRoutes from './timeline/components/thingsThingsInstants/configuratorRoutes'
+import timelineThingsThingsIntervalsRoutes from './timeline/components/thingsThingsInstants/configuratorRoutes'
 import { Visualizer, VisualizerWithPipelines } from '../core/models'
 import { applicationUrl } from '../app/configuratorRoutes'
 
@@ -15,7 +20,12 @@ const routeFactory = new ConfiguratorsRouteFactory();
 routeFactory.register(dataCubeRoutes);
 routeFactory.register(googleMapsRoutes);
 routeFactory.register(chordRoutes);
-routeFactory.register(timelineRoutes);
+routeFactory.register(timelineInstantsRoutes);
+routeFactory.register(timelineIntervalsRoutes);
+routeFactory.register(timelineThingsInstantsRoutes);
+routeFactory.register(timelineThingsIntervalsRoutes);
+routeFactory.register(timelineThingsThingsInstantsRoutes);
+routeFactory.register(timelineThingsThingsIntervalsRoutes);
 
 export default dispatch => routeFactory.createRoutes(dispatch);
 

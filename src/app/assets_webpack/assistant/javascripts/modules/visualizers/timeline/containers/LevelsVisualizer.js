@@ -1,13 +1,13 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from "reselect";
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {createStructuredSelector} from "reselect";
 
-import { selectedTimeRecordSelector } from '../ducks/selectedTimeRecord'
-import { firstLevelSelector} from '../ducks/firstLevel'
-import { secondLevelSelector } from '../ducks/secondLevel'
+import {selectedTimeRecordSelector} from "../ducks/selectedTimeRecord";
+import {firstLevelSelector} from "../ducks/firstLevel";
+import {secondLevelSelector} from "../ducks/secondLevel";
 
 import Label from "../../../app/containers/Label";
-import SubHeadLine from "../../../../components/Subheadline"
+import SubHeadLine from "../../../../components/Subheadline";
 import Comment from "../../../app/containers/Comment";
 
 class LevelsVisualizer extends Component {
@@ -17,7 +17,7 @@ class LevelsVisualizer extends Component {
         secondLevel: PropTypes.instanceOf(Array).isRequired
     };
 
-    renderConnection(conn){
+    renderConnection(conn) {
         return <div key={conn.outer}>
             <table>
                 <tbody>
@@ -63,24 +63,24 @@ class LevelsVisualizer extends Component {
         }
 
         var firstVis;
-        if (matchingFirstLevel.length > 0){
+        if (matchingFirstLevel.length > 0) {
             firstVis = <div>
                 <SubHeadLine title="Things connected to this instant/interval"/>
-                {matchingFirstLevel.map(m=>this.renderConnection(m))}
+                {matchingFirstLevel.map(m => this.renderConnection(m))}
             </div>
         }
 
         var matchingSecondLevel = [];
-        for (let i of matchingFirstLevel){
-            for (let j of secondLevel){
+        for (let i of matchingFirstLevel) {
+            for (let j of secondLevel) {
                 if (i.outer == j.inner) matchingSecondLevel.push(j)
             }
         }
         var secondVis;
-        if (matchingSecondLevel.length > 0){
+        if (matchingSecondLevel.length > 0) {
             secondVis = <div>
                 <SubHeadLine title="Things connected via 2 connections"/>
-                {matchingSecondLevel.map(m=>this.renderConnection(m))}
+                {matchingSecondLevel.map(m => this.renderConnection(m))}
             </div>
         }
 

@@ -1,20 +1,21 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from "reselect";
-import { PromiseStatus } from '../../../core/models'
-import { TimeRange } from "../models";
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {createStructuredSelector} from "reselect";
+import {PromiseStatus} from "../../../core/models";
+import {TimeRange} from "../models";
 
-import { getInstants, getInstantsReset, instantsSelector, instantsStatusSelector } from '../ducks/instants'
-import { getInstantsCount } from '../ducks/count'
-import { limitSelector } from '../ducks/limit'
-import { timeRangeSelector } from '../ducks/timeRange'
-import { firstLevelSelector } from '../ducks/firstLevel'
-import { setSelectTimeRecord, getSelectTimeRecordReset } from '../ducks/selectedTimeRecord'
+import {getInstants, getInstantsReset, instantsSelector, instantsStatusSelector} from "../ducks/instants";
+import {getInstantsCount} from "../ducks/count";
+import {limitSelector} from "../ducks/limit";
+import {getSelectedTimeReset, timeRangeSelector} from "../ducks/timeRange";
+import {firstLevelSelector} from "../ducks/firstLevel";
+import {getSelectTimeRecordReset, setSelectTimeRecord} from "../ducks/selectedTimeRecord";
 
-import PromiseResult from '../../../core/components/PromiseResult'
-import TimeLine from '../misc/TimeLine'
-import CenteredMessage from '../../../../components/CenteredMessage'
+import PromiseResult from "../../../core/components/PromiseResult";
+import TimeLine from "../misc/TimeLine";
+import CenteredMessage from "../../../../components/CenteredMessage";
 import CountZeroLevelContainer from "./CountZeroLevelContainer";
+import TimeRangeContainer from "./TimeRangeContainer";
 
 class TimeLineInstantsContainer extends Component {
     static propTypes = {
@@ -37,7 +38,7 @@ class TimeLineInstantsContainer extends Component {
         const {dispatch, timeRange, limit} = this.props;
 
         this.className = "timeseries-chart";
-        this.chart = new TimeLine(this.className, (r)=>dispatch(setSelectTimeRecord(r)));
+        this.chart = new TimeLine(this.className, (r) => dispatch(setSelectTimeRecord(r)));
 
         if (this.props.isInitial) {
             dispatch(getInstants([], timeRange, limit));
@@ -63,7 +64,7 @@ class TimeLineInstantsContainer extends Component {
     }
 
     componentDidUpdate() {
-        const { instants } = this.props;
+        const {instants} = this.props;
         if (this.needChartUpdate) {
             this.chart.instants(instants);
             this.needChartUpdate = false;
@@ -74,6 +75,7 @@ class TimeLineInstantsContainer extends Component {
         const {dispatch} = this.props;
 
         dispatch(getInstantsReset());
+        dispatch(getSelectedTimeReset());
         dispatch(getSelectTimeRecordReset());
 
         this.chart.destroy();
@@ -91,18 +93,20 @@ class TimeLineInstantsContainer extends Component {
         }
 
         require('../misc/TimeLineStyle.css');
-        return <div className={this.className}>
+        return <div>
+            <TimeRangeContainer/>
+            <div className={this.className}/>
             <CountZeroLevelContainer/>
         </div>
     }
 }
 
 const selector = createStructuredSelector({
-    instants:   instantsSelector,
-    status:     instantsStatusSelector,
+    instants: instantsSelector,
+    status: instantsStatusSelector,
     firstLevel: firstLevelSelector,
-    timeRange:  timeRangeSelector,
-    limit:      limitSelector
+    timeRange: timeRangeSelector,
+    limit: limitSelector
 });
 
 export default connect(selector)(TimeLineInstantsContainer);

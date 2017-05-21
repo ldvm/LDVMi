@@ -1,23 +1,21 @@
-import createAction from '../../../../misc/createAction'
-import prefix from '../prefix'
-import { GET_APPLICATION_START } from '../../../app/ducks/application'
-import { createSelector } from 'reselect'
-import {appendKey, removeKey} from './utils'
-import moduleSelector from '../selector'
+import createAction from "../../../../misc/createAction";
+import prefix from "../prefix";
+import {GET_APPLICATION_START} from "../../../app/ducks/application";
+import {createSelector} from "reselect";
+import {appendKey, removeKey} from "./utils";
+import moduleSelector from "../selector";
 
 // Actions
 export const SET_SELECT_CFL = prefix('SET_SELECT_CONNECTIONS_FIRST');
 export const SET_UNSELECT_CFL = prefix('SET_UNSELECT_CONNECTIONS_FIRST');
 export const GET_SELECTED_CFL_RESET = prefix("GET_SELECTED_CONNECTIONS_FIRST_RESET");
 
-
-
 export function setSelectConnFL(key) {
-    return createAction(SET_SELECT_CFL, { key });
+    return createAction(SET_SELECT_CFL, {key});
 }
 
-export function setUnSelectConnFL(key){
-    return createAction(SET_UNSELECT_CFL,{ key });
+export function setUnSelectConnFL(key) {
+    return createAction(SET_UNSELECT_CFL, {key});
 }
 
 export function getSelectedConnFLReset() {
@@ -33,9 +31,9 @@ export default function selectedConnFLReducer(state = initialState, action) {
         case GET_SELECTED_CFL_RESET:
             return initialState;
         case SET_SELECT_CFL:
-            return appendKey(state,action.payload.key);
+            return appendKey(state, action.payload.key);
         case SET_UNSELECT_CFL:
-            return removeKey(state,action.payload.key);
+            return removeKey(state, action.payload.key);
     }
     return state;
 };

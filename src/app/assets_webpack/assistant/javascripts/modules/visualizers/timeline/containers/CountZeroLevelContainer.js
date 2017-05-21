@@ -1,11 +1,11 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from "reselect";
-import { PromiseStatus } from "../../../core/models";
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {createStructuredSelector} from "reselect";
+import {PromiseStatus} from "../../../core/models";
 
-import { getCountReset, countZeroSelector, countZeroStatusSelector} from '../ducks/count'
-import { intervalsSelector, intervalsStatusSelector} from '../ducks/intervals'
-import { instantsSelector, instantsStatusSelector} from '../ducks/instants'
+import {countZeroSelector, countZeroStatusSelector, getCountReset} from "../ducks/count";
+import {intervalsSelector, intervalsStatusSelector} from "../ducks/intervals";
+import {instantsSelector, instantsStatusSelector} from "../ducks/instants";
 
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
@@ -38,7 +38,7 @@ class CountZeroLevelContainer extends Component {
             return <PromiseResult status={countStatus} error={countStatus.error} loadingMessage="Loading count..."/>
         }
 
-        if (!instantsStatus.done && !intervalsStatus.done){
+        if (!instantsStatus.done && !intervalsStatus.done) {
             return <PromiseResult status={countStatus} error={countStatus.error} loadingMessage="Loading instants..."/>
         }
 

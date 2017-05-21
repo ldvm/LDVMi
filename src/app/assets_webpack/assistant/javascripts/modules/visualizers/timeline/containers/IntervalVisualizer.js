@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from "reselect";
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {createStructuredSelector} from "reselect";
 import CenteredMessage from "../../../../components/CenteredMessage";
 
-import { selectedTimeRecordSelector } from '../ducks/selectedTimeRecord'
+import {selectedTimeRecordSelector} from "../ducks/selectedTimeRecord";
 
 import Label from "../../../app/containers/Label";
 import LevelsVisualizer from "./LevelsVisualizer";

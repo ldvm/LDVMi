@@ -1,17 +1,17 @@
-import createAction from '../../../../misc/createAction'
-import prefix from '../prefix'
-import { GET_APPLICATION_START } from '../../../app/ducks/application'
-import { createSelector } from 'reselect'
-import moduleSelector from '../selector'
+import createAction from "../../../../misc/createAction";
+import prefix from "../prefix";
+import {GET_APPLICATION_START} from "../../../app/ducks/application";
+import {createSelector} from "reselect";
+import moduleSelector from "../selector";
 
-import { TimeRange } from '../models'
+import {TimeRange} from "../models";
 
 // Actions
 export const SET_SELECT_TIME = prefix('SET_SELECT_TIME');
 export const GET_SELECT_TIME_RESET = prefix("GET_SELECT_TIME_RESET");
 
 export function setSelectTime(begin, end) {
-    return createAction(SET_SELECT_TIME, { begin, end });
+    return createAction(SET_SELECT_TIME, {begin, end});
 }
 
 export function getSelectedTimeReset() {

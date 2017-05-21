@@ -1,10 +1,10 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from "reselect";
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {createStructuredSelector} from "reselect";
 import {TimeRange} from "../models";
-import moment from 'moment'
+import moment from "moment";
 
-import { setSelectTime, getSelectedTimeReset, timeRangeSelector } from '../ducks/timeRange'
+import {getSelectedTimeReset, setSelectTime, timeRangeSelector} from "../ducks/timeRange";
 
 import Button from "../../../../components/Button";
 
@@ -14,14 +14,8 @@ class TimeRangeContainer extends Component {
         timeRange: PropTypes.instanceOf(TimeRange).isRequired
     };
 
-
-    componentWillUnmount(){
-        const { dispatch } = this.props;
-        dispatch(getSelectedTimeReset());
-    }
-
-    setTimeRange(){
-        const { dispatch } = this.props;
+    setTimeRange() {
+        const {dispatch} = this.props;
 
         var begin = document.getElementsByName("begin_input")[0].value;
         var end = document.getElementsByName("end_input")[0].value;
@@ -29,14 +23,14 @@ class TimeRangeContainer extends Component {
         dispatch(setSelectTime(new Date(begin), new Date(end)));
     }
 
-    resetTimeRange(){
-        const { dispatch } = this.props;
+    resetTimeRange() {
+        const {dispatch} = this.props;
 
         dispatch(getSelectedTimeReset());
     }
 
-    componentDidUpdate(){
-        const { timeRange } = this.props;
+    componentDidUpdate() {
+        const {timeRange} = this.props;
 
         var beginString = moment(timeRange.begin).format('YYYY-MM-DD');
         var endString = moment(timeRange.end).format('YYYY-MM-DD');
@@ -46,7 +40,7 @@ class TimeRangeContainer extends Component {
     }
 
     render() {
-        const { timeRange } = this.props;
+        const {timeRange} = this.props;
 
         var beginString = moment(timeRange.begin).format('YYYY-MM-DD');
         var endString = moment(timeRange.end).format('YYYY-MM-DD');
@@ -55,13 +49,13 @@ class TimeRangeContainer extends Component {
             <table>
                 <tbody>
                 <tr>
-                    <td>Time Range from </td>
+                    <td>Time Range from</td>
                     <td><input name="begin_input" type="date" defaultValue={beginString} readOnly={false}/></td>
                     <td>to</td>
                     <td><input name="end_input" type="date" defaultValue={endString} readOnly={false}/></td>
                     <td>
                         <Button raised={true}
-                                onTouchTap={()=>this.setTimeRange()}
+                                onTouchTap={() => this.setTimeRange()}
                                 disabled={false}
                                 label="LOAD"
                         />
@@ -69,7 +63,7 @@ class TimeRangeContainer extends Component {
                     </td>
                     <td>
                         <Button raised={true}
-                                onTouchTap={()=>this.resetTimeRange()}
+                                onTouchTap={() => this.resetTimeRange()}
                                 disabled={false}
                                 label="RESET"
                         />

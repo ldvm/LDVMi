@@ -1,8 +1,8 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from "reselect";
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {createStructuredSelector} from "reselect";
 
-import { getLimitReset, setLimit, limitSelector, limit_default} from '../ducks/limit'
+import {getLimitReset, limit_default, limitSelector, setLimit} from "../ducks/limit";
 
 import Button from "../../../../components/Button";
 
@@ -28,7 +28,7 @@ class LimiterContainer extends Component {
         }
     }
 
-    resetLimit(){
+    resetLimit() {
         const {dispatch, limit} = this.props;
         dispatch(getLimitReset());
 
@@ -47,9 +47,9 @@ class LimiterContainer extends Component {
                 <tbody>
                 <tr>
                     <th>LIMIT</th>
-                    <th><input type="value"  name="limit" defaultValue={limit} onChange={()=>this.setLimit()}/></th>
+                    <th><input type="value" name="limit" defaultValue={limit} onChange={() => this.setLimit()}/></th>
                     <th><Button raised={resetEnabled}
-                                onTouchTap={()=>this.resetLimit()}
+                                onTouchTap={() => this.resetLimit()}
                                 disabled={!resetEnabled}
                                 label="RESET"
                     /></th>

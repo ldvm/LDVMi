@@ -6,8 +6,10 @@ class TimeLine {
     constructor(classd, callback) {
         this.classd = classd;
 
-        this.circles = function(){};
-        this.rectangles = function(){};
+        this.circles = function () {
+        };
+        this.rectangles = function () {
+        };
 
         // === HELPERS ===
         function getDate(d) {
@@ -44,8 +46,8 @@ class TimeLine {
         this.timeRangePad = function (dates) {
             var minDate, maxDate, pad;
             if (dates.length > 1) {
-                minDate = moment(Math.min.apply(null,dates));
-                maxDate = moment(Math.max.apply(null,dates));
+                minDate = moment(Math.min.apply(null, dates));
+                maxDate = moment(Math.max.apply(null, dates));
                 pad = getDatePadding(minDate, maxDate);
                 minDate.subtract(1, pad);
                 maxDate.add(1, pad);
@@ -73,8 +75,8 @@ class TimeLine {
             var size = {
                 height: 18,
                 radius: 9,
-                rx:7,
-                ry:7
+                rx: 7,
+                ry: 7
             };
 
             // Check element existence
@@ -127,7 +129,7 @@ class TimeLine {
                 .call(yAxis);
 
             // instants => circles
-            this.circles = function(data){
+            this.circles = function (data) {
                 var circles = context.append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -146,7 +148,7 @@ class TimeLine {
             };
 
             // intervals => rectangles
-            this.rectangles = function(data){
+            this.rectangles = function (data) {
                 var rectangles = context.append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -162,7 +164,7 @@ class TimeLine {
                     })
                     .attr("rx", size.rx)
                     .attr("ry", size.ry)
-                    .attr("width", function(d){
+                    .attr("width", function (d) {
                         var e = x(getDate(d.end));
                         var b = x(getDate(d.begin));
                         return ( e - b );
@@ -176,27 +178,27 @@ class TimeLine {
     }
 
     instants(data) {
-        var padding = this.timeRangePad(data.map(d=>d.date));
+        var padding = this.timeRangePad(data.map(d => d.date));
         var drawFunc = () => this.circles(data);
 
         this.destroy();
-        this.render(padding,drawFunc);
+        this.render(padding, drawFunc);
     }
 
     intervals(data) {
-        var begins = data.map(d=>d.begin);
-        var ends = data.map(d=>d.end);
+        var begins = data.map(d => d.begin);
+        var ends = data.map(d => d.end);
         var padding = this.timeRangePad(begins.concat(ends));
         var drawFunc = () => this.rectangles(data);
 
         this.destroy();
-        this.render(padding,drawFunc);
+        this.render(padding, drawFunc);
     }
 
     // SVG destroying
-    destroy(){
+    destroy() {
         var elements = d3.selectAll("." + this.classd).selectAll("svg");
-        if (elements != null && elements.length > 0){
+        if (elements != null && elements.length > 0) {
             elements.remove();
         }
     }
