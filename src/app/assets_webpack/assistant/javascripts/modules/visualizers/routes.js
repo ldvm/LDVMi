@@ -9,7 +9,7 @@ import timelineIntervalsRoutes from './timeline/components/intervals/configurato
 import timelineThingsInstantsRoutes from './timeline/components/thingsInstants/configuratorRoutes'
 import timelineThingsIntervalsRoutes from './timeline/components/thingsIntervals/configuratorRoutes'
 import timelineThingsThingsInstantsRoutes from './timeline/components/thingsThingsInstants/configuratorRoutes'
-import timelineThingsThingsIntervalsRoutes from './timeline/components/thingsThingsInstants/configuratorRoutes'
+import timelineThingsThingsIntervalsRoutes from './timeline/components/thingsThingsIntervals/configuratorRoutes'
 import { Visualizer, VisualizerWithPipelines } from '../core/models'
 import { applicationUrl } from '../app/configuratorRoutes'
 

@@ -23,6 +23,7 @@ import ConfigToolbar from "../misc/ValueSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
 import {AppBar, Paper} from "material-ui";
+import CountSecondLevelContainer from "./CountSecondLevelContainer";
 
 class SecondLevelConnectionContainer extends Component {
     static propTypes = {
@@ -106,16 +107,17 @@ class SecondLevelConnectionContainer extends Component {
                 onChecked={k => dispatch(setSelectConnSL(k))}
                 onUnchecked={k => dispatch(setUnSelectConnSL(k))}
             />
-            <Button raised={false}
+            <Button raised={true}
                     onTouchTap={() => this.load()}
                     disabled={!buttonsEnabled}
                     label="LOAD"
             />
-            <Button raised={false}
+            <Button raised={true}
                     onTouchTap={() => this.reset()}
-                    disabled={!buttonsEnabled}
+                    disabled={false}
                     label="RESET"
             />
+            <CountSecondLevelContainer/>
         </Paper>
     }
 }

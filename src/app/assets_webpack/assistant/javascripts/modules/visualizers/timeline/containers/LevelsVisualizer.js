@@ -51,6 +51,7 @@ class LevelsVisualizer extends Component {
                 </tr>
                 </tbody>
             </table>
+            <hr/>
         </div>
     }
 

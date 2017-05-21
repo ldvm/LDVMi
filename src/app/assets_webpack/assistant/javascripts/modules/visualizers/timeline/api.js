@@ -36,7 +36,7 @@ export async function getThingsWThingsWInstants(applicationId, things, thingType
 export async function getIntervalsCount(applicationId, urls, timeRange) {
     let payload = {"urls": urls, "start": timeRange.begin.getTime(), "end": timeRange.end.getTime(), "limit": -1};
     const result = await rest('timeLineVisualizer/getIntervals/count/' + applicationId, payload);
-    return result.data.count.value;
+    return result.data.count;
 }
 
 export async function getInstantsCount(applicationId, urls, timeRange) {

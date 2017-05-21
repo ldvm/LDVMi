@@ -87,6 +87,7 @@ class FirstLevelConnectionContainer extends Component {
         dispatch(getSelectedConnFLReset());
 
         var urls = secondLevel.map(l => l.inner);
+
         dispatch(firstLevelLoader(urls, [], [], limit));
         dispatch(firstLevelCount(urls, [], []));
     }
@@ -125,14 +126,14 @@ class FirstLevelConnectionContainer extends Component {
                 onChecked={k => dispatch(setSelectConnFL(k))}
                 onUnchecked={k => dispatch(setUnSelectConnFL(k))}
             />
-            <Button raised={false}
+            <Button raised={true}
                     onTouchTap={() => this.load()}
                     disabled={!buttonsEnabled}
                     label="LOAD"
             />
-            <Button raised={false}
+            <Button raised={true}
                     onTouchTap={() => this.reset()}
-                    disabled={!buttonsEnabled}
+                    disabled={false}
                     label="RESET"
             />
             <CountFirstLevelContainer/>

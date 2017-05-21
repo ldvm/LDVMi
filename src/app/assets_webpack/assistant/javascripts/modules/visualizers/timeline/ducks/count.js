@@ -66,6 +66,7 @@ export function getSecondLevelInstantsCount(things, thingTypes, connections) {
 
 export const GET_COUNT_RES = prefix("GET_COUNTS_RESET");
 export function getCountReset() {
+    debugger;
     return createAction(GET_COUNT_RES);
 }
 
