@@ -1,17 +1,15 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from "reselect";
-import { getLabels, labelsSelector} from "../../../app/ducks/labels"
-import { langSelector } from "../../../app/ducks/lang"
-
-import { Map  as immutableMap} from 'immutable'
-
-import Checkbox from "../../../../components/Checkbox"
-import Button from "../../../../components/Button"
-import SubHeadLine from "../../../../components/Subheadline"
-import CenteredMessage from "../../../../components/CenteredMessage";
-import LocalizedValue from "../../../app/containers/LocalizedValue";
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {createStructuredSelector} from "reselect";
 import {extractFromLocalizedValue} from "../../../app/misc/languageUtils";
+import {Map  as immutableMap} from "immutable";
+
+import {getLabels, labelsSelector} from "../../../app/ducks/labels";
+import {langSelector} from "../../../app/ducks/lang";
+
+import Button from "../../../../components/Button";
+import CenteredMessage from "../../../../components/CenteredMessage";
+import {CardHeader, Checkbox, List, ListItem, TextField} from "material-ui";
 
 class ValueSelector extends Component {
     static propTypes = {
@@ -31,18 +29,18 @@ class ValueSelector extends Component {
     };
 
     // SEARCH
-    setNeedle(){
+    setNeedle() {
         var elements = document.getElementsByName("search");
         if (elements.length > 0)
             this.needle = elements[0].value.toLowerCase();
 
-        if (this.needle && this.needle != ''){
+        if (this.needle && this.needle != '') {
             this.forceUpdate();
         }
     };
 
-    resetNeedle(){
-        this.needle='';
+    resetNeedle() {
+        this.needle = '';
 
         var elements = document.getElementsByName("search");
         if (elements.length > 0) {
@@ -51,24 +49,16 @@ class ValueSelector extends Component {
         this.forceUpdate();
     }
 
-    getSearchComponent(){
+    getSearchComponent() {
         var resetEnabled = (this.needle && this.needle != '');
-        return <table>
-            <tbody>
-            <tr>
-                <td>SEARCH:</td>
-                <td><input type="text" name="search" onChange={()=>this.setNeedle()}/></td>
-                <td>
-                    <Button raised={resetEnabled}
-                            onTouchTap={()=>this.resetNeedle()}
-                            disabled={!resetEnabled}
-                            label="RESET"
-                    />
-                </td>
-                <td/>
-            </tr>
-            </tbody>
-        </table>
+        return <div>
+            <TextField type="text" name="search" onChange={() => this.setNeedle()} hintText={" Search ..."}/>
+            <Button raised={resetEnabled}
+                    onTouchTap={() => this.resetNeedle()}
+                    disabled={!resetEnabled}
+                    label="RESET"
+            />
+        </div>
     }
 
     // === CHECKBOX LIST ===
@@ -82,8 +72,8 @@ class ValueSelector extends Component {
         return false;
     }
 
-    getLabel(key){
-        const {dispatch,labels} = this.props;
+    getLabel(key) {
+        const {dispatch, labels} = this.props;
         if (!labels.has(key)) {
             dispatch(getLabels([key]));
             return key;
@@ -105,7 +95,7 @@ class ValueSelector extends Component {
         return matchingValues;
     }
 
-    getValuesForVisualization(){
+    getValuesForVisualization() {
         const {things, getKey} = this.props;
 
         // Deduplication
@@ -130,29 +120,32 @@ class ValueSelector extends Component {
         var rows = [];
 
         if (valuesMap.size > 0) {
-            for (const [key,value] of valuesMap) {
+            for (const [key, value] of valuesMap) {
 
                 // Checkbox props
                 const checked = this.isChecked(key);
-                function onChange(key) {
+
+                function onCheck(key) {
                     if (checked) onUnchecked(key);
                     else onChecked(key);
                 }
 
                 // Row render
                 rows.push(
-                    <tr key={key}>
-                        <td><Checkbox onChange={()=>onChange(key)} defaultChecked={checked}/></td>
-                        <td><LocalizedValue localizedValue={value} defaultValue={key}/></td>
-                    </tr>
+                    <ListItem>
+                        <Checkbox
+                            onCheck={(e, k) => onCheck(key)}
+                            defaultChecked={checked}
+                            label={value}/>
+                    </ListItem>
                 );
 
                 if (counter++ > 10) break;
             }
         }
-        else rows = <tr>
-            <td><CenteredMessage>No values found.</CenteredMessage></td>
-        </tr>;
+        else rows = <ListItem>
+            <CenteredMessage>No values found.</CenteredMessage>
+        </ListItem>;
 
         return rows;
     }
@@ -160,14 +153,11 @@ class ValueSelector extends Component {
 // === RENDERING ===
     render() {
         return <div>
-            <SubHeadLine title={this.props.header}/>
+            <CardHeader>{this.props.header}</CardHeader>
             {this.getSearchComponent()}
-            <br/>
-            <table>
-                <tbody>
+            <List>
                 {this.getCheckboxRows()}
-                </tbody>
-            </table>
+            </List>
         </div>
     }
 }

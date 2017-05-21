@@ -5,6 +5,11 @@ export function getAvailableVerticalSpace(element) {
   const offsetTop = element.getBoundingClientRect().top + window.pageYOffset - document.documentElement.clientTop;
   return screenHeight - offsetTop;
 }
+export function getAvailableHorizontalSpace(element){
+    const screenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const offsetTop = element.getBoundingClientRect().top + window.pageXOffset - document.documentElement.clientLeft;
+    return screenWidth - offsetTop;
+}
 
 /**
  * Creates scrollable container that vertically fills in the remaining screen space

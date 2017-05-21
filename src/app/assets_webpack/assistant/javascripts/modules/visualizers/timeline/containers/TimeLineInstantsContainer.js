@@ -14,6 +14,7 @@ import { setSelectTimeRecord, getSelectTimeRecordReset } from '../ducks/selected
 import PromiseResult from '../../../core/components/PromiseResult'
 import TimeLine from '../misc/TimeLine'
 import CenteredMessage from '../../../../components/CenteredMessage'
+import CountZeroLevelContainer from "./CountZeroLevelContainer";
 
 class TimeLineInstantsContainer extends Component {
     static propTypes = {
@@ -90,7 +91,9 @@ class TimeLineInstantsContainer extends Component {
         }
 
         require('../misc/TimeLineStyle.css');
-        return <div className={this.className}/>
+        return <div className={this.className}>
+            <CountZeroLevelContainer/>
+        </div>
     }
 }
 

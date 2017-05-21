@@ -1,17 +1,14 @@
-import React, { Component } from 'react'
+import React, {Component} from "react";
 
-import { getFirstLevelIntervals } from '../ducks/firstLevel'
-import { getFirstLevelIntervalsCount } from '../ducks/count'
+import {getFirstLevelIntervals} from "../ducks/firstLevel";
+import {getFirstLevelIntervalsCount} from "../ducks/count";
 
-import BodyPadding from '../../../../components/BodyPadding'
+import BodyPadding from "../../../../components/BodyPadding";
 
-import FirstLevelConnectionContainer from '../containers/FirstLevelConnectionContainer'
-import TimeLineIntervalsContainer from '../containers/TimeLineIntervalsContainer'
-import CountFirstLevelContainer from '../containers/CountFirstLevelContainer'
-import CountZeroLevelContainer from '../containers/CountZeroLevelContainer'
-import LimiterContainer from '../containers/LimiterContainer'
-import IntervalVisualizer from '../containers/IntervalVisualizer'
-import TimeRangeContainer from "../containers/TimeRangeContainer";
+import FirstLevelConnectionContainer from "../containers/FirstLevelConnectionContainer";
+import TimeLineIntervalsContainer from "../containers/TimeLineIntervalsContainer";
+import LimiterContainer from "../containers/LimiterContainer";
+import IntervalVisualizer from "../containers/IntervalVisualizer";
 
 class IntervalsToFirstLevel extends Component {
     render() {
@@ -23,22 +20,19 @@ class IntervalsToFirstLevel extends Component {
                         <td><LimiterContainer/></td>
                     </tr>
                     <tr>
-                        <td style={{"verticalAlign" : "top"}} >
+                        <td style={{"verticalAlign": "top", "width": "50%"}}>
                             <FirstLevelConnectionContainer
                                 isInitial={true}
                                 firstLevelLoader={getFirstLevelIntervals}
                                 firstLevelCount={getFirstLevelIntervalsCount}
                             />
-                            <CountFirstLevelContainer/>
                         </td>
                     </tr>
                     </tbody>
                 </table>
 
                 <hr/>
-                <TimeRangeContainer/>
                 <TimeLineIntervalsContainer/>
-                <CountZeroLevelContainer/>
 
                 <hr/>
                 <IntervalVisualizer/>

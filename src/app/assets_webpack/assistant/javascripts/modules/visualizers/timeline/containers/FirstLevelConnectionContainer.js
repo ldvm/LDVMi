@@ -1,18 +1,30 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { PromiseStatus } from '../../../core/models'
-import { createStructuredSelector } from "reselect";
+import React, {Component, PropTypes} from "react";
+import {connect} from "react-redux";
+import {PromiseStatus} from "../../../core/models";
+import {createStructuredSelector} from "reselect";
 
-import { getFirstLevelReset, firstLevelSelector, firstLevelStatusSelector } from '../ducks/firstLevel'
-import { secondLevelSelector } from '../ducks/secondLevel'
-import { limitSelector } from '../ducks/limit'
-import { setSelectTypeFL, setUnSelectTypeFL, getSelectedTypeFLReset, selectedTypeFLSelector } from '../ducks/selectedTypeFirstLevel'
-import { setSelectConnFL, setUnSelectConnFL, getSelectedConnFLReset, selectedConnFLSelector } from '../ducks/selectedConnFirstLevel'
+import {firstLevelSelector, firstLevelStatusSelector, getFirstLevelReset} from "../ducks/firstLevel";
+import {secondLevelSelector} from "../ducks/secondLevel";
+import {limitSelector} from "../ducks/limit";
+import {
+    getSelectedTypeFLReset,
+    selectedTypeFLSelector,
+    setSelectTypeFL,
+    setUnSelectTypeFL
+} from "../ducks/selectedTypeFirstLevel";
+import {
+    getSelectedConnFLReset,
+    selectedConnFLSelector,
+    setSelectConnFL,
+    setUnSelectConnFL
+} from "../ducks/selectedConnFirstLevel";
 
-import PromiseResult from '../../../core/components/PromiseResult'
-import ConfigToolbar from '../misc/ValueSelector'
-import CenteredMessage from '../../../../components/CenteredMessage'
+import PromiseResult from "../../../core/components/PromiseResult";
+import ConfigToolbar from "../misc/ValueSelector";
+import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
+import {AppBar, Paper} from "material-ui";
+import CountFirstLevelContainer from "./CountFirstLevelContainer";
 
 
 class FirstLevelConnectionContainer extends Component {
@@ -36,7 +48,7 @@ class FirstLevelConnectionContainer extends Component {
         limit: PropTypes.number.isRequired
     };
 
-    componentWillMount(){
+    componentWillMount() {
         if (this.props.isInitial) this.load();
     }
 
@@ -46,7 +58,7 @@ class FirstLevelConnectionContainer extends Component {
             dispatch(getSelectedTypeFLReset());
             dispatch(getSelectedConnFLReset());
 
-            var urls = nextProps.secondLevel.map(l=>l.inner);
+            var urls = nextProps.secondLevel.map(l => l.inner);
             dispatch(firstLevelLoader(urls, [], [], limit));
             dispatch(firstLevelCount(urls, [], []));
         }
@@ -60,21 +72,21 @@ class FirstLevelConnectionContainer extends Component {
         dispatch(getSelectedConnFLReset());
     }
 
-    load(){
-        const{dispatch, firstLevelLoader, firstLevelCount, secondLevel, selectedTypeFL, selectedConnFL, limit} = this.props;
+    load() {
+        const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, selectedTypeFL, selectedConnFL, limit} = this.props;
 
-        var urls = secondLevel.map(l=>l.inner);
+        var urls = secondLevel.map(l => l.inner);
         dispatch(firstLevelLoader(urls, selectedTypeFL, selectedConnFL, limit));
         dispatch(firstLevelCount(urls, selectedTypeFL, selectedConnFL))
     }
 
-    reset(){
-        const{dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
+    reset() {
+        const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
 
         dispatch(getSelectedTypeFLReset());
         dispatch(getSelectedConnFLReset());
 
-        var urls = secondLevel.map(l=>l.inner);
+        var urls = secondLevel.map(l => l.inner);
         dispatch(firstLevelLoader(urls, [], [], limit));
         dispatch(firstLevelCount(urls, [], []));
     }
@@ -83,7 +95,8 @@ class FirstLevelConnectionContainer extends Component {
         const {dispatch, status, firstLevel, selectedTypeFL, selectedConnFL} = this.props;
 
         if (!status.done) {
-            return <PromiseResult status={status} error={status.error} loadingMessage="Loading things in first level..."/>
+            return <PromiseResult status={status} error={status.error}
+                                  loadingMessage="Loading things in first level..."/>
         }
 
         else if (firstLevel.length == 0) {
@@ -92,36 +105,38 @@ class FirstLevelConnectionContainer extends Component {
 
         var buttonsEnabled = selectedTypeFL.length > 0 || selectedConnFL.length > 0;
 
-        return <div>
+        return <Paper>
+            <AppBar title="First Level Connections"/>
             <ConfigToolbar
                 things={firstLevel}
                 header="First Level Records Types:"
-                getKey={t=>t.outerType}
-                getValue={t=>t.outerType}
+                getKey={t => t.outerType}
+                getValue={t => t.outerType}
                 selectedKeys={selectedTypeFL}
-                onChecked={k=>dispatch(setSelectTypeFL(k))}
-                onUnchecked={k=>dispatch(setUnSelectTypeFL(k))}
+                onChecked={k => dispatch(setSelectTypeFL(k))}
+                onUnchecked={k => dispatch(setUnSelectTypeFL(k))}
             />
             <ConfigToolbar
                 things={firstLevel}
                 header="Connection Types:"
-                getKey={t=>t.connection}
-                getValue={t=>t.connection}
+                getKey={t => t.connection}
+                getValue={t => t.connection}
                 selectedKeys={selectedConnFL}
-                onChecked={k=>dispatch(setSelectConnFL(k))}
-                onUnchecked={k=>dispatch(setUnSelectConnFL(k))}
+                onChecked={k => dispatch(setSelectConnFL(k))}
+                onUnchecked={k => dispatch(setUnSelectConnFL(k))}
             />
             <Button raised={false}
-                    onTouchTap={()=>this.load()}
+                    onTouchTap={() => this.load()}
                     disabled={!buttonsEnabled}
                     label="LOAD"
             />
             <Button raised={false}
-                    onTouchTap={()=>this.reset()}
+                    onTouchTap={() => this.reset()}
                     disabled={!buttonsEnabled}
                     label="RESET"
             />
-        </div>
+            <CountFirstLevelContainer/>
+        </Paper>
     }
 }
 

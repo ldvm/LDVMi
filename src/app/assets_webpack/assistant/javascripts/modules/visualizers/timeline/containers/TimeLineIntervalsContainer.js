@@ -14,6 +14,9 @@ import { setSelectTimeRecord, getSelectTimeRecordReset } from '../ducks/selected
 import PromiseResult from '../../../core/components/PromiseResult'
 import TimeLine from '../misc/TimeLine'
 import CenteredMessage from '../../../../components/CenteredMessage'
+import CountZeroLevelContainer from "./CountZeroLevelContainer";
+import TimeRangeContainer from "./TimeRangeContainer";
+import {Paper} from "material-ui";
 
 class TimeLineIntervalsContainer extends Component {
     static propTypes = {
@@ -93,7 +96,11 @@ class TimeLineIntervalsContainer extends Component {
         }
 
         require('../misc/TimeLineStyle.css');
-        return <div className={this.className}/>
+        return <Paper>
+            <TimeRangeContainer/>
+            <div  className={this.className}/>
+            <CountZeroLevelContainer/>
+        </Paper>
     }
 }
 

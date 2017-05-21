@@ -1,6 +1,6 @@
-import d3 from 'd3'
-import moment from 'moment'
-import {getAvailableVerticalSpace} from "../../../../components/FillInScreen";
+import d3 from "d3";
+import moment from "moment";
+import {getAvailableHorizontalSpace} from "../../../../components/FillInScreen";
 
 class TimeLine {
     constructor(classd, callback) {
@@ -82,7 +82,7 @@ class TimeLine {
             if (!element) return;
 
             // Axes
-            var width = getAvailableVerticalSpace(element);
+            var width = getAvailableHorizontalSpace(element);
             var height = 300 - margin.top - margin.bottom;
 
             var x = d3.time.scale().range([0 + margin.right, width - margin.left]),
@@ -165,7 +165,7 @@ class TimeLine {
                     .attr("width", function(d){
                         var e = x(getDate(d.end));
                         var b = x(getDate(d.begin));
-                        return ( e - b ) + 20; // TODO: No data, fixed intervals.
+                        return ( e - b );
                     })
                     .attr("height", size.height)
                     .on("click", callback);

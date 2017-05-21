@@ -27,7 +27,7 @@ class Comment extends Component {
     render() {
         const { uri, comment, availableComments } = this.props;
         const finalComment = isLocalizedValueEmpty(comment) ? availableComments.get(uri) : comment;
-        return <LocalizedValue localizedValue={finalComment} defaultValue={uri} />
+        return <LocalizedValue localizedValue={finalComment} defaultValue={"n/a"} />
     }
 }
 
