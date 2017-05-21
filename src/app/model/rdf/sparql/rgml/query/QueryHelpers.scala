@@ -14,6 +14,32 @@ object QueryHelpers {
     }
   }
 
+  def bindTimeDescriptionToXSDDate(inTimeUrlVariable:String, outXsdDateVariable: String) : String = {
+    val out_str = outXsdDateVariable + "_str"
+
+    val day   = outXsdDateVariable + "_day"
+    val month = outXsdDateVariable + "_month"
+    val year  = outXsdDateVariable + "_year"
+
+    val day_str   = day   + "_str"
+    val month_str = month + "_str"
+    val year_str  = year  + "_str"
+
+    return s"""
+              | ?${inTimeUrlVariable} a time:DateTimeDescription;
+              |   time:year  ?${year_str};
+              |   time:month ?${month_str};
+              |   time:day   ?${day_str}.
+              |
+              | BIND (substr(?${day_str}, 4, 2)   AS  ?${day})
+              | BIND (substr(?${month_str}, 3, 2) AS  ?${month})
+              | BIND (year(  ?${year_str})        AS  ?${year})
+              |
+              | BIND (concat(?${year}, "-", ?${month}, "-", ?${day}) AS ?${out_str})
+              | BIND (strdt(?${out_str}, xsd:date) AS ?${outXsdDateVariable})
+    """.stripMargin
+  }
+
   def limit(maybeLimit: Option[Int]) : String = {
     maybeLimit match {
       case Some(value) => s"LIMIT $value"

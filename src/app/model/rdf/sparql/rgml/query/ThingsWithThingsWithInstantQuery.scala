@@ -32,7 +32,7 @@ class ThingsWithThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
        |
        |  ?innerThing ?hasInterval ?instant.
        |
-       |  ?instant time:inXSDDateTime ?date.
+       |  ?instant time:inDateTime ?date.
        |
        |  ${QueryHelpers.limitValues("outerThing", maybeThingsUrls)}
        |  ${QueryHelpers.limitValues("outerThingType", maybeThingsTypes)}

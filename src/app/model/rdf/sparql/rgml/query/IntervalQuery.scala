@@ -25,11 +25,14 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
        |
        |${select}
        |WHERE {
-       |  ?interval time:hasBeginning ?begin_url .
-       |  ?interval time:hasEnd ?end_url .
+       |  ?interval time:hasBeginning ?begin_desc .
+       |  ?interval time:hasEnd ?end_desc .
        |
-       |  ?begin_url time:inXSDDateTime ?begin.
-       |  ?end_url time:inXSDDateTime ?end.
+       |  ?begin_desc time:inDateTime ?begin_url.
+       |  ?end_desc   time:inDateTime ?end_url.
+       |
+       |  ${QueryHelpers.bindTimeDescriptionToXSDDate("begin_url","begin")}
+       |  ${QueryHelpers.bindTimeDescriptionToXSDDate("end_url", "end")}
        |
        |  ${startFilter}
        |  ${endFilter}
@@ -42,11 +45,10 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
     """
       .stripMargin
 
-
   private def startFilter: String = {
     maybeStart match {
       case Some(start) => {
-        return s"""FILTER (xsd:dateTime(?begin) > xsd:dateTime("${QueryHelpers.dateToString(start)}"))"""
+        return s"""FILTER ( ?begin > xsd:date("${QueryHelpers.dateToString(start)}"))""".stripMargin
       }
       case None => ""
     }
@@ -55,7 +57,7 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
   private def endFilter: String = {
     maybeEnd match {
       case Some(end) => {
-        return s"""FILTER (xsd:dateTime(?end) < xsd:dateTime("${QueryHelpers.dateToString(end)}"))"""
+        return s"""FILTER ( ?end < xsd:date("${QueryHelpers.dateToString(end)}"))""".stripMargin
       }
       case None => ""
     }

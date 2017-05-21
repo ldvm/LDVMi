@@ -29,7 +29,7 @@ class ThingsWithInstantQuery( maybeThingsUrls: Option[Seq[String]],
        |  ?thing ?connection ?instant.
        |  ?thing a ?thingType.
        |
-       |  ?instant time:inXSDDateTime ?date.
+       |  ?instant time:inDateTime ?date.
        |
        |  ${QueryHelpers.limitValues("thing", maybeThingsUrls)}
        |  ${QueryHelpers.limitValues("thingType", maybeThingsTypes)}
