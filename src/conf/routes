@@ -141,6 +141,7 @@ POST        /assistant/api/common/getVisualizers               @controllers.assi
 POST        /assistant/api/common/getVirtuosoStatus            @controllers.assistant.api.CommonApiController.getVirtuosoStatus
 
 POST        /assistant/api/commonVisualizer/getLabels/:id      @controllers.assistant.api.visualizers.CommonVisualizerApiController.getLabels(id: Long)
+POST        /assistant/api/commonVisualizer/getComments/:id    @controllers.assistant.api.visualizers.CommonVisualizerApiController.getComments(id: Long)
 
 #maps
 POST        /assistant/api/mapsVisualizer/getProperties/:id             @controllers.assistant.api.visualizers.MapsVisualizerApiController.getProperties(id: Long)
