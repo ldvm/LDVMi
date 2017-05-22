@@ -1,13 +1,14 @@
-package model.rdf.sparql.rgml.extractor
+package model.rdf.sparql.timeline.extractor
 
-import scala.collection.JavaConversions._
 import model.rdf.extractor.QueryExecutionResultExtractor
-import model.rdf.sparql.rgml.models.Connection
-import model.rdf.sparql.rgml.query.ThingsWithThingsWithInstantQuery
+import model.rdf.sparql.timeline.models.Connection
+import model.rdf.sparql.timeline.query.ThingsWithThingsWithIntervalQuery
 import org.apache.jena.query.QueryExecution
 
-class ThingToThingWithInstantConnectionExtractor
-  extends QueryExecutionResultExtractor[ThingsWithThingsWithInstantQuery, Seq[Connection]] {
+import scala.collection.JavaConversions._
+
+class ThingToThingWithIntervalConnectionExtractor
+  extends QueryExecutionResultExtractor[ThingsWithThingsWithIntervalQuery, Seq[Connection]] {
 
   def extract(input: QueryExecution): Option[Seq[Connection]] = {
     try {

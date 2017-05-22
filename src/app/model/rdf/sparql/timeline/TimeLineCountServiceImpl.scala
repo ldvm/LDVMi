@@ -1,15 +1,16 @@
-package model.rdf.sparql.rgml
+package model.rdf.sparql.timeline
 
 import java.util.Date
+
 import model.entity.PipelineEvaluation
 import model.rdf.Count
 import model.rdf.sparql.extractor.CountExtractor
+import model.rdf.sparql.timeline.query._
 import model.rdf.sparql.{EvaluationToSparqlEndpoint, SparqlEndpointService}
-import model.rdf.sparql.rgml.query._
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
 
-class RgmlCountServiceImpl(implicit val inj: Injector) extends RgmlCountService with Injectable with EvaluationToSparqlEndpoint {
+class TimeLineCountServiceImpl(implicit val inj: Injector) extends TimeLineCountService with Injectable with EvaluationToSparqlEndpoint {
   var sparqlEndpointService = inject[SparqlEndpointService]
 
   override def intervals(evaluation: PipelineEvaluation, start: Date, end: Date, urls: Seq[String], limit: Int)(implicit session: Session): Option[Count] = {
@@ -17,7 +18,7 @@ class RgmlCountServiceImpl(implicit val inj: Injector) extends RgmlCountService 
     val maybeUrl = if (urls.nonEmpty) Some(urls) else None
     sparqlEndpointService.getCount(
       evaluationToSparqlEndpoint(evaluation),
-      new IntervalQuery(Some(start),Some(end),maybeUrl,maybeLimit),
+      new IntervalQuery(Some(start), Some(end), maybeUrl, maybeLimit),
       new CountExtractor())
   }
 
@@ -26,7 +27,7 @@ class RgmlCountServiceImpl(implicit val inj: Injector) extends RgmlCountService 
     val maybeUrl = if (urls.nonEmpty) Some(urls) else None
     sparqlEndpointService.getCount(
       evaluationToSparqlEndpoint(evaluation),
-      new InstantQuery(Some(start),Some(end),maybeUrl,maybeLimit),
+      new InstantQuery(Some(start), Some(end), maybeUrl, maybeLimit),
       new CountExtractor())
   }
 

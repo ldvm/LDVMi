@@ -1,15 +1,13 @@
 package model.rdf.sparql.rgml
 
-import java.util.Date
-
 import model.entity.PipelineEvaluation
 import model.rdf.sparql.rgml.extractor._
-import model.rdf.sparql.rgml.query._
-import model.rdf.sparql.{EvaluationToSparqlEndpoint, GenericSparqlEndpoint, SparqlEndpointService}
-import play.api.db.slick.Session
-import scaldi.{Injectable, Injector}
 import model.rdf.sparql.rgml.models.EdgeDirection._
 import model.rdf.sparql.rgml.models.{EdgeDirection => _, _}
+import model.rdf.sparql.rgml.query._
+import model.rdf.sparql.{EvaluationToSparqlEndpoint, SparqlEndpointService}
+import play.api.db.slick.Session
+import scaldi.{Injectable, Injector}
 
 import scala.collection.mutable
 
@@ -412,69 +410,5 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
 
     // As the sample consists of just node URIs, we fetch the actual resources (with labels)
     nodes(evaluation, makeSample)
-  }
-
-  override def intervals(evaluation: PipelineEvaluation, start: Date, end: Date, urls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Interval]] = {
-    val maybeLimit = if (limit > 0) Some(limit) else None
-    val maybeUrl = if (urls.size > 0) Some(urls) else None
-    sparqlEndpointService.getResult(
-      evaluationToSparqlEndpoint(evaluation),
-      new IntervalQuery(Some(start),Some(end),maybeUrl,maybeLimit),
-      new IntervalExtractor())
-  }
-
-  override def instants(evaluation: PipelineEvaluation, start: Date, end: Date, urls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Instant]] = {
-    val maybeLimit = if (limit > 0) Some(limit) else None
-    val maybeUrl = if (urls.size > 0) Some(urls) else None
-    sparqlEndpointService.getResult(
-      evaluationToSparqlEndpoint(evaluation),
-      new InstantQuery(Some(start),Some(end),maybeUrl,maybeLimit),
-      new InstantExtractor())
-  }
-
-  override def thingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]] = {
-    val maybeLimit = if (limit > 0) Some(limit) else None
-    val maybeThingUrls = if (thingUrls.size > 0) Some(thingUrls) else None
-    val maybeThingTypes = if (thingTypes.size > 0) Some(thingTypes) else None
-    val maybeConnUrls = if (connectionUrls.size > 0) Some(connectionUrls) else None
-
-    val result = sparqlEndpointService.getResult(
-      evaluationToSparqlEndpoint(evaluation),
-      new ThingsWithIntervalQuery(maybeThingUrls, maybeThingTypes, maybeConnUrls, maybeLimit),
-      new ThingToIntervalConnectionExtractor())
-    return result;
-  }
-
-  override def thingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]] = {
-    val maybeLimit = if (limit > 0) Some(limit) else None
-    val maybeThingUrls = if (thingUrls.size > 0) Some(thingUrls) else None
-    val maybeThingTypes = if (thingTypes.size > 0) Some(thingTypes) else None
-    val maybeConnUrls = if (connectionUrls.size > 0) Some(connectionUrls) else None
-    sparqlEndpointService.getResult(
-      evaluationToSparqlEndpoint(evaluation),
-      new ThingsWithInstantQuery(maybeThingUrls, maybeThingTypes, maybeConnUrls, maybeLimit),
-      new ThingToInstantConnectionExtractor())
-  }
-
-  override def thingsWithThingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]] = {
-    val maybeLimit = if (limit > 0) Some(limit) else None
-    val maybeThingUrls = if (thingUrls.size > 0) Some(thingUrls) else None
-    val maybeThingTypes = if (thingTypes.size > 0) Some(thingTypes) else None
-    val maybeConnUrls = if (connectionUrls.size > 0) Some(connectionUrls) else None
-    sparqlEndpointService.getResult(
-      evaluationToSparqlEndpoint(evaluation),
-      new ThingsWithThingsWithIntervalQuery(maybeThingUrls, maybeThingTypes, maybeConnUrls, maybeLimit),
-      new ThingToThingWithIntervalConnectionExtractor())
-  }
-
-  override def thingsWithThingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]] = {
-    val maybeLimit = if (limit > 0) Some(limit) else None
-    val maybeThingUrls = if (thingUrls.size > 0) Some(thingUrls) else None
-    val maybeThingTypes = if (thingTypes.size > 0) Some(thingTypes) else None
-    val maybeConnUrls = if (connectionUrls.size > 0) Some(connectionUrls) else None
-    sparqlEndpointService.getResult(
-      evaluationToSparqlEndpoint(evaluation),
-      new ThingsWithThingsWithInstantQuery(maybeThingUrls, maybeThingTypes, maybeConnUrls, maybeLimit),
-      new ThingToThingWithInstantConnectionExtractor())
   }
 }

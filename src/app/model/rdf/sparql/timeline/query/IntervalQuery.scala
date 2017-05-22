@@ -1,14 +1,15 @@
-package model.rdf.sparql.rgml.query
+package model.rdf.sparql.timeline.query
 
 import java.util.Date
-import model.rdf.sparql.query.{SparqlCountQuery}
 
-class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeIntervalUrls: Option[Seq[String]], maybeLimit: Option[Int])  extends SparqlCountQuery {
+import model.rdf.sparql.query.SparqlCountQuery
+
+class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeIntervalUrls: Option[Seq[String]], maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
     val select = "SELECT ?interval ?begin ?end"
-    val group  = "GROUP BY ?interval ?begin ?end"
+    val group = "GROUP BY ?interval ?begin ?end"
     val limit = QueryHelpers.limit(maybeLimit)
-    return query(select,group,limit)
+    return query(select, group, limit)
   }
 
   def getCount: String = {
@@ -18,7 +19,7 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
     return query(select, group, limit)
   }
 
-  private def query(select:String, group:String, limit: String) : String =
+  private def query(select: String, group: String, limit: String): String =
     s"""
        |PREFIX time: <http://www.w3.org/2006/time#>
        |PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -31,13 +32,13 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
        |  ?begin_desc time:inDateTime ?begin_url.
        |  ?end_desc   time:inDateTime ?end_url.
        |
-       |  ${QueryHelpers.bindTimeDescriptionToXSDDate("begin_url","begin")}
+       |  ${QueryHelpers.bindTimeDescriptionToXSDDate("begin_url", "begin")}
        |  ${QueryHelpers.bindTimeDescriptionToXSDDate("end_url", "end")}
        |
        |  ${startFilter}
        |  ${endFilter}
        |
-       |  ${QueryHelpers.limitValues("interval",maybeIntervalUrls)}
+       |  ${QueryHelpers.limitValues("interval", maybeIntervalUrls)}
        |}
        |
        |${group}

@@ -8,38 +8,40 @@ import model.rdf.sparql.datacube._
 import model.rdf.sparql.fresnel.{Lens, ResourceThroughLens}
 import model.rdf.sparql.geo._
 import model.rdf.sparql.rgml.models._
+import model.rdf.sparql.timeline.models._
 import model.rdf.sparql.visualization.{Concept, HierarchyNode, Scheme}
 import model.rdf.{Count, LocalizedValue, Property}
 import model.service.component.DataReference
+import play.api.Play.current
 import play.api.db
 import play.api.db.slick._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.mvc.WebSocket
-import play.api.Play.current
 import utils.PaginationInfo
 
 package object api {
 
   def jsonCacheKey(id: Long, token: String) = "/pipelines/" + id + "/" + token
 
-  def withWebSocket(action: Props => Session => Unit) = WebSocket.acceptWithActor[JsValue, JsValue] { request => jsLogger =>
-    val session = db.slick.DB.createSession()
-    val logger = ProgressReporter.props(jsLogger)
+  def withWebSocket(action: Props => Session => Unit) = WebSocket.acceptWithActor[JsValue, JsValue] { request =>
+    jsLogger =>
+      val session = db.slick.DB.createSession()
+      val logger = ProgressReporter.props(jsLogger)
 
-    action(logger)(session)
+      action(logger)(session)
 
-    session.close()
-    logger
+      session.close()
+      logger
   }
 
   object JsonImplicits {
 
-    implicit val idWrites : Writes[CustomUnicornPlay.BaseId] = Writes {
+    implicit val idWrites: Writes[CustomUnicornPlay.BaseId] = Writes {
       typedId => JsNumber(typedId.id)
     }
 
-    implicit val specificComponentWrites : Writes[(Option[SpecificComponentTemplate], ComponentTemplate)] = Writes { case (sc, c) =>
+    implicit val specificComponentWrites: Writes[(Option[SpecificComponentTemplate], ComponentTemplate)] = Writes { case (sc, c) =>
       JsObject(Seq(
         "id" -> Json.toJson(sc.map(_.id)),
         "componentType" -> Json.toJson(sc.map(_.componentType.toString)),
@@ -52,7 +54,7 @@ package object api {
         (__ \ "uri").write[String] and
         (__ \ "size").writeNullable[Int] and
         (__ \ "children").lazyWriteNullable(Writes.seq[HierarchyNode](hierarchyWrites))
-      )(unlift(HierarchyNode.unapply))
+      ) (unlift(HierarchyNode.unapply))
 
     implicit val pipelineDiscoveryWrites = Json.writes[PipelineDiscovery]
     implicit val pipelineCompatibilityCheckWrites = Json.writes[DataPortBindingSetCompatibilityCheck]
@@ -124,11 +126,11 @@ package object api {
         (JsPath \ "values").read[Seq[ValueFilter]] and
         (JsPath \ "isActive").readNullable[Boolean] and
         (JsPath \ "order").readNullable[Int]
-      )(DataCubeQueryComponentFilter.apply _)
+      ) (DataCubeQueryComponentFilter.apply _)
     implicit val cubeQueryFiltersReads: Reads[DataCubeQueryFilter] = (
-        (JsPath \ "components").read[Seq[DataCubeQueryComponentFilter]] and
-          (JsPath \ "datasetUri").read[String]
-      )(DataCubeQueryFilter.apply _)
+      (JsPath \ "components").read[Seq[DataCubeQueryComponentFilter]] and
+        (JsPath \ "datasetUri").read[String]
+      ) (DataCubeQueryFilter.apply _)
 
     implicit val cubeQueryReads: Reads[DataCubeQueryData] = (JsPath \ "filters").read[DataCubeQueryFilter].map(DataCubeQueryData)
 
@@ -136,8 +138,8 @@ package object api {
 
     implicit val paginationInfoReads: Reads[PaginationInfo] = (
       (JsPath \ "skipCount").read[Int] and
-      (JsPath \ "pageSize").read[Int]
-    )(PaginationInfo.apply _)
+        (JsPath \ "pageSize").read[Int]
+      ) (PaginationInfo.apply _)
   }
 
 }
