@@ -96,6 +96,9 @@ GET         /api/v1/datacube/datastructures/:id                                 
 POST        /api/v1/datacube/values/:id                                                   @controllers.api.DataCubeApiController.values(id: Long)
 POST        /api/v1/datacube/slices/:id                                                   @controllers.api.DataCubeApiController.sliceCube(id: Long)
 
+# TimeLine
+GET         /api/v1/timeline/create/:visualizer/:dataSourceTemplateId                     @controllers.api.TimeLineApiController.createVisualisation(dataSourceTemplateId: Long, visualizer: String)
+
 GET         /dereference/labels                                                           @controllers.api.VisualizationApiController.dereferenceLabels(uri: String)
 
 # === ASSISTANT ===
