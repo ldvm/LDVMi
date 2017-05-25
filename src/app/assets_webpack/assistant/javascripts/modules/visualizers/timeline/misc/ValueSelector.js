@@ -30,11 +30,13 @@ class ValueSelector extends Component {
 
     // SEARCH
     setNeedle() {
+        var needleWasEmpty = this.needle == '';
         var elements = document.getElementsByName("search");
+
         if (elements.length > 0)
             this.needle = elements[0].value.toLowerCase();
 
-        if (this.needle && this.needle != '') {
+        if (!needleWasEmpty || this.needle != '') {
             this.forceUpdate();
         }
     };
@@ -148,6 +150,10 @@ class ValueSelector extends Component {
         </ListItem>;
 
         return rows;
+    }
+
+    componentWillMount() {
+        this.needle = '';
     }
 
 // === RENDERING ===
