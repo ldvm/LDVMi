@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
-
 import {getSecondLevelReset, secondLevelSelector, secondLevelStatusSelector} from "../ducks/secondLevel";
 import {limitSelector} from "../ducks/limit";
 import {
@@ -17,12 +16,11 @@ import {
 } from "../ducks/selectedConnSecondLevel";
 import {PromiseStatus} from "../../../core/models";
 import {createStructuredSelector} from "reselect";
-
 import PromiseResult from "../../../core/components/PromiseResult";
-import ConfigToolbar from "../misc/ValueSelector";
+import RecordSelector from "../../../common/RecordSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
-import {AppBar, Paper} from "material-ui";
+import {Paper} from "material-ui";
 import CountSecondLevelContainer from "./CountSecondLevelContainer";
 
 class SecondLevelConnectionContainer extends Component {
@@ -88,24 +86,23 @@ class SecondLevelConnectionContainer extends Component {
         var buttonsEnabled = selectedThingSL.length > 0 || selectedConnSL.length > 0;
 
         return <Paper>
-            <AppBar title="Second Level Connections"/>
-            <ConfigToolbar
-                things={secondLevel}
-                header="Second Level Records:"
+            <RecordSelector
+                records={secondLevel}
+                header="Things:"
                 getKey={t => t.outer}
                 getValue={t => t.outer}
                 selectedKeys={selectedThingSL}
-                onChecked={k => dispatch(setSelectThingSL(k))}
-                onUnchecked={k => dispatch(setUnSelectThingSL(k))}
+                onKeySelect={k => dispatch(setSelectThingSL(k))}
+                onKeyUnselect={k => dispatch(setUnSelectThingSL(k))}
             />
-            <ConfigToolbar
-                things={secondLevel}
+            <RecordSelector
+                records={secondLevel}
                 header="Connection Types:"
                 getKey={t => t.connection}
                 getValue={t => t.connection}
                 selectedKeys={selectedConnSL}
-                onChecked={k => dispatch(setSelectConnSL(k))}
-                onUnchecked={k => dispatch(setUnSelectConnSL(k))}
+                onKeySelect={k => dispatch(setSelectConnSL(k))}
+                onKeyUnselect={k => dispatch(setUnSelectConnSL(k))}
             />
             <Button raised={true}
                     onTouchTap={() => this.load()}

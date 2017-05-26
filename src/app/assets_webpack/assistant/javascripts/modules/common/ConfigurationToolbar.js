@@ -34,11 +34,11 @@ export default class ConfigurationToolbar extends Component {
             <NavigationClose/>
         </IconButton>
 
-        // drawer bug - if width is set, component ignores open property
-        let width;
+        // Drawer bug - if width is set, component ignores open property
+        let width = "0%";
         if (this.open) width = "40%";
 
-        // render
+        // Rendering
         return (
             <div>
                 <RaisedButton
@@ -50,7 +50,7 @@ export default class ConfigurationToolbar extends Component {
                     <AppBar
                         title={label}
                         iconElementLeft={appBarIcon}
-                        ontitletouchtap={() => this.changeOpen()}
+                        onTitleTouchTap={() => this.changeOpen()}
                     />
                     <Tabs>
                         {tabs}

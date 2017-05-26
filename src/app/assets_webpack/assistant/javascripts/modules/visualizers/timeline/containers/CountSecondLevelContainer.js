@@ -2,10 +2,8 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {PromiseStatus} from "../../../core/models";
-
-import {countSecondSelector, countSecondStatusSelector, getCountReset} from "../ducks/count";
+import {countSecondSelector, countSecondStatusSelector} from "../ducks/count";
 import {secondLevelSelector, secondLevelStatusSelector} from "../ducks/secondLevel";
-
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
 
@@ -28,7 +26,7 @@ class CountSecondLevelContainer extends Component {
         }
 
         if (!thingsStatus.done) {
-            return <PromiseResult status={countStatus} error={countStatus.error}
+            return <PromiseResult status={thingsStatus} error={thingsStatus.error}
                                   loadingMessage="Loading connected records..."/>
         }
 

@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {PromiseStatus} from "../../../core/models";
 import {createStructuredSelector} from "reselect";
-
 import {firstLevelSelector, firstLevelStatusSelector, getFirstLevelReset} from "../ducks/firstLevel";
 import {secondLevelSelector} from "../ducks/secondLevel";
 import {limitSelector} from "../ducks/limit";
@@ -18,12 +17,11 @@ import {
     setSelectConnFL,
     setUnSelectConnFL
 } from "../ducks/selectedConnFirstLevel";
-
 import PromiseResult from "../../../core/components/PromiseResult";
-import ConfigToolbar from "../misc/ValueSelector";
+import RecordSelector from "../../../common/RecordSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
-import {AppBar, Paper} from "material-ui";
+import {Paper} from "material-ui";
 import CountFirstLevelContainer from "./CountFirstLevelContainer";
 
 
@@ -107,24 +105,23 @@ class FirstLevelConnectionContainer extends Component {
         var buttonsEnabled = selectedTypeFL.length > 0 || selectedConnFL.length > 0;
 
         return <Paper>
-            <AppBar title="First Level Connections"/>
-            <ConfigToolbar
-                things={firstLevel}
-                header="First Level Records Types:"
+            <RecordSelector
+                records={firstLevel}
+                header="Things Types:"
                 getKey={t => t.outerType}
                 getValue={t => t.outerType}
                 selectedKeys={selectedTypeFL}
-                onChecked={k => dispatch(setSelectTypeFL(k))}
-                onUnchecked={k => dispatch(setUnSelectTypeFL(k))}
+                onKeySelect={k => dispatch(setSelectTypeFL(k))}
+                onKeyUnselect={k => dispatch(setUnSelectTypeFL(k))}
             />
-            <ConfigToolbar
-                things={firstLevel}
+            <RecordSelector
+                records={firstLevel}
                 header="Connection Types:"
                 getKey={t => t.connection}
                 getValue={t => t.connection}
                 selectedKeys={selectedConnFL}
-                onChecked={k => dispatch(setSelectConnFL(k))}
-                onUnchecked={k => dispatch(setUnSelectConnFL(k))}
+                onKeySelect={k => dispatch(setSelectConnFL(k))}
+                onKeyUnselect={k => dispatch(setUnSelectConnFL(k))}
             />
             <Button raised={true}
                     onTouchTap={() => this.load()}

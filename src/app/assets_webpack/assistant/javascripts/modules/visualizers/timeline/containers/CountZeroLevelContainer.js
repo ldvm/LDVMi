@@ -2,11 +2,9 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {PromiseStatus} from "../../../core/models";
-
-import {countZeroSelector, countZeroStatusSelector, getCountReset} from "../ducks/count";
+import {countZeroSelector, countZeroStatusSelector} from "../ducks/count";
 import {intervalsSelector, intervalsStatusSelector} from "../ducks/intervals";
 import {instantsSelector, instantsStatusSelector} from "../ducks/instants";
-
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
 
@@ -30,10 +28,6 @@ class CountZeroLevelContainer extends Component {
 
         if (!countStatus.done) {
             return <PromiseResult status={countStatus} error={countStatus.error} loadingMessage="Loading count..."/>
-        }
-
-        if (!instantsStatus.done && !intervalsStatus.done) {
-            return <PromiseResult status={countStatus} error={countStatus.error} loadingMessage="Loading instants..."/>
         }
 
         let loaded;

@@ -1,17 +1,23 @@
 import React, {Component} from "react";
-
 import BodyPadding from "../../../../components/BodyPadding";
 import TimeLineInstantsContainer from "../containers/TimeLineInstantsContainer";
 import InstantVisualizer from "../containers/InstantVisualizer";
 import LimiterContainer from "../containers/LimiterContainer";
+import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
 
 class Instants extends Component {
     render() {
+        let configurations = new Map();
+        configurations.set(
+            "LIMIT",
+            <LimiterContainer/>
+        );
+
         return (
             <BodyPadding>
-                <LimiterContainer/>
-                <TimeLineInstantsContainer isInitial={true}/>
-
+                <ConfigurationToolbar label="Configure Connections" children={configurations}/>
+                <hr/>
+                <TimeLineInstantsContainer/>
                 <hr/>
                 <InstantVisualizer/>
             </BodyPadding>

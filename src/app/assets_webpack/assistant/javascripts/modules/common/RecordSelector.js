@@ -1,34 +1,38 @@
 import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
-import {extractFromLocalizedValue} from "../../../app/misc/languageUtils";
+import {extractFromLocalizedValue} from "../app/misc/languageUtils";
 import {Map  as immutableMap} from "immutable";
-
-import {getLabels, labelsSelector} from "../../../app/ducks/labels";
-import {langSelector} from "../../../app/ducks/lang";
-
-import Button from "../../../../components/Button";
-import CenteredMessage from "../../../../components/CenteredMessage";
+import {getLabels, labelsSelector} from "../app/ducks/labels";
+import {langSelector} from "../app/ducks/lang";
+import Button from "../../components/Button";
+import CenteredMessage from "../../components/CenteredMessage";
 import {CardHeader, Checkbox, List, ListItem, TextField} from "material-ui";
 
-class ValueSelector extends Component {
+class RecordSelector extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
+        header: PropTypes.string.isRequired,
 
+        // Labels
         labels: PropTypes.instanceOf(immutableMap).isRequired,
         language: PropTypes.string.isRequired,
 
-        things: PropTypes.array.isRequired,
-        header: PropTypes.string.isRequired,
-
+        // Keys
+        records: PropTypes.array.isRequired,
         getKey: PropTypes.func.isRequired,
         selectedKeys: PropTypes.array.isRequired,
 
-        onChecked: PropTypes.func.isRequired,
-        onUnchecked: PropTypes.func.isRequired
+        // Selectors
+        onKeySelect: PropTypes.func.isRequired,
+        onKeyUnselect: PropTypes.func.isRequired
     };
 
     // SEARCH
+    componentWillMount() {
+        this.needle = '';
+    }
+
     setNeedle() {
         var needleWasEmpty = this.needle == '';
         var elements = document.getElementsByName("search");
@@ -53,8 +57,8 @@ class ValueSelector extends Component {
 
     getSearchComponent() {
         var resetEnabled = (this.needle && this.needle != '');
-        return <div>
-            <TextField type="text" name="search" onChange={() => this.setNeedle()} hintText={" Search ..."}/>
+        return <div style={{textAlign: "center"}}>
+            <TextField type="text" name="search" onChange={() => this.setNeedle()} hintText={"\tSearch ..."}/>
             <Button raised={resetEnabled}
                     onTouchTap={() => this.resetNeedle()}
                     disabled={!resetEnabled}
@@ -98,10 +102,10 @@ class ValueSelector extends Component {
     }
 
     getValuesForVisualization() {
-        const {things, getKey} = this.props;
+        const {records, getKey} = this.props;
 
         // Deduplication
-        var map = new Map(things.map(t => {
+        var map = new Map(records.map(t => {
             var key = getKey(t);
             return [key, this.getLabel(key)]
         }));
@@ -114,7 +118,7 @@ class ValueSelector extends Component {
     }
 
     getCheckboxRows() {
-        const {onChecked, onUnchecked} = this.props;
+        const {onKeySelect, onKeyUnselect} = this.props;
 
         var valuesMap = this.getValuesForVisualization();
 
@@ -128,13 +132,13 @@ class ValueSelector extends Component {
                 const checked = this.isChecked(key);
 
                 function onCheck(key) {
-                    if (checked) onUnchecked(key);
-                    else onChecked(key);
+                    if (checked) onKeyUnselect(key);
+                    else onKeySelect(key);
                 }
 
                 // Row render
                 rows.push(
-                    <ListItem>
+                    <ListItem key={key}>
                         <Checkbox
                             onCheck={(e, k) => onCheck(key)}
                             defaultChecked={checked}
@@ -150,10 +154,6 @@ class ValueSelector extends Component {
         </ListItem>;
 
         return rows;
-    }
-
-    componentWillMount() {
-        this.needle = '';
     }
 
 // === RENDERING ===
@@ -172,4 +172,4 @@ const selector = createStructuredSelector({
     language: langSelector
 });
 
-export default connect(selector)(ValueSelector);
+export default connect(selector)(RecordSelector);
