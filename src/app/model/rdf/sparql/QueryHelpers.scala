@@ -1,4 +1,4 @@
-package model.rdf.sparql.timeline.query
+package model.rdf.sparql
 
 import java.text.SimpleDateFormat
 import java.util.Date

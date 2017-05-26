@@ -1,8 +1,9 @@
 package model.rdf.sparql.geo
 
-import model.entity.{PipelineEvaluation, DataSourceTemplateEagerBox, DataSourceTemplate}
+import model.entity.{DataSourceTemplate, DataSourceTemplateEagerBox, PipelineEvaluation}
+import model.rdf.sparql.geo.models.{MapQueryData, Marker, WKTEntity}
 import play.api.libs.iteratee.Enumerator
-import model.rdf.{SparqlService, Property}
+import model.rdf.{Property, SparqlService}
 
 trait GeoService extends SparqlService {
 

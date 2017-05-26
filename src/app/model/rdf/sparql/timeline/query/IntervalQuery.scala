@@ -2,6 +2,7 @@ package model.rdf.sparql.timeline.query
 
 import java.util.Date
 
+import model.rdf.sparql.QueryHelpers
 import model.rdf.sparql.query.SparqlCountQuery
 
 class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeIntervalUrls: Option[Seq[String]], maybeLimit: Option[Int]) extends SparqlCountQuery {

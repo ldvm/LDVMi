@@ -1,4 +1,4 @@
-package model.rdf.sparql.geo
+package model.rdf.sparql.geo.models
 
 import model.rdf.sparql.ValueFilter
 

@@ -3,9 +3,9 @@ package model.rdf.sparql.geo.extractor
 import model.rdf.LocalizedValue
 import model.rdf.extractor.SimpleQueryExecutionResultExtractor
 import model.rdf.sparql.geo.query.WKTEntitiesQuery
-import model.rdf.sparql.geo.{WKTEntity, MapQueryData}
+import model.rdf.sparql.geo.models.{MapQueryData, WKTEntity}
 import org.apache.jena.query.QuerySolution
-import org.apache.jena.rdf.model.{RDFNode, Literal, Resource}
+import org.apache.jena.rdf.model.{Literal, RDFNode, Resource}
 
 class WKTEntitiesExtractor(data: MapQueryData) extends SimpleQueryExecutionResultExtractor[WKTEntitiesQuery, WKTEntity] {
 

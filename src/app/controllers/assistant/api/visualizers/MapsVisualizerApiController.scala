@@ -6,7 +6,8 @@ import model.assistant.rest.EmptyRequest.EmptyRequest
 import model.assistant.rest.Response._
 import model.assistant.rest.SkosConceptsCountsRequest.SkosConceptsCountsRequest
 import model.assistant.rest.SkosConceptsRequest.SkosConceptsRequest
-import model.rdf.sparql.geo.{GeoService, MapQueryData}
+import model.rdf.sparql.geo.GeoService
+import model.rdf.sparql.geo.models.MapQueryData
 import model.rdf.sparql.visualization.VisualizationService
 import play.api.libs.concurrent.Execution.Implicits._
 import scaldi.Injector

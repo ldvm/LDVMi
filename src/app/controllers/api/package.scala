@@ -6,7 +6,7 @@ import model.entity._
 import model.rdf.sparql.ValueFilter
 import model.rdf.sparql.datacube._
 import model.rdf.sparql.fresnel.{Lens, ResourceThroughLens}
-import model.rdf.sparql.geo._
+import model.rdf.sparql.geo.models._
 import model.rdf.sparql.rgml.models._
 import model.rdf.sparql.timeline.models._
 import model.rdf.sparql.visualization.{Concept, HierarchyNode, Scheme}
@@ -102,6 +102,10 @@ package object api {
     implicit val visualizerWrites = Json.writes[ComponentTemplate]
     implicit val coordWrites = Json.writes[Coordinates]
     implicit val markerWrites = Json.writes[Marker]
+    implicit val geoConnectionWrites = Json.writes[GeoConnection]
+    implicit val fullCoordinatesWrites = Json.writes[FullCoordinates]
+    implicit val quantifierWrites = Json.writes[Quantifier]
+
     implicit val graphWrites = Json.writes[Graph]
     implicit val nodeWrites = Json.writes[Node]
     implicit val nodeWithDegreeWrites = Json.writes[NodeWithDegree]
@@ -112,7 +116,7 @@ package object api {
     implicit val countWrites = Json.writes[Count]
     implicit val intervalWrites = Json.writes[Interval]
     implicit val instantWrites = Json.writes[Instant]
-    implicit val connectonWrites = Json.writes[Connection]
+    implicit val connectonWrites = Json.writes[TimeLineConnection]
 
     val filterPath = (JsPath \ "label").readNullable[String] and
       (JsPath \ "dataType").readNullable[String] and

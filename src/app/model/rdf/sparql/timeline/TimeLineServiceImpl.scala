@@ -4,7 +4,7 @@ import java.util.Date
 
 import model.entity.PipelineEvaluation
 import model.rdf.sparql.timeline.extractor._
-import model.rdf.sparql.timeline.models.{Connection, Instant, Interval}
+import model.rdf.sparql.timeline.models.{TimeLineConnection, Instant, Interval}
 import model.rdf.sparql.timeline.query._
 import model.rdf.sparql.{EvaluationToSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
@@ -31,7 +31,7 @@ class TimeLineServiceImpl(implicit val inj: Injector) extends TimeLineService wi
       new InstantExtractor())
   }
 
-  override def thingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]] = {
+  override def thingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[TimeLineConnection]] = {
     val maybeLimit = if (limit > 0) Some(limit) else None
     val maybeThingUrls = if (thingUrls.size > 0) Some(thingUrls) else None
     val maybeThingTypes = if (thingTypes.size > 0) Some(thingTypes) else None
@@ -44,7 +44,7 @@ class TimeLineServiceImpl(implicit val inj: Injector) extends TimeLineService wi
     return result;
   }
 
-  override def thingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]] = {
+  override def thingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[TimeLineConnection]] = {
     val maybeLimit = if (limit > 0) Some(limit) else None
     val maybeThingUrls = if (thingUrls.size > 0) Some(thingUrls) else None
     val maybeThingTypes = if (thingTypes.size > 0) Some(thingTypes) else None
@@ -55,7 +55,7 @@ class TimeLineServiceImpl(implicit val inj: Injector) extends TimeLineService wi
       new ThingToInstantConnectionExtractor())
   }
 
-  override def thingsWithThingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]] = {
+  override def thingsWithThingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[TimeLineConnection]] = {
     val maybeLimit = if (limit > 0) Some(limit) else None
     val maybeThingUrls = if (thingUrls.size > 0) Some(thingUrls) else None
     val maybeThingTypes = if (thingTypes.size > 0) Some(thingTypes) else None
@@ -66,7 +66,7 @@ class TimeLineServiceImpl(implicit val inj: Injector) extends TimeLineService wi
       new ThingToThingWithIntervalConnectionExtractor())
   }
 
-  override def thingsWithThingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[Connection]] = {
+  override def thingsWithThingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Seq[TimeLineConnection]] = {
     val maybeLimit = if (limit > 0) Some(limit) else None
     val maybeThingUrls = if (thingUrls.size > 0) Some(thingUrls) else None
     val maybeThingTypes = if (thingTypes.size > 0) Some(thingTypes) else None

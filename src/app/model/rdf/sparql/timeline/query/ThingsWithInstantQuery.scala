@@ -1,5 +1,6 @@
 package model.rdf.sparql.timeline.query
 
+import model.rdf.sparql.QueryHelpers
 import model.rdf.sparql.query.SparqlCountQuery
 
 class ThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],

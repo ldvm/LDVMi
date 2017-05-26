@@ -1,5 +1,6 @@
 package model.rdf.sparql.timeline.query
 
+import model.rdf.sparql.QueryHelpers
 import model.rdf.sparql.query.SparqlCountQuery
 
 class ThingsWithThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
@@ -14,7 +15,7 @@ class ThingsWithThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
   }
 
   def getCount: String = {
-    val select = "SELECT (count(distinct(?outerThing)) AS ?count)"
+    val select = "SELECT (count(distinct(?innerThing)) AS ?count)"
     val group = ""
     val limit = ""
     return query(select, group, limit)
