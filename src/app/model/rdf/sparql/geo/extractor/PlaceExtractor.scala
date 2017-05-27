@@ -2,13 +2,13 @@ package model.rdf.sparql.geo.extractor
 
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.geo.models.GeoConnection
-import model.rdf.sparql.timeline.query.ThingsWithThingsWithInstantQuery
+import model.rdf.sparql.geo.query.PlaceQuery
 import org.apache.jena.query.QueryExecution
 
 import scala.collection.JavaConversions._
 
 class PlaceExtractor
-  extends QueryExecutionResultExtractor[ThingsWithThingsWithInstantQuery, Seq[GeoConnection]] {
+  extends QueryExecutionResultExtractor[PlaceQuery, Seq[GeoConnection]] {
 
   def extract(input: QueryExecution): Option[Seq[GeoConnection]] = {
     try {

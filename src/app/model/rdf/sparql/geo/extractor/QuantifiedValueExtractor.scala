@@ -2,14 +2,14 @@ package model.rdf.sparql.geo.extractor
 
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.geo.models.Quantifier
-import model.rdf.sparql.timeline.query.ThingsWithThingsWithInstantQuery
+import model.rdf.sparql.geo.query.QuantifiedValueQuery
 import org.apache.jena.query.QueryExecution
 
 import scala.collection.JavaConversions._
 import scala.util.Try
 
 class QuantifiedValueExtractor
-  extends QueryExecutionResultExtractor[ThingsWithThingsWithInstantQuery, Seq[Quantifier]] {
+  extends QueryExecutionResultExtractor[QuantifiedValueQuery, Seq[Quantifier]] {
 
   def extract(input: QueryExecution): Option[Seq[Quantifier]] = {
     try {

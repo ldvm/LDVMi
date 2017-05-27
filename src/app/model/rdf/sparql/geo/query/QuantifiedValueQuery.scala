@@ -4,7 +4,6 @@ import model.rdf.sparql.QueryHelpers
 import model.rdf.sparql.query.SparqlCountQuery
 
 class QuantifiedValueQuery(maybeThingsUrls: Option[Seq[String]],
-                           maybeThingTypes: Option[Seq[String]],
                            maybeConnections: Option[Seq[String]],
                            maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
@@ -32,7 +31,7 @@ class QuantifiedValueQuery(maybeThingsUrls: Option[Seq[String]],
        |  FILTER(ISNUMERIC(?quantifier))
        |
        |  ${QueryHelpers.limitValues("thing", maybeThingsUrls)}
-       |  ${QueryHelpers.limitValues("connection", maybeThingTypes)}
+       |  ${QueryHelpers.limitValues("connection", maybeConnections)}
        |}
        |
        |${group}

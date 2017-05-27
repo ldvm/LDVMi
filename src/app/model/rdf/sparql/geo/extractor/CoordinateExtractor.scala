@@ -2,14 +2,14 @@ package model.rdf.sparql.geo.extractor
 
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.geo.models.FullCoordinates
-import model.rdf.sparql.timeline.query.ThingsWithThingsWithInstantQuery
+import model.rdf.sparql.geo.query.CoordinatesQuery
 import org.apache.jena.query.QueryExecution
 
 import scala.collection.JavaConversions._
 import scala.util.Try
 
 class CoordinateExtractor
-  extends QueryExecutionResultExtractor[ThingsWithThingsWithInstantQuery, Seq[FullCoordinates]] {
+  extends QueryExecutionResultExtractor[CoordinatesQuery, Seq[FullCoordinates]] {
 
   def extract(input: QueryExecution): Option[Seq[FullCoordinates]] = {
     try {

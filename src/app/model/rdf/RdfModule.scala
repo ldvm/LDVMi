@@ -2,7 +2,7 @@ package model.rdf
 
 import model.rdf.sparql.datacube.{DataCubeService, DataCubeServiceImpl}
 import model.rdf.sparql.fresnel.{FresnelService, FresnelServiceImpl}
-import model.rdf.sparql.geo.{GeoService, GeoServiceImpl}
+import model.rdf.sparql.geo.{GeoCountService, GeoCountServiceImpl, GeoService, GeoServiceImpl}
 import model.rdf.sparql.rgml.{RgmlService, RgmlServiceImpl}
 import model.rdf.sparql.timeline.{TimeLineCountService, TimeLineCountServiceImpl, TimeLineService, TimeLineServiceImpl}
 import model.rdf.sparql.visualization.{VisualizationService, VisualizationServiceImpl}
@@ -17,6 +17,7 @@ class RdfModule extends Module {
   bind[DataCubeService] to new DataCubeServiceImpl
   bind[VisualizationService] to new VisualizationServiceImpl
   bind[GeoService] to new GeoServiceImpl
+  bind[GeoCountService] to new GeoCountServiceImpl
   bind[RgmlService] to new RgmlServiceImpl
   bind[TimeLineService] to new TimeLineServiceImpl
   bind[TimeLineCountService] to new TimeLineCountServiceImpl
