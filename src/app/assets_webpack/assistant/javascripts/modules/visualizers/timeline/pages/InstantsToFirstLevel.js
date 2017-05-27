@@ -13,6 +13,7 @@ class InstantsToFirstLevel extends Component {
         let configurations = new Map();
         configurations.set("FIRST LEVEL",
             <FirstLevelConnectionContainer
+                isInitial={true}
                 firstLevelLoader={getFirstLevelInstants}
                 firstLevelCount={getFirstLevelInstantsCount}
             />

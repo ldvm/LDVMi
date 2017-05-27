@@ -17,7 +17,7 @@ class Intervals extends Component {
             <BodyPadding>
                 <ConfigurationToolbar label="Configure Connections" children={configurations}/>
                 <hr/>
-                <TimeLineIntervalsContainer/>
+                <TimeLineIntervalsContainer isInitial={true}/>
                 <hr/>
                 <IntervalVisualizer/>
             </BodyPadding>

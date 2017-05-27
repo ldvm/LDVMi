@@ -17,7 +17,7 @@ class Instants extends Component {
             <BodyPadding>
                 <ConfigurationToolbar label="Configure Connections" children={configurations}/>
                 <hr/>
-                <TimeLineInstantsContainer/>
+                <TimeLineInstantsContainer isInitial={true}/>
                 <hr/>
                 <InstantVisualizer/>
             </BodyPadding>
