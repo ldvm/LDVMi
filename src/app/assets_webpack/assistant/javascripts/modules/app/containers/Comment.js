@@ -1,11 +1,11 @@
-import React, { Component, PropTypes } from 'react'
-import { createStructuredSelector } from 'reselect'
-import { connect } from 'react-redux'
-import { Map } from 'immutable'
-import makePureRender from '../../../misc/makePureRender'
-import LocalizedValue from './LocalizedValue'
-import { isLocalizedValueEmpty } from '../misc/languageUtils'
-import { getComments, commentsSelector } from '../ducks/comments'
+import React, {Component, PropTypes} from "react";
+import {createStructuredSelector} from "reselect";
+import {connect} from "react-redux";
+import {Map} from "immutable";
+import makePureRender from "../../../misc/makePureRender";
+import LocalizedValue from "./LocalizedValue";
+import {isLocalizedValueEmpty} from "../misc/languageUtils";
+import {commentsSelector, getComments} from "../ducks/comments";
 
 class Comment extends Component {
     static propTypes = {
@@ -15,19 +15,27 @@ class Comment extends Component {
         availableComments: PropTypes.instanceOf(Map).isRequired
     };
 
-    componentDidUpdate() {
+    load() {
         // Prop 'comment' might be a "custom comment" or passed down from wherever, we don't care,
         // if it's missing, we will try to load a new one from the server.
-        const { dispatch, uri, comment, availableComments } = this.props;
+        const {dispatch, uri, comment, availableComments} = this.props;
         if (isLocalizedValueEmpty(comment) && !availableComments.has(uri)) {
             dispatch(getComments([uri]));
         }
     }
 
+    componentWillMount() {
+        this.load();
+    }
+
+    componentDidUpdate() {
+        this.load();
+    }
+
     render() {
-        const { uri, comment, availableComments } = this.props;
+        const {uri, comment, availableComments} = this.props;
         const finalComment = isLocalizedValueEmpty(comment) ? availableComments.get(uri) : comment;
-        return <LocalizedValue localizedValue={finalComment} defaultValue={"n/a"} />
+        return <LocalizedValue localizedValue={finalComment} defaultValue={"No comment available"}/>
     }
 }
 

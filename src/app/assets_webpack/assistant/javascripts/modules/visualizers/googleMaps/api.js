@@ -39,7 +39,7 @@ export async function getThingsWithPlaces(id, thingsUrls, thingsTypes, connectio
 
 export async function getQuantifiers(id, urls, connections, limit) {
     let payload = {"things": urls, "thingTypes": [], "connections": connections, "limit": limit};
-    const result = await rest('mapsVisualizer/getPlaces/' + id, payload);
+    const result = await rest('mapsVisualizer/getQuantifiers/' + id, payload);
     return result.data.quantifiers;
 }
 
@@ -50,7 +50,7 @@ export async function getCoordinatesCount(id, urls) {
 
 export async function getPlacesCount(id, placesUrls, placesTypes) {
     let payload = {"things": placesUrls, "thingTypes": placesTypes, "connections": [], "limit": -1};
-    const result = await rest('mapsVisualizer/getPlace/counts/' + id, payload);
+    const result = await rest('mapsVisualizer/getPlaces/counts/' + id, payload);
     return result.data.count;
 }
 
@@ -62,6 +62,6 @@ export async function getThingsWithPlacesCount(id, thingsUrls, thingsTypes, conn
 
 export async function getQuantifiersCount(id, urls, connections) {
     let payload = {"things": urls, "thingTypes": [], "connections": connections, "limit": -1};
-    const result = await rest('mapsVisualizer/getPlaces/count/' + id, payload);
+    const result = await rest('mapsVisualizer/getQuantifiers/count/' + id, payload);
     return result.data.count;
 }

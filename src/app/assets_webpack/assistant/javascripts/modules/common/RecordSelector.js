@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {extractFromLocalizedValue} from "../app/misc/languageUtils";
-import {Map  as immutableMap} from "immutable";
+import {Map  as immutableMap, Set as ImmutableSet} from "immutable";
 import {getLabels, labelsSelector} from "../app/ducks/labels";
 import {langSelector} from "../app/ducks/lang";
 import Button from "../../components/Button";
@@ -21,7 +21,7 @@ class RecordSelector extends Component {
         // Keys
         records: PropTypes.array.isRequired,
         getKey: PropTypes.func.isRequired,
-        selectedKeys: PropTypes.array.isRequired,
+        selectedKeys: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         // Selectors
         onKeySelect: PropTypes.func.isRequired,
@@ -70,8 +70,12 @@ class RecordSelector extends Component {
     // === CHECKBOX LIST ===
     isChecked(key) {
         const {selectedKeys} = this.props;
-        if (selectedKeys.length > 0) {
+        if (selectedKeys.size > 0) {
+            /*
             if (selectedKeys.indexOf(key) > -1) {
+                return true;
+            }*/
+            if (selectedKeys.contains(key)){
                 return true;
             }
         }

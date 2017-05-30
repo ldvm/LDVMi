@@ -3,8 +3,8 @@ package model.rdf.sparql.geo.query
 import model.rdf.sparql.QueryHelpers
 import model.rdf.sparql.query.SparqlCountQuery
 
-class ThingWithPlaceQuery(maybePlaceUrls: Option[Seq[String]],
-                          maybePlaceTypes: Option[Seq[String]],
+class ThingWithPlaceQuery(maybeThingUrls: Option[Seq[String]],
+                          maybeThingTypes: Option[Seq[String]],
                           maybeConnections: Option[Seq[String]],
                           maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
@@ -34,8 +34,8 @@ class ThingWithPlaceQuery(maybePlaceUrls: Option[Seq[String]],
        |    ?place s:geo ?coordinates .
        |  }
        |
-       |  ${QueryHelpers.limitValues("place", maybePlaceUrls)}
-       |  ${QueryHelpers.limitValues("placeType", maybePlaceTypes)}
+       |  ${QueryHelpers.limitValues("thing", maybeThingUrls)}
+       |  ${QueryHelpers.limitValues("thingType", maybeThingTypes)}
        |  ${QueryHelpers.limitValues("connection", maybeConnections)}
        |}
        |

@@ -26,7 +26,7 @@ class PlaceQuery(maybePlaceUrls: Option[Seq[String]],
        |
        |${select}
        |WHERE {
-       |  ?place s:geo ?coordinates .
+       |  ?place s:geo ?coordinates ;
        |    a ?placeType.
        |
        |  ${QueryHelpers.limitValues("place", maybePlaceUrls)}
