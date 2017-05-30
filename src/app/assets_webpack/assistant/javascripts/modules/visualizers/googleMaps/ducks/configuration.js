@@ -1,8 +1,8 @@
-import { createSelector } from 'reselect'
-import prefix from '../prefix'
-import moduleSelector from '../selector'
-import { createPromiseStatusSelector } from '../../../core/ducks/promises'
-import { createGetConfiguration, createSaveConfiguration } from '../../../app/ducks/configuration'
+import {createSelector} from "reselect";
+import prefix from "../prefix";
+import moduleSelector from "../selector";
+import {createPromiseStatusSelector} from "../../../core/ducks/promises";
+import {createGetConfiguration, createSaveConfiguration} from "../../../app/ducks/configuration";
 
 // Actions
 
@@ -22,13 +22,13 @@ export const saveConfigurationStatusSelector = createPromiseStatusSelector(SAVE_
 export const getConfigurationStatusSelector = createPromiseStatusSelector(GET_CONFIGURATION);
 
 export const configurationSelector = createSelector(
-  [moduleSelector],
-  state => ({
-    filtersConfig: state.filters.filtersConfig.toJS(),
-    optionsConfig: state.filters.optionsConfig.toJS(),
-    mapState: state.mapState.toJS(),
-    publishSettings: state.publishSettings.toJS()
-  })
+    [moduleSelector],
+    state => ({
+        filtersConfig: state.filters.filtersConfig.toJS(),
+        optionsConfig: state.filters.optionsConfig.toJS(),
+        mapState: state.mapState.toJS(),
+        publishSettings: state.publishSettings.toJS()
+    })
 );
 
 // Actual actions created using factories

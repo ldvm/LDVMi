@@ -71,7 +71,7 @@ class GoogleMapsMarkers extends Component {
                                  enableRetinaIcons
                                  gridSize={60}
                 >
-                    {coordinates.map(c=>this.marker(c))}
+                    {coordinates.map(c => this.marker(c))}
                 </MarkerClusterer>
             </GoogleMap>
         );

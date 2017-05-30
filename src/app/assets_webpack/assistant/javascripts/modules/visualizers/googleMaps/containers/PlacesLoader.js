@@ -28,7 +28,7 @@ class PlacesLoader extends Component {
     };
 
     load(thingsWithPlaces) {
-        const {dispatch, selectedPlaceTypes,limit} = this.props;
+        const {dispatch, selectedPlaceTypes, limit} = this.props;
 
         var urls = thingsWithPlaces.map(p => p.inner);
         dispatch(getPlaces(urls, [...selectedPlaceTypes], limit));
@@ -54,7 +54,7 @@ class PlacesLoader extends Component {
         }
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         const {dispatch} = this.props;
         dispatch(getPlacesReset());
         dispatch(setSelectedPlaceTypesReset());

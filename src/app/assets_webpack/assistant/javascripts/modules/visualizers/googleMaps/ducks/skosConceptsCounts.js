@@ -1,9 +1,9 @@
-import { Map, fromJS } from 'immutable'
-import { createSelector } from 'reselect'
-import { createPromiseStatusSelector } from '../../../core/ducks/promises'
-import prefix from '../prefix'
-import moduleSelector  from '../selector'
-import { GET_APPLICATION_START } from '../../../app/ducks/application'
+import {fromJS, Map} from "immutable";
+import {createSelector} from "reselect";
+import {createPromiseStatusSelector} from "../../../core/ducks/promises";
+import prefix from "../prefix";
+import moduleSelector from "../selector";
+import {GET_APPLICATION_START} from "../../../app/ducks/application";
 
 // Actions
 
@@ -17,23 +17,23 @@ export const GET_SKOS_CONCEPTS_COUNTS_SUCCESS = GET_SKOS_CONCEPTS_COUNTS + '_SUC
 const initialState = new Map();
 
 export default function skosConceptsReducer(state = initialState, action) {
-  switch (action.type) {
-    case GET_APPLICATION_START:
-      return initialState;
+    switch (action.type) {
+        case GET_APPLICATION_START:
+            return initialState;
 
-    case GET_SKOS_CONCEPTS_COUNTS_SUCCESS:
-      return state.merge(fromJS(action.payload));
-  }
+        case GET_SKOS_CONCEPTS_COUNTS_SUCCESS:
+            return state.merge(fromJS(action.payload));
+    }
 
-  return state;
+    return state;
 };
 
 // Selectors
 
 export const createSkosConceptsCountsStatusSelector = propertyUriExtractor =>
-  createPromiseStatusSelector(GET_SKOS_CONCEPTS_COUNTS, propertyUriExtractor);
+    createPromiseStatusSelector(GET_SKOS_CONCEPTS_COUNTS, propertyUriExtractor);
 
 export const skosConceptsCountsSelector = createSelector(
-  [moduleSelector],
-  state => state.skosConceptsCounts
+    [moduleSelector],
+    state => state.skosConceptsCounts
 );

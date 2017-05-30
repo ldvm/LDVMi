@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
-import {Set as ImmutableSet} from "immutable";
 import {Circle} from "react-google-maps";
 import GoogleMap from "../../../../components/GoogleMap";
 import {mapStateSelector, updateMapState} from "../ducks/mapState";
