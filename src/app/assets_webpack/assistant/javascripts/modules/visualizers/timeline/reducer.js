@@ -10,7 +10,6 @@ import selectedConnFL from "./ducks/selectedConnFirstLevel";
 import selectedConnSL from "./ducks/selectedConnSecondLevel";
 import timeRange from "./ducks/timeRange";
 import count from "./ducks/count";
-import limit from "./ducks/limit";
 
 const rootReducer = combineReducers({
     instants,
@@ -23,8 +22,7 @@ const rootReducer = combineReducers({
     selectedThingSL,
     selectedConnSL,
     timeRange,
-    count,
-    limit
+    count
 });
 
 export default rootReducer;

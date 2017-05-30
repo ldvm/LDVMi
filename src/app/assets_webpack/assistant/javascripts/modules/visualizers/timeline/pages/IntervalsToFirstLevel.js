@@ -2,9 +2,9 @@ import React, {Component} from "react";
 import {getFirstLevelIntervals} from "../ducks/firstLevel";
 import {getFirstLevelIntervalsCount} from "../ducks/count";
 import BodyPadding from "../../../../components/BodyPadding";
-import FirstLevelConnectionContainer from "../containers/FirstLevelConnectionContainer";
+import FirstLevelLoader from "../containers/FirstLevelLoader";
 import TimeLineIntervalsContainer from "../containers/TimeLineIntervalsContainer";
-import LimiterContainer from "../containers/LimiterContainer";
+import LimiterContainer from "../../../app/containers/LimiterContainer";
 import IntervalVisualizer from "../containers/IntervalVisualizer";
 import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
 
@@ -13,7 +13,7 @@ class IntervalsToFirstLevel extends Component {
         let configurations = new Map();
         configurations.set(
             "FIRST LEVEL",
-            <FirstLevelConnectionContainer
+            <FirstLevelLoader
                 isInitial={true}
                 secondLevelLoader={getFirstLevelIntervals}
                 secondLevelCount={getFirstLevelIntervalsCount}

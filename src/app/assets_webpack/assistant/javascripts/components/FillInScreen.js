@@ -6,9 +6,7 @@ export function getAvailableVerticalSpace(element) {
   return screenHeight - offsetTop;
 }
 export function getAvailableHorizontalSpace(element){
-    const screenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    const offsetTop = element.getBoundingClientRect().top + window.pageXOffset - document.documentElement.clientLeft;
-    return screenWidth - offsetTop;
+    return element.offsetWidth - window.pageXOffset;
 }
 
 /**

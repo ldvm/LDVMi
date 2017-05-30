@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import BodyPadding from "../../../../components/BodyPadding";
 import TimeLineIntervalsContainer from "../containers/TimeLineIntervalsContainer";
-import LimiterContainer from "../containers/LimiterContainer";
+import LimiterContainer from "../../../app/containers/LimiterContainer";
 import IntervalVisualizer from "../containers/IntervalVisualizer";
 import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
 

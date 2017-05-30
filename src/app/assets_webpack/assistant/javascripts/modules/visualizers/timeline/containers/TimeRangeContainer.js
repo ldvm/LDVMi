@@ -7,6 +7,7 @@ import moment from "moment";
 import {getSelectedTimeReset, setSelectTime, timeRangeSelector} from "../ducks/timeRange";
 
 import Button from "../../../../components/Button";
+import {setSelectTimeRecordReset} from "../ducks/selectedTimeRecord";
 
 class TimeRangeContainer extends Component {
     static propTypes = {
@@ -27,6 +28,7 @@ class TimeRangeContainer extends Component {
         const {dispatch} = this.props;
 
         dispatch(getSelectedTimeReset());
+        dispatch(setSelectTimeRecordReset());
     }
 
     componentDidUpdate() {

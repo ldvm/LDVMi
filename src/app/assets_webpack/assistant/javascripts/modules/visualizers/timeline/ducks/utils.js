@@ -1,11 +1,8 @@
-export function appendKey(array, key) {
-    return [key].concat(array);
-}
-
-export function removeKey(array, key) {
-    var retArr = [];
-    for (let i of array) {
-        if (i != key) retArr.push(i)
+export function getDistinctCount(getKey, array){
+    var set = new Set();
+    for (var element of array){
+        var key = getKey(element);
+        if (!set.has(key)) set.add(key);
     }
-    return retArr;
+    return set.size;
 }

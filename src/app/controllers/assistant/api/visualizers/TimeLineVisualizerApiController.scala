@@ -47,7 +47,7 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
       }
   }
 
-  def getThingWithIntervals(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
+  def getThingsWithIntervals(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
         val thingsWithIntervals = timelineService.thingsWithIntervals(evaluation, json.things, json.thingTypes, json.connections, json.limit)

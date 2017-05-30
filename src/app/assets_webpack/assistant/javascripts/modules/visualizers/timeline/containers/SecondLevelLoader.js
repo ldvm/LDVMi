@@ -1,19 +1,9 @@
 import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {getSecondLevelReset, secondLevelSelector, secondLevelStatusSelector} from "../ducks/secondLevel";
-import {limitSelector} from "../ducks/limit";
-import {
-    getSelectedThingSLReset,
-    selectedThingSLSelector,
-    setSelectThingSL,
-    setUnSelectThingSL
-} from "../ducks/selectedThingSecondLevel";
-import {
-    getSelectedConnSLReset,
-    selectedConnSLSelector,
-    setSelectConnSL,
-    setUnSelectConnSL
-} from "../ducks/selectedConnSecondLevel";
+import {limitSelector} from "../../../app/ducks/limit";
+import {selectedThingSLSelector, setSelectedThingSLReset, setSelectThingSL} from "../ducks/selectedThingSecondLevel";
+import {selectedConnSLSelector, setSelectConnSL, setSelectedConnSLReset} from "../ducks/selectedConnSecondLevel";
 import {PromiseStatus} from "../../../core/models";
 import {createStructuredSelector} from "reselect";
 import PromiseResult from "../../../core/components/PromiseResult";
@@ -22,8 +12,9 @@ import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
 import {Paper} from "material-ui";
 import CountSecondLevelContainer from "./CountSecondLevelContainer";
+import {Set as ImmutableSet} from "immutable";
 
-class SecondLevelConnectionContainer extends Component {
+class SecondLevelLoader extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         isInitial: PropTypes.bool,
@@ -37,8 +28,8 @@ class SecondLevelConnectionContainer extends Component {
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         // Value selectors
-        selectedThingSL: PropTypes.instanceOf(Array).isRequired,
-        selectedConnSL: PropTypes.instanceOf(Array).isRequired,
+        selectedThingSL: PropTypes.instanceOf(ImmutableSet).isRequired,
+        selectedConnSL: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         limit: PropTypes.number.isRequired
     };
@@ -51,21 +42,21 @@ class SecondLevelConnectionContainer extends Component {
         const {dispatch} = this.props;
 
         dispatch(getSecondLevelReset());
-        dispatch(getSelectedThingSLReset());
-        dispatch(getSelectedConnSLReset());
+        dispatch(setSelectedThingSLReset());
+        dispatch(setSelectedConnSLReset());
     }
 
     load() {
         const {dispatch, secondLevelLoader, secondLevelCount, selectedThingSL, selectedConnSL, limit} = this.props;
-        dispatch(secondLevelLoader(selectedThingSL, [], selectedConnSL, limit));
-        dispatch(secondLevelCount(selectedThingSL, [], selectedConnSL));
+        dispatch(secondLevelLoader([...selectedThingSL], [], [...selectedConnSL], limit));
+        dispatch(secondLevelCount([...selectedThingSL], [], [...selectedConnSL]));
     }
 
     reset() {
         const {dispatch, secondLevelLoader, secondLevelCount, limit} = this.props;
 
-        dispatch(getSelectedThingSLReset());
-        dispatch(getSelectedConnSLReset());
+        dispatch(setSelectedThingSLReset());
+        dispatch(setSelectedConnSLReset());
 
         dispatch(secondLevelLoader([], [], [], limit));
         dispatch(secondLevelCount([], [], []));
@@ -83,7 +74,7 @@ class SecondLevelConnectionContainer extends Component {
             return <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
         }
 
-        var buttonsEnabled = selectedThingSL.length > 0 || selectedConnSL.length > 0;
+        var buttonsEnabled = selectedThingSL.size > 0 || selectedConnSL.size > 0;
 
         return <Paper>
             <RecordSelector
@@ -93,7 +84,6 @@ class SecondLevelConnectionContainer extends Component {
                 getValue={t => t.outer}
                 selectedKeys={selectedThingSL}
                 onKeySelect={k => dispatch(setSelectThingSL(k))}
-                onKeyUnselect={k => dispatch(setUnSelectThingSL(k))}
             />
             <RecordSelector
                 records={secondLevel}
@@ -102,7 +92,6 @@ class SecondLevelConnectionContainer extends Component {
                 getValue={t => t.connection}
                 selectedKeys={selectedConnSL}
                 onKeySelect={k => dispatch(setSelectConnSL(k))}
-                onKeyUnselect={k => dispatch(setUnSelectConnSL(k))}
             />
             <Button raised={true}
                     onTouchTap={() => this.load()}
@@ -127,4 +116,4 @@ const selector = createStructuredSelector({
     limit: limitSelector
 });
 
-export default connect(selector)(SecondLevelConnectionContainer);
+export default connect(selector)(SecondLevelLoader);

@@ -24,8 +24,7 @@ class RecordSelector extends Component {
         selectedKeys: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         // Selectors
-        onKeySelect: PropTypes.func.isRequired,
-        onKeyUnselect: PropTypes.func.isRequired
+        onKeySelect: PropTypes.func.isRequired
     };
 
     // SEARCH
@@ -70,14 +69,8 @@ class RecordSelector extends Component {
     // === CHECKBOX LIST ===
     isChecked(key) {
         const {selectedKeys} = this.props;
-        if (selectedKeys.size > 0) {
-            /*
-            if (selectedKeys.indexOf(key) > -1) {
-                return true;
-            }*/
-            if (selectedKeys.contains(key)){
-                return true;
-            }
+        if (selectedKeys.contains(key)) {
+            return true;
         }
         return false;
     }
@@ -122,7 +115,7 @@ class RecordSelector extends Component {
     }
 
     getCheckboxRows() {
-        const {onKeySelect, onKeyUnselect} = this.props;
+        const {onKeySelect} = this.props;
 
         var valuesMap = this.getValuesForVisualization();
 
@@ -135,16 +128,11 @@ class RecordSelector extends Component {
                 // Checkbox props
                 const checked = this.isChecked(key);
 
-                function onCheck(key) {
-                    if (checked) onKeyUnselect(key);
-                    else onKeySelect(key);
-                }
-
                 // Row render
                 rows.push(
                     <ListItem key={key}>
                         <Checkbox
-                            onCheck={(e, k) => onCheck(key)}
+                            onCheck={(e, k) => onKeySelect(key)}
                             defaultChecked={checked}
                             label={value}/>
                     </ListItem>

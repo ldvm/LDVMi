@@ -4,28 +4,19 @@ import {PromiseStatus} from "../../../core/models";
 import {createStructuredSelector} from "reselect";
 import {firstLevelSelector, firstLevelStatusSelector, getFirstLevelReset} from "../ducks/firstLevel";
 import {secondLevelSelector} from "../ducks/secondLevel";
-import {limitSelector} from "../ducks/limit";
-import {
-    getSelectedTypeFLReset,
-    selectedTypeFLSelector,
-    setSelectTypeFL,
-    setUnSelectTypeFL
-} from "../ducks/selectedTypeFirstLevel";
-import {
-    getSelectedConnFLReset,
-    selectedConnFLSelector,
-    setSelectConnFL,
-    setUnSelectConnFL
-} from "../ducks/selectedConnFirstLevel";
+import {limitSelector} from "../../../app/ducks/limit";
+import {selectedTypeFLSelector, setSelectedTypeFLReset, setSelectTypeFL} from "../ducks/selectedTypeFirstLevel";
+import {selectedConnFLSelector, setSelectConnFL, setSelectedConnFLReset} from "../ducks/selectedConnFirstLevel";
 import PromiseResult from "../../../core/components/PromiseResult";
 import RecordSelector from "../../../common/RecordSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
 import {Paper} from "material-ui";
 import CountFirstLevelContainer from "./CountFirstLevelContainer";
+import {Set as ImmutableSet} from "immutable";
 
 
-class FirstLevelConnectionContainer extends Component {
+class FirstLevelLoader extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         isInitial: PropTypes.bool,
@@ -40,8 +31,8 @@ class FirstLevelConnectionContainer extends Component {
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         // Value selectors
-        selectedTypeFL: PropTypes.instanceOf(Array).isRequired,
-        selectedConnFL: PropTypes.instanceOf(Array).isRequired,
+        selectedTypeFL: PropTypes.instanceOf(ImmutableSet).isRequired,
+        selectedConnFL: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         limit: PropTypes.number.isRequired
     };
@@ -53,8 +44,8 @@ class FirstLevelConnectionContainer extends Component {
     componentWillReceiveProps(nextProps) {
         const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
         if (secondLevel != nextProps.secondLevel) {
-            dispatch(getSelectedTypeFLReset());
-            dispatch(getSelectedConnFLReset());
+            dispatch(setSelectedTypeFLReset());
+            dispatch(setSelectedConnFLReset());
 
             var urls = nextProps.secondLevel.map(l => l.inner);
             dispatch(firstLevelLoader(urls, [], [], limit));
@@ -66,23 +57,23 @@ class FirstLevelConnectionContainer extends Component {
         const {dispatch} = this.props;
 
         dispatch(getFirstLevelReset());
-        dispatch(getSelectedTypeFLReset());
-        dispatch(getSelectedConnFLReset());
+        dispatch(setSelectedTypeFLReset());
+        dispatch(setSelectedConnFLReset());
     }
 
     load() {
         const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, selectedTypeFL, selectedConnFL, limit} = this.props;
 
         var urls = secondLevel.map(l => l.inner);
-        dispatch(firstLevelLoader(urls, selectedTypeFL, selectedConnFL, limit));
-        dispatch(firstLevelCount(urls, selectedTypeFL, selectedConnFL))
+        dispatch(firstLevelLoader(urls, [...selectedTypeFL], [...selectedConnFL], limit));
+        dispatch(firstLevelCount(urls, [...selectedTypeFL], [...selectedConnFL]))
     }
 
     reset() {
         const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
 
-        dispatch(getSelectedTypeFLReset());
-        dispatch(getSelectedConnFLReset());
+        dispatch(setSelectedTypeFLReset());
+        dispatch(setSelectedConnFLReset());
 
         var urls = secondLevel.map(l => l.inner);
 
@@ -102,7 +93,7 @@ class FirstLevelConnectionContainer extends Component {
             return <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
         }
 
-        var buttonsEnabled = selectedTypeFL.length > 0 || selectedConnFL.length > 0;
+        var buttonsEnabled = selectedTypeFL.size > 0 || selectedConnFL.size > 0;
 
         return <Paper>
             <RecordSelector
@@ -112,7 +103,6 @@ class FirstLevelConnectionContainer extends Component {
                 getValue={t => t.outerType}
                 selectedKeys={selectedTypeFL}
                 onKeySelect={k => dispatch(setSelectTypeFL(k))}
-                onKeyUnselect={k => dispatch(setUnSelectTypeFL(k))}
             />
             <RecordSelector
                 records={firstLevel}
@@ -121,7 +111,6 @@ class FirstLevelConnectionContainer extends Component {
                 getValue={t => t.connection}
                 selectedKeys={selectedConnFL}
                 onKeySelect={k => dispatch(setSelectConnFL(k))}
-                onKeyUnselect={k => dispatch(setUnSelectConnFL(k))}
             />
             <Button raised={true}
                     onTouchTap={() => this.load()}
@@ -147,4 +136,4 @@ const selector = createStructuredSelector({
     limit: limitSelector
 });
 
-export default connect(selector)(FirstLevelConnectionContainer);
+export default connect(selector)(FirstLevelLoader);

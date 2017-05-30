@@ -6,10 +6,10 @@ import {TimeRange} from "../models";
 
 import {getIntervals, getIntervalsReset, intervalsSelector, intervalsStatusSelector} from "../ducks/intervals";
 import {getIntervalsCount} from "../ducks/count";
-import {limitSelector} from "../ducks/limit";
+import {limitSelector} from "../../../app/ducks/limit";
 import {getSelectedTimeReset, timeRangeSelector} from "../ducks/timeRange";
 import {firstLevelSelector} from "../ducks/firstLevel";
-import {getSelectTimeRecordReset, setSelectTimeRecord} from "../ducks/selectedTimeRecord";
+import {setSelectTimeRecordReset, setSelectTimeRecord} from "../ducks/selectedTimeRecord";
 
 import PromiseResult from "../../../core/components/PromiseResult";
 import TimeLine from "../misc/TimeLine";
@@ -43,7 +43,7 @@ class TimeLineIntervalsContainer extends Component {
 
         if (this.props.isInitial) {
             dispatch(getIntervals([], timeRange, limit))
-            dispatch(getIntervalsCount([], timeRange, this.limit));
+            dispatch(getIntervalsCount([], timeRange));
         }
     }
 
@@ -55,12 +55,12 @@ class TimeLineIntervalsContainer extends Component {
         if (needUpdate) {
             var urls = nextProps.firstLevel.map(t => t.inner);
             dispatch(getIntervals(urls, nextProps.timeRange, limit));
-            dispatch(getIntervalsCount(urls, nextProps.timeRange, limit));
+            dispatch(getIntervalsCount(urls, nextProps.timeRange));
         }
 
         if (nextProps.status.done) {
             if (nextProps.intervals != intervals || nextProps.timeRange != timeRange) {
-                dispatch(getSelectTimeRecordReset());
+                dispatch(setSelectTimeRecordReset());
                 this.needChartUpdate = true;
             }
         }
@@ -80,7 +80,7 @@ class TimeLineIntervalsContainer extends Component {
 
         dispatch(getIntervalsReset());
         dispatch(getSelectedTimeReset());
-        dispatch(getSelectTimeRecordReset());
+        dispatch(setSelectTimeRecordReset());
 
         this.chart.destroy();
     }
@@ -90,10 +90,6 @@ class TimeLineIntervalsContainer extends Component {
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error} loadingMessage="Loading intervals..."/>
-        }
-
-        else if (intervals.length == 0) {
-            return <CenteredMessage>No intervals were loaded. Check the settings please.</CenteredMessage>
         }
 
         require('../misc/TimeLineStyle.css');

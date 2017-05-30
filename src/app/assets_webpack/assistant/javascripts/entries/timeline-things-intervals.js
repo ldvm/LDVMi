@@ -1,4 +1,4 @@
 import initEntry from "../misc/initEntry";
-import timelineThingsIntervalsRoutes from "../modules/visualizers/timeline/components/thingsIntervals/applicationRoutes";
+import timelineThingsIntervalsRoutes from "../modules/visualizers/timeline/bundles/thingsIntervals/applicationRoutes";
 
 initEntry(timelineThingsIntervalsRoutes);

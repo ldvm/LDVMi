@@ -3,10 +3,10 @@ import {getFirstLevelInstants} from "../ducks/firstLevel";
 import {getFirstLevelInstantsCount, getSecondLevelInstantsCount} from "../ducks/count";
 import {getSecondLevelInstants} from "../ducks/secondLevel";
 import BodyPadding from "../../../../components/BodyPadding";
-import SecondLevelConnectionContainer from "../containers/SecondLevelConnectionContainer";
-import FirstLevelConnectionContainer from "../containers/FirstLevelConnectionContainer";
+import SecondLevelLoader from "../containers/SecondLevelLoader";
+import FirstLevelLoader from "../containers/FirstLevelLoader";
 import TimeLineInstantsContainer from "../containers/TimeLineInstantsContainer";
-import LimiterContainer from "../containers/LimiterContainer";
+import LimiterContainer from "../../../app/containers/LimiterContainer";
 import InstantVisualizer from "../containers/InstantVisualizer";
 import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
 
@@ -15,13 +15,13 @@ class InstantsToSecondLevel extends Component {
         let configurations = new Map();
         configurations.set(
             "SECOND LEVEL",
-            <SecondLevelConnectionContainer
+            <SecondLevelLoader
                 isInitial={true}
                 secondLevelLoader={getSecondLevelInstants}
                 secondLevelCount={getSecondLevelInstantsCount}
             />);
         configurations.set("FIRST LEVEL",
-            <FirstLevelConnectionContainer
+            <FirstLevelLoader
                 firstLevelLoader={getFirstLevelInstants}
                 firstLevelCount={getFirstLevelInstantsCount}
             />

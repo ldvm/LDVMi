@@ -6,6 +6,7 @@ import {countFirstSelector, countFirstStatusSelector} from "../ducks/count";
 import {firstLevelSelector, firstLevelStatusSelector} from "../ducks/firstLevel";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
+import {getDistinctCount} from "../ducks/utils"
 
 class CountFirstLevelContainer extends Component {
     static propTypes = {
@@ -30,7 +31,7 @@ class CountFirstLevelContainer extends Component {
                                   loadingMessage="Loading connected records..."/>
         }
 
-        var loaded = things.length;
+        var loaded = getDistinctCount(t=>t.outer,things);
         return <CenteredMessage>
             Loaded {loaded} records out of {count} available. Increase limit to load more.
         </CenteredMessage>

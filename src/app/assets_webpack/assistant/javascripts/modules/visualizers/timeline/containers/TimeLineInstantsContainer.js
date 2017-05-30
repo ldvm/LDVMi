@@ -5,10 +5,10 @@ import {PromiseStatus} from "../../../core/models";
 import {TimeRange} from "../models";
 import {getInstants, getInstantsReset, instantsSelector, instantsStatusSelector} from "../ducks/instants";
 import {getInstantsCount} from "../ducks/count";
-import {limitSelector} from "../ducks/limit";
+import {limitSelector} from "../../../app/ducks/limit";
 import {getSelectedTimeReset, timeRangeSelector} from "../ducks/timeRange";
 import {firstLevelSelector} from "../ducks/firstLevel";
-import {getSelectTimeRecordReset, setSelectTimeRecord} from "../ducks/selectedTimeRecord";
+import {setSelectTimeRecordReset, setSelectTimeRecord} from "../ducks/selectedTimeRecord";
 import PromiseResult from "../../../core/components/PromiseResult";
 import TimeLine from "../misc/TimeLine";
 import CenteredMessage from "../../../../components/CenteredMessage";
@@ -57,7 +57,7 @@ class TimeLineInstantsContainer extends Component {
         }
 
         if (nextProps.status.done && nextProps.instants != this.props.instants) {
-            dispatch(getSelectTimeRecordReset());
+            dispatch(setSelectTimeRecordReset());
             this.needChartUpdate = true;
         }
     }
@@ -75,7 +75,7 @@ class TimeLineInstantsContainer extends Component {
 
         dispatch(getInstantsReset());
         dispatch(getSelectedTimeReset());
-        dispatch(getSelectTimeRecordReset());
+        dispatch(setSelectTimeRecordReset());
 
         this.chart.destroy();
     }
@@ -85,10 +85,6 @@ class TimeLineInstantsContainer extends Component {
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error} loadingMessage="Loading instants..."/>
-        }
-
-        else if (instants.length == 0) {
-            return <CenteredMessage>No instants were loaded. Check the settings please.</CenteredMessage>
         }
 
         require('../misc/TimeLineStyle.css');

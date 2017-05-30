@@ -1,4 +1,4 @@
 import initEntry from "../misc/initEntry";
-import timelineInstantsRoutes from "../modules/visualizers/timeline/components/instants/applicationRoutes";
+import timelineInstantsRoutes from "../modules/visualizers/timeline/bundles/instants/applicationRoutes";
 
 initEntry(timelineInstantsRoutes);
