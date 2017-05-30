@@ -58,7 +58,7 @@ export function getQuantifiersReset() {
 
 // Reducer
 const initialState = new Counts();
-export default function quantifiersReducer(state = initialState, action) {
+export default function countReducer(state = initialState, action) {
     switch (action.type) {
         case GET_APPLICATION_START:
             return initialState;
@@ -98,13 +98,13 @@ export default function quantifiersReducer(state = initialState, action) {
 
 // Selectors
 export const coordinatesCountStatusSelector = createPromiseStatusSelector(GET_COORDINATES_COUNT);
-export const coordinatesCountSelector = createSelector([moduleSelector], state => state.coordinates);
+export const coordinatesCountSelector = createSelector([moduleSelector], state => state.count.coordinates);
 
 export const placesCountStatusSelector = createPromiseStatusSelector(GET_PLACES_COUNT);
-export const placesCountSelector = createSelector([moduleSelector], state => state.places);
+export const placesCountSelector = createSelector([moduleSelector], state => state.count.places);
 
 export const thingsWithPlacesCountStatusSelector = createPromiseStatusSelector(GET_TWP_COUNT);
-export const thingsWithPlacesCountSelector = createSelector([moduleSelector], state => state.thingsWithPlaces);
+export const thingsWithPlacesCountSelector = createSelector([moduleSelector], state => state.count.thingsWithPlaces);
 
 export const quantifiersCountStatusSelector = createPromiseStatusSelector(GET_QUANTIFIERS_COUNT);
-export const quantifiersCountSelector = createSelector([moduleSelector], state => state.quantifiers);
+export const quantifiersCountSelector = createSelector([moduleSelector], state => state.count.quantifiers);

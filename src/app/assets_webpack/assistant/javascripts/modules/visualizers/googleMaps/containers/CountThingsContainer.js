@@ -2,36 +2,37 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {PromiseStatus} from "../../../core/models";
-import {countSecondSelector, countSecondStatusSelector} from "../ducks/count";
-import {secondLevelSelector, secondLevelStatusSelector} from "../ducks/secondLevel";
+import {thingsWithPlacesCountSelector, thingsWithPlacesCountStatusSelector} from "../ducks/counts";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import {getDistinctCount} from "../../../common/arrayUtils";
+import {thingsWithPlacesSelector, thingsWithPlacesStatusSelector} from "../ducks/thingsWithPlaces";
 
-class CountSecondLevelContainer extends Component {
+class CountThingsContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
-        count: PropTypes.number.isRequired,
-        countStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
-
-        things: PropTypes.instanceOf(Array).isRequired,
+        things: PropTypes.array.isRequired,
         thingsStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
+
+        count: PropTypes.number.isRequired,
+        countStatus: PropTypes.instanceOf(PromiseStatus).isRequired
     };
 
     render() {
         const {count, countStatus, things, thingsStatus} = this.props;
 
         if (!countStatus.done) {
-            return <PromiseResult status={countStatus} error={countStatus.error} loadingMessage="Loading count..."/>
+            return <PromiseResult status={countStatus} error={countStatus.error}
+                                  loadingMessage="Loading things count..."/>
         }
 
         if (!thingsStatus.done) {
             return <PromiseResult status={thingsStatus} error={thingsStatus.error}
-                                  loadingMessage="Loading connected records..."/>
+                                  loadingMessage="Loading things ..."/>
         }
 
-        var loaded = getDistinctCount(t=>t.outer,things);
+        var loaded = getDistinctCount(t => t.outer, things);
         return <CenteredMessage>
             Loaded {loaded} records out of {count} available. Increase limit to load more.
         </CenteredMessage>
@@ -39,11 +40,11 @@ class CountSecondLevelContainer extends Component {
 }
 
 const selector = createStructuredSelector({
-    count: countSecondSelector,
-    countStatus: countSecondStatusSelector,
+    things: thingsWithPlacesSelector,
+    thingsStatus: thingsWithPlacesStatusSelector,
 
-    things: secondLevelSelector,
-    thingsStatus: secondLevelStatusSelector
+    count: thingsWithPlacesCountSelector,
+    countStatus: thingsWithPlacesCountStatusSelector,
 });
 
-export default connect(selector)(CountSecondLevelContainer);
+export default connect(selector)(CountThingsContainer);

@@ -21,6 +21,7 @@ import {
     setSelectedPlaceConnectionsReset,
     setSelectPlaceConnection
 } from "../ducks/selectedPlaceConnections";
+import CountThingsContainer from "./CountThingsContainer";
 
 class ThingsWithPlacesLoader extends Component {
     static propTypes = {
@@ -44,11 +45,12 @@ class ThingsWithPlacesLoader extends Component {
     }
 
     reset() {
-        const {dispatch} = this.props;
+        const {dispatch, limit} = this.props;
         dispatch(setSelectedThingReset());
         dispatch(setSelectedPlaceConnectionsReset());
 
-        this.load();
+        dispatch(getThingsWithPlaces([], [], [], limit));
+        dispatch(getThingsWithPlacesCount([], [], []));
     }
 
     componentWillMount() {
@@ -70,7 +72,7 @@ class ThingsWithPlacesLoader extends Component {
                                   loadingMessage="Loading connected things..."/>
         }
 
-        var buttonsEnabled = selectedThings.length > 0 || selectedPlaceConnections.length > 0;
+        var buttonsEnabled = selectedThings.size > 0 || selectedPlaceConnections.size > 0;
 
         return <Paper>
             <RecordSelector
@@ -80,7 +82,6 @@ class ThingsWithPlacesLoader extends Component {
                 getValue={t => t.outer}
                 selectedKeys={selectedThings}
                 onKeySelect={k => dispatch(setSelectThing(k))}
-                onKeyUnselect={k => dispatch(setSelectThing(k))}
             />
             <RecordSelector
                 records={things}
@@ -89,7 +90,6 @@ class ThingsWithPlacesLoader extends Component {
                 getValue={t => t.connection}
                 selectedKeys={selectedPlaceConnections}
                 onKeySelect={k => dispatch(setSelectPlaceConnection(k))}
-                onKeyUnselect={k => dispatch(setSelectPlaceConnection(k))}
             />
             <Button raised={true}
                     onTouchTap={() => this.load()}
@@ -101,7 +101,7 @@ class ThingsWithPlacesLoader extends Component {
                     disabled={false}
                     label="RESET"
             />
-            //TODO count
+            <CountThingsContainer/>
         </Paper>
     }
 }

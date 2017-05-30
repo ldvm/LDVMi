@@ -50,7 +50,7 @@ export async function getCoordinatesCount(id, urls) {
 
 export async function getPlacesCount(id, placesUrls, placesTypes) {
     let payload = {"things": placesUrls, "thingTypes": placesTypes, "connections": [], "limit": -1};
-    const result = await rest('mapsVisualizer/getPlaces/counts/' + id, payload);
+    const result = await rest('mapsVisualizer/getPlaces/count/' + id, payload);
     return result.data.count;
 }
 

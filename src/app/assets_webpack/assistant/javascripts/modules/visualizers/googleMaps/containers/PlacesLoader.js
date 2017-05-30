@@ -13,6 +13,7 @@ import RecordSelector from "../../../common/RecordSelector";
 import {selectedPlaceTypesSelector, setSelectedPlaceTypesReset, setSelectPlaceType} from "../ducks/selectedPlaceTypes";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import {thingsWithPlacesSelector} from "../ducks/thingsWithPlaces";
+import CountPlacesContainer from "./CountPlacesContainer";
 
 class PlacesLoader extends Component {
     static propTypes = {
@@ -27,8 +28,8 @@ class PlacesLoader extends Component {
         limit: PropTypes.number.isRequired
     };
 
-    load(thingsWithPlaces) {
-        const {dispatch, selectedPlaceTypes, limit} = this.props;
+    load() {
+        const {dispatch, thingsWithPlaces, selectedPlaceTypes, limit} = this.props;
 
         var urls = thingsWithPlaces.map(p => p.inner);
         dispatch(getPlaces(urls, [...selectedPlaceTypes], limit));
@@ -36,9 +37,13 @@ class PlacesLoader extends Component {
     }
 
     reload(thingsWithPlaces) {
-        const {dispatch} = this.props;
+        const {dispatch, limit} = this.props;
         dispatch(setSelectedPlaceTypesReset());
-        this.load(thingsWithPlaces);
+
+        var urls = thingsWithPlaces.map(p => p.inner);
+        dispatch(getPlaces(urls, [], limit));
+        dispatch(getPlacesCount(urls, []));
+
     }
 
     componentWillMount() {
@@ -72,7 +77,7 @@ class PlacesLoader extends Component {
             return <CenteredMessage>No connected places were loaded. Check the settings please.</CenteredMessage>
         }
 
-        var buttonsEnabled = selectedPlaceTypes.length > 0 || selectedPlaceTypes.length > 0;
+        var buttonsEnabled = selectedPlaceTypes.size > 0 || selectedPlaceTypes.size > 0;
 
         return <Paper>
             <RecordSelector
@@ -82,7 +87,6 @@ class PlacesLoader extends Component {
                 getValue={t => t.outerType}
                 selectedKeys={selectedPlaceTypes}
                 onKeySelect={k => dispatch(setSelectPlaceType(k))}
-                onKeyUnselect={k => dispatch(setSelectPlaceType(k))}
             />
             <Button raised={true}
                     onTouchTap={() => this.load(thingsWithPlaces)}
@@ -94,7 +98,7 @@ class PlacesLoader extends Component {
                     disabled={false}
                     label="RESET"
             />
-            //TODO count
+            <CountPlacesContainer/>
         </Paper>
     }
 }

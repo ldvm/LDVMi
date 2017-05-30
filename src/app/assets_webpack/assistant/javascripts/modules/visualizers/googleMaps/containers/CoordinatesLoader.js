@@ -13,6 +13,7 @@ import {PromiseStatus} from "../../../core/models";
 import PromiseResult from "../../../core/components/PromiseResult";
 import Button from "../../../../components/Button";
 import {limitSelector} from "../../../app/ducks/limit";
+import CountCoordinatesContainer from "./CountCoordinatesContainer";
 
 class CoordinatesLoader extends Component {
     static propTypes = {
@@ -30,7 +31,6 @@ class CoordinatesLoader extends Component {
     };
 
     load(places) {
-        debugger;
         const {dispatch, limit} = this.props;
 
         var urls = places.map(p => p.inner);
@@ -66,7 +66,7 @@ class CoordinatesLoader extends Component {
         }
 
         return <div>
-            // TODO: Count
+            <CountCoordinatesContainer/>
             <br/>
             <Button raised={true}
                     onTouchTap={() => this.load(places)}

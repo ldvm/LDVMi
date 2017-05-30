@@ -12,6 +12,7 @@ import dirty from "./ducks/dirty";
 import selectedPlaceConnections from "./ducks/selectedPlaceConnections";
 import selectedPlaceTypes from "./ducks/selectedPlaceTypes";
 import selectedThings from "./ducks/selectedThings";
+import count from "./ducks/counts"
 
 const rootReducer = combineReducers({
     filters,
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
     thingsWithPlaces,
     selectedThings,
     quantifiers,
+    count,
     dirty
 });
 
