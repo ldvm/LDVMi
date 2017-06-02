@@ -3,7 +3,7 @@ import withApplicationId from "../../../app/misc/withApplicationId";
 import prefix from "../prefix";
 import * as api from "../api";
 import {GET_APPLICATION_START} from "../../../app/ducks/application";
-import {Connection} from "../models";
+import {Place} from "../models";
 import {createSelector} from "reselect";
 import {createPromiseStatusSelector} from "../../../core/ducks/promises";
 import moduleSelector from "../selector";
@@ -33,7 +33,7 @@ export default function placesReducer(state = initialState, action) {
         case GET_PLACES_RESET:
             return initialState;
         case GET_PLACES_SUCCESS:
-            return action.payload.map(i => new Connection(i));
+            return action.payload.map(i => new Place(i));
     }
     return state;
 };

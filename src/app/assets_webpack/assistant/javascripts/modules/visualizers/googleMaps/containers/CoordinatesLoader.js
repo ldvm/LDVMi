@@ -7,48 +7,57 @@ import {
     getCoordinates,
     getCoordinatesReset
 } from "../ducks/coordinates";
-import {coordinatesCountSelector, coordinatesCountStatusSelector, getCoordinatesCount} from "../ducks/counts";
+import {getCoordinatesCount} from "../ducks/counts";
 import {placesSelector} from "../ducks/places";
 import {PromiseStatus} from "../../../core/models";
 import PromiseResult from "../../../core/components/PromiseResult";
 import Button from "../../../../components/Button";
 import {limitSelector} from "../../../app/ducks/limit";
 import CountCoordinatesContainer from "./CountCoordinatesContainer";
+import {quantifiedPlacesSelector} from "../ducks/quantifiedPlaces";
 
 class CoordinatesLoader extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
-        isInitial: PropTypes.bool.isRequired,
 
+        // Value loading
         coordinates: PropTypes.array.isRequired,
-        coordinatesStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
+        status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
-        coordinatesCount: PropTypes.array.isRequired,
-        coordinatesCountStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
-
+        // Upper level
         places: PropTypes.array.isRequired,
+        quantifiedPlaces: PropTypes.array.isRequired,
+
+        // Other
+        isInitial: PropTypes.bool.isRequired,
         limit: PropTypes.number.isRequired
     };
 
-    load(places) {
+    load(places, quantifiedPlaces) {
         const {dispatch, limit} = this.props;
 
-        var urls = places.map(p => p.inner);
+        var urls = [];
+        if (places.length > 0) urls = places.map(p => p.coordinates);
+        if (quantifiedPlaces.length > 0) urls = quantifiedPlaces.map(p => p.coordinates);
+
         dispatch(getCoordinates(urls, limit));
         dispatch(getCoordinatesCount(urls));
     }
 
     componentWillMount() {
-        const {isInitial, places} = this.props;
+        const {isInitial, places, quantifiedPlaces} = this.props;
 
         if (isInitial) {
-            this.load(places);
+            this.load(places, quantifiedPlaces);
         }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.places != this.props.places) {
-            this.load(nextProps.places);
+            this.load(nextProps.places, []);
+        }
+        if (nextProps.quantifiedPlaces != this.props.quantifiedPlaces) {
+            this.load([], nextProps.quantifiedPlaces);
         }
     }
 
@@ -58,10 +67,10 @@ class CoordinatesLoader extends Component {
     }
 
     render() {
-        const {coordinatesStatus, places} = this.props;
+        const {status, places, quantifiedPlaces} = this.props;
 
-        if (!coordinatesStatus.done) {
-            return <PromiseResult status={coordinatesStatus} error={coordinatesStatus.error}
+        if (!status.done) {
+            return <PromiseResult status={status} error={status.error}
                                   loadingMessage="Loading coordinates..."/>
         }
 
@@ -69,7 +78,7 @@ class CoordinatesLoader extends Component {
             <CountCoordinatesContainer/>
             <br/>
             <Button raised={true}
-                    onTouchTap={() => this.load(places)}
+                    onTouchTap={() => this.load(places, quantifiedPlaces)}
                     disabled={false}
                     label="RELOAD"
             />
@@ -79,12 +88,11 @@ class CoordinatesLoader extends Component {
 
 const selector = createStructuredSelector({
     coordinates: coordinatesSelector,
-    coordinatesStatus: coordinatesStatusSelector,
-
-    coordinatesCount: coordinatesCountSelector,
-    coordinatesCountStatus: coordinatesCountStatusSelector,
+    status: coordinatesStatusSelector,
 
     places: placesSelector,
+    quantifiedPlaces: quantifiedPlacesSelector,
+
     limit: limitSelector
 });
 

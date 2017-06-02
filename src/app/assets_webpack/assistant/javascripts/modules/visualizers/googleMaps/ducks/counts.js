@@ -11,7 +11,6 @@ import {GET_APPLICATION_START} from "../../../app/ducks/application";
 // Actions
 export const GET_COORDINATES_COUNT = prefix('GET_COORDINATES_COUNT');
 export const GET_COORDINATES_COUNT_SUCCESS = GET_COORDINATES_COUNT + '_SUCCESS';
-
 export function getCoordinatesCount(urls) {
     return withApplicationId(id => {
         const promise = api.getCoordinatesCount(id, urls);
@@ -21,7 +20,6 @@ export function getCoordinatesCount(urls) {
 
 export const GET_PLACES_COUNT = prefix('GET_PLACES_COUNT');
 export const GET_PLACES_COUNT_SUCCESS = GET_PLACES_COUNT + '_SUCCESS';
-
 export function getPlacesCount(urls, types) {
     return withApplicationId(id => {
         const promise = api.getPlacesCount(id, urls, types);
@@ -29,30 +27,26 @@ export function getPlacesCount(urls, types) {
     });
 }
 
-export const GET_TWP_COUNT = prefix('GET_THINGS_WITH_PLACES_COUNT');
-export const GET_TWP_COUNT_SUCCESS = GET_TWP_COUNT + '_SUCCESS';
-
-export function getThingsWithPlacesCount(urls, connections) {
+export const GET_QUANTIFIED_THINGS_COUNT = prefix('GET_QUANTIFIED_THINGS_COUNT');
+export const GET_QUANTIFIED_THINGS_COUNT_SUCCESS = GET_QUANTIFIED_THINGS_COUNT + '_SUCCESS';
+export function getQuantifiedThingsCount(urls, valueConnections, placeConnections) {
     return withApplicationId(id => {
-        const promise = api.getThingsWithPlacesCount(id, urls, [], connections);
-        return createAction(GET_TWP_COUNT, {promise});
+        const promise = api.getQuantifiedThingsCount(id, urls, valueConnections, placeConnections);
+        return createAction(GET_QUANTIFIED_THINGS_COUNT, {promise});
     });
 }
 
-export const GET_QUANTIFIERS_COUNT = prefix('GET_QUANTIFIERS_COUNT');
-export const GET_QUANTIFIERS_COUNT_SUCCESS = GET_QUANTIFIERS_COUNT + '_SUCCESS';
-
-
-export function getQuantifiersCount(urls, connections) {
+export const GET_QUANTIFIED_PLACES_COUNT = prefix('GET_QUANTIFIERS_COUNT');
+export const GET_QUANTIFIED_PLACES_COUNT_SUCCESS = GET_QUANTIFIED_PLACES_COUNT + '_SUCCESS';
+export function getQuantifiedPlacesCount(urls, types, valueConnections) {
     return withApplicationId(id => {
-        const promise = api.getQuantifiersCount(id, urls, connections);
-        return createAction(GET_QUANTIFIERS_COUNT, {promise});
+        const promise = api.getQuantifiedPlacesCount(id, urls, types, valueConnections);
+        return createAction(GET_QUANTIFIED_PLACES_COUNT, {promise});
     });
 }
 
 export const GET_COUNTS_RESET = prefix('GET_COUNTS_RESET');
-
-export function getQuantifiersReset() {
+export function getCountsReset() {
     return createAction(GET_COUNTS_RESET);
 }
 
@@ -68,29 +62,29 @@ export default function countReducer(state = initialState, action) {
             return new Counts({
                 coordinates: action.payload.value,
                 places: state.places,
-                thingsWithPlaces: state.thingsWithPlaces,
-                quantifiers: state.quantifiers
+                quantifiedThings: state.quantifiedThings,
+                quantifiedPlaces: state.quantifiedPlaces
             });
         case GET_PLACES_COUNT_SUCCESS:
             return new Counts({
                 coordinates: state.coordinates,
                 places: action.payload.value,
-                thingsWithPlaces: state.thingsWithPlaces,
-                quantifiers: state.quantifiers
+                quantifiedThings: state.quantifiedThings,
+                quantifiedPlaces: state.quantifiedPlaces
             });
-        case GET_TWP_COUNT_SUCCESS:
+        case GET_QUANTIFIED_THINGS_COUNT_SUCCESS:
             return new Counts({
                 coordinates: state.coordinates,
                 places: state.places,
-                thingsWithPlaces: action.payload.value,
-                quantifiers: state.quantifiers
+                quantifiedThings: action.payload.value,
+                quantifiedPlaces: state.quantifiedPlaces
             });
-        case GET_QUANTIFIERS_COUNT_SUCCESS:
+        case GET_QUANTIFIED_PLACES_COUNT_SUCCESS:
             return new Counts({
                 coordinates: state.coordinates,
                 places: state.places,
-                thingsWithPlaces: state.thingsWithPlaces,
-                quantifiers: action.payload.value
+                quantifiedThings: state.quantifiedThings,
+                quantifiedPlaces: action.payload.value
             });
     }
     return state;
@@ -103,8 +97,8 @@ export const coordinatesCountSelector = createSelector([moduleSelector], state =
 export const placesCountStatusSelector = createPromiseStatusSelector(GET_PLACES_COUNT);
 export const placesCountSelector = createSelector([moduleSelector], state => state.count.places);
 
-export const thingsWithPlacesCountStatusSelector = createPromiseStatusSelector(GET_TWP_COUNT);
-export const thingsWithPlacesCountSelector = createSelector([moduleSelector], state => state.count.thingsWithPlaces);
+export const quantifiedThingsCountStatusSelector = createPromiseStatusSelector(GET_QUANTIFIED_THINGS_COUNT);
+export const quantifiedThingsCountSelector = createSelector([moduleSelector], state => state.count.quantifiedThings);
 
-export const quantifiersCountStatusSelector = createPromiseStatusSelector(GET_QUANTIFIERS_COUNT);
-export const quantifiersCountSelector = createSelector([moduleSelector], state => state.count.quantifiers);
+export const quantifiedPlacesCountStatusSelector = createPromiseStatusSelector(GET_QUANTIFIED_PLACES_COUNT);
+export const quantifiedPlacesCountSelector = createSelector([moduleSelector], state => state.count.quantifiedPlaces);

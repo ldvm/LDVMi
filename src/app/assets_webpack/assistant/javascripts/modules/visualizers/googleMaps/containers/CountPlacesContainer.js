@@ -32,7 +32,7 @@ class CountPlacesContainer extends Component {
                                   loadingMessage="Loading places ..."/>
         }
 
-        var loaded = getDistinctCount(t => t.outer, places);
+        var loaded = getDistinctCount(t => t.url, places);
         return <CenteredMessage>
             Loaded {loaded} records out of {count} available. Increase limit to load more.
         </CenteredMessage>

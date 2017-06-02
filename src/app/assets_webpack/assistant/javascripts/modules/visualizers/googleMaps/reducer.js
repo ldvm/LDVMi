@@ -6,13 +6,14 @@ import toggledMarkers from "./ducks/toggledMarkers";
 import publishSettings from "./ducks/publishSettings";
 import coordinates from "./ducks/coordinates";
 import places from "./ducks/places";
-import thingsWithPlaces from "./ducks/thingsWithPlaces";
-import quantifiers from "./ducks/quantifiers";
-import dirty from "./ducks/dirty";
+import quantifiedThings from "./ducks/quantifiedThings";
+import quantifiedPlaces from "./ducks/quantifiedPlaces";
 import selectedPlaceConnections from "./ducks/selectedPlaceConnections";
 import selectedPlaceTypes from "./ducks/selectedPlaceTypes";
-import selectedThings from "./ducks/selectedThings";
-import count from "./ducks/counts"
+import selectedQuantifiedThings from "./ducks/selectedQuantifiedThings";
+import selectedValueConnections from "./ducks/selectedValueConnections";
+import count from "./ducks/counts";
+import dirty from "./ducks/dirty";
 
 const rootReducer = combineReducers({
     filters,
@@ -22,11 +23,12 @@ const rootReducer = combineReducers({
     publishSettings,
     coordinates,
     places,
+    quantifiedThings,
+    quantifiedPlaces,
+    selectedQuantifiedThings,
     selectedPlaceConnections,
+    selectedValueConnections,
     selectedPlaceTypes,
-    thingsWithPlaces,
-    selectedThings,
-    quantifiers,
     count,
     dirty
 });

@@ -40,7 +40,7 @@ export async function getQuantifiedThings(id, urls, valueConnections, placeConne
         "limit": limit
     };
     const result = await rest('mapsVisualizer/getQuantifiedThings/' + id, payload);
-    return result.data.thingsWithPlaces;
+    return result.data.quantifiedThings;
 }
 
 export async function getQuantifiedPlaces(id, urls, placeTypes, valueConnections, limit) {

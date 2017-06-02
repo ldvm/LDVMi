@@ -51,11 +51,26 @@ export const FullCoordinates = Record({
     latitude: 0
 });
 
-export const Connection = Record({
-    outer: "thing_url",
-    outerType: "type_url",
-    connection: "url",
-    inner: "thing_url"
+export const Place = Record({
+    url: "url",
+    placeType: "type",
+    coordinates: "crd_url"
+});
+
+export const QuantifiedThing = Record({
+    url: "url",
+    valueConnection: "value_conn",
+    value: 0,
+    placeConnection: "place_conn",
+    place: "place_url"
+});
+
+export const QuantifiedPlace = Record({
+    url: "url",
+    placeType: "type",
+    valueConnection: "value_conn",
+    value: 0,
+    coordinates: "crd_url"
 });
 
 export const MapState = Record({
@@ -72,6 +87,6 @@ export const PublishSettings = Record({
 export const Counts = Record({
     coordinates: 0,
     places: 0,
-    thingsWithPlaces: 0,
-    quantifiers: 0
+    quantifiedThings: 0,
+    quantifiedPlaces: 0
 });

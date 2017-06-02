@@ -155,14 +155,14 @@ POST        /assistant/api/mapsVisualizer/getMarkers/:id                        
 #maps - v2 getters
 POST        /assistant/api/mapsVisualizer/getCoordinates/:id                              @controllers.assistant.api.visualizers.MapsVisualizerApiController.getCoordinates(id: Long)
 POST        /assistant/api/mapsVisualizer/getPlaces/:id                                   @controllers.assistant.api.visualizers.MapsVisualizerApiController.getPlaces(id: Long)
-POST        /assistant/api/mapsVisualizer/getThingsWithPlaces/:id                         @controllers.assistant.api.visualizers.MapsVisualizerApiController.getThingsWithPlaces(id: Long)
-POST        /assistant/api/mapsVisualizer/getQuantifiers/:id                              @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiers(id: Long)
+POST        /assistant/api/mapsVisualizer/getQuantifiedThings/:id                         @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiedThings(id: Long)
+POST        /assistant/api/mapsVisualizer/getQuantifiedPlaces/:id                         @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiedPlaces(id: Long)
 
 #maps - v2 counts
 POST        /assistant/api/mapsVisualizer/getCoordinates/count/:id                        @controllers.assistant.api.visualizers.MapsVisualizerApiController.getCoordinatesCount(id: Long)
 POST        /assistant/api/mapsVisualizer/getPlaces/count/:id                             @controllers.assistant.api.visualizers.MapsVisualizerApiController.getPlacesCount(id: Long)
-POST        /assistant/api/mapsVisualizer/getThingsWithPlaces/count/:id                   @controllers.assistant.api.visualizers.MapsVisualizerApiController.getThingsWithPlacesCount(id: Long)
-POST        /assistant/api/mapsVisualizer/getQuantifiers/count/:id                        @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiersCount(id: Long)
+POST        /assistant/api/mapsVisualizer/getQuantifiedThings/count/:id                   @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiedThingsCount(id: Long)
+POST        /assistant/api/mapsVisualizer/getQuantifiedPlaces/count/:id                   @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiedPlacesCount(id: Long)
 
 #chord
 POST        /assistant/api/chordVisualizer/getGraph/:id                                   @controllers.assistant.api.visualizers.ChordVisualizerApiController.getGraph(id: Long)

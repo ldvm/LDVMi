@@ -2,8 +2,8 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {Set as ImmutableSet} from "immutable";
-import {getPlacesCount} from "../ducks/counts";
-import {getPlaces, getPlacesReset, placesSelector, placesStatusSelector} from "../ducks/places";
+import {getQuantifiedPlacesCount} from "../ducks/counts";
+import {placesSelector, placesStatusSelector} from "../ducks/places";
 import {PromiseStatus} from "../../../core/models";
 import PromiseResult from "../../../core/components/PromiseResult";
 import Button from "../../../../components/Button";
@@ -11,22 +11,25 @@ import {limitSelector} from "../../../app/ducks/limit";
 import {Paper} from "material-ui";
 import RecordSelector from "../../../common/RecordSelector";
 import {selectedPlaceTypesSelector, setSelectedPlaceTypesReset, setSelectPlaceType} from "../ducks/selectedPlaceTypes";
-import {quantifiedThingsSelector} from "../ducks/quantifiedThings";
 import CountPlacesContainer from "./CountPlacesContainer";
+import {getQuantifiedPlaces, getQuantifiedPlacesReset} from "../ducks/quantifiedPlaces";
+import {
+    selectedValueConnectionsSelector,
+    setSelectedValueConnectionsReset,
+    setSelectValueConnection
+} from "../ducks/selectedValueConnections";
 
-class PlacesLoader extends Component {
+class QuantifiedPlacesLoader extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
         // Value loading
-        places: PropTypes.array.isRequired,
+        quantifiedPlaces: PropTypes.array.isRequired,
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
-        // User selection
+        // User selections
         selectedPlaceTypes: PropTypes.instanceOf(ImmutableSet).isRequired,
-
-        // Upper level
-        quantifiedThings: PropTypes.array.isRequired,
+        selectedValueConnections: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         // Other
         isInitial: PropTypes.bool.isRequired,
@@ -34,21 +37,20 @@ class PlacesLoader extends Component {
     };
 
     load() {
-        const {dispatch, quantifiedThings, selectedPlaceTypes, limit} = this.props;
+        const {dispatch, selectedPlaceTypes, selectedValueConnections, limit} = this.props;
 
-        var urls = quantifiedThings.map(p => p.place);
-        dispatch(getPlaces(urls, [...selectedPlaceTypes], limit));
-        dispatch(getPlacesCount(urls, [...selectedPlaceTypes]));
+        dispatch(getQuantifiedPlaces([], [...selectedPlaceTypes], [...selectedValueConnections], limit));
+        dispatch(getQuantifiedPlacesCount([], [...selectedPlaceTypes], [...selectedValueConnections]));
     }
 
-    reload(thingsWithPlaces) {
+    reload() {
         const {dispatch, limit} = this.props;
+
         dispatch(setSelectedPlaceTypesReset());
+        dispatch(setSelectedValueConnectionsReset());
 
-        var urls = thingsWithPlaces.map(p => p.inner);
-        dispatch(getPlaces(urls, [], limit));
-        dispatch(getPlacesCount(urls, []));
-
+        dispatch(getQuantifiedPlaces([], [], [], limit));
+        dispatch(getQuantifiedPlacesCount([], [], []));
     }
 
     componentWillMount() {
@@ -66,28 +68,37 @@ class PlacesLoader extends Component {
 
     componentWillUnmount() {
         const {dispatch} = this.props;
-        dispatch(getPlacesReset());
+        dispatch(getQuantifiedPlacesReset());
         dispatch(setSelectedPlaceTypesReset());
+        dispatch(setSelectedValueConnectionsReset());
     }
 
     render() {
-        const {dispatch, places, status, selectedPlaceTypes, quantifiedThings} = this.props;
+        const {dispatch, quantifiedPlaces, status, selectedPlaceTypes, selectedValueConnections} = this.props;
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error}
-                                  loadingMessage="Loading places..."/>
+                                  loadingMessage="Loading quantified places..."/>
         }
 
-        var buttonsEnabled = selectedPlaceTypes.size > 0;
+        var buttonsEnabled = selectedPlaceTypes.size > 0 || selectedValueConnections.size > 0;
 
         return <Paper>
             <RecordSelector
-                records={places}
+                records={quantifiedPlaces}
                 header="Places Types:"
                 getKey={t => t.placeType}
                 getValue={t => t.placeType}
                 selectedKeys={selectedPlaceTypes}
                 onKeySelect={k => dispatch(setSelectPlaceType(k))}
+            />
+            <RecordSelector
+                records={quantifiedPlaces}
+                header="Value Connections:"
+                getKey={t => t.valueConnection}
+                getValue={t => t.valueConnection}
+                selectedKeys={selectedPlaceTypes}
+                onKeySelect={k => dispatch(setSelectValueConnection(k))}
             />
             <Button raised={true}
                     onTouchTap={() => this.load()}
@@ -95,7 +106,7 @@ class PlacesLoader extends Component {
                     label="LOAD"
             />
             <Button raised={true}
-                    onTouchTap={() => this.reload(quantifiedThings)}
+                    onTouchTap={() => this.reload()}
                     disabled={false}
                     label="RESET"
             />
@@ -109,9 +120,9 @@ const selector = createStructuredSelector({
     status: placesStatusSelector,
 
     selectedPlaceTypes: selectedPlaceTypesSelector,
-    quantifiedThings: quantifiedThingsSelector,
+    selectedValueConnections: selectedValueConnectionsSelector,
 
     limit: limitSelector
 });
 
-export default connect(selector)(PlacesLoader);
+export default connect(selector)(QuantifiedPlacesLoader);

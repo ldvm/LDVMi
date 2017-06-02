@@ -7,32 +7,32 @@ import {Set as ImmutableSet} from "immutable";
 import moduleSelector from "../selector";
 
 // Actions
-export const SET_SELECT_THINGS = prefix('SET_SELECT_THINGS');
-export const SET_SELECT_THINGS_RESET = SET_SELECT_THINGS + '_RESET';
+export const SET_SELECT_VALUE_CONNECTIONS = prefix('SET_SELECT_VALUE_CONNECTIONS');
+export const SET_SELECT_VALUE_CONNECTIONS_RESET = SET_SELECT_VALUE_CONNECTIONS + '_RESET';
 
-export function setSelectThing(url) {
+export function setSelectValueConnection(url) {
     return withApplicationId(id => {
-        return createAction(SET_SELECT_THINGS, {url});
+        return createAction(SET_SELECT_VALUE_CONNECTIONS, {url});
     });
 }
 
-export function setSelectedThingReset() {
-    return createAction(SET_SELECT_THINGS_RESET);
+export function setSelectedValueConnectionsReset() {
+    return createAction(SET_SELECT_VALUE_CONNECTIONS_RESET);
 }
 
 // Reducer
 const initialState = new ImmutableSet();
-export default function selectedThingsReducer(state = initialState, action) {
+export default function selectedValueConnections(state = initialState, action) {
     switch (action.type) {
         case GET_APPLICATION_START:
             return initialState;
-        case SET_SELECT_THINGS_RESET:
+        case SET_SELECT_VALUE_CONNECTIONS_RESET:
             return initialState;
-        case SET_SELECT_THINGS:
+        case SET_SELECT_VALUE_CONNECTIONS:
             return state.contains(action.payload.url) ? state.remove(action.payload.url) : state.add(action.payload.url);
     }
     return state;
 };
 
 // Selectors
-export const selectedThingsSelector = createSelector([moduleSelector], state => state.selectedThings);
+export const selectedValueConnectionsSelector = createSelector([moduleSelector], state => state.selectedValueConnections);
