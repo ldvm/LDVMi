@@ -3,12 +3,13 @@ package model.rdf.sparql.geo.query
 import model.rdf.sparql.QueryHelpers
 import model.rdf.sparql.query.SparqlCountQuery
 
-class PlaceQuery(maybePlaceUrls: Option[Seq[String]],
-                 maybePlaceTypes: Option[Seq[String]],
-                 maybeLimit: Option[Int]) extends SparqlCountQuery {
+class QuantifiedPlaceQuery(maybePlaceUrls: Option[Seq[String]],
+                           maybePlaceTypes: Option[Seq[String]],
+                           maybeValueConnections: Option[Seq[String]],
+                           maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?place ?placeType ?coordinates"
-    val group = "GROUP BY ?place ?placeType ?coordinates"
+    val select = "SELECT ?place ?placeType ?valueConnection ?value ?coordinates"
+    val group = "GROUP BY ?place ?placeType ?valueConnection ?value ?coordinates"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select, group, limit)
   }
@@ -26,11 +27,13 @@ class PlaceQuery(maybePlaceUrls: Option[Seq[String]],
        |
        |${select}
        |WHERE {
-       |  ?place  a ?placeType ;
-       |    s:geo ?coordinates .
+       |  ?place a ?placeType ;
+       |    s:geo ?coordinates ;
+       |    ?valueConnection ?value .
        |
        |  ${QueryHelpers.limitValues("place", maybePlaceUrls)}
        |  ${QueryHelpers.limitValues("placeType", maybePlaceTypes)}
+       |  ${QueryHelpers.limitValues("valueConnection", maybeValueConnections)}
        |}
        |
        |${group}

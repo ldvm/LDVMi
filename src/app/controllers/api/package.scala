@@ -102,9 +102,10 @@ package object api {
     implicit val visualizerWrites = Json.writes[ComponentTemplate]
     implicit val coordWrites = Json.writes[Coordinates]
     implicit val markerWrites = Json.writes[Marker]
-    implicit val geoConnectionWrites = Json.writes[GeoConnection]
     implicit val fullCoordinatesWrites = Json.writes[FullCoordinates]
-    implicit val quantifierWrites = Json.writes[Quantifier]
+    implicit val geoPlaceWrites = Json.writes[Place]
+    implicit val geoQuantifiedThingWrites = Json.writes[QuantifiedThing]
+    implicit val geoQuantifiedPlaceWrites = Json.writes[QuantifiedPlace]
 
     implicit val graphWrites = Json.writes[Graph]
     implicit val nodeWrites = Json.writes[Node]

@@ -1,6 +1,7 @@
-package model.assistant.rest
+package model.assistant.rest.timeline
 
 import java.util.Date
+
 import play.api.libs.json.Json
 
 object UrlsStartEndRequest {

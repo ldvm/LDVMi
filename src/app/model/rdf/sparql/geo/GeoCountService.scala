@@ -9,8 +9,8 @@ trait GeoCountService extends SparqlService {
 
   def places(evaluation: PipelineEvaluation, placeUrls: Seq[String], placeTypes: Seq[String], limit: Int): Option[Count]
 
-  def thingsWithPlaces(evaluation: PipelineEvaluation, thingsUrls: Seq[String], thingsTypes: Seq[String], connections: Seq[String], limit: Int): Option[Count]
+  def quantifiedThings(evaluation: PipelineEvaluation, thingsUrls: Seq[String], valueConnections: Seq[String], placeConnections: Seq[String], limit: Int): Option[Count]
 
-  def quantifiedValues(evaluation: PipelineEvaluation, thingsUrls: Seq[String], connections: Seq[String], limit: Int): Option[Count]
+  def quantifiedPlaces(evaluation: PipelineEvaluation, placeUrls: Seq[String], placeTypes: Seq[String], valueConnections: Seq[String], limit: Int): Option[Count]
 
 }

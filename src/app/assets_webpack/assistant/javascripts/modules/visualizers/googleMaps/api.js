@@ -21,47 +21,59 @@ export async function getMarkers(id, mapQueryData) {
 }
 
 export async function getCoordinates(id, urls, limit) {
-    const result = await rest('mapsVisualizer/getCoordinates/' + id, {urls, limit});
+    let payload = {"urls": urls, "limit": limit};
+    const result = await rest('mapsVisualizer/getCoordinates/' + id, payload);
     return result.data.coordinates;
 }
 
-export async function getPlaces(id, placesUrls, placesTypes, limit) {
-    let payload = {"things": placesUrls, "thingTypes": placesTypes, "connections": [], "limit": limit};
+export async function getPlaces(id, urls, placesTypes, limit) {
+    let payload = {"urls": urls, "placeTypes": placesTypes, "limit": limit};
     const result = await rest('mapsVisualizer/getPlaces/' + id, payload);
     return result.data.places;
 }
 
-export async function getThingsWithPlaces(id, thingsUrls, thingsTypes, connections, limit) {
-    let payload = {"things": thingsUrls, "thingTypes": thingsTypes, "connections": connections, "limit": limit};
-    const result = await rest('mapsVisualizer/getThingsWithPlaces/' + id, payload);
+export async function getQuantifiedThings(id, urls, valueConnections, placeConnections, limit) {
+    let payload = {
+        "urls": urls,
+        "valueConnections": valueConnections,
+        "placeConnections": placeConnections,
+        "limit": limit
+    };
+    const result = await rest('mapsVisualizer/getQuantifiedThings/' + id, payload);
     return result.data.thingsWithPlaces;
 }
 
-export async function getQuantifiers(id, urls, connections, limit) {
-    let payload = {"things": urls, "thingTypes": [], "connections": connections, "limit": limit};
-    const result = await rest('mapsVisualizer/getQuantifiers/' + id, payload);
+export async function getQuantifiedPlaces(id, urls, placeTypes, valueConnections, limit) {
+    let payload = {"urls": urls, "placeTypes": placeTypes, "valueConnections": valueConnections, "limit": limit};
+    const result = await rest('mapsVisualizer/getQuantifiedPlaces/' + id, payload);
     return result.data.quantifiers;
 }
 
 export async function getCoordinatesCount(id, urls) {
-    const result = await rest('mapsVisualizer/getCoordinates/count/' + id, {urls, "limit": -1});
+    let payload = {"urls": urls, "limit": -1};
+    const result = await rest('mapsVisualizer/getCoordinates/count/' + id, payload);
     return result.data.count;
 }
 
-export async function getPlacesCount(id, placesUrls, placesTypes) {
-    let payload = {"things": placesUrls, "thingTypes": placesTypes, "connections": [], "limit": -1};
+export async function getPlacesCount(id, urls, placesTypes) {
+    let payload = {"urls": urls, "placeTypes": placesTypes, "limit": -1};
     const result = await rest('mapsVisualizer/getPlaces/count/' + id, payload);
     return result.data.count;
 }
 
-export async function getThingsWithPlacesCount(id, thingsUrls, thingsTypes, connections) {
-    let payload = {"things": thingsUrls, "thingTypes": thingsTypes, "connections": connections, "limit": -1};
-    const result = await rest('mapsVisualizer/getThingsWithPlaces/count/' + id, payload);
+export async function getQuantifiedThingsCount(id, urls, valueConnections, placeConnections) {
+    let payload = {
+        "urls": urls,
+        "valueConnections": valueConnections,
+        "placeConnections": placeConnections,
+        "limit": -1
+    };
+    const result = await rest('mapsVisualizer/getQuantifiedThings/count/' + id, payload);
     return result.data.count;
 }
 
-export async function getQuantifiersCount(id, urls, connections) {
-    let payload = {"things": urls, "thingTypes": [], "connections": connections, "limit": -1};
-    const result = await rest('mapsVisualizer/getQuantifiers/count/' + id, payload);
+export async function getQuantifiedPlacesCount(id, urls, placeTypes, valueConnections,) {
+    let payload = {"urls": urls, "placeTypes": placeTypes, "valueConnections": valueConnections, "limit": -1};
+    const result = await rest('mapsVisualizer/getQuantifiedPlaces/count/' + id, payload);
     return result.data.count;
 }

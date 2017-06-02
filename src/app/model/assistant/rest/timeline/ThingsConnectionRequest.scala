@@ -1,4 +1,4 @@
-package model.assistant.rest
+package model.assistant.rest.timeline
 
 import play.api.libs.json.Json
 

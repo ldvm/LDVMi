@@ -6,8 +6,10 @@ import model.assistant.rest.EmptyRequest.EmptyRequest
 import model.assistant.rest.Response._
 import model.assistant.rest.SkosConceptsCountsRequest.SkosConceptsCountsRequest
 import model.assistant.rest.SkosConceptsRequest.SkosConceptsRequest
-import model.assistant.rest.ThingsConnectionRequest.ThingsConnectionsRequest
-import model.assistant.rest.UrlsRequest.UrlsRequest
+import model.assistant.rest.geo.CoordinatesRequest.CoordinatesRequest
+import model.assistant.rest.geo.PlacesRequest.PlacesRequest
+import model.assistant.rest.geo.QuantifiedPlacesRequest.QuantifiedPlacesRequest
+import model.assistant.rest.geo.QuantifiedThingsRequest.QuantifiedThingsRequest
 import model.rdf.sparql.geo.models.MapQueryData
 import model.rdf.sparql.geo.{GeoCountService, GeoService}
 import model.rdf.sparql.visualization.VisualizationService
@@ -60,7 +62,7 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
       }
   }
 
-  def getCoordinates(id: Long) = RestAsyncAction[UrlsRequest] { implicit request =>
+  def getCoordinates(id: Long) = RestAsyncAction[CoordinatesRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
         val coord = geoService.coordinates(evaluation, json.urls, json.limit)
@@ -68,31 +70,31 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
       }
   }
 
-  def getPlaces(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
+  def getPlaces(id: Long) = RestAsyncAction[PlacesRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val places = geoService.places(evaluation, json.things, json.thingTypes, json.limit)
+        val places = geoService.places(evaluation, json.urls, json.placeTypes, json.limit)
         Future(Ok(SuccessResponse(data = Seq("places" -> places))))
       }
   }
 
-  def getThingsWithPlaces(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
+  def getQuantifiedThings(id: Long) = RestAsyncAction[QuantifiedThingsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val twp = geoService.thingsWithPlaces(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val twp = geoService.quantifiedThings(evaluation, json.urls, json.valueConnections, json.placeConnections, json.limit)
         Future(Ok(SuccessResponse(data = Seq("thingsWithPlaces" -> twp))))
       }
   }
 
-  def getQuantifiers(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
+  def getQuantifiedPlaces(id: Long) = RestAsyncAction[QuantifiedPlacesRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val quantifiers = geoService.quantifiedValues(evaluation, json.things, json.connections, json.limit)
+        val quantifiers = geoService.quantifiedPlaces(evaluation, json.urls, json.placeTypes, json.valueConnections, json.limit)
         Future(Ok(SuccessResponse(data = Seq("quantifiers" -> quantifiers))))
       }
   }
 
-  def getCoordinatesCount(id: Long) = RestAsyncAction[UrlsRequest] { implicit request =>
+  def getCoordinatesCount(id: Long) = RestAsyncAction[CoordinatesRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
         val count = geoCountService.coordinates(evaluation, json.urls, json.limit)
@@ -100,26 +102,26 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
       }
   }
 
-  def getPlacesCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
+  def getPlacesCount(id: Long) = RestAsyncAction[PlacesRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val count = geoCountService.places(evaluation, json.things, json.thingTypes, json.limit)
+        val count = geoCountService.places(evaluation, json.urls, json.placeTypes, json.limit)
         Future(Ok(SuccessResponse(data = Seq("count" -> count))))
       }
   }
 
-  def getThingsWithPlacesCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
+  def getQuantifiedThingsCount(id: Long) = RestAsyncAction[QuantifiedThingsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val count = geoCountService.thingsWithPlaces(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val count = geoCountService.quantifiedThings(evaluation, json.urls, json.valueConnections, json.placeConnections, json.limit)
         Future(Ok(SuccessResponse(data = Seq("count" -> count))))
       }
   }
 
-  def getQuantifiersCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
+  def getQuantifiedPlacesCount(id: Long) = RestAsyncAction[QuantifiedPlacesRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val count = geoCountService.quantifiedValues(evaluation, json.things, json.connections, json.limit)
+        val count = geoCountService.quantifiedPlaces(evaluation, json.urls, json.placeTypes, json.valueConnections, json.limit)
         Future(Ok(SuccessResponse(data = Seq("count" -> count))))
       }
   }

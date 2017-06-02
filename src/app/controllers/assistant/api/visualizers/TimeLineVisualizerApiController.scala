@@ -3,8 +3,8 @@ package controllers.assistant.api.visualizers
 import controllers.api.JsonImplicits._
 import model.assistant.entity.ApplicationId
 import model.assistant.rest.Response._
-import model.assistant.rest.ThingsConnectionRequest.ThingsConnectionsRequest
-import model.assistant.rest.UrlsStartEndRequest.UrlsStartEndRequest
+import model.assistant.rest.timeline.ThingsConnectionRequest.ThingsConnectionsRequest
+import model.assistant.rest.timeline.UrlsStartEndRequest.UrlsStartEndRequest
 import model.rdf.sparql.timeline._
 import play.api.libs.concurrent.Execution.Implicits._
 import scaldi.Injector

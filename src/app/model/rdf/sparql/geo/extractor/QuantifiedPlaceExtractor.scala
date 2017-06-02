@@ -1,21 +1,23 @@
 package model.rdf.sparql.geo.extractor
 
 import model.rdf.extractor.QueryExecutionResultExtractor
-import model.rdf.sparql.geo.models.Place
-import model.rdf.sparql.geo.query.PlaceQuery
+import model.rdf.sparql.geo.models.QuantifiedPlace
+import model.rdf.sparql.geo.query.QuantifiedPlaceQuery
 import org.apache.jena.query.QueryExecution
 
 import scala.collection.JavaConversions._
 
-class PlaceExtractor
-  extends QueryExecutionResultExtractor[PlaceQuery, Seq[Place]] {
+class QuantifiedPlaceExtractor
+  extends QueryExecutionResultExtractor[QuantifiedPlaceQuery, Seq[QuantifiedPlace]] {
 
-  def extract(input: QueryExecution): Option[Seq[Place]] = {
+  def extract(input: QueryExecution): Option[Seq[QuantifiedPlace]] = {
     try {
       val resList = input.execSelect().toList
-      Some(resList.map(qs => new Place(
+      Some(resList.map(qs => new QuantifiedPlace(
         qs.getResource("place").getURI,
         qs.getResource("placeType").getURI,
+        qs.getResource("valueConnection").getURI,
+        Integer.parseInt(qs.getResource("value").toString),
         qs.getResource("coordinates").getURI
       )))
     }

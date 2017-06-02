@@ -5,7 +5,7 @@ import model.entity.PipelineEvaluation
 import model.rdf.Count
 import model.rdf.sparql.SparqlEndpointService
 import model.rdf.sparql.extractor.CountExtractor
-import model.rdf.sparql.geo.query.{CoordinatesQuery, PlaceQuery, QuantifiedValueQuery, ThingWithPlaceQuery}
+import model.rdf.sparql.geo.query.{CoordinatesQuery, PlaceQuery, QuantifiedPlaceQuery, QuantifiedThingQuery}
 import scaldi.{Injectable, Injector}
 
 class GeoCountServiceImpl(implicit val inj: Injector) extends GeoCountService with SessionScoped with Injectable {
@@ -27,20 +27,21 @@ class GeoCountServiceImpl(implicit val inj: Injector) extends GeoCountService wi
     sparqlEndpointService.getCount(evaluationToSparqlEndpoint(evaluation), new PlaceQuery(maybePlaceUrls, maybePlaceTypes, maybeLimit), new CountExtractor)
   }
 
-  def thingsWithPlaces(evaluation: PipelineEvaluation, thingsUrls: Seq[String], thingsTypes: Seq[String], connections: Seq[String], limit: Int): Option[Count] = {
+  def quantifiedThings(evaluation: PipelineEvaluation, thingsUrls: Seq[String], valueConnections: Seq[String], placeConnections: Seq[String], limit: Int): Option[Count] = {
     val maybeThingsUrls = if (thingsUrls.size > 0) Some(thingsUrls) else None
-    val maybeThingsTypes = if (thingsTypes.size > 0) Some(thingsTypes) else None
-    val maybeConnections = if (connections.size > 0) Some(connections) else None
+    val maybeValueConnections = if (valueConnections.size > 0) Some(valueConnections) else None
+    val maybePlaceConnections = if (placeConnections.size > 0) Some(placeConnections) else None
     val maybeLimit = if (limit > 0) Some(limit) else None
 
-    sparqlEndpointService.getCount(evaluationToSparqlEndpoint(evaluation), new ThingWithPlaceQuery(maybeThingsUrls, maybeThingsTypes, maybeConnections, maybeLimit), new CountExtractor)
+    sparqlEndpointService.getCount(evaluationToSparqlEndpoint(evaluation), new QuantifiedThingQuery(maybeThingsUrls, maybeValueConnections, maybePlaceConnections, maybeLimit), new CountExtractor)
   }
 
-  def quantifiedValues(evaluation: PipelineEvaluation, thingsUrls: Seq[String], connections: Seq[String], limit: Int): Option[Count] = {
-    val maybeThingsUrls = if (thingsUrls.size > 0) Some(thingsUrls) else None
-    val maybeConnections = if (connections.size > 0) Some(connections) else None
+  def quantifiedPlaces(evaluation: PipelineEvaluation, placeUrls: Seq[String], placeTypes: Seq[String], valueConnections: Seq[String], limit: Int): Option[Count] = {
+    val maybePlaceUrls = if (placeUrls.size > 0) Some(placeUrls) else None
+    val maybePlaceTypes = if (placeTypes.size > 0) Some(placeTypes) else None
+    val maybeValueConnections = if (valueConnections.size > 0) Some(valueConnections) else None
     val maybeLimit = if (limit > 0) Some(limit) else None
 
-    sparqlEndpointService.getCount(evaluationToSparqlEndpoint(evaluation), new QuantifiedValueQuery(maybeThingsUrls, maybeConnections, maybeLimit), new CountExtractor)
+    sparqlEndpointService.getCount(evaluationToSparqlEndpoint(evaluation), new QuantifiedPlaceQuery(maybePlaceUrls, maybePlaceTypes, maybeValueConnections, maybeLimit), new CountExtractor)
   }
 }
