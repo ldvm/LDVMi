@@ -92,6 +92,10 @@ class TimeLineIntervalsContainer extends Component {
             return <PromiseResult status={status} error={status.error} loadingMessage="Loading intervals..."/>
         }
 
+        if (intervals.length == 0){
+            return <CenteredMessage>No intervals loaded.</CenteredMessage>
+        }
+
         require('../misc/TimeLineStyle.css');
         return <Paper>
             <TimeRangeContainer/>

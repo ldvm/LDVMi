@@ -7,7 +7,7 @@ import CoordinatesLoader from "../containers/CoordinatesLoader";
 import GoogleMapsMarkers from "../containers/GoogleMapsMarkers";
 import PlacesLoader from "../containers/PlacesLoader";
 
-class Coordinates extends Component {
+class Places extends Component {
     render() {
         let configurations = new Map([
             ["PLACES",
@@ -28,4 +28,4 @@ class Coordinates extends Component {
         )
     }
 }
-export default Coordinates;
+export default Places;

@@ -15,8 +15,8 @@ class IntervalsToFirstLevel extends Component {
             "FIRST LEVEL",
             <FirstLevelLoader
                 isInitial={true}
-                secondLevelLoader={getFirstLevelIntervals}
-                secondLevelCount={getFirstLevelIntervalsCount}
+                firstLevelLoader={getFirstLevelIntervals}
+                firstLevelCount={getFirstLevelIntervalsCount}
             />);
         configurations.set(
             "LIMIT",

@@ -87,6 +87,10 @@ class TimeLineInstantsContainer extends Component {
             return <PromiseResult status={status} error={status.error} loadingMessage="Loading instants..."/>
         }
 
+        if (instants.length == 0){
+            return <CenteredMessage>No instants loaded.</CenteredMessage>
+        }
+
         require('../misc/TimeLineStyle.css');
         return <Paper>
             <TimeRangeContainer/>

@@ -45,8 +45,7 @@ class InstantQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInstan
   private def startFilter: String = {
     maybeStart match {
       case Some(start) => {
-        s"""FILTER (xsd:dateTime(?date) > xsd:dateTime("${QueryHelpers.dateToString(start)}"))""".stripMargin
-
+        return s"""FILTER ( ?date > xsd:date("${QueryHelpers.dateToString(start)}"))""".stripMargin
       }
       case None => ""
     }
@@ -55,7 +54,7 @@ class InstantQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInstan
   private def endFilter: String = {
     maybeEnd match {
       case Some(end) => {
-        return s"""FILTER (xsd:dateTime(?date) < xsd:dateTime("${QueryHelpers.dateToString(end)}"))""".stripMargin
+        return s"""FILTER ( ?date < xsd:date("${QueryHelpers.dateToString(end)}"))""".stripMargin
       }
       case None => ""
     }

@@ -31,9 +31,9 @@ object QueryHelpers {
               |   time:month ?${month_str};
               |   time:day   ?${day_str}.
               |
-              | BIND (substr(?${day_str}, 4, 2)   AS  ?${day})
-              | BIND (substr(?${month_str}, 3, 2) AS  ?${month})
-              | BIND (year(  ?${year_str})        AS  ?${year})
+              | BIND (substr(strdt(?${day_str},   xsd:string), 4, 2) AS ?${day})
+              | BIND (substr(strdt(?${month_str}, xsd:string), 3, 2) AS ?${month})
+              | BIND (substr(strdt(?${year_str},  xsd:string), 1, 4) AS ?${year})
               |
               | BIND (concat(?${year}, "-", ?${month}, "-", ?${day}) AS ?${out_str})
               | BIND (strdt(?${out_str}, xsd:date) AS ?${outXsdDateVariable})

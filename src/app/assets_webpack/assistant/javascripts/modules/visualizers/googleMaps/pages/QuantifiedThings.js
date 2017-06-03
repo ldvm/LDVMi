@@ -8,12 +8,12 @@ import GoogleMapsCircles from "../containers/GoogleMapsCircles";
 import QuantifiedThingsLoader from "../containers/QuantifiedThingsLoader";
 import PlacesLoader from "../containers/PlacesLoader";
 
-class Coordinates extends Component {
+class QuantifiedThings extends Component {
     render() {
         let configurations = new Map([
             ["THINGS",
-                <QuantifiedThingsLoader isInitial={true}/>]
-                ["PLACES",
+                <QuantifiedThingsLoader isInitial={true}/>],
+            ["PLACES",
                 <PlacesLoader isInitial={false}/>],
             ["COORDINATES",
                 <CoordinatesLoader isInitial={false}/>],
@@ -31,4 +31,4 @@ class Coordinates extends Component {
         )
     }
 }
-export default Coordinates;
+export default QuantifiedThings;
