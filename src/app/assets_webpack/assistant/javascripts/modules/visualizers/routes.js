@@ -7,7 +7,7 @@ import chordRoutes from "./chord/configuratorRoutes";
 import googleMapsV1Routes from "./googleMaps/bundles/v1/configuratorRoutes";
 import googleMapsCoordinatesRoutes from "./googleMaps/bundles/coordinates/configuratorRoutes";
 import googleMapsPlacesRoutes from "./googleMaps/bundles/places/configuratorRoutes";
-import googleMapsPlacesValuesRoutes from "./googleMaps/bundles/placesValues/configuratorRoutes";
+import googleMapsPlacesValuesRoutes from "./googleMaps/bundles/quantifiedPlaces/configuratorRoutes";
 import googleMapsThingsPlacesValuesRoutes from "./googleMaps/bundles/thingsWithPlacesValues/configuratorRoutes";
 
 import timelineInstantsRoutes from "./timeline/bundles/instants/configuratorRoutes";

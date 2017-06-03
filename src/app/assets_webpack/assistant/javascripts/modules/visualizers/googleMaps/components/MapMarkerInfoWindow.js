@@ -23,9 +23,18 @@ class MapMarkerInfoWindow extends Component {
         for (const c of coordinates) {
             if (c.url == url) {
                 return <div>
-                    <Label uri={url}/>
-                    <br/>
-                    <Comment uri={url}/>
+
+                    <b>Map position: </b>
+                    <Label uri={url}/><br/>
+                    <Comment uri={url}/><br/>
+
+                    <b>Latitude: </b>
+                    {c.latitude}<br/>
+
+                    <b>Longitude: </b>
+                    {c.longitude}<br/>
+
+                    <hr/>
                 </div>
             }
         }
@@ -40,17 +49,15 @@ class MapMarkerInfoWindow extends Component {
         var connectedPlaces = [];
         for (const p of places) {
             if (p.coordinates == url) {
-                connectedPlaces.add(
+                connectedPlaces.push(
                     <div key={p.url}>
-                        <hr/>
 
-                        <b>Place:</b>
+                        <b>Place: </b>
                         <Label uri={p.url}/><br/>
-                        <Comment uri={p.url}/><br/>
-
-                        {this.connectQuantifiedThings(p.url)}
+                        <Comment uri={p.url}/>
 
                         <hr/>
+                        {this.connectQuantifiedThings(p.url)}
                     </div>
                 );
             }
@@ -59,18 +66,17 @@ class MapMarkerInfoWindow extends Component {
         // Quantified places
         for (const p of quantifiedPlaces) {
             if (p.coordinates == url) {
-                connectedPlaces.add(
+                connectedPlaces.push(
                     <div key={p.url}>
-                        <hr/>
 
-                        <b>Place:</b>
+                        <b>Place: </b>
                         <Label uri={p.url}/><br/>
                         <Comment uri={p.url}/><br/>
 
-                        <b>Value:</b>
-                        <p>p.value</p>
+                        <b>Value: </b>
+                        {p.value}<br/>
 
-                        <b>Value connection</b>
+                        <b>Value connection: </b>
                         <Label uri={p.valueConnection}/><br/>
                         <Comment uri={p.valueConnection}/><br/>
 
@@ -89,22 +95,21 @@ class MapMarkerInfoWindow extends Component {
         var connectedQuantifiedThings = [];
         for (const t of quantifiedThings) {
             if (t.place == placeUrl) {
-                connectedQuantifiedThings.add(
-                    <div>
-                        <hr/>
+                connectedQuantifiedThings.push(
+                    <div key={t.url}>
 
-                        <b>Connected thing:</b>
+                        <b>Connected thing: </b>
                         <Label uri={t.url}/><br/>
                         <Comment uri={t.url}/><br/>
 
-                        <b>Connected via:</b>
+                        <b>Place connection: </b>
                         <Label uri={t.placeConnection}/><br/>
                         <Comment uri={t.placeConnection}/><br/>
 
-                        <b>Value:</b>
-                        <p>t.value</p>
+                        <b>Value: </b>
+                        {t.value}<br/>
 
-                        <b>Value connected via:</b>
+                        <b>Value connection: </b>
                         <Label uri={t.valueConnection}/><br/>
                         <Comment uri={t.valueConnection}/><br/>
 
@@ -118,8 +123,8 @@ class MapMarkerInfoWindow extends Component {
 
     render() {
         return <div>
+            <hr/>
             {this.coordinate()}
-            <br/>
             {this.connectPlaces()}
         </div>
     }

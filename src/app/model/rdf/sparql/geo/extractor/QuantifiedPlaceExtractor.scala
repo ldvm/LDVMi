@@ -17,7 +17,7 @@ class QuantifiedPlaceExtractor
         qs.getResource("place").getURI,
         qs.getResource("placeType").getURI,
         qs.getResource("valueConnection").getURI,
-        Integer.parseInt(qs.getResource("value").toString),
+        qs.getLiteral("value").getInt,
         qs.getResource("coordinates").getURI
       )))
     }

@@ -40,8 +40,8 @@ class CountThingsContainer extends Component {
 }
 
 const selector = createStructuredSelector({
-    things: quantifiedThingsSelector,
-    thingsStatus: quantifiedThingsStatusSelector,
+    quantifiedThings: quantifiedThingsSelector,
+    quantifiedThingsStatus: quantifiedThingsStatusSelector,
 
     count: quantifiedThingsCountSelector,
     countStatus: quantifiedThingsCountStatusSelector,

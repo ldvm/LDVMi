@@ -36,7 +36,7 @@ export function getQuantifiedThingsCount(urls, valueConnections, placeConnection
     });
 }
 
-export const GET_QUANTIFIED_PLACES_COUNT = prefix('GET_QUANTIFIERS_COUNT');
+export const GET_QUANTIFIED_PLACES_COUNT = prefix('GET_QUANTIFIED_PLACES_COUNT');
 export const GET_QUANTIFIED_PLACES_COUNT_SUCCESS = GET_QUANTIFIED_PLACES_COUNT + '_SUCCESS';
 export function getQuantifiedPlacesCount(urls, types, valueConnections) {
     return withApplicationId(id => {

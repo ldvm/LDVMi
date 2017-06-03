@@ -16,7 +16,7 @@ class QuantifiedThingExtractor
       Some(resList.map(qs => new QuantifiedThing(
         qs.getResource("thing").getURI,
         qs.getResource("valueConnection").getURI,
-        Integer.parseInt(qs.getResource("value").toString),
+        qs.getLiteral("value").getInt,
         qs.getResource("placeConnection").getURI,
         qs.getResource("place").getURI
       )))

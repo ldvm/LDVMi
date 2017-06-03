@@ -41,11 +41,11 @@ class PlacesLoader extends Component {
         dispatch(getPlacesCount(urls, [...selectedPlaceTypes]));
     }
 
-    reload(thingsWithPlaces) {
+    reload(quantifiedThings) {
         const {dispatch, limit} = this.props;
         dispatch(setSelectedPlaceTypesReset());
 
-        var urls = thingsWithPlaces.map(p => p.inner);
+        var urls = quantifiedThings.map(p => p.place);
         dispatch(getPlaces(urls, [], limit));
         dispatch(getPlacesCount(urls, []));
 

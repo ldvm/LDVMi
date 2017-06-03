@@ -31,6 +31,8 @@ class QuantifiedPlaceQuery(maybePlaceUrls: Option[Seq[String]],
        |    s:geo ?coordinates ;
        |    ?valueConnection ?value .
        |
+       |  FILTER(ISNUMERIC(?value))
+       |
        |  ${QueryHelpers.limitValues("place", maybePlaceUrls)}
        |  ${QueryHelpers.limitValues("placeType", maybePlaceTypes)}
        |  ${QueryHelpers.limitValues("valueConnection", maybeValueConnections)}

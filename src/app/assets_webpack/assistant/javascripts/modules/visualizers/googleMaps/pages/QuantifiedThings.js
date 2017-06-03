@@ -4,13 +4,19 @@ import LimiterContainer from "../../../app/containers/LimiterContainer";
 import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
 import FillInScreen from "../../../../components/FillInScreen";
 import CoordinatesLoader from "../containers/CoordinatesLoader";
-import GoogleMapsMarkers from "../containers/GoogleMapsMarkers";
+import GoogleMapsCircles from "../containers/GoogleMapsCircles";
+import QuantifiedThingsLoader from "../containers/QuantifiedThingsLoader";
+import PlacesLoader from "../containers/PlacesLoader";
 
 class Coordinates extends Component {
     render() {
         let configurations = new Map([
+            ["THINGS",
+                <QuantifiedThingsLoader isInitial={true}/>]
+                ["PLACES",
+                <PlacesLoader isInitial={false}/>],
             ["COORDINATES",
-                <CoordinatesLoader isInitial={true}/>],
+                <CoordinatesLoader isInitial={false}/>],
             ["LIMIT",
                 <LimiterContainer/>]
         ]);
@@ -19,7 +25,7 @@ class Coordinates extends Component {
             <BodyPadding>
                 <ConfigurationToolbar label="Configure Visualization" children={configurations}/>
                 <FillInScreen forceFill={true}>
-                    <GoogleMapsMarkers/>
+                    <GoogleMapsCircles/>
                 </FillInScreen>
             </BodyPadding>
         )

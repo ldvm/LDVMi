@@ -21,18 +21,21 @@ export async function getMarkers(id, mapQueryData) {
 }
 
 export async function getCoordinates(id, urls, limit) {
+    if (urls.length > 100) urls = [];
     let payload = {"urls": urls, "limit": limit};
     const result = await rest('mapsVisualizer/getCoordinates/' + id, payload);
     return result.data.coordinates;
 }
 
 export async function getPlaces(id, urls, placesTypes, limit) {
+    if (urls.length > 100) urls = [];
     let payload = {"urls": urls, "placeTypes": placesTypes, "limit": limit};
     const result = await rest('mapsVisualizer/getPlaces/' + id, payload);
     return result.data.places;
 }
 
 export async function getQuantifiedThings(id, urls, valueConnections, placeConnections, limit) {
+    if (urls.length > 100) urls = [];
     let payload = {
         "urls": urls,
         "valueConnections": valueConnections,
@@ -44,24 +47,28 @@ export async function getQuantifiedThings(id, urls, valueConnections, placeConne
 }
 
 export async function getQuantifiedPlaces(id, urls, placeTypes, valueConnections, limit) {
+    if (urls.length > 100) urls = [];
     let payload = {"urls": urls, "placeTypes": placeTypes, "valueConnections": valueConnections, "limit": limit};
     const result = await rest('mapsVisualizer/getQuantifiedPlaces/' + id, payload);
-    return result.data.quantifiers;
+    return result.data.quantifiedPlaces;
 }
 
 export async function getCoordinatesCount(id, urls) {
+    if (urls.length > 100) urls = [];
     let payload = {"urls": urls, "limit": -1};
     const result = await rest('mapsVisualizer/getCoordinates/count/' + id, payload);
     return result.data.count;
 }
 
 export async function getPlacesCount(id, urls, placesTypes) {
+    if (urls.length > 100) urls = [];
     let payload = {"urls": urls, "placeTypes": placesTypes, "limit": -1};
     const result = await rest('mapsVisualizer/getPlaces/count/' + id, payload);
     return result.data.count;
 }
 
 export async function getQuantifiedThingsCount(id, urls, valueConnections, placeConnections) {
+    if (urls.length > 100) urls = [];
     let payload = {
         "urls": urls,
         "valueConnections": valueConnections,
@@ -73,6 +80,7 @@ export async function getQuantifiedThingsCount(id, urls, valueConnections, place
 }
 
 export async function getQuantifiedPlacesCount(id, urls, placeTypes, valueConnections,) {
+    if (urls.length > 100) urls = [];
     let payload = {"urls": urls, "placeTypes": placeTypes, "valueConnections": valueConnections, "limit": -1};
     const result = await rest('mapsVisualizer/getQuantifiedPlaces/count/' + id, payload);
     return result.data.count;

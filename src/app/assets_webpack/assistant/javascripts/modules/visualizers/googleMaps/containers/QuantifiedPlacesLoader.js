@@ -3,7 +3,6 @@ import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {Set as ImmutableSet} from "immutable";
 import {getQuantifiedPlacesCount} from "../ducks/counts";
-import {placesSelector, placesStatusSelector} from "../ducks/places";
 import {PromiseStatus} from "../../../core/models";
 import PromiseResult from "../../../core/components/PromiseResult";
 import Button from "../../../../components/Button";
@@ -11,13 +10,18 @@ import {limitSelector} from "../../../app/ducks/limit";
 import {Paper} from "material-ui";
 import RecordSelector from "../../../common/RecordSelector";
 import {selectedPlaceTypesSelector, setSelectedPlaceTypesReset, setSelectPlaceType} from "../ducks/selectedPlaceTypes";
-import CountPlacesContainer from "./CountPlacesContainer";
-import {getQuantifiedPlaces, getQuantifiedPlacesReset} from "../ducks/quantifiedPlaces";
+import {
+    getQuantifiedPlaces,
+    getQuantifiedPlacesReset,
+    quantifiedPlacesSelector,
+    quantifiedPlacesStatusSelector
+} from "../ducks/quantifiedPlaces";
 import {
     selectedValueConnectionsSelector,
     setSelectedValueConnectionsReset,
     setSelectValueConnection
 } from "../ducks/selectedValueConnections";
+import CountQuantifiedPlacesContainer from "./CountQuantifiedPlacesContainer";
 
 class QuantifiedPlacesLoader extends Component {
     static propTypes = {
@@ -110,14 +114,14 @@ class QuantifiedPlacesLoader extends Component {
                     disabled={false}
                     label="RESET"
             />
-            <CountPlacesContainer/>
+            <CountQuantifiedPlacesContainer/>
         </Paper>
     }
 }
 
 const selector = createStructuredSelector({
-    places: placesSelector,
-    status: placesStatusSelector,
+    quantifiedPlaces: quantifiedPlacesSelector,
+    status: quantifiedPlacesStatusSelector,
 
     selectedPlaceTypes: selectedPlaceTypesSelector,
     selectedValueConnections: selectedValueConnectionsSelector,

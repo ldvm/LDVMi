@@ -82,7 +82,7 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
         val twp = geoService.quantifiedThings(evaluation, json.urls, json.valueConnections, json.placeConnections, json.limit)
-        Future(Ok(SuccessResponse(data = Seq("thingsWithPlaces" -> twp))))
+        Future(Ok(SuccessResponse(data = Seq("quantifiedThings" -> twp))))
       }
   }
 
@@ -90,7 +90,7 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
         val quantifiers = geoService.quantifiedPlaces(evaluation, json.urls, json.placeTypes, json.valueConnections, json.limit)
-        Future(Ok(SuccessResponse(data = Seq("quantifiers" -> quantifiers))))
+        Future(Ok(SuccessResponse(data = Seq("quantifiedPlaces" -> quantifiers))))
       }
   }
 

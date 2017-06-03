@@ -1,10 +1,10 @@
 import React from "react";
 import {Route} from "react-router";
-import Coordinates from "../../pages/Coordinates";
 import {MODULE_PREFIX} from "./prefix";
+import QuantifiedPlaces from "../../pages/QuantifiedPlaces";
 
 export default function createRoutes(dispatch) {
     return (
-        <Route component={Coordinates} path={MODULE_PREFIX}/>
+        <Route component={QuantifiedPlaces} path={MODULE_PREFIX}/>
     );
 }

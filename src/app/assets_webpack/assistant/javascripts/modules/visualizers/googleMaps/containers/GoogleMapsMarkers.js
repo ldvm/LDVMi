@@ -14,7 +14,9 @@ import {createStructuredSelector} from "reselect";
 class GoogleMapsMarkers extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
+
         coordinates: PropTypes.instanceOf(Array).isRequired,
+
         mapState: PropTypes.instanceOf(MapState).isRequired,
         toggledMarkers: PropTypes.instanceOf(ImmutableSet).isRequired
     };

@@ -5,12 +5,15 @@ import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
 import FillInScreen from "../../../../components/FillInScreen";
 import CoordinatesLoader from "../containers/CoordinatesLoader";
 import GoogleMapsMarkers from "../containers/GoogleMapsMarkers";
+import PlacesLoader from "../containers/PlacesLoader";
 
 class Coordinates extends Component {
     render() {
         let configurations = new Map([
+            ["PLACES",
+                <PlacesLoader isInitial={true}/>],
             ["COORDINATES",
-                <CoordinatesLoader isInitial={true}/>],
+                <CoordinatesLoader isInitial={false}/>],
             ["LIMIT",
                 <LimiterContainer/>]
         ]);
