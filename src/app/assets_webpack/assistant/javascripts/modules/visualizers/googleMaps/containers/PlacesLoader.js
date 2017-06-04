@@ -90,6 +90,7 @@ class PlacesLoader extends Component {
                 onKeySelect={k => dispatch(setSelectPlaceType(k))}
             />
             <Button raised={true}
+                    primary={true}
                     onTouchTap={() => this.load()}
                     disabled={!buttonsEnabled}
                     label="LOAD"

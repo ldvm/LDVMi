@@ -105,6 +105,7 @@ class QuantifiedPlacesLoader extends Component {
                 onKeySelect={k => dispatch(setSelectValueConnection(k))}
             />
             <Button raised={true}
+                    primary={true}
                     onTouchTap={() => this.load()}
                     disabled={!buttonsEnabled}
                     label="LOAD"

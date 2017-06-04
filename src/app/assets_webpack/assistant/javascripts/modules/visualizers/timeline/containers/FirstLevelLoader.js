@@ -113,6 +113,7 @@ class FirstLevelLoader extends Component {
                 onKeySelect={k => dispatch(setSelectConnFL(k))}
             />
             <Button raised={true}
+                    primary={true}
                     onTouchTap={() => this.load()}
                     disabled={!buttonsEnabled}
                     label="LOAD"

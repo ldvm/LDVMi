@@ -27,11 +27,13 @@ class RecordSelector extends Component {
         onKeySelect: PropTypes.func.isRequired
     };
 
-    // SEARCH
+
     componentWillMount() {
         this.needle = '';
+        this.page = 0;
     }
 
+    // SEARCH
     setNeedle() {
         var needleWasEmpty = this.needle == '';
         var elements = document.getElementsByName("search");
@@ -114,7 +116,7 @@ class RecordSelector extends Component {
         else return map;
     }
 
-    getCheckboxRows() {
+    getCheckboxRows(valuesMap) {
         const {onKeySelect} = this.props;
 
         var valuesMap = this.getValuesForVisualization();
@@ -128,17 +130,19 @@ class RecordSelector extends Component {
                 // Checkbox props
                 const checked = this.isChecked(key);
 
-                // Row render
-                rows.push(
-                    <ListItem key={key}>
-                        <Checkbox
-                            onCheck={(e, k) => onKeySelect(key)}
-                            defaultChecked={checked}
-                            label={value}/>
-                    </ListItem>
-                );
-
-                if (counter++ > 10) break;
+                // Row render - only for current page
+                var currentPage = parseInt(counter / 10);
+                if (currentPage == this.page) {
+                    rows.push(
+                        <ListItem key={key}>
+                            <Checkbox
+                                onCheck={(e, k) => onKeySelect(key)}
+                                defaultChecked={checked}
+                                label={value}/>
+                        </ListItem>
+                    );
+                }
+                ++counter;
             }
         }
         else rows = <ListItem>
@@ -148,14 +152,61 @@ class RecordSelector extends Component {
         return rows;
     }
 
+    // Bottom navigation
+    getNavigationToolbar(totalPages) {
+        const nextEnabled = this.page < totalPages;
+        const nextFunc = () => {
+            ++this.page;
+            this.forceUpdate();
+        };
+
+        const prevEnabled = this.page > 0;
+        const prevFunc = () => {
+            --this.page;
+            this.forceUpdate();
+        };
+
+        return (
+            <div>
+                <CenteredMessage>Page {this.page + 1} of {totalPages + 1}</CenteredMessage>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <Button raised={prevEnabled}
+                                    onTouchTap={prevFunc}
+                                    disabled={!prevEnabled}
+                                    label="PREVIOUS"
+                            />
+                        </td>
+                        <td>
+                            <Button raised={nextEnabled}
+                                    onTouchTap={nextFunc}
+                                    disabled={!nextEnabled}
+                                    label="NEXT"
+                            />
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+
 // === RENDERING ===
     render() {
+        var valuesMap = this.getValuesForVisualization();
+        var pages = parseInt(valuesMap.size / 10);
+        if (valuesMap.size > 0 && valuesMap.size % 10 == 0) --pages;
+
         return <div>
             <CardHeader>{this.props.header}</CardHeader>
             {this.getSearchComponent()}
             <List>
-                {this.getCheckboxRows()}
+                {this.getCheckboxRows(valuesMap)}
             </List>
+            {this.getNavigationToolbar(pages)}
+            <hr/>
         </div>
     }
 }
