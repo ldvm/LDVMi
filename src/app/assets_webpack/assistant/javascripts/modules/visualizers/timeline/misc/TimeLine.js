@@ -62,6 +62,59 @@ class TimeLine {
             };
         };
 
+        // === LEVELS FOR COLLISIONS ===
+        this.getLeveledData = function (data, levelCheckerFunc) {
+            var leveledData = [];
+            for (var d of data) {
+                var level = 0;
+                while (!levelCheckerFunc(level, leveledData, d) && level < 10) {
+                    if (level < 11) {
+                        ++level;
+                    }
+                    else {
+                        level = Math.random() % 11;
+                        break;
+                    }
+                }
+                leveledData.push({level: level, data: d});
+            }
+            return leveledData;
+        };
+
+        // In intervals
+        this.isLevelFreeIntervals = function (level, leveledData, record) {
+            for (const d of leveledData) {
+                // Level check
+                if (level == d.level) {
+
+                    // Intersect at the beginning of record interval
+                    if (record.begin <= d.data.begin && record.end >= d.data.begin) return false;
+
+                    // Intersect at the end of record interval
+                    if (record.begin <= d.data.end && record.end >= d.data.end) return false;
+
+                    // Value inside the record
+                    if (record.begin <= d.data.begin && record.end >= d.data.end) return false;
+
+                    // Record inside the value
+                    if (record.begin >= d.data.begin && record.end <= d.data.end) return false;
+                }
+            }
+            return true;
+        };
+
+        // In Instants
+        this.isLevelFreeInstants = function (level, leveledData, record) {
+            for (const d of leveledData) {
+                // Level check
+                if (level == d.level) {
+                    if (Math.abs(record.date - d.data.date) < 10 * 1000) return false;
+                }
+            }
+            return true;
+        };
+
+
         // === RENDER ===
         this.render = function (padding, drawFunc) {
             // Constants
@@ -105,7 +158,7 @@ class TimeLine {
                 .tickFormat(d3.time.format(xFormat));
 
             var yAxis = d3.svg.axis().scale(y).orient("left")
-                .ticks(5)
+                .ticks(0)
                 .tickSize(-width + margin.right, margin.left)
                 .tickFormat(d3.time.format(yFormat));
 
@@ -130,47 +183,52 @@ class TimeLine {
 
             // instants => circles
             this.circles = function (data) {
+                var leveledData = this.getLeveledData(data, this.isLevelFreeInstants);
+
                 var circles = context.append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 circles.selectAll(".circ")
-                    .data(data)
+                    .data(leveledData)
                     .enter().append("circle")
                     .attr("class", "circ")
                     .attr("cx", function (d) {
-                        return x(getDate(d.date));
+                        return x(getDate(d.data.date));
                     })
                     .attr("cy", function (d, i) {
-                        return y(getTime(d.date));
+                        return y(getTime(d.data.date)) + (size.height * 1.5 * d.level);
                     })
                     .attr("r", size.radius)
-                    .on("click", callback);
+                    .on("click", (d) => callback(d.data));
             };
 
             // intervals => rectangles
             this.rectangles = function (data) {
+
+                var leveledData = this.getLeveledData(data, this.isLevelFreeIntervals);
+
                 var rectangles = context.append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 rectangles.selectAll(".rect")
-                    .data(data)
+                    .data(leveledData)
                     .enter().append("rect")
                     .attr("class", "rect")
                     .attr("x", function (d) {
-                        return x(getDate(d.begin));
+                        return x(getDate(d.data.begin));
                     })
                     .attr("y", function (d, i) {
-                        return y(getTime(d.begin));
+                        return y(getTime(d.data.begin)) + (size.height * 1.5 * d.level);
                     })
                     .attr("rx", size.rx)
                     .attr("ry", size.ry)
                     .attr("width", function (d) {
-                        var e = x(getDate(d.end));
-                        var b = x(getDate(d.begin));
+                        var e = x(getDate(d.data.end));
+                        var b = x(getDate(d.data.begin));
                         return ( e - b );
                     })
                     .attr("height", size.height)
-                    .on("click", callback);
+                    .on("click", (d) => callback(d.data));
             };
 
             drawFunc();
