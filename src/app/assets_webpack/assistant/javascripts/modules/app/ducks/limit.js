@@ -4,7 +4,7 @@ import moduleSelector from "../selector";
 import {GET_APPLICATION_START} from "./application";
 import {createSelector} from "reselect";
 
-export const limit_default = 20;
+export const limit_default = 50;
 
 // Actions
 export const SET_LIMIT = prefix('SET_LIMIT');

@@ -1,4 +1,7 @@
 import rest from "../../../misc/rest";
+import {applyByBatchesCount, applyByBatchesWithLimit} from "../../common/apiUtils";
+
+const BATCH_SIZE = 100;
 
 export async function getProperties(id) {
     const result = await rest('mapsVisualizer/getProperties/' + id, {});
@@ -21,67 +24,108 @@ export async function getMarkers(id, mapQueryData) {
 }
 
 export async function getCoordinates(id, urls, limit) {
-    if (urls.length > 100) urls = [];
-    let payload = {"urls": urls, "limit": limit};
-    const result = await rest('mapsVisualizer/getCoordinates/' + id, payload);
-    return result.data.coordinates;
+    const batchFunc = async function (batchUrls, batchLimit) {
+        let payload = {
+            "urls": batchUrls,
+            "limit": batchLimit
+        };
+        const result = await rest('mapsVisualizer/getCoordinates/' + id, payload);
+        return result.data.coordinates;
+    };
+    return applyByBatchesWithLimit(urls, BATCH_SIZE, limit, batchFunc);
 }
 
 export async function getPlaces(id, urls, placesTypes, limit) {
-    if (urls.length > 100) urls = [];
-    let payload = {"urls": urls, "placeTypes": placesTypes, "limit": limit};
-    const result = await rest('mapsVisualizer/getPlaces/' + id, payload);
-    return result.data.places;
+    const batchFunc = async function (batchUrls, batchLimit) {
+        let payload = {
+            "urls": batchUrls,
+            "placeTypes": placesTypes,
+            "limit": batchLimit
+        };
+        const result = await rest('mapsVisualizer/getPlaces/' + id, payload);
+        return result.data.places;
+    };
+    return applyByBatchesWithLimit(urls, BATCH_SIZE, limit, batchFunc);
 }
 
 export async function getQuantifiedThings(id, urls, valueConnections, placeConnections, limit) {
-    if (urls.length > 100) urls = [];
-    let payload = {
-        "urls": urls,
-        "valueConnections": valueConnections,
-        "placeConnections": placeConnections,
-        "limit": limit
+    const batchFunc = async function (batchUrls, batchLimit) {
+        let payload = {
+            "urls": batchUrls,
+            "valueConnections": valueConnections,
+            "placeConnections": placeConnections,
+            "limit": batchLimit
+        };
+        const result = await rest('mapsVisualizer/getQuantifiedThings/' + id, payload);
+        return result.data.quantifiedThings;
     };
-    const result = await rest('mapsVisualizer/getQuantifiedThings/' + id, payload);
-    return result.data.quantifiedThings;
+    return applyByBatchesWithLimit(urls, BATCH_SIZE, limit, batchFunc);
 }
 
 export async function getQuantifiedPlaces(id, urls, placeTypes, valueConnections, limit) {
-    if (urls.length > 100) urls = [];
-    let payload = {"urls": urls, "placeTypes": placeTypes, "valueConnections": valueConnections, "limit": limit};
-    const result = await rest('mapsVisualizer/getQuantifiedPlaces/' + id, payload);
-    return result.data.quantifiedPlaces;
+    const batchFunc = async function (batchUrls, batchLimit) {
+        let payload = {
+            "urls": batchUrls,
+            "placeTypes": placeTypes,
+            "valueConnections": valueConnections,
+            "limit": batchLimit
+        };
+        const result = await rest('mapsVisualizer/getQuantifiedPlaces/' + id, payload);
+        return result.data.quantifiedPlaces;
+    };
+    return applyByBatchesWithLimit(urls, BATCH_SIZE, limit, batchFunc);
 }
 
 export async function getCoordinatesCount(id, urls) {
-    if (urls.length > 100) urls = [];
-    let payload = {"urls": urls, "limit": -1};
-    const result = await rest('mapsVisualizer/getCoordinates/count/' + id, payload);
-    return result.data.count;
+    const batchFunc = async function (batchUrls) {
+
+        let payload = {
+            "urls": batchUrls,
+            "limit": -1
+        };
+        const result = await rest('mapsVisualizer/getCoordinates/count/' + id, payload);
+        return result.data.count;
+    };
+    return applyByBatchesCount(urls, BATCH_SIZE, batchFunc);
 }
 
 export async function getPlacesCount(id, urls, placesTypes) {
-    if (urls.length > 100) urls = [];
-    let payload = {"urls": urls, "placeTypes": placesTypes, "limit": -1};
-    const result = await rest('mapsVisualizer/getPlaces/count/' + id, payload);
-    return result.data.count;
+    const batchFunc = async function (batchUrls) {
+        let payload = {
+            "urls": batchUrls,
+            "placeTypes": placesTypes,
+            "limit": -1
+        };
+        const result = await rest('mapsVisualizer/getPlaces/count/' + id, payload);
+        return result.data.count;
+    };
+    return applyByBatchesCount(urls, BATCH_SIZE, batchFunc);
 }
 
 export async function getQuantifiedThingsCount(id, urls, valueConnections, placeConnections) {
-    if (urls.length > 100) urls = [];
-    let payload = {
-        "urls": urls,
-        "valueConnections": valueConnections,
-        "placeConnections": placeConnections,
-        "limit": -1
+    const batchFunc = async function (batchUrls) {
+        let payload = {
+            "urls": batchUrls,
+            "valueConnections": valueConnections,
+            "placeConnections": placeConnections,
+            "limit": -1
+        };
+        const result = await rest('mapsVisualizer/getQuantifiedThings/count/' + id, payload);
+        return result.data.count;
     };
-    const result = await rest('mapsVisualizer/getQuantifiedThings/count/' + id, payload);
-    return result.data.count;
+    return applyByBatchesCount(urls, BATCH_SIZE, batchFunc);
 }
 
 export async function getQuantifiedPlacesCount(id, urls, placeTypes, valueConnections,) {
-    if (urls.length > 100) urls = [];
-    let payload = {"urls": urls, "placeTypes": placeTypes, "valueConnections": valueConnections, "limit": -1};
-    const result = await rest('mapsVisualizer/getQuantifiedPlaces/count/' + id, payload);
-    return result.data.count;
+    const batchFunc = async function (batchUrls) {
+        let payload = {
+            "urls": batchUrls,
+            "placeTypes": placeTypes,
+            "valueConnections": valueConnections,
+            "limit": -1
+        };
+        const result = await rest('mapsVisualizer/getQuantifiedPlaces/count/' + id, payload);
+        return result.data.count;
+    };
+    return applyByBatchesCount(urls, BATCH_SIZE, batchFunc);
 }

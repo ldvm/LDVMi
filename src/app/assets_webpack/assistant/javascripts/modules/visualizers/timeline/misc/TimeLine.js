@@ -67,12 +67,12 @@ class TimeLine {
             var leveledData = [];
             for (var d of data) {
                 var level = 0;
-                while (!levelCheckerFunc(level, leveledData, d) && level < 10) {
-                    if (level < 11) {
+                while (!levelCheckerFunc(level, leveledData, d)) {
+                    if (level < 8) {
                         ++level;
                     }
                     else {
-                        level = Math.random() % 11;
+                        level = parseInt(Math.random() * 8);
                         break;
                     }
                 }
@@ -137,7 +137,7 @@ class TimeLine {
             if (!element) return;
 
             // Axes
-            var width = getAvailableHorizontalSpace(element);
+            var width = getAvailableHorizontalSpace(element) - 10;
             var height = 300 - margin.top - margin.bottom;
 
             var x = d3.time.scale().range([0 + margin.right, width - margin.left]),
