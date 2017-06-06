@@ -93,7 +93,10 @@ class TimeLineIntervalsContainer extends Component {
         }
 
         if (intervals.length == 0){
-            return <CenteredMessage>No intervals loaded.</CenteredMessage>
+            return <Paper>
+                <TimeRangeContainer/>
+                <CenteredMessage>No intervals loaded.</CenteredMessage>
+            </Paper>
         }
 
         require('../misc/TimeLineStyle.css');

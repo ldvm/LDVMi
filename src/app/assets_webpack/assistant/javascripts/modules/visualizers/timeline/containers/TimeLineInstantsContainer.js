@@ -8,7 +8,7 @@ import {getInstantsCount} from "../ducks/count";
 import {limitSelector} from "../../../app/ducks/limit";
 import {getSelectedTimeReset, timeRangeSelector} from "../ducks/timeRange";
 import {firstLevelSelector} from "../ducks/firstLevel";
-import {setSelectTimeRecordReset, setSelectTimeRecord} from "../ducks/selectedTimeRecord";
+import {setSelectTimeRecord, setSelectTimeRecordReset} from "../ducks/selectedTimeRecord";
 import PromiseResult from "../../../core/components/PromiseResult";
 import TimeLine from "../misc/TimeLine";
 import CenteredMessage from "../../../../components/CenteredMessage";
@@ -87,8 +87,11 @@ class TimeLineInstantsContainer extends Component {
             return <PromiseResult status={status} error={status.error} loadingMessage="Loading instants..."/>
         }
 
-        if (instants.length == 0){
-            return <CenteredMessage>No instants loaded.</CenteredMessage>
+        if (instants.length == 0) {
+            return <Paper>
+                <TimeRangeContainer/>
+                <CenteredMessage>No instants loaded.</CenteredMessage>
+            </Paper>
         }
 
         require('../misc/TimeLineStyle.css');
