@@ -13,5 +13,4 @@ class ApiModule extends Module {
   binding to new PipelineApiController
   binding to new LdvmApiController
   binding to new DataSourceApiController
-  binding to new TimeLineApiController
 }

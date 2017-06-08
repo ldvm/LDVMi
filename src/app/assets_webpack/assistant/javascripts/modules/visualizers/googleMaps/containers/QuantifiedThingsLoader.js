@@ -22,15 +22,15 @@ import {
     quantifiedThingsStatusSelector
 } from "../ducks/quantifiedThings";
 import {
-    selectedPlaceConnectionsSelector,
-    setSelectedPlaceConnectionsReset,
-    setSelectPlaceConnection
-} from "../ducks/selectedPlaceConnections";
+    selectedPlacePredicatesSelector,
+    setSelectedPlacePredicatesReset,
+    setSelectPlacePredicate
+} from "../ducks/selectedPlacePredicates";
 import {
-    selectedValueConnectionsSelector,
-    setSelectedValueConnectionsReset,
-    setSelectValueConnection
-} from "../ducks/selectedValueConnections";
+    selectedValuePredicatesSelector,
+    setSelectedValuePredicatesReset,
+    setSelectValuePredicate
+} from "../ducks/selectedValuePredicates";
 
 class QuantifiedThingsLoader extends Component {
     static propTypes = {
@@ -42,8 +42,8 @@ class QuantifiedThingsLoader extends Component {
 
         // User selections
         selectedThings: PropTypes.instanceOf(ImmutableSet).isRequired,
-        selectedPlaceConnections: PropTypes.instanceOf(ImmutableSet).isRequired,
-        selectedValueConnections: PropTypes.instanceOf(ImmutableSet).isRequired,
+        selectedPlacePredicates: PropTypes.instanceOf(ImmutableSet).isRequired,
+        selectedValuePredicates: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         // Other
         isInitial: PropTypes.bool.isRequired,
@@ -51,17 +51,17 @@ class QuantifiedThingsLoader extends Component {
     };
 
     load() {
-        const {dispatch, selectedThings, selectedValueConnections, selectedPlaceConnections, limit} = this.props;
+        const {dispatch, selectedThings, selectedValuePredicates, selectedPlacePredicates, limit} = this.props;
 
-        dispatch(getQuantifiedThings([...selectedThings], [...selectedValueConnections], [...selectedPlaceConnections], limit));
-        dispatch(getQuantifiedThingsCount([...selectedThings], [...selectedValueConnections], [...selectedPlaceConnections]));
+        dispatch(getQuantifiedThings([...selectedThings], [...selectedValuePredicates], [...selectedPlacePredicates], limit));
+        dispatch(getQuantifiedThingsCount([...selectedThings], [...selectedValuePredicates], [...selectedPlacePredicates]));
     }
 
     reset() {
         const {dispatch, limit} = this.props;
         dispatch(setSelectedQuantifiedThingsReset());
-        dispatch(setSelectedPlaceConnectionsReset());
-        dispatch(setSelectedValueConnectionsReset());
+        dispatch(setSelectedPlacePredicatesReset());
+        dispatch(setSelectedValuePredicatesReset());
 
         dispatch(getQuantifiedThings([], [], [], limit));
         dispatch(getQuantifiedThingsCount([], [], []));
@@ -76,13 +76,13 @@ class QuantifiedThingsLoader extends Component {
     componentWillUnmount() {
         const {dispatch} = this.props;
         dispatch(setSelectedQuantifiedThingsReset());
-        dispatch(setSelectedPlaceConnectionsReset());
-        dispatch(setSelectedValueConnectionsReset());
+        dispatch(setSelectedPlacePredicatesReset());
+        dispatch(setSelectedValuePredicatesReset());
         dispatch(getQuantifiedThingsReset());
     }
 
     render() {
-        const {dispatch, quantifiedThings, status, selectedThings, selectedValueConnections, selectedPlaceConnections} = this.props;
+        const {dispatch, quantifiedThings, status, selectedThings, selectedValuePredicates, selectedPlacePredicates} = this.props;
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error}
@@ -90,8 +90,8 @@ class QuantifiedThingsLoader extends Component {
         }
 
         var buttonsEnabled = selectedThings.size > 0
-            || selectedValueConnections.size > 0
-            || selectedPlaceConnections.size > 0;
+            || selectedValuePredicates.size > 0
+            || selectedPlacePredicates.size > 0;
 
         return <Paper>
             <RecordSelector
@@ -104,19 +104,17 @@ class QuantifiedThingsLoader extends Component {
             />
             <RecordSelector
                 records={quantifiedThings}
-                header="Value connections"
-                getKey={t => t.valueConnection}
-                getValue={t => t.valueConnection}
-                selectedKeys={selectedValueConnections}
-                onKeySelect={k => dispatch(setSelectValueConnection(k))}
+                header="Value predicate"
+                getKey={t => t.valuePredicate}
+                selectedKeys={selectedValuePredicates}
+                onKeySelect={k => dispatch(setSelectValuePredicate(k))}
             />
             <RecordSelector
                 records={quantifiedThings}
-                header="Place connections"
-                getKey={t => t.placeConnection}
-                getValue={t => t.placeConnection}
-                selectedKeys={selectedPlaceConnections}
-                onKeySelect={k => dispatch(setSelectPlaceConnection(k))}
+                header="Place predicate"
+                getKey={t => t.placePredicate}
+                selectedKeys={selectedPlacePredicates}
+                onKeySelect={k => dispatch(setSelectPlacePredicate(k))}
             />
             <Button raised={true}
                     primary={true}
@@ -139,8 +137,8 @@ const selector = createStructuredSelector({
     status: quantifiedThingsStatusSelector,
 
     selectedThings: selectedQuantifiedThingsSelector,
-    selectedValueConnections: selectedValueConnectionsSelector,
-    selectedPlaceConnections: selectedPlaceConnectionsSelector,
+    selectedValuePredicates: selectedValuePredicatesSelector,
+    selectedPlacePredicates: selectedPlacePredicatesSelector,
 
     limit: limitSelector
 });

@@ -81,7 +81,7 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
   def getQuantifiedThings(id: Long) = RestAsyncAction[QuantifiedThingsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val twp = geoService.quantifiedThings(evaluation, json.urls, json.valueConnections, json.placeConnections, json.limit)
+        val twp = geoService.quantifiedThings(evaluation, json.urls, json.valuePredicates, json.placePredicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("quantifiedThings" -> twp))))
       }
   }
@@ -89,7 +89,7 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
   def getQuantifiedPlaces(id: Long) = RestAsyncAction[QuantifiedPlacesRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val quantifiers = geoService.quantifiedPlaces(evaluation, json.urls, json.placeTypes, json.valueConnections, json.limit)
+        val quantifiers = geoService.quantifiedPlaces(evaluation, json.urls, json.placeTypes, json.valuePredicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("quantifiedPlaces" -> quantifiers))))
       }
   }
@@ -113,7 +113,7 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
   def getQuantifiedThingsCount(id: Long) = RestAsyncAction[QuantifiedThingsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val count = geoCountService.quantifiedThings(evaluation, json.urls, json.valueConnections, json.placeConnections, json.limit)
+        val count = geoCountService.quantifiedThings(evaluation, json.urls, json.valuePredicates, json.placePredicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("count" -> count))))
       }
   }
@@ -121,7 +121,7 @@ class MapsVisualizerApiController(implicit inj: Injector) extends VisualizerApiC
   def getQuantifiedPlacesCount(id: Long) = RestAsyncAction[QuantifiedPlacesRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val count = geoCountService.quantifiedPlaces(evaluation, json.urls, json.placeTypes, json.valueConnections, json.limit)
+        val count = geoCountService.quantifiedPlaces(evaluation, json.urls, json.placeTypes, json.valuePredicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("count" -> count))))
       }
   }

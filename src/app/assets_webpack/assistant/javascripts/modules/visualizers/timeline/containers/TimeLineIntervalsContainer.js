@@ -9,7 +9,7 @@ import {getIntervalsCount} from "../ducks/count";
 import {limitSelector} from "../../../app/ducks/limit";
 import {getSelectedTimeReset, timeRangeSelector} from "../ducks/timeRange";
 import {firstLevelSelector} from "../ducks/firstLevel";
-import {setSelectTimeRecordReset, setSelectTimeRecord} from "../ducks/selectedTimeRecord";
+import {setSelectTimeRecord, setSelectTimeRecordReset} from "../ducks/selectedTimeRecord";
 
 import PromiseResult from "../../../core/components/PromiseResult";
 import TimeLine from "../misc/TimeLine";
@@ -92,7 +92,7 @@ class TimeLineIntervalsContainer extends Component {
             return <PromiseResult status={status} error={status.error} loadingMessage="Loading intervals..."/>
         }
 
-        if (intervals.length == 0){
+        if (intervals.length == 0) {
             return <Paper>
                 <TimeRangeContainer/>
                 <CenteredMessage>No intervals loaded.</CenteredMessage>

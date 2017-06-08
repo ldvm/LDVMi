@@ -118,10 +118,10 @@ class GoogleMapsMarkers extends Component {
                 key={coordinates.url}
                 center={position}
                 radius={radius}
-                strokeColor={"#D35400"}
+                strokeColor="#D35400"
                 strokeOpacity={0.8}
                 strokeWeight={2}
-                fillColor={"#D35400"}
+                fillColor="#D35400"
                 fillOpacity={0.4}
                 onClick={() => dispatch(toggleMarker(coordinates.url))}
             />

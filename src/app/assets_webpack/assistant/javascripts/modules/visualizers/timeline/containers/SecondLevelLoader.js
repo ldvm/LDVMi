@@ -3,7 +3,11 @@ import {connect} from "react-redux";
 import {getSecondLevelReset, secondLevelSelector, secondLevelStatusSelector} from "../ducks/secondLevel";
 import {limitSelector} from "../../../app/ducks/limit";
 import {selectedThingSLSelector, setSelectedThingSLReset, setSelectThingSL} from "../ducks/selectedThingSecondLevel";
-import {selectedConnSLSelector, setSelectConnSL, setSelectedConnSLReset} from "../ducks/selectedConnSecondLevel";
+import {
+    selectedPredicateSLSelector,
+    setSelectedSecondLevelPredicatesReset,
+    setSelectSecondLevelPredicate
+} from "../ducks/selectedSecondLevelPredicates";
 import {PromiseStatus} from "../../../core/models";
 import {createStructuredSelector} from "reselect";
 import PromiseResult from "../../../core/components/PromiseResult";
@@ -29,7 +33,7 @@ class SecondLevelLoader extends Component {
 
         // Value selectors
         selectedThingSL: PropTypes.instanceOf(ImmutableSet).isRequired,
-        selectedConnSL: PropTypes.instanceOf(ImmutableSet).isRequired,
+        selectedSecondLevelPredicates: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         limit: PropTypes.number.isRequired
     };
@@ -43,27 +47,27 @@ class SecondLevelLoader extends Component {
 
         dispatch(getSecondLevelReset());
         dispatch(setSelectedThingSLReset());
-        dispatch(setSelectedConnSLReset());
+        dispatch(setSelectedSecondLevelPredicatesReset());
     }
 
     load() {
-        const {dispatch, secondLevelLoader, secondLevelCount, selectedThingSL, selectedConnSL, limit} = this.props;
-        dispatch(secondLevelLoader([...selectedThingSL], [], [...selectedConnSL], limit));
-        dispatch(secondLevelCount([...selectedThingSL], [], [...selectedConnSL]));
+        const {dispatch, secondLevelLoader, secondLevelCount, selectedThingSL, selectedSecondLevelPredicates, limit} = this.props;
+        dispatch(secondLevelLoader([...selectedThingSL], [], [...selectedSecondLevelPredicates], limit));
+        dispatch(secondLevelCount([...selectedThingSL], [], [...selectedSecondLevelPredicates]));
     }
 
     reset() {
         const {dispatch, secondLevelLoader, secondLevelCount, limit} = this.props;
 
         dispatch(setSelectedThingSLReset());
-        dispatch(setSelectedConnSLReset());
+        dispatch(setSelectedSecondLevelPredicatesReset());
 
         dispatch(secondLevelLoader([], [], [], limit));
         dispatch(secondLevelCount([], [], []));
     }
 
     render() {
-        const {dispatch, status, secondLevel, selectedThingSL, selectedConnSL} = this.props;
+        const {dispatch, status, secondLevel, selectedThingSL, selectedSecondLevelPredicates} = this.props;
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error}
@@ -74,24 +78,22 @@ class SecondLevelLoader extends Component {
             return <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
         }
 
-        var buttonsEnabled = selectedThingSL.size > 0 || selectedConnSL.size > 0;
+        var buttonsEnabled = selectedThingSL.size > 0 || selectedSecondLevelPredicates.size > 0;
 
         return <Paper>
             <RecordSelector
                 records={secondLevel}
                 header="Things:"
                 getKey={t => t.outer}
-                getValue={t => t.outer}
                 selectedKeys={selectedThingSL}
                 onKeySelect={k => dispatch(setSelectThingSL(k))}
             />
             <RecordSelector
                 records={secondLevel}
-                header="Connection Types:"
-                getKey={t => t.connection}
-                getValue={t => t.connection}
-                selectedKeys={selectedConnSL}
-                onKeySelect={k => dispatch(setSelectConnSL(k))}
+                header="Predicates:"
+                getKey={t => t.predicate}
+                selectedKeys={selectedSecondLevelPredicates}
+                onKeySelect={k => dispatch(setSelectSecondLevelPredicate(k))}
             />
             <Button raised={true}
                     primary={true}
@@ -113,7 +115,7 @@ const selector = createStructuredSelector({
     secondLevel: secondLevelSelector,
     status: secondLevelStatusSelector,
     selectedThingSL: selectedThingSLSelector,
-    selectedConnSL: selectedConnSLSelector,
+    selectedSecondLevelPredicates: selectedPredicateSLSelector,
     limit: limitSelector
 });
 

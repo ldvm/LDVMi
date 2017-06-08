@@ -59,16 +59,16 @@ export const Place = Record({
 
 export const QuantifiedThing = Record({
     url: "url",
-    valueConnection: "value_conn",
+    valuePredicate: "value_conn",
     value: 0,
-    placeConnection: "place_conn",
+    placePredicate: "place_conn",
     place: "place_url"
 });
 
 export const QuantifiedPlace = Record({
     url: "url",
     placeType: "type",
-    valueConnection: "value_conn",
+    valuePredicate: "value_conn",
     value: 0,
     coordinates: "crd_url"
 });

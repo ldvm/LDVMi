@@ -17,10 +17,10 @@ import {
     quantifiedPlacesStatusSelector
 } from "../ducks/quantifiedPlaces";
 import {
-    selectedValueConnectionsSelector,
-    setSelectedValueConnectionsReset,
-    setSelectValueConnection
-} from "../ducks/selectedValueConnections";
+    selectedValuePredicatesSelector,
+    setSelectedValuePredicatesReset,
+    setSelectValuePredicate
+} from "../ducks/selectedValuePredicates";
 import CountQuantifiedPlacesContainer from "./CountQuantifiedPlacesContainer";
 
 class QuantifiedPlacesLoader extends Component {
@@ -33,7 +33,7 @@ class QuantifiedPlacesLoader extends Component {
 
         // User selections
         selectedPlaceTypes: PropTypes.instanceOf(ImmutableSet).isRequired,
-        selectedValueConnections: PropTypes.instanceOf(ImmutableSet).isRequired,
+        selectedValuePredicates: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         // Other
         isInitial: PropTypes.bool.isRequired,
@@ -41,17 +41,17 @@ class QuantifiedPlacesLoader extends Component {
     };
 
     load() {
-        const {dispatch, selectedPlaceTypes, selectedValueConnections, limit} = this.props;
+        const {dispatch, selectedPlaceTypes, selectedValuePredicates, limit} = this.props;
 
-        dispatch(getQuantifiedPlaces([], [...selectedPlaceTypes], [...selectedValueConnections], limit));
-        dispatch(getQuantifiedPlacesCount([], [...selectedPlaceTypes], [...selectedValueConnections]));
+        dispatch(getQuantifiedPlaces([], [...selectedPlaceTypes], [...selectedValuePredicates], limit));
+        dispatch(getQuantifiedPlacesCount([], [...selectedPlaceTypes], [...selectedValuePredicates]));
     }
 
     reload() {
         const {dispatch, limit} = this.props;
 
         dispatch(setSelectedPlaceTypesReset());
-        dispatch(setSelectedValueConnectionsReset());
+        dispatch(setSelectedValuePredicatesReset());
 
         dispatch(getQuantifiedPlaces([], [], [], limit));
         dispatch(getQuantifiedPlacesCount([], [], []));
@@ -74,35 +74,33 @@ class QuantifiedPlacesLoader extends Component {
         const {dispatch} = this.props;
         dispatch(getQuantifiedPlacesReset());
         dispatch(setSelectedPlaceTypesReset());
-        dispatch(setSelectedValueConnectionsReset());
+        dispatch(setSelectedValuePredicatesReset());
     }
 
     render() {
-        const {dispatch, quantifiedPlaces, status, selectedPlaceTypes, selectedValueConnections} = this.props;
+        const {dispatch, quantifiedPlaces, status, selectedPlaceTypes, selectedValuePredicates} = this.props;
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error}
                                   loadingMessage="Loading quantified places..."/>
         }
 
-        var buttonsEnabled = selectedPlaceTypes.size > 0 || selectedValueConnections.size > 0;
+        var buttonsEnabled = selectedPlaceTypes.size > 0 || selectedValuePredicates.size > 0;
 
         return <Paper>
             <RecordSelector
                 records={quantifiedPlaces}
                 header="Places Types:"
                 getKey={t => t.placeType}
-                getValue={t => t.placeType}
                 selectedKeys={selectedPlaceTypes}
                 onKeySelect={k => dispatch(setSelectPlaceType(k))}
             />
             <RecordSelector
                 records={quantifiedPlaces}
                 header="Value Connections:"
-                getKey={t => t.valueConnection}
-                getValue={t => t.valueConnection}
+                getKey={t => t.valuePredicate}
                 selectedKeys={selectedPlaceTypes}
-                onKeySelect={k => dispatch(setSelectValueConnection(k))}
+                onKeySelect={k => dispatch(setSelectValuePredicate(k))}
             />
             <Button raised={true}
                     primary={true}
@@ -125,7 +123,7 @@ const selector = createStructuredSelector({
     status: quantifiedPlacesStatusSelector,
 
     selectedPlaceTypes: selectedPlaceTypesSelector,
-    selectedValueConnections: selectedValueConnectionsSelector,
+    selectedValuePredicates: selectedValuePredicatesSelector,
 
     limit: limitSelector
 });

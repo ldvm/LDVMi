@@ -15,9 +15,9 @@ class QuantifiedThingExtractor
       val resList = input.execSelect().toList
       Some(resList.map(qs => new QuantifiedThing(
         qs.getResource("thing").getURI,
-        qs.getResource("valueConnection").getURI,
+        qs.getResource("valuePredicate").getURI,
         qs.getLiteral("value").getInt,
-        qs.getResource("placeConnection").getURI,
+        qs.getResource("placePredicate").getURI,
         qs.getResource("place").getURI
       )))
     }

@@ -7,32 +7,32 @@ import {Set as ImmutableSet} from "immutable";
 import moduleSelector from "../selector";
 
 // Actions
-export const SET_SELECT_VALUE_CONNECTIONS = prefix('SET_SELECT_VALUE_CONNECTIONS');
-export const SET_SELECT_VALUE_CONNECTIONS_RESET = SET_SELECT_VALUE_CONNECTIONS + '_RESET';
+export const SET_SELECT_PLACE_PREDICATES = prefix('SET_SELECT_PLACE_PREDICATES');
+export const SET_SELECT_PLACE_PREDICATES_RESET = SET_SELECT_PLACE_PREDICATES + '_RESET';
 
-export function setSelectValueConnection(url) {
+export function setSelectPlacePredicate(url) {
     return withApplicationId(id => {
-        return createAction(SET_SELECT_VALUE_CONNECTIONS, {url});
+        return createAction(SET_SELECT_PLACE_PREDICATES, {url});
     });
 }
 
-export function setSelectedValueConnectionsReset() {
-    return createAction(SET_SELECT_VALUE_CONNECTIONS_RESET);
+export function setSelectedPlacePredicatesReset() {
+    return createAction(SET_SELECT_PLACE_PREDICATES_RESET);
 }
 
 // Reducer
 const initialState = new ImmutableSet();
-export default function selectedValueConnections(state = initialState, action) {
+export default function selectedPlacePredicatesReducer(state = initialState, action) {
     switch (action.type) {
         case GET_APPLICATION_START:
             return initialState;
-        case SET_SELECT_VALUE_CONNECTIONS_RESET:
+        case SET_SELECT_PLACE_PREDICATES_RESET:
             return initialState;
-        case SET_SELECT_VALUE_CONNECTIONS:
+        case SET_SELECT_PLACE_PREDICATES:
             return state.contains(action.payload.url) ? state.remove(action.payload.url) : state.add(action.payload.url);
     }
     return state;
 };
 
 // Selectors
-export const selectedValueConnectionsSelector = createSelector([moduleSelector], state => state.selectedValueConnections);
+export const selectedPlacePredicatesSelector = createSelector([moduleSelector], state => state.selectedPlacePredicates);

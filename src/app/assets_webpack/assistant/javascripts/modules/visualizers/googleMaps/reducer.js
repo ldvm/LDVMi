@@ -8,10 +8,10 @@ import coordinates from "./ducks/coordinates";
 import places from "./ducks/places";
 import quantifiedThings from "./ducks/quantifiedThings";
 import quantifiedPlaces from "./ducks/quantifiedPlaces";
-import selectedPlaceConnections from "./ducks/selectedPlaceConnections";
+import selectedPlacePredicates from "./ducks/selectedPlacePredicates";
+import selectedValuePredicates from "./ducks/selectedValuePredicates";
 import selectedPlaceTypes from "./ducks/selectedPlaceTypes";
 import selectedQuantifiedThings from "./ducks/selectedQuantifiedThings";
-import selectedValueConnections from "./ducks/selectedValueConnections";
 import count from "./ducks/counts";
 import dirty from "./ducks/dirty";
 
@@ -26,8 +26,8 @@ const rootReducer = combineReducers({
     quantifiedThings,
     quantifiedPlaces,
     selectedQuantifiedThings,
-    selectedPlaceConnections,
-    selectedValueConnections,
+    selectedPlacePredicates,
+    selectedValuePredicates,
     selectedPlaceTypes,
     count,
     dirty

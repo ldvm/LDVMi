@@ -1,7 +1,6 @@
 package controllers.api
 
 import controllers.api.JsonImplicits._
-import model.entity.PipelineEvaluationId
 import play.api.Play.current
 import play.api.cache.Cache
 import play.api.db.slick.{DBAction, _}
@@ -14,6 +13,11 @@ class VisualizationApiController(implicit inj: Injector) extends ApiController w
   def dereferenceLabels(uri: String) = Action {
     val labels = visualizationService.getLabels(uri)
     Ok(Json.toJson(labels))
+  }
+
+  def dereferenceComments(uri: String) = Action {
+    val comments = visualizationService.getComments(uri)
+    Ok(Json.toJson(comments))
   }
 
   def getCachedResult(id: Long, permalinkToken: String) = Action { r =>

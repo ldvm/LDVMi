@@ -14,7 +14,7 @@ export const Instant = Record({
 export const Connection = Record({
     outer: "thing_url",
     outerType: "type_url",
-    connection: "url",
+    predicate: "predicate_url",
     inner: "thing_url"
 });
 

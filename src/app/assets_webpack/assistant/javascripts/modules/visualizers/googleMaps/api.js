@@ -48,12 +48,12 @@ export async function getPlaces(id, urls, placesTypes, limit) {
     return applyByBatchesWithLimit(urls, BATCH_SIZE, limit, batchFunc);
 }
 
-export async function getQuantifiedThings(id, urls, valueConnections, placeConnections, limit) {
+export async function getQuantifiedThings(id, urls, valuePredicates, placePredicates, limit) {
     const batchFunc = async function (batchUrls, batchLimit) {
         let payload = {
             "urls": batchUrls,
-            "valueConnections": valueConnections,
-            "placeConnections": placeConnections,
+            "valuePredicates": valuePredicates,
+            "placePredicates": placePredicates,
             "limit": batchLimit
         };
         const result = await rest('mapsVisualizer/getQuantifiedThings/' + id, payload);
@@ -62,12 +62,12 @@ export async function getQuantifiedThings(id, urls, valueConnections, placeConne
     return applyByBatchesWithLimit(urls, BATCH_SIZE, limit, batchFunc);
 }
 
-export async function getQuantifiedPlaces(id, urls, placeTypes, valueConnections, limit) {
+export async function getQuantifiedPlaces(id, urls, placeTypes, valuePredicates, limit) {
     const batchFunc = async function (batchUrls, batchLimit) {
         let payload = {
             "urls": batchUrls,
             "placeTypes": placeTypes,
-            "valueConnections": valueConnections,
+            "valuePredicates": valuePredicates,
             "limit": batchLimit
         };
         const result = await rest('mapsVisualizer/getQuantifiedPlaces/' + id, payload);
@@ -102,12 +102,12 @@ export async function getPlacesCount(id, urls, placesTypes) {
     return applyByBatchesCount(urls, BATCH_SIZE, batchFunc);
 }
 
-export async function getQuantifiedThingsCount(id, urls, valueConnections, placeConnections) {
+export async function getQuantifiedThingsCount(id, urls, valuePredicates, placePredicates) {
     const batchFunc = async function (batchUrls) {
         let payload = {
             "urls": batchUrls,
-            "valueConnections": valueConnections,
-            "placeConnections": placeConnections,
+            "valuePredicates": valuePredicates,
+            "placePredicates": placePredicates,
             "limit": -1
         };
         const result = await rest('mapsVisualizer/getQuantifiedThings/count/' + id, payload);
@@ -116,12 +116,12 @@ export async function getQuantifiedThingsCount(id, urls, valueConnections, place
     return applyByBatchesCount(urls, BATCH_SIZE, batchFunc);
 }
 
-export async function getQuantifiedPlacesCount(id, urls, placeTypes, valueConnections,) {
+export async function getQuantifiedPlacesCount(id, urls, placeTypes, valuePredicates) {
     const batchFunc = async function (batchUrls) {
         let payload = {
             "urls": batchUrls,
             "placeTypes": placeTypes,
-            "valueConnections": valueConnections,
+            "valuePredicates": valuePredicates,
             "limit": -1
         };
         const result = await rest('mapsVisualizer/getQuantifiedPlaces/count/' + id, payload);

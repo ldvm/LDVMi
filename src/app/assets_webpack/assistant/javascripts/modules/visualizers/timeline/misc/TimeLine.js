@@ -2,6 +2,8 @@ import d3 from "d3";
 import moment from "moment";
 import {getAvailableHorizontalSpace} from "../../../../components/FillInScreen";
 
+const GRAPH_LEVELS = 10;
+
 class TimeLine {
     constructor(classd, callback) {
         this.classd = classd;
@@ -11,20 +13,12 @@ class TimeLine {
         this.rectangles = function () {
         };
 
-        // === HELPERS ===
+        // === DATE HELPERS ===
         function getDate(d) {
             var date = moment(d);
             date.hour(1);
             date.minute(0);
             date.second(0);
-            return date.valueOf();
-        }
-
-        function getTime(d) {
-            var date = moment(d);
-            date.date(1);
-            date.month(0);
-            date.year(2012);
             return date.valueOf();
         }
 
@@ -68,11 +62,11 @@ class TimeLine {
             for (var d of data) {
                 var level = 0;
                 while (!levelCheckerFunc(level, leveledData, d)) {
-                    if (level < 8) {
+                    if (level < GRAPH_LEVELS) {
                         ++level;
                     }
                     else {
-                        level = parseInt(Math.random() * 8);
+                        level = parseInt(Math.random() * GRAPH_LEVELS);
                         break;
                     }
                 }
@@ -144,12 +138,10 @@ class TimeLine {
                 y = d3.time.scale().range([margin.top, height - margin.bottom - margin.top]);
 
             var xFormat = "%m/%d/%y",
-                yFormat = "%H:%M",
-                start = new Date(2012, 0, 1, 0, 0, 0, 0).getTime(),
-                stop = new Date(2012, 0, 1, 23, 59, 59, 59).getTime();
+                yFormat = "%H:%M";
 
             x.domain(d3.extent([padding.minDate, padding.maxDate]));
-            y.domain(d3.extent([start, stop]));
+            y.domain(d3.extent([0, GRAPH_LEVELS]));
 
             var ticks = width > 800 ? 8 : 4;
             var xAxis = d3.svg.axis().scale(x).orient("bottom")

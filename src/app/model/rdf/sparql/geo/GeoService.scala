@@ -19,8 +19,8 @@ trait GeoService extends SparqlService {
 
   def places(evaluation: PipelineEvaluation, placeUrls: Seq[String], placeTypes: Seq[String], limit: Int): Option[Seq[Place]]
 
-  def quantifiedThings(evaluation: PipelineEvaluation, thingsUrls: Seq[String], valueConnections: Seq[String], placeConnections: Seq[String], limit: Int): Option[Seq[QuantifiedThing]]
+  def quantifiedThings(evaluation: PipelineEvaluation, thingsUrls: Seq[String], valuePredicates: Seq[String], placePredicates: Seq[String], limit: Int): Option[Seq[QuantifiedThing]]
 
-  def quantifiedPlaces(evaluation: PipelineEvaluation, placeUrls: Seq[String], placeTypes: Seq[String], valueConnections: Seq[String], limit: Int): Option[Seq[QuantifiedPlace]]
+  def quantifiedPlaces(evaluation: PipelineEvaluation, placeUrls: Seq[String], placeTypes: Seq[String], valuePredicates: Seq[String], limit: Int): Option[Seq[QuantifiedPlace]]
 
 }

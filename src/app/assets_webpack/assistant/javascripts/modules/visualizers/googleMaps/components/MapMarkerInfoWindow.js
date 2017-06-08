@@ -4,10 +4,9 @@ import {createStructuredSelector} from "reselect";
 import {coordinatesSelector} from "../ducks/coordinates";
 import {placesSelector} from "../ducks/places";
 import {quantifiedThingsSelector} from "../ducks/quantifiedThings";
-import Label from "../../../app/containers/Label";
-import Comment from "../../../app/containers/Comment";
 import makePureRender from "../../../../misc/makePureRender";
 import {quantifiedPlacesSelector} from "../ducks/quantifiedPlaces";
+import ObjectInfo from "../../../app/containers/ObjectInfo";
 
 class MapMarkerInfoWindow extends Component {
     static propTypes = {
@@ -23,17 +22,12 @@ class MapMarkerInfoWindow extends Component {
         for (const c of coordinates) {
             if (c.url == url) {
                 return <div>
-
-                    <b>Map position: </b>
-                    <Label uri={url}/><br/>
-                    <Comment uri={url}/><br/>
-
+                    <ObjectInfo header="Place" url={url}/>
+                    <br/>
                     <b>Latitude: </b>
                     {c.latitude}<br/>
-
                     <b>Longitude: </b>
                     {c.longitude}<br/>
-
                     <hr/>
                 </div>
             }
@@ -51,11 +45,7 @@ class MapMarkerInfoWindow extends Component {
             if (p.coordinates == url) {
                 connectedPlaces.push(
                     <div key={p.url}>
-
-                        <b>Place: </b>
-                        <Label uri={p.url}/><br/>
-                        <Comment uri={p.url}/>
-
+                        <ObjectInfo header="Place" url={p.url}/>
                         <hr/>
                         {this.connectQuantifiedThings(p.url)}
                     </div>
@@ -68,18 +58,12 @@ class MapMarkerInfoWindow extends Component {
             if (p.coordinates == url) {
                 connectedPlaces.push(
                     <div key={p.url}>
-
-                        <b>Place: </b>
-                        <Label uri={p.url}/><br/>
-                        <Comment uri={p.url}/><br/>
-
+                        <ObjectInfo header="Place" url={p.url}/>
+                        <br/>
                         <b>Value: </b>
                         {p.value}<br/>
-
-                        <b>Value connection: </b>
-                        <Label uri={p.valueConnection}/><br/>
-                        <Comment uri={p.valueConnection}/><br/>
-
+                        <br/>
+                        <ObjectInfo header="Value predicate" url={p.valueConnection}/>
                         <hr/>
                     </div>
                 );
@@ -97,22 +81,14 @@ class MapMarkerInfoWindow extends Component {
             if (t.place == placeUrl) {
                 connectedQuantifiedThings.push(
                     <div key={t.url}>
-
-                        <b>Connected thing: </b>
-                        <Label uri={t.url}/><br/>
-                        <Comment uri={t.url}/><br/>
-
-                        <b>Place connection: </b>
-                        <Label uri={t.placeConnection}/><br/>
-                        <Comment uri={t.placeConnection}/><br/>
-
+                        <ObjectInfo header="Thing with place" url={t.url}/>
+                        <br/>
+                        <ObjectInfo header="Place predicate" url={t.placeConnection}/>
+                        <br/>
                         <b>Value: </b>
                         {t.value}<br/>
-
-                        <b>Value connection: </b>
-                        <Label uri={t.valueConnection}/><br/>
-                        <Comment uri={t.valueConnection}/><br/>
-
+                        <br/>
+                        <ObjectInfo header="Value predicate" url={t.valueConnection}/>
                         <hr/>
                     </div>
                 );

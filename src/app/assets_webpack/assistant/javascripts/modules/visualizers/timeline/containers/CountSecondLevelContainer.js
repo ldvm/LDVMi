@@ -31,7 +31,7 @@ class CountSecondLevelContainer extends Component {
                                   loadingMessage="Loading connected records..."/>
         }
 
-        var loaded = getDistinctCount(t=>t.outer,things);
+        var loaded = getDistinctCount(t => t.outer, things);
         return <CenteredMessage>
             Loaded {loaded} records out of {count} available. Increase limit to load more.
         </CenteredMessage>

@@ -16,7 +16,7 @@ class QuantifiedPlaceExtractor
       Some(resList.map(qs => new QuantifiedPlace(
         qs.getResource("place").getURI,
         qs.getResource("placeType").getURI,
-        qs.getResource("valueConnection").getURI,
+        qs.getResource("valuePredicate").getURI,
         qs.getLiteral("value").getInt,
         qs.getResource("coordinates").getURI
       )))

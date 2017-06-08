@@ -6,8 +6,8 @@ import secondLevel from "./ducks/secondLevel";
 import selectedTimeRecord from "./ducks/selectedTimeRecord";
 import selectedTypeFL from "./ducks/selectedTypeFirstLevel";
 import selectedThingSL from "./ducks/selectedThingSecondLevel";
-import selectedConnFL from "./ducks/selectedConnFirstLevel";
-import selectedConnSL from "./ducks/selectedConnSecondLevel";
+import selectedFirstLevelPredicates from "./ducks/selectedFirstLevelPredicates";
+import selectedSecondLevelPredicates from "./ducks/selectedSecondLevelPredicates";
 import timeRange from "./ducks/timeRange";
 import count from "./ducks/count";
 
@@ -18,9 +18,9 @@ const rootReducer = combineReducers({
     secondLevel,
     selectedTimeRecord,
     selectedTypeFL,
-    selectedConnFL,
+    selectedFirstLevelPredicates,
     selectedThingSL,
-    selectedConnSL,
+    selectedSecondLevelPredicates,
     timeRange,
     count
 });
