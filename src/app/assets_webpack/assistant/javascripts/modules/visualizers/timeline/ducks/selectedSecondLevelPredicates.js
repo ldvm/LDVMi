@@ -32,4 +32,4 @@ export default function selectedConnSLReducer(state = initialState, action) {
 };
 
 // Selectors
-export const selectedPredicateSLSelector = createSelector([moduleSelector], state => state.selectedSecondLevelPredicates);
+export const selectedSecondLevelPredicatesSelector = createSelector([moduleSelector], state => state.selectedSecondLevelPredicates);

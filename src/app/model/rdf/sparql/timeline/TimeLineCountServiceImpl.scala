@@ -31,47 +31,47 @@ class TimeLineCountServiceImpl(implicit val inj: Injector) extends TimeLineCount
       new CountExtractor())
   }
 
-  override def thingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Count] = {
+  override def thingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], predicates: Seq[String], limit: Int)(implicit session: Session): Option[Count] = {
     val maybeLimit = if (limit > 0) Some(limit) else None
     val maybeThingUrls = if (thingUrls.nonEmpty) Some(thingUrls) else None
     val maybeThingTypes = if (thingTypes.nonEmpty) Some(thingTypes) else None
-    val maybeConnUrls = if (connectionUrls.nonEmpty) Some(connectionUrls) else None
+    val maybePredicates = if (predicates.nonEmpty) Some(predicates) else None
     sparqlEndpointService.getCount(
       evaluationToSparqlEndpoint(evaluation),
-      new ThingsWithIntervalQuery(maybeThingUrls, maybeThingTypes, maybeConnUrls, maybeLimit),
+      new ThingsWithIntervalQuery(maybeThingUrls, maybeThingTypes, maybePredicates, maybeLimit),
       new CountExtractor())
   }
 
-  override def thingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Count] = {
+  override def thingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], predicates: Seq[String], limit: Int)(implicit session: Session): Option[Count] = {
     val maybeLimit = if (limit > 0) Some(limit) else None
     val maybeThingUrls = if (thingUrls.nonEmpty) Some(thingUrls) else None
     val maybeThingTypes = if (thingTypes.nonEmpty) Some(thingTypes) else None
-    val maybeConnUrls = if (connectionUrls.nonEmpty) Some(connectionUrls) else None
+    val maybePredicates = if (predicates.nonEmpty) Some(predicates) else None
     sparqlEndpointService.getCount(
       evaluationToSparqlEndpoint(evaluation),
-      new ThingsWithInstantQuery(maybeThingUrls, maybeThingTypes, maybeConnUrls, maybeLimit),
+      new ThingsWithInstantQuery(maybeThingUrls, maybeThingTypes, maybePredicates, maybeLimit),
       new CountExtractor())
   }
 
-  override def thingsWithThingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Count] = {
+  override def thingsWithThingsWithIntervals(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], predicates: Seq[String], limit: Int)(implicit session: Session): Option[Count] = {
     val maybeLimit = if (limit > 0) Some(limit) else None
     val maybeThingUrls = if (thingUrls.nonEmpty) Some(thingUrls) else None
     val maybeThingTypes = if (thingTypes.nonEmpty) Some(thingTypes) else None
-    val maybeConnUrls = if (connectionUrls.nonEmpty) Some(connectionUrls) else None
+    val maybePredicates = if (predicates.nonEmpty) Some(predicates) else None
     sparqlEndpointService.getCount(
       evaluationToSparqlEndpoint(evaluation),
-      new ThingsWithThingsWithIntervalQuery(maybeThingUrls, maybeThingTypes, maybeConnUrls, maybeLimit),
+      new ThingsWithThingsWithIntervalQuery(maybeThingUrls, maybeThingTypes, maybePredicates, maybeLimit),
       new CountExtractor())
   }
 
-  override def thingsWithThingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], connectionUrls: Seq[String], limit: Int)(implicit session: Session): Option[Count] = {
+  override def thingsWithThingsWithInstants(evaluation: PipelineEvaluation, thingUrls: Seq[String], thingTypes: Seq[String], predicates: Seq[String], limit: Int)(implicit session: Session): Option[Count] = {
     val maybeLimit = if (limit > 0) Some(limit) else None
     val maybeThingUrls = if (thingUrls.nonEmpty) Some(thingUrls) else None
     val maybeThingTypes = if (thingTypes.nonEmpty) Some(thingTypes) else None
-    val maybeConnUrls = if (connectionUrls.nonEmpty) Some(connectionUrls) else None
+    val maybePredicates = if (predicates.nonEmpty) Some(predicates) else None
     sparqlEndpointService.getCount(
       evaluationToSparqlEndpoint(evaluation),
-      new ThingsWithThingsWithInstantQuery(maybeThingUrls, maybeThingTypes, maybeConnUrls, maybeLimit),
+      new ThingsWithThingsWithInstantQuery(maybeThingUrls, maybeThingTypes, maybePredicates, maybeLimit),
       new CountExtractor())
   }
 }

@@ -12,7 +12,7 @@ import {setSelectTimeRecord, setSelectTimeRecordReset} from "../ducks/selectedTi
 import PromiseResult from "../../../core/components/PromiseResult";
 import TimeLine from "../misc/TimeLine";
 import CenteredMessage from "../../../../components/CenteredMessage";
-import CountZeroLevelContainer from "./CountZeroLevelContainer";
+import CountZeroLevelContainer from "../components/CountTimeRecord";
 import TimeRangeContainer from "./TimeRangeContainer";
 import {Paper} from "material-ui";
 

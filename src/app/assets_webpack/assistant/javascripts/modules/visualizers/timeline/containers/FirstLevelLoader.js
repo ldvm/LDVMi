@@ -5,7 +5,11 @@ import {createStructuredSelector} from "reselect";
 import {firstLevelSelector, firstLevelStatusSelector, getFirstLevelReset} from "../ducks/firstLevel";
 import {secondLevelSelector} from "../ducks/secondLevel";
 import {limitSelector} from "../../../app/ducks/limit";
-import {selectedTypeFLSelector, setSelectedTypeFLReset, setSelectTypeFL} from "../ducks/selectedTypeFirstLevel";
+import {
+    selectedFirstLevelTypesSelector,
+    setSelectedFirstLevelTypesReset,
+    setSelectFirstLevelType
+} from "../ducks/selectedFirstLevelTypes";
 import {
     selectedFirstLevelPredicatesSelector,
     setSelectedFirstLevelPredicatesReset,
@@ -16,7 +20,7 @@ import RecordSelector from "../../../common/RecordSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
 import {Paper} from "material-ui";
-import CountFirstLevelContainer from "./CountFirstLevelContainer";
+import CountFirstLevelContainer from "../components/CountFirstLevel";
 import {Set as ImmutableSet} from "immutable";
 
 
@@ -35,7 +39,7 @@ class FirstLevelLoader extends Component {
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         // Value selectors
-        selectedTypeFL: PropTypes.instanceOf(ImmutableSet).isRequired,
+        selectedFirstLevelTypes: PropTypes.instanceOf(ImmutableSet).isRequired,
         selectedFirstLevelPredicates: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         limit: PropTypes.number.isRequired
@@ -48,7 +52,7 @@ class FirstLevelLoader extends Component {
     componentWillReceiveProps(nextProps) {
         const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
         if (secondLevel != nextProps.secondLevel) {
-            dispatch(setSelectedTypeFLReset());
+            dispatch(setSelectedFirstLevelTypesReset());
             dispatch(setSelectedFirstLevelPredicatesReset());
 
             var urls = nextProps.secondLevel.map(l => l.inner);
@@ -61,22 +65,22 @@ class FirstLevelLoader extends Component {
         const {dispatch} = this.props;
 
         dispatch(getFirstLevelReset());
-        dispatch(setSelectedTypeFLReset());
+        dispatch(setSelectedFirstLevelTypesReset());
         dispatch(setSelectedFirstLevelPredicatesReset());
     }
 
     load() {
-        const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, selectedTypeFL, selectedFirstLevelPredicates, limit} = this.props;
+        const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, selectedFirstLevelTypes, selectedFirstLevelPredicates, limit} = this.props;
 
         var urls = secondLevel.map(l => l.inner);
-        dispatch(firstLevelLoader(urls, [...selectedTypeFL], [...selectedFirstLevelPredicates], limit));
-        dispatch(firstLevelCount(urls, [...selectedTypeFL], [...selectedFirstLevelPredicates]))
+        dispatch(firstLevelLoader(urls, [...selectedFirstLevelTypes], [...selectedFirstLevelPredicates], limit));
+        dispatch(firstLevelCount(urls, [...selectedFirstLevelTypes], [...selectedFirstLevelPredicates]))
     }
 
     reset() {
         const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
 
-        dispatch(setSelectedTypeFLReset());
+        dispatch(setSelectedFirstLevelTypesReset());
         dispatch(setSelectedFirstLevelPredicatesReset());
 
         var urls = secondLevel.map(l => l.inner);
@@ -86,7 +90,7 @@ class FirstLevelLoader extends Component {
     }
 
     render() {
-        const {dispatch, status, firstLevel, selectedTypeFL, selectedFirstLevelPredicates} = this.props;
+        const {dispatch, status, firstLevel, selectedFirstLevelTypes, selectedFirstLevelPredicates} = this.props;
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error}
@@ -97,15 +101,15 @@ class FirstLevelLoader extends Component {
             return <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
         }
 
-        var buttonsEnabled = selectedTypeFL.size > 0 || selectedFirstLevelPredicates.size > 0;
+        var buttonsEnabled = selectedFirstLevelTypes.size > 0 || selectedFirstLevelPredicates.size > 0;
 
         return <Paper>
             <RecordSelector
                 records={firstLevel}
                 header="Thing Types:"
                 getKey={t => t.outerType}
-                selectedKeys={selectedTypeFL}
-                onKeySelect={k => dispatch(setSelectTypeFL(k))}
+                selectedKeys={selectedFirstLevelTypes}
+                onKeySelect={k => dispatch(setSelectFirstLevelType(k))}
             />
             <RecordSelector
                 records={firstLevel}
@@ -134,7 +138,7 @@ const selector = createStructuredSelector({
     firstLevel: firstLevelSelector,
     secondLevel: secondLevelSelector,
     status: firstLevelStatusSelector,
-    selectedTypeFL: selectedTypeFLSelector,
+    selectedFirstLevelTypes: selectedFirstLevelTypesSelector,
     selectedFirstLevelPredicates: selectedFirstLevelPredicatesSelector,
     limit: limitSelector
 });

@@ -5,7 +5,7 @@ import BodyPadding from "../../../../components/BodyPadding";
 import FirstLevelLoader from "../containers/FirstLevelLoader";
 import TimeLineIntervalsContainer from "../containers/TimeLineIntervalsContainer";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
-import IntervalVisualizer from "../containers/IntervalVisualizer";
+import IntervalVisualizer from "../components/IntervalVisualizer";
 import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
 
 class IntervalsToFirstLevel extends Component {

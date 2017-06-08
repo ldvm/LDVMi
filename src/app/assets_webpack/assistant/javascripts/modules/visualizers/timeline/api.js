@@ -33,12 +33,12 @@ export async function getInstants(applicationId, urls, timeRange, limit) {
     return applyByBatchesWithLimit(urls, BATCH_SIZE, limit, batchFunc);
 }
 
-export async function getThingsWIntervals(applicationId, things, thingTypes, connections, limit) {
+export async function getThingsWIntervals(applicationId, things, thingTypes, predicates, limit) {
     const batchFunc = async function (batchThings, batchLimit) {
         let payload = {
             "things": batchThings,
             "thingTypes": thingTypes,
-            "connections": connections,
+            "predicates": predicates,
             "limit": batchLimit
         };
         const result = await rest('timeLineVisualizer/getThingsWIntervals/' + applicationId, payload);
@@ -47,12 +47,12 @@ export async function getThingsWIntervals(applicationId, things, thingTypes, con
     return applyByBatchesWithLimit(things, BATCH_SIZE, limit, batchFunc);
 }
 
-export async function getThingsWInstants(applicationId, things, thingTypes, connections, limit) {
+export async function getThingsWInstants(applicationId, things, thingTypes, predicates, limit) {
     const batchFunc = async function (batchThings, batchLimit) {
         let payload = {
             "things": batchThings,
             "thingTypes": thingTypes,
-            "connections": connections,
+            "predicates": predicates,
             "limit": batchLimit
         };
         const result = await rest('timeLineVisualizer/getThingsWInstants/' + applicationId, payload);
@@ -61,12 +61,12 @@ export async function getThingsWInstants(applicationId, things, thingTypes, conn
     return applyByBatchesWithLimit(things, BATCH_SIZE, limit, batchFunc);
 }
 
-export async function getThingsWThingsWIntervals(applicationId, things, thingTypes, connections, limit) {
+export async function getThingsWThingsWIntervals(applicationId, things, thingTypes, predicates, limit) {
     const batchFunc = async function (batchThings, batchLimit) {
         let payload = {
             "things": batchThings,
             "thingTypes": thingTypes,
-            "connections": connections,
+            "predicates": predicates,
             "limit": batchLimit
         };
         const result = await rest('timeLineVisualizer/getThingsWThingsWIntervals/' + applicationId, payload);
@@ -75,12 +75,12 @@ export async function getThingsWThingsWIntervals(applicationId, things, thingTyp
     return applyByBatchesWithLimit(things, BATCH_SIZE, limit, batchFunc);
 }
 
-export async function getThingsWThingsWInstants(applicationId, things, thingTypes, connections, limit) {
+export async function getThingsWThingsWInstants(applicationId, things, thingTypes, predicates, limit) {
     const batchFunc = async function (batchThings, batchLimit) {
         let payload = {
             "things": batchThings,
             "thingTypes": thingTypes,
-            "connections": connections,
+            "predicates": predicates,
             "limit": batchLimit
         };
         const result = await rest('timeLineVisualizer/getThingsWThingsWInstants/' + applicationId, payload);
@@ -117,12 +117,12 @@ export async function getInstantsCount(applicationId, urls, timeRange) {
     return applyByBatchesCount(urls, BATCH_SIZE, batchFunc);
 }
 
-export async function getThingsWIntervalsCount(applicationId, things, thingTypes, connections) {
+export async function getThingsWIntervalsCount(applicationId, things, thingTypes, predicates) {
     const batchFunc = async function (batchThings) {
         let payload = {
             "things": batchThings,
             "thingTypes": thingTypes,
-            "connections": connections,
+            "predicates": predicates,
             "limit": -1
         };
         const result = await rest('timeLineVisualizer/getThingsWIntervals/count/' + applicationId, payload);
@@ -131,12 +131,12 @@ export async function getThingsWIntervalsCount(applicationId, things, thingTypes
     return applyByBatchesCount(things, BATCH_SIZE, batchFunc);
 }
 
-export async function getThingsWInstantsCount(applicationId, things, thingTypes, connections) {
+export async function getThingsWInstantsCount(applicationId, things, thingTypes, predicates) {
     const batchFunc = async function (batchThings) {
         let payload = {
             "things": batchThings,
             "thingTypes": thingTypes,
-            "connections": connections,
+            "predicates": predicates,
             "limit": -1
         };
 
@@ -147,12 +147,12 @@ export async function getThingsWInstantsCount(applicationId, things, thingTypes,
     return applyByBatchesCount(things, BATCH_SIZE, batchFunc);
 }
 
-export async function getThingsWThingsWIntervalsCount(applicationId, things, thingTypes, connections) {
+export async function getThingsWThingsWIntervalsCount(applicationId, things, thingTypes, predicates) {
     const batchFunc = async function (batchThings) {
         let payload = {
             "things": batchThings,
             "thingTypes": thingTypes,
-            "connections": connections,
+            "predicates": predicates,
             "limit": -1
         };
         const result = await rest('timeLineVisualizer/getThingsWThingsWIntervals/count/' + applicationId, payload);
@@ -161,12 +161,12 @@ export async function getThingsWThingsWIntervalsCount(applicationId, things, thi
     return applyByBatchesCount(things, BATCH_SIZE, batchFunc);
 }
 
-export async function getThingsWThingsWInstantsCount(applicationId, things, thingTypes, connections) {
+export async function getThingsWThingsWInstantsCount(applicationId, things, thingTypes, predicates) {
     const batchFunc = async function (batchThings) {
         let payload = {
             "things": batchThings,
             "thingTypes": thingTypes,
-            "connections": connections,
+            "predicates": predicates,
             "limit": -1
         };
         const result = await rest('timeLineVisualizer/getThingsWThingsWInstants/count/' + applicationId, payload);

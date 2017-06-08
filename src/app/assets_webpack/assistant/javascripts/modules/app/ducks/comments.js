@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable'
+import { Map as ImmutableMap, fromJS } from 'immutable'
 import { createSelector } from 'reselect'
 import prefix from '../../core/prefix'
 import createAction from '../../../misc/createAction'
@@ -32,8 +32,7 @@ export function getComments(resourceUris) {
 
 // Reducer
 
-const initialState = new Map();
-
+const initialState = new ImmutableMap();
 export default function commentsReducer(state = initialState, action) {
     switch (action.type) {
         case GET_APPLICATION_START:

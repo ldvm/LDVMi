@@ -98,7 +98,6 @@ class QuantifiedThingsLoader extends Component {
                 records={quantifiedThings}
                 header="Things with places:"
                 getKey={t => t.url}
-                getValue={t => t.url}
                 selectedKeys={selectedThings}
                 onKeySelect={k => dispatch(setSelectQuantifiedThing(k))}
             />

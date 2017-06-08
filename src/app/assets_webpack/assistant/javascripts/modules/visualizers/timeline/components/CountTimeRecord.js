@@ -8,7 +8,7 @@ import {instantsSelector, instantsStatusSelector} from "../ducks/instants";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
 
-class CountZeroLevelContainer extends Component {
+class CountTimeRecord extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
@@ -51,4 +51,4 @@ const selector = createStructuredSelector({
     intervalsStatus: intervalsStatusSelector
 });
 
-export default connect(selector)(CountZeroLevelContainer);
+export default connect(selector)(CountTimeRecord);

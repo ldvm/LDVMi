@@ -22,7 +22,7 @@ class MapMarkerInfoWindow extends Component {
         for (const c of coordinates) {
             if (c.url == url) {
                 return <div>
-                    <ObjectInfo header="Place" url={url}/>
+                    <ObjectInfo header="Coordinates" url={url}/>
                     <br/>
                     <b>Latitude: </b>
                     {c.latitude}<br/>
@@ -63,7 +63,7 @@ class MapMarkerInfoWindow extends Component {
                         <b>Value: </b>
                         {p.value}<br/>
                         <br/>
-                        <ObjectInfo header="Value predicate" url={p.valueConnection}/>
+                        <ObjectInfo header="Value predicate" url={p.valuePredicate}/>
                         <hr/>
                     </div>
                 );
@@ -83,12 +83,12 @@ class MapMarkerInfoWindow extends Component {
                     <div key={t.url}>
                         <ObjectInfo header="Thing with place" url={t.url}/>
                         <br/>
-                        <ObjectInfo header="Place predicate" url={t.placeConnection}/>
+                        <ObjectInfo header="Place predicate" url={t.placePredicate}/>
                         <br/>
                         <b>Value: </b>
                         {t.value}<br/>
                         <br/>
-                        <ObjectInfo header="Value predicate" url={t.valueConnection}/>
+                        <ObjectInfo header="Value predicate" url={t.placePredicate}/>
                         <hr/>
                     </div>
                 );

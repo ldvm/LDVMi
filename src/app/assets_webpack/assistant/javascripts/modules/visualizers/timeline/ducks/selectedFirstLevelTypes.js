@@ -6,30 +6,30 @@ import {Set as ImmutableSet} from "immutable";
 import moduleSelector from "../selector";
 
 // Actions
-export const SET_SELECT_TSL = prefix('SET_SELECT_THING_SECOND');
-export const SET_SELECTED_TSL_RESET = SET_SELECT_TSL + "_RESET";
+export const SET_SELECT_FL_TYPE = prefix('SET_SELECT_FIRST_LEVEL_TYPE');
+export const SET_SELECT_FL_TYPE_RESET = SET_SELECT_FL_TYPE + "_RESET";
 
-export function setSelectThingSL(key) {
-    return createAction(SET_SELECT_TSL, {key});
+export function setSelectFirstLevelType(key) {
+    return createAction(SET_SELECT_FL_TYPE, {key});
 }
 
-export function setSelectedThingSLReset() {
-    return createAction(SET_SELECTED_TSL_RESET);
+export function setSelectedFirstLevelTypesReset() {
+    return createAction(SET_SELECT_FL_TYPE_RESET);
 }
 
 // Reducer
 const initialState = new ImmutableSet();
-export default function selectedThingSLReducer(state = initialState, action) {
+export default function selectedFirstLevelTypeReducer(state = initialState, action) {
     switch (action.type) {
         case GET_APPLICATION_START:
             return initialState;
-        case SET_SELECTED_TSL_RESET:
+        case SET_SELECT_FL_TYPE_RESET:
             return initialState;
-        case SET_SELECT_TSL:
+        case SET_SELECT_FL_TYPE:
             return state.contains(action.payload.key) ? state.remove(action.payload.key) : state.add(action.payload.key);
     }
     return state;
 };
 
 // Selectors
-export const selectedThingSLSelector = createSelector([moduleSelector], state => state.selectedThingSL);
+export const selectedFirstLevelTypesSelector = createSelector([moduleSelector], state => state.selectedFirstLevelTypes);

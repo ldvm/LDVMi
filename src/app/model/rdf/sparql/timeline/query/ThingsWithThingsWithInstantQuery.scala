@@ -5,11 +5,11 @@ import model.rdf.sparql.query.SparqlCountQuery
 
 class ThingsWithThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
                                        maybeThingsTypes: Option[Seq[String]],
-                                       maybeConnectionUrls: Option[Seq[String]],
+                                       maybePredicates: Option[Seq[String]],
                                        maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?outerThing ?outerThingType ?connection ?innerThing"
-    val group = "GROUP BY ?outerThing ?outerThingType ?connection ?innerThing"
+    val select = "SELECT ?outerThing ?outerThingType ?predicate ?innerThing"
+    val group = "GROUP BY ?outerThing ?outerThingType ?predicate ?innerThing"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select, group, limit)
   }
@@ -27,7 +27,7 @@ class ThingsWithThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
        |
        |${select}
        |WHERE {
-       |  ?outerThing ?connection ?innerThing.
+       |  ?outerThing ?predicate ?innerThing.
        |
        |  ?outerThing a ?outerThingType.
        |
@@ -37,7 +37,7 @@ class ThingsWithThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
        |
        |  ${QueryHelpers.limitValues("outerThing", maybeThingsUrls)}
        |  ${QueryHelpers.limitValues("outerThingType", maybeThingsTypes)}
-       |  ${QueryHelpers.limitValues("connection", maybeConnectionUrls)}
+       |  ${QueryHelpers.limitValues("predicate", maybePredicates)}
        |}
        |
        |${group}

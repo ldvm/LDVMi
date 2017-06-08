@@ -2,12 +2,10 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import CenteredMessage from "../../../../components/CenteredMessage";
-
+import SubHeadLine from "../../../../components/Subheadline";
 import {selectedTimeRecordSelector} from "../ducks/selectedTimeRecord";
-
-import Label from "../../../app/containers/Label";
 import LevelsVisualizer from "./LevelsVisualizer";
-import Comment from "../../../app/containers/Comment";
+import ObjectInfo from "../../../app/containers/ObjectInfo";
 
 class IntervalVisualizer extends Component {
     static propTypes = {
@@ -23,26 +21,15 @@ class IntervalVisualizer extends Component {
 
         var interval = selectedTimeRecord[0];
         return <div>
-            <table>
-                <tbody>
-                <tr>
-                    <td><b>Name: </b></td>
-                    <td><Label uri={interval.url}/></td>
-                </tr>
-                <tr>
-                    <td><b>Description: </b></td>
-                    <td><Comment uri={interval.url}/></td>
-                </tr>
-                <tr>
-                    <td><b>Begin: </b></td>
-                    <td>{new Date(interval.begin).toDateString()}</td>
-                </tr>
-                <tr>
-                    <td><b>End: </b></td>
-                    <td>{new Date(interval.end).toDateString()}</td>
-                </tr>
-                </tbody>
-            </table>
+            <SubHeadLine title="Interval"/>
+            <ObjectInfo header="Interval" url={interval.url}/>
+            <br/>
+            <b>Begin: </b>
+            {new Date(interval.begin).toDateString()}
+            <br/>
+            <b>End: </b>
+            {new Date(interval.end).toDateString()}
+            <hr/>
             <LevelsVisualizer timeRecordUrl={interval.url}/>
         </div>
 

@@ -5,11 +5,11 @@ import model.rdf.sparql.query.SparqlCountQuery
 
 class ThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]],
                               maybeThingsTypes: Option[Seq[String]],
-                              maybeConnectionUrls: Option[Seq[String]],
+                              maybePredicates: Option[Seq[String]],
                               maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?thing ?thingType ?connection ?interval"
-    val group = "GROUP BY ?thing ?thingType ?connection ?interval"
+    val select = "SELECT ?thing ?thingType ?predicate ?interval"
+    val group = "GROUP BY ?thing ?thingType ?predicate ?interval"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select, group, limit)
   }
@@ -27,7 +27,7 @@ class ThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]],
        |
        |${select}
        |WHERE {
-       |  ?thing ?connection ?interval.
+       |  ?thing ?predicate ?interval.
        |  ?thing a ?thingType.
        |
        |  ?interval time:hasBeginning ?beginning .
@@ -35,7 +35,7 @@ class ThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]],
        |
        |  ${QueryHelpers.limitValues("thing", maybeThingsUrls)}
        |  ${QueryHelpers.limitValues("thingType", maybeThingsTypes)}
-       |  ${QueryHelpers.limitValues("connection", maybeConnectionUrls)}
+       |  ${QueryHelpers.limitValues("predicate", maybePredicates)}
        |}
        |
        |${group}

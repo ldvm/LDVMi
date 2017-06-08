@@ -50,7 +50,7 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
   def getThingsWithIntervals(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val thingsWithIntervals = timelineService.thingsWithIntervals(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val thingsWithIntervals = timelineService.thingsWithIntervals(evaluation, json.things, json.thingTypes, json.predicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("thingsWithIntervals" -> thingsWithIntervals))))
       }
   }
@@ -58,7 +58,7 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
   def getThingsWithIntervalsCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val count = timelineCountService.thingsWithIntervals(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val count = timelineCountService.thingsWithIntervals(evaluation, json.things, json.thingTypes, json.predicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("count" -> count))))
       }
   }
@@ -66,7 +66,7 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
   def getThingsWithInstants(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val thingsWithInstants = timelineService.thingsWithInstants(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val thingsWithInstants = timelineService.thingsWithInstants(evaluation, json.things, json.thingTypes, json.predicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("thingsWithInstants" -> thingsWithInstants))))
       }
   }
@@ -74,7 +74,7 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
   def getThingsWithInstantsCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val count = timelineCountService.thingsWithInstants(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val count = timelineCountService.thingsWithInstants(evaluation, json.things, json.thingTypes, json.predicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("count" -> count))))
       }
   }
@@ -82,7 +82,7 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
   def getThingsWithThingsWithIntervals(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val thingsWithThingsWithIntervals = timelineService.thingsWithThingsWithIntervals(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val thingsWithThingsWithIntervals = timelineService.thingsWithThingsWithIntervals(evaluation, json.things, json.thingTypes, json.predicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("thingsWithThingsWithIntervals" -> thingsWithThingsWithIntervals))))
       }
   }
@@ -90,7 +90,7 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
   def getThingsWithThingsWithIntervalsCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val count = timelineCountService.thingsWithThingsWithIntervals(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val count = timelineCountService.thingsWithThingsWithIntervals(evaluation, json.things, json.thingTypes, json.predicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("count" -> count))))
       }
   }
@@ -98,7 +98,7 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
   def getThingsWithThingsWithInstants(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val thingsWithThingsWithInstants = timelineService.thingsWithThingsWithInstants(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val thingsWithThingsWithInstants = timelineService.thingsWithThingsWithInstants(evaluation, json.things, json.thingTypes, json.predicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("thingsWithThingsWithInstants" -> thingsWithThingsWithInstants))))
       }
   }
@@ -106,7 +106,7 @@ class TimeLineVisualizerApiController(implicit val inj: Injector) extends Visual
   def getThingsWithThingsWithInstantsCount(id: Long) = RestAsyncAction[ThingsConnectionsRequest] { implicit request =>
     json =>
       withEvaluation(ApplicationId(id)) { evaluation =>
-        val count = timelineCountService.thingsWithThingsWithInstants(evaluation, json.things, json.thingTypes, json.connections, json.limit)
+        val count = timelineCountService.thingsWithThingsWithInstants(evaluation, json.things, json.thingTypes, json.predicates, json.limit)
         Future(Ok(SuccessResponse(data = Seq("count" -> count))))
       }
   }

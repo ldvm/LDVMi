@@ -2,13 +2,12 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import CenteredMessage from "../../../../components/CenteredMessage";
-
 import {selectedTimeRecordSelector} from "../ducks/selectedTimeRecord";
-
-import Label from "../../../app/containers/Label";
-import Comment from "../../../app/containers/Comment";
 import LevelsVisualizer from "./LevelsVisualizer";
 import makePureRender from "../../../../misc/makePureRender";
+import ObjectInfo from "../../../app/containers/ObjectInfo";
+import SubHeadLine from "../../../../components/Subheadline";
+
 
 class InstantVisualizer extends Component {
     static propTypes = {
@@ -24,22 +23,12 @@ class InstantVisualizer extends Component {
 
         var instant = selectedTimeRecord[0];
         return <div>
-            <table>
-                <tbody>
-                <tr>
-                    <td><b>Name: </b></td>
-                    <td><Label uri={instant.url}/></td>
-                </tr>
-                <tr>
-                    <td><b>Description: </b></td>
-                    <td><Comment uri={instant.url}/></td>
-                </tr>
-                <tr>
-                    <td><b>Date: </b></td>
-                    <td>{new Date(instant.date).toDateString()}</td>
-                </tr>
-                </tbody>
-            </table>
+            <SubHeadLine title="Instant"/>
+            <ObjectInfo header="Instant" url={instant.url}/>
+            <br/>
+            <b>Date: </b>
+            {new Date(instant.date).toDateString()}
+            <hr/>
             <LevelsVisualizer timeRecordUrl={instant.url}/>
         </div>
     }

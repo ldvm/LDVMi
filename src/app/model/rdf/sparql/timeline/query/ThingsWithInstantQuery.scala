@@ -5,11 +5,11 @@ import model.rdf.sparql.query.SparqlCountQuery
 
 class ThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
                              maybeThingsTypes: Option[Seq[String]],
-                             maybeConnectionUrls: Option[Seq[String]],
+                             maybePredicates: Option[Seq[String]],
                              maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?thing ?thingType ?connection ?instant"
-    val group = "GROUP BY ?thing ?thingType ?connection ?instant"
+    val select = "SELECT ?thing ?thingType ?predicate ?instant"
+    val group = "GROUP BY ?thing ?thingType ?predicate ?instant"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select, group, limit)
   }
@@ -27,14 +27,14 @@ class ThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
        |
        |${select}
        |WHERE {
-       |  ?thing ?connection ?instant.
+       |  ?thing ?predicate ?instant.
        |  ?thing a ?thingType.
        |
        |  ?instant time:inDateTime ?date.
        |
        |  ${QueryHelpers.limitValues("thing", maybeThingsUrls)}
        |  ${QueryHelpers.limitValues("thingType", maybeThingsTypes)}
-       |  ${QueryHelpers.limitValues("connection", maybeConnectionUrls)}
+       |  ${QueryHelpers.limitValues("predicate", maybePredicates)}
        |}
        |
        |${group}

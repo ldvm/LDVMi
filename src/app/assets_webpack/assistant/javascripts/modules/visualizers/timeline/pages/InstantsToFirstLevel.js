@@ -5,7 +5,7 @@ import BodyPadding from "../../../../components/BodyPadding";
 import FirstLevelLoader from "../containers/FirstLevelLoader";
 import TimeLineInstantsContainer from "../containers/TimeLineInstantsContainer";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
-import InstantVisualizer from "../containers/InstantVisualizer";
+import InstantVisualizer from "../components/InstantVisualizer";
 import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
 
 class InstantsToFirstLevel extends Component {

@@ -8,7 +8,7 @@ import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import {getDistinctCount} from "../../../common/arrayUtils";
 
-class CountSecondLevelContainer extends Component {
+class CountSecondLevel extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
@@ -46,4 +46,4 @@ const selector = createStructuredSelector({
     thingsStatus: secondLevelStatusSelector
 });
 
-export default connect(selector)(CountSecondLevelContainer);
+export default connect(selector)(CountSecondLevel);

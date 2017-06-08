@@ -188,7 +188,7 @@ class TimeLine {
                         return x(getDate(d.data.date));
                     })
                     .attr("cy", function (d, i) {
-                        return y(getTime(d.data.date)) + (size.height * 1.5 * d.level);
+                        return y(size.height * 1.5 * d.level);
                     })
                     .attr("r", size.radius)
                     .on("click", (d) => callback(d.data));
@@ -210,7 +210,7 @@ class TimeLine {
                         return x(getDate(d.data.begin));
                     })
                     .attr("y", function (d, i) {
-                        return y(getTime(d.data.begin)) + (size.height * 1.5 * d.level);
+                        return y(size.height * 1.5 * d.level);
                     })
                     .attr("rx", size.rx)
                     .attr("ry", size.ry)

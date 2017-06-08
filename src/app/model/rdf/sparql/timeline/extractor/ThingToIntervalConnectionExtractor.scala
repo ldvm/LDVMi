@@ -15,7 +15,7 @@ class ThingToIntervalConnectionExtractor extends QueryExecutionResultExtractor[T
       Some(resList.map(e => new TimeLineConnection(
         e.getResource("thing").getURI,
         e.getResource("thingType").getURI,
-        e.getResource("connection").getURI,
+        e.getResource("predicate").getURI,
         e.getResource("interval").getURI
       )))
     }

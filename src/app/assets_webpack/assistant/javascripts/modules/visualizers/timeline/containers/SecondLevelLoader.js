@@ -2,9 +2,13 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {getSecondLevelReset, secondLevelSelector, secondLevelStatusSelector} from "../ducks/secondLevel";
 import {limitSelector} from "../../../app/ducks/limit";
-import {selectedThingSLSelector, setSelectedThingSLReset, setSelectThingSL} from "../ducks/selectedThingSecondLevel";
 import {
-    selectedPredicateSLSelector,
+    selectedSecondLevelThingsSelector,
+    setSelectedSecondLevelThingsReset,
+    setSelectThingSL
+} from "../ducks/selectedSecondLevelThings";
+import {
+    selectedSecondLevelPredicatesSelector,
     setSelectedSecondLevelPredicatesReset,
     setSelectSecondLevelPredicate
 } from "../ducks/selectedSecondLevelPredicates";
@@ -15,7 +19,7 @@ import RecordSelector from "../../../common/RecordSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
 import {Paper} from "material-ui";
-import CountSecondLevelContainer from "./CountSecondLevelContainer";
+import CountSecondLevelContainer from "../components/CountSecondLevel";
 import {Set as ImmutableSet} from "immutable";
 
 class SecondLevelLoader extends Component {
@@ -32,7 +36,7 @@ class SecondLevelLoader extends Component {
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         // Value selectors
-        selectedThingSL: PropTypes.instanceOf(ImmutableSet).isRequired,
+        selectedSecondLevelThings: PropTypes.instanceOf(ImmutableSet).isRequired,
         selectedSecondLevelPredicates: PropTypes.instanceOf(ImmutableSet).isRequired,
 
         limit: PropTypes.number.isRequired
@@ -46,20 +50,20 @@ class SecondLevelLoader extends Component {
         const {dispatch} = this.props;
 
         dispatch(getSecondLevelReset());
-        dispatch(setSelectedThingSLReset());
+        dispatch(setSelectedSecondLevelThingsReset());
         dispatch(setSelectedSecondLevelPredicatesReset());
     }
 
     load() {
-        const {dispatch, secondLevelLoader, secondLevelCount, selectedThingSL, selectedSecondLevelPredicates, limit} = this.props;
-        dispatch(secondLevelLoader([...selectedThingSL], [], [...selectedSecondLevelPredicates], limit));
-        dispatch(secondLevelCount([...selectedThingSL], [], [...selectedSecondLevelPredicates]));
+        const {dispatch, secondLevelLoader, secondLevelCount, selectedSecondLevelThings, selectedSecondLevelPredicates, limit} = this.props;
+        dispatch(secondLevelLoader([...selectedSecondLevelThings], [], [...selectedSecondLevelPredicates], limit));
+        dispatch(secondLevelCount([...selectedSecondLevelThings], [], [...selectedSecondLevelPredicates]));
     }
 
     reset() {
         const {dispatch, secondLevelLoader, secondLevelCount, limit} = this.props;
 
-        dispatch(setSelectedThingSLReset());
+        dispatch(setSelectedSecondLevelThingsReset());
         dispatch(setSelectedSecondLevelPredicatesReset());
 
         dispatch(secondLevelLoader([], [], [], limit));
@@ -67,7 +71,7 @@ class SecondLevelLoader extends Component {
     }
 
     render() {
-        const {dispatch, status, secondLevel, selectedThingSL, selectedSecondLevelPredicates} = this.props;
+        const {dispatch, status, secondLevel, selectedSecondLevelThings, selectedSecondLevelPredicates} = this.props;
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error}
@@ -78,14 +82,14 @@ class SecondLevelLoader extends Component {
             return <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
         }
 
-        var buttonsEnabled = selectedThingSL.size > 0 || selectedSecondLevelPredicates.size > 0;
+        var buttonsEnabled = selectedSecondLevelThings.size > 0 || selectedSecondLevelPredicates.size > 0;
 
         return <Paper>
             <RecordSelector
                 records={secondLevel}
                 header="Things:"
                 getKey={t => t.outer}
-                selectedKeys={selectedThingSL}
+                selectedKeys={selectedSecondLevelThings}
                 onKeySelect={k => dispatch(setSelectThingSL(k))}
             />
             <RecordSelector
@@ -114,8 +118,8 @@ class SecondLevelLoader extends Component {
 const selector = createStructuredSelector({
     secondLevel: secondLevelSelector,
     status: secondLevelStatusSelector,
-    selectedThingSL: selectedThingSLSelector,
-    selectedSecondLevelPredicates: selectedPredicateSLSelector,
+    selectedSecondLevelThings: selectedSecondLevelThingsSelector,
+    selectedSecondLevelPredicates: selectedSecondLevelPredicatesSelector,
     limit: limitSelector
 });
 

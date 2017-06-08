@@ -16,7 +16,7 @@ class ThingToThingWithIntervalConnectionExtractor
       Some(resList.map(e => new TimeLineConnection(
         e.getResource("outerThing").getURI,
         e.getResource("outerThingType").getURI,
-        e.getResource("connection").getURI,
+        e.getResource("predicate").getURI,
         e.getResource("innerThing").getURI
       )))
     }
