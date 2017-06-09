@@ -8,7 +8,7 @@ import PromiseResult from "../../../core/components/PromiseResult";
 import Button from "../../../../components/Button";
 import {limitSelector} from "../../../app/ducks/limit";
 import {Paper} from "material-ui";
-import RecordSelector from "../../../common/RecordSelector";
+import RecordSelector from "../../../common/components/RecordSelector";
 import {selectedPlaceTypesSelector, setSelectedPlaceTypesReset, setSelectPlaceType} from "../ducks/selectedPlaceTypes";
 import {
     getQuantifiedPlaces,

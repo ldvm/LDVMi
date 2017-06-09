@@ -88,16 +88,12 @@ code {
 }
 
 .circ {
-    fill: #D35400;
-    opacity: 0.6;
-    stroke: rgba(211, 84, 0, 0.7);
+    opacity: 1;
     stroke-width: 5px;
 }
 
 .rect {
-    fill: #D35400;
-    opacity: 0.6;
-    stroke: rgba(211, 84, 0, 0.7);
+    opacity: 1;
     stroke-width: 5px;
 }
 

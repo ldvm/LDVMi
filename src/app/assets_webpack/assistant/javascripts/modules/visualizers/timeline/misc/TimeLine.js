@@ -167,12 +167,17 @@ class TimeLine {
                         return y(d.level);
                     })
                     .attr("r", size.radius)
+                    .attr("stroke", function (d) {
+                        return d.stroke;
+                    })
+                    .attr("fill", function (d) {
+                        return d.fill;
+                    })
                     .on("click", callback);
             };
 
             // Rectangles for intervals
             this.rectangles = function (data) {
-
                 var rectangles = context.append("g")
                     .attr("class", "time records")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -195,6 +200,12 @@ class TimeLine {
                         return ( e - b );
                     })
                     .attr("height", size.height)
+                    .attr("stroke", function (d) {
+                        return d.stroke;
+                    })
+                    .attr("fill", function (d) {
+                        return d.fill;
+                    })
                     .on("click", callback);
             };
             drawFunc();

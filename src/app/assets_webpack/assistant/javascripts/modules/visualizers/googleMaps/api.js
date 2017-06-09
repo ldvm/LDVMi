@@ -1,5 +1,5 @@
 import rest from "../../../misc/rest";
-import {applyByBatchesCount, applyByBatchesWithLimit} from "../../common/apiUtils";
+import {applyByBatchesCount, applyByBatchesWithLimit} from "../../common/utils/apiUtils";
 
 const BATCH_SIZE = 100;
 

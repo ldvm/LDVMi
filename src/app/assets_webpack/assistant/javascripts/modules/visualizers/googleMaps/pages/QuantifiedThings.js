@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import BodyPadding from "../../../../components/BodyPadding";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
-import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
+import ConfigurationToolbar from "../../../common/components/ConfigurationToolbar";
 import FillInScreen from "../../../../components/FillInScreen";
 import CoordinatesLoader from "../containers/CoordinatesLoader";
 import GoogleMapsCircles from "../containers/GoogleMapsCircles";

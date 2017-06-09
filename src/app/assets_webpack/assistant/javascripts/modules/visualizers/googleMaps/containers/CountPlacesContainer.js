@@ -5,7 +5,7 @@ import {PromiseStatus} from "../../../core/models";
 import {placesCountSelector, placesCountStatusSelector} from "../ducks/counts";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
-import {getDistinctCount} from "../../../common/arrayUtils";
+import {getDistinctCount} from "../../../common/utils/arrayUtils";
 import {placesSelector, placesStatusSelector} from "../ducks/places";
 
 class CountPlacesContainer extends Component {

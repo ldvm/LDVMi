@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import BodyPadding from "../../../../components/BodyPadding";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
-import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
-import TimeLineIntervals from "../containers/TimeLineIntervals";
+import ConfigurationToolbar from "../../../common/components/ConfigurationToolbar";
+import TimeLineIntervals from "../components/TimeLineIntervals";
 import IntervalsLoader from "../containers/IntervalsLoader";
 import IntervalVisualizer from "../components/IntervalVisualizer";
 

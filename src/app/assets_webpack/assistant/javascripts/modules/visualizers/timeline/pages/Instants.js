@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import BodyPadding from "../../../../components/BodyPadding";
-import TimeLineInstants from "../containers/TimeLineInstants";
+import TimeLineInstants from "../components/TimeLineInstants";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
 import InstantVisualizer from "../components/InstantVisualizer";
-import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
+import ConfigurationToolbar from "../../../common/components/ConfigurationToolbar";
 import InstantsLoader from "../containers/InstantsLoader";
 
 class Instants extends Component {

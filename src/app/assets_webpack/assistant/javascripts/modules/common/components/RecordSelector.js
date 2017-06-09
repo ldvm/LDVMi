@@ -1,12 +1,12 @@
 import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
-import {extractFromLocalizedValue} from "../app/misc/languageUtils";
+import {extractFromLocalizedValue} from "../../app/misc/languageUtils";
 import {Map  as immutableMap, Set as ImmutableSet} from "immutable";
-import {getLabels, labelsSelector} from "../app/ducks/labels";
-import {langSelector} from "../app/ducks/lang";
-import Button from "../../components/Button";
-import CenteredMessage from "../../components/CenteredMessage";
+import {getLabels, labelsSelector} from "../../app/ducks/labels";
+import {langSelector} from "../../app/ducks/lang";
+import Button from "../../../components/Button";
+import CenteredMessage from "../../../components/CenteredMessage";
 import {CardHeader, Checkbox, List, ListItem, TextField} from "material-ui";
 
 class RecordSelector extends Component {

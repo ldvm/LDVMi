@@ -5,10 +5,10 @@ import {getSecondLevelInstants} from "../ducks/secondLevel";
 import BodyPadding from "../../../../components/BodyPadding";
 import SecondLevelLoader from "../containers/SecondLevelLoader";
 import FirstLevelLoader from "../containers/FirstLevelLoader";
-import TimeLineInstants from "../containers/TimeLineInstants";
+import TimeLineInstants from "../components/TimeLineInstants";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
 import InstantVisualizer from "../components/InstantVisualizer";
-import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
+import ConfigurationToolbar from "../../../common/components/ConfigurationToolbar";
 import InstantsLoader from "../containers/InstantsLoader";
 
 class InstantsToSecondLevel extends Component {

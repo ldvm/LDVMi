@@ -16,7 +16,7 @@ import {
     setSelectFirstLevelPredicate
 } from "../ducks/selectedFirstLevelPredicates";
 import PromiseResult from "../../../core/components/PromiseResult";
-import RecordSelector from "../../../common/RecordSelector";
+import RecordSelector from "../../../common/components/RecordSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
 import {Paper} from "material-ui";

@@ -10,7 +10,7 @@ import {firstLevelSelector} from "../ducks/firstLevel";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import CountZeroLevelContainer from "../components/CountTimeRecord";
-import TimeRangeContainer from "../components/TimeRange";
+import TimeRangeContainer from "./TimeRange";
 import {Paper} from "material-ui";
 import {connect} from "react-redux";
 

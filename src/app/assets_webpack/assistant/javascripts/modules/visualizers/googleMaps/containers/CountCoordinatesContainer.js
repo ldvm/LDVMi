@@ -6,7 +6,7 @@ import {coordinatesCountSelector, coordinatesCountStatusSelector} from "../ducks
 import {coordinatesSelector, coordinatesStatusSelector} from "../ducks/coordinates"
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
-import {getDistinctCount} from "../../../common/arrayUtils"
+import {getDistinctCount} from "../../../common/utils/arrayUtils"
 
 class CountCoordinatesContainer extends Component {
     static propTypes = {

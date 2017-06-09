@@ -9,6 +9,7 @@ import secondLevel from "./ducks/secondLevel";
 import selectedSecondLevelThings from "./ducks/selectedSecondLevelThings";
 import selectedSecondLevelPredicates from "./ducks/selectedSecondLevelPredicates";
 import timeRange from "./ducks/timeRange";
+import colors from "./ducks/colors"
 import count from "./ducks/count";
 
 const rootReducer = combineReducers({
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
     selectedSecondLevelThings,
     selectedSecondLevelPredicates,
     timeRange,
+    colors,
     count
 });
 

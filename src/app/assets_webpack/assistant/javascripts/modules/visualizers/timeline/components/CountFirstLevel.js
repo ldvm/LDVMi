@@ -6,7 +6,7 @@ import {countFirstSelector, countFirstStatusSelector} from "../ducks/count";
 import {firstLevelSelector, firstLevelStatusSelector} from "../ducks/firstLevel";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
-import {getDistinctCount} from "../../../common/arrayUtils";
+import {getDistinctCount} from "../../../common/utils/arrayUtils";
 
 class CountFirstLevel extends Component {
     static propTypes = {

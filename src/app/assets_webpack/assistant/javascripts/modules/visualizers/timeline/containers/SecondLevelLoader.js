@@ -15,7 +15,7 @@ import {
 import {PromiseStatus} from "../../../core/models";
 import {createStructuredSelector} from "reselect";
 import PromiseResult from "../../../core/components/PromiseResult";
-import RecordSelector from "../../../common/RecordSelector";
+import RecordSelector from "../../../common/components/RecordSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
 import {Paper} from "material-ui";

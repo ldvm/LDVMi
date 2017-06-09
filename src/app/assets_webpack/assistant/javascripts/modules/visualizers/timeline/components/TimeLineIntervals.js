@@ -11,8 +11,10 @@ import {getLeveledIntervals} from "../misc/TimeLineUtils";
 import {Paper} from "material-ui";
 import PromiseResult from "../../../core/components/PromiseResult";
 import {intervalsSelector, intervalsStatusSelector} from "../ducks/intervals";
+import {colorsSelector, setColors, setColorsReset} from "../ducks/colors";
+import {Map as ImmutableMap} from "immutable";
 
-class TimeLineInstants extends Component {
+class TimeLineIntervals extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
@@ -24,13 +26,51 @@ class TimeLineInstants extends Component {
         // Loading status
         intervalsStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
         firstLevelStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
-        secondLevelStatus: PropTypes.instanceOf(PromiseStatus).isRequired
+        secondLevelStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
+
+        colors: PropTypes.instanceOf(ImmutableMap).isRequired
     };
+
+    getColor(url) {
+        if (this.colors.has(url)) {
+            return this.colors.get(url);
+        }
+        else {
+            var color = '#' + (0x1000000 + (Math.random()) * 0xffffff).toString(16).substr(1, 6);
+            this.colors = this.colors.set(url, color);
+            return color;
+        }
+    }
+
+    addColors(intervals) {
+        const {firstLevel} = this.props;
+        for (var i of intervals) {
+            var found = false;
+
+            // try finding matching first level record and get color
+            for (var d of firstLevel) {
+                if (d.inner == i.url) {
+                    i.fill = this.getColor(d.outerType);
+                    i.stroke = this.getColor(d.predicate);
+
+                    found = true;
+                    break;
+                }
+            }
+
+            // Otherwise get defaults
+            if (!found) {
+                i.fill = this.getColor("default_type");
+                i.stroke = this.getColor("default_predicate");
+            }
+        }
+        return intervals;
+    }
 
     componentWillMount() {
         const {dispatch} = this.props;
 
-        this.className = "timeseries-chart";
+        this.className = "time-series-chart";
         this.chart = new TimeLine(this.className, (r) => dispatch(setSelectTimeRecord(r)));
     }
 
@@ -40,20 +80,36 @@ class TimeLineInstants extends Component {
         }
     }
 
+    componentWillUpdate(){
+        this.colors = this.props.colors;
+    }
+
     componentDidUpdate() {
+        const {dispatch} = this.props;
         if (this.needChartUpdate) {
 
+            // Levels
             var MAX_GRAPH_LEVELS = 8;
-            var leveled = getLeveledIntervals(this.props.intervals, MAX_GRAPH_LEVELS);
+            var intToRender = getLeveledIntervals(this.props.intervals, MAX_GRAPH_LEVELS);
 
+            // Colors
+            intToRender  = this.addColors(intToRender);
+            if (this.props.colors != this.colors){
+                dispatch(setColors(this.colors));
+            }
+
+            // Chart update
             this.chart.destroy();
-            this.chart.intervals(leveled);
+            this.chart.intervals(intToRender);
 
             this.needChartUpdate = false;
         }
     }
 
     componentWillUnmount() {
+        const {dispatch} = this.props;
+
+        dispatch(setColorsReset());
         this.chart.destroy();
     }
 
@@ -93,7 +149,9 @@ const selector = createStructuredSelector({
 
     intervalsStatus: intervalsStatusSelector,
     firstLevelStatus: firstLevelStatusSelector,
-    secondLevelStatus: secondLevelStatusSelector
+    secondLevelStatus: secondLevelStatusSelector,
+
+    colors: colorsSelector
 });
 
-export default connect(selector)(TimeLineInstants);
+export default connect(selector)(TimeLineIntervals);
