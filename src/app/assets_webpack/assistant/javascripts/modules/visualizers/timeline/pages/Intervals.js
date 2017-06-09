@@ -1,23 +1,27 @@
 import React, {Component} from "react";
 import BodyPadding from "../../../../components/BodyPadding";
-import TimeLineIntervalsContainer from "../containers/TimeLineIntervalsContainer";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
-import IntervalVisualizer from "../components/IntervalVisualizer";
 import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
+import TimeLineIntervals from "../containers/TimeLineIntervals";
+import IntervalsLoader from "../containers/IntervalsLoader";
+import IntervalVisualizer from "../components/IntervalVisualizer";
 
 class Intervals extends Component {
     render() {
-        let configurations = new Map();
-        configurations.set(
-            "LIMIT",
-            <LimiterContainer/>
-        );
+        let configurations = new Map([
+            ["TIME RANGE",
+                <IntervalsLoader
+                    isInitial={true}
+                />],
+            ["LIMIT",
+                <LimiterContainer/>]
 
+        ]);
         return (
             <BodyPadding>
                 <ConfigurationToolbar label="Configure Connections" children={configurations}/>
                 <hr/>
-                <TimeLineIntervalsContainer isInitial={true}/>
+                <TimeLineIntervals/>
                 <hr/>
                 <IntervalVisualizer/>
             </BodyPadding>

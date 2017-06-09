@@ -1,24 +1,20 @@
 import React, {Component, PropTypes} from "react";
-import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {PromiseStatus} from "../../../core/models";
 import {TimeRange} from "../models";
-
 import {getIntervals, getIntervalsReset, intervalsSelector, intervalsStatusSelector} from "../ducks/intervals";
 import {getIntervalsCount} from "../ducks/count";
 import {limitSelector} from "../../../app/ducks/limit";
-import {getSelectedTimeReset, timeRangeSelector} from "../ducks/timeRange";
+import {setTimeRangeReset, timeRangeSelector} from "../ducks/timeRange";
 import {firstLevelSelector} from "../ducks/firstLevel";
-import {setSelectTimeRecord, setSelectTimeRecordReset} from "../ducks/selectedTimeRecord";
-
 import PromiseResult from "../../../core/components/PromiseResult";
-import TimeLine from "../misc/TimeLine";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import CountZeroLevelContainer from "../components/CountTimeRecord";
-import TimeRangeContainer from "./TimeRangeContainer";
+import TimeRangeContainer from "../components/TimeRange";
 import {Paper} from "material-ui";
+import {connect} from "react-redux";
 
-class TimeLineIntervalsContainer extends Component {
+class IntervalsLoader extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         isInitial: PropTypes.bool,
@@ -38,9 +34,6 @@ class TimeLineIntervalsContainer extends Component {
     componentWillMount() {
         const {dispatch, timeRange, limit} = this.props;
 
-        this.className = "timeseries-chart";
-        this.chart = new TimeLine(this.className, (r) => dispatch(setSelectTimeRecord(r)));
-
         if (this.props.isInitial) {
             dispatch(getIntervals([], timeRange, limit))
             dispatch(getIntervalsCount([], timeRange));
@@ -48,30 +41,12 @@ class TimeLineIntervalsContainer extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const {dispatch, intervals, firstLevel, timeRange, limit} = this.props;
+        const {dispatch, firstLevel, timeRange, limit} = this.props;
 
-        var needUpdate = (firstLevel != nextProps.firstLevel || timeRange != nextProps.timeRange);
-
-        if (needUpdate) {
+        if (firstLevel != nextProps.firstLevel || timeRange != nextProps.timeRange) {
             var urls = nextProps.firstLevel.map(t => t.inner);
             dispatch(getIntervals(urls, nextProps.timeRange, limit));
             dispatch(getIntervalsCount(urls, nextProps.timeRange));
-        }
-
-        if (nextProps.status.done) {
-            if (nextProps.intervals != intervals || nextProps.timeRange != timeRange) {
-                dispatch(setSelectTimeRecordReset());
-                this.needChartUpdate = true;
-            }
-        }
-    }
-
-    componentDidUpdate() {
-        const {intervals} = this.props;
-
-        if (this.needChartUpdate) {
-            this.chart.intervals(intervals);
-            this.needChartUpdate = false;
         }
     }
 
@@ -79,26 +54,14 @@ class TimeLineIntervalsContainer extends Component {
         const {dispatch} = this.props;
 
         dispatch(getIntervalsReset());
-        dispatch(getSelectedTimeReset());
-        dispatch(setSelectTimeRecordReset());
-
-        this.chart.destroy();
+        dispatch(setTimeRangeReset());
     }
 
     render() {
-        const {status, intervals, isInitial} = this.props;
+        const {status, intervals} = this.props;
 
         if (!status.done) {
-            // Upper level is loading
-            if (!isInitial && !status.isLoading) {
-                var fakeStatus = new PromiseStatus({done: false, isLoading: true, error: status.error});
-                return <PromiseResult status={fakeStatus} error={fakeStatus.error}
-                                      loadingMessage="Loading connected things..."/>
-            }
-            // Instants are loading
-            else {
-                return <PromiseResult status={status} error={status.error} loadingMessage="Loading intervals..."/>
-            }
+            return <PromiseResult status={status} error={status.error} loadingMessage="Loading intervals..."/>
         }
 
         if (intervals.length == 0) {
@@ -111,7 +74,6 @@ class TimeLineIntervalsContainer extends Component {
         require('../misc/TimeLineStyle.css');
         return <Paper>
             <TimeRangeContainer/>
-            <div className={this.className}/>
             <CountZeroLevelContainer/>
         </Paper>
     }
@@ -125,4 +87,4 @@ const selector = createStructuredSelector({
     limit: limitSelector
 });
 
-export default connect(selector)(TimeLineIntervalsContainer);
+export default connect(selector)(IntervalsLoader);

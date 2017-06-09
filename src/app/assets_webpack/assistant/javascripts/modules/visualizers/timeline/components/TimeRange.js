@@ -4,7 +4,7 @@ import {createStructuredSelector} from "reselect";
 import {TimeRange} from "../models";
 import moment from "moment";
 
-import {getSelectedTimeReset, setSelectTime, timeRangeSelector} from "../ducks/timeRange";
+import {setTimeRangeReset, setTimeRange, timeRangeSelector} from "../ducks/timeRange";
 
 import Button from "../../../../components/Button";
 import {setSelectTimeRecordReset} from "../ducks/selectedTimeRecord";
@@ -21,13 +21,13 @@ class TimeRangeContainer extends Component {
         var begin = document.getElementsByName("begin_input")[0].value;
         var end = document.getElementsByName("end_input")[0].value;
 
-        dispatch(setSelectTime(new Date(begin), new Date(end)));
+        dispatch(setTimeRange(new Date(begin), new Date(end)));
     }
 
     resetTimeRange() {
         const {dispatch} = this.props;
 
-        dispatch(getSelectedTimeReset());
+        dispatch(setTimeRangeReset());
         dispatch(setSelectTimeRecordReset());
     }
 

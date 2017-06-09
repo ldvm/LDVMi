@@ -3,19 +3,18 @@ import prefix from "../prefix";
 import {GET_APPLICATION_START} from "../../../app/ducks/application";
 import {createSelector} from "reselect";
 import moduleSelector from "../selector";
-
 import {TimeRange} from "../models";
 
 // Actions
-export const SET_SELECT_TIME = prefix('SET_SELECT_TIME');
-export const GET_SELECT_TIME_RESET = prefix("GET_SELECT_TIME_RESET");
+export const SET_TIME_RANGE = prefix('SET_TIME_RANGE');
+export const SET_TIME_RANGE_RESET = SET_TIME_RANGE + "_RESET";
 
-export function setSelectTime(begin, end) {
-    return createAction(SET_SELECT_TIME, {begin, end});
+export function setTimeRange(begin, end) {
+    return createAction(SET_TIME_RANGE, {begin, end});
 }
 
-export function getSelectedTimeReset() {
-    return createAction(GET_SELECT_TIME_RESET);
+export function setTimeRangeReset() {
+    return createAction(SET_TIME_RANGE_RESET);
 }
 
 // Reducer
@@ -24,9 +23,9 @@ export default function timeRangeReducer(state = initialState, action) {
     switch (action.type) {
         case GET_APPLICATION_START:
             return initialState;
-        case GET_SELECT_TIME_RESET:
+        case SET_TIME_RANGE_RESET:
             return initialState;
-        case SET_SELECT_TIME:
+        case SET_TIME_RANGE:
             return new TimeRange(action.payload);
     }
     return state;

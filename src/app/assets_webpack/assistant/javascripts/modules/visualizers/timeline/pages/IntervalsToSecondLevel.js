@@ -1,45 +1,48 @@
 import React, {Component} from "react";
-import {getFirstLevelIntervals} from "../ducks/firstLevel";
 import {getFirstLevelIntervalsCount, getSecondLevelIntervalsCount} from "../ducks/count";
 import {getSecondLevelIntervals} from "../ducks/secondLevel";
 import BodyPadding from "../../../../components/BodyPadding";
 import SecondLevelLoader from "../containers/SecondLevelLoader";
 import FirstLevelLoader from "../containers/FirstLevelLoader";
-import TimeLineIntervalsContainer from "../containers/TimeLineIntervalsContainer";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
-import IntervalVisualizer from "../components/IntervalVisualizer";
 import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
+import TimeLineIntervals from "../containers/TimeLineIntervals";
+import IntervalsLoader from "../containers/IntervalsLoader";
+import {getFirstLevelIntervals} from "../ducks/firstLevel";
+import IntervalVisualizer from "../components/IntervalVisualizer";
 
-class IntervalsToSecondLevel extends Component {
+class InstantsToSecondLevel extends Component {
     render() {
-        let configurations = new Map();
-        configurations.set(
-            "SECOND LEVEL",
-            <SecondLevelLoader
-                isInitial={true}
-                secondLevelLoader={getSecondLevelIntervals}
-                secondLevelCount={getSecondLevelIntervalsCount}
-            />);
-        configurations.set("FIRST LEVEL",
-            <FirstLevelLoader
-                firstLevelLoader={getFirstLevelIntervals}
-                firstLevelCount={getFirstLevelIntervalsCount}
-            />
-        );
-        configurations.set(
-            "LIMIT",
-            <LimiterContainer/>
-        );
+        let configurations = new Map([
+            ["SECOND LEVEL",
+                <SecondLevelLoader
+                    isInitial={true}
+                    secondLevelLoader={getSecondLevelIntervals}
+                    secondLevelCount={getSecondLevelIntervalsCount}
+                />],
+            ["FIRST LEVEL",
+                <FirstLevelLoader
+                    isInitial={false}
+                    firstLevelLoader={getFirstLevelIntervals}
+                    firstLevelCount={getFirstLevelIntervalsCount}
+                />],
+            ["TIME RANGE",
+                <IntervalsLoader
+                    isInitial={false}
+                />],
+            ["LIMIT",
+                <LimiterContainer/>]
 
+        ]);
         return (
             <BodyPadding>
                 <ConfigurationToolbar label="Configure Connections" children={configurations}/>
                 <hr/>
-                <TimeLineIntervalsContainer/>
+                <TimeLineIntervals/>
                 <hr/>
                 <IntervalVisualizer/>
             </BodyPadding>
         )
     }
 }
-export default IntervalsToSecondLevel;
+export default InstantsToSecondLevel;

@@ -56,58 +56,7 @@ class TimeLine {
             };
         };
 
-        // === LEVELS FOR COLLISIONS ===
-        this.getLeveledData = function (data, levelCheckerFunc) {
-            var leveledData = [];
-            for (var d of data) {
-                var level = 0;
-                while (!levelCheckerFunc(level, leveledData, d)) {
-                    if (level >= GRAPH_LEVELS - 1) {
-                        level = parseInt(Math.random() * GRAPH_LEVELS);
-                        break;
-                    }
-                    ++level;
-                }
-                leveledData.push({level: level, data: d});
-            }
-            return leveledData;
-        };
-
-        // In intervals
-        this.isLevelFreeIntervals = function (level, leveledData, record) {
-            for (const d of leveledData) {
-                // Level check
-                if (level == d.level) {
-
-                    // Intersect at the beginning of record interval
-                    if (record.begin <= d.data.begin && record.end >= d.data.begin) return false;
-
-                    // Intersect at the end of record interval
-                    if (record.begin <= d.data.end && record.end >= d.data.end) return false;
-
-                    // Value inside the record
-                    if (record.begin <= d.data.begin && record.end >= d.data.end) return false;
-
-                    // Record inside the value
-                    if (record.begin >= d.data.begin && record.end <= d.data.end) return false;
-                }
-            }
-            return true;
-        };
-
-        // In Instants
-        this.isLevelFreeInstants = function (level, leveledData, record) {
-            for (const d of leveledData) {
-                // Level check
-                if (level == d.level) {
-                    if (Math.abs(record.date - d.data.date) < 10 * 1000) return false;
-                }
-            }
-            return true;
-        };
-
-
-        // === RENDER ===
+        // === RENDERING ===
         this.render = function (padding, drawFunc) {
             // Constants
             var margin = {
@@ -152,35 +101,32 @@ class TimeLine {
                 .tickSize(-width + margin.right, margin.left)
                 .tickFormat(d3.time.format(yFormat));
 
-            // ZOOM
-            var zoomed = function() {
-                // the "zoom" event populates d3.event with an object that has
-                // a "translate" property (a 2-element Array in the form [x, y])
-                // and a numeric "scale" property
-                debugger;
-                var e = d3.event,
-                    // now, constrain the x and y components of the translation by the
-                    // dimensions of the viewport
-                    tx = Math.min(0, Math.max(e.translate[0], width - width * e.scale));
-                // then, update the zoom behavior's internal translation, so that
-                // it knows how to properly manipulate it on the next movement
-                zoom.translate([tx, 1]);
-                // and finally, update the <g> element's transform attribute with the
-                // correct translation and scale (in reverse order)
-                svg.selectAll(".time.records").remove();
-                svg.selectAll(".x.axis").remove();
-                svg.selectAll(".context")
-                    .append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(" + margin.left + "," + (margin.top + (height - margin.bottom)) + ")")
-                    .call(xAxis);
-                drawFunc();
-            };
-
+            // Zooming
             var zoom = d3.behavior.zoom()
                 .x(x)
                 .scaleExtent([1, 10])
-                .on("zoom", zoomed);
+                .on("zoom", function () {
+                    // Get translation
+                    var e = d3.event;
+                    var tx = Math.min(0, Math.max(e.translate[0], width - width * e.scale));
+
+                    // Set zooming
+                    zoom.translate([tx, 1]);
+
+                    // Delete all visualized items
+                    svg.selectAll(".time.records").remove();
+                    svg.selectAll(".x.axis").remove();
+
+                    // Re-visualize axis
+                    svg.selectAll(".context")
+                        .append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(" + margin.left + "," + (margin.top + (height - margin.bottom)) + ")")
+                        .call(xAxis);
+
+                    // Redraw records
+                    drawFunc();
+                });
 
             // SVG drawing
             var svg = d3.select("." + classd).append("svg")
@@ -192,53 +138,51 @@ class TimeLine {
                 .attr("class", "context")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            // X-Axis
             context.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(" + margin.left + "," + (margin.top + (height - margin.bottom)) + ")")
                 .call(xAxis);
 
+            // Y-Axis
             context.append("g")
                 .attr("class", "y axis")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
                 .call(yAxis);
 
-            // instants => circles
+            // Circles for instants
             this.circles = function (data) {
-                var leveledData = this.getLeveledData(data, this.isLevelFreeInstants);
-
-                var circles = context.append("g")
+                var circles = d3.select(".context").append("g")
                     .attr("class", "time records")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 circles.selectAll(".circ")
-                    .data(leveledData)
+                    .data(data)
                     .enter().append("circle")
                     .attr("class", "circ")
                     .attr("cx", function (d) {
-                        return x(getDate(d.data.date));
+                        return x(getDate(d.date));
                     })
                     .attr("cy", function (d, i) {
                         return y(d.level);
                     })
                     .attr("r", size.radius)
-                    .on("click", (d) => callback(d.data));
+                    .on("click", callback);
             };
 
-            // intervals => rectangles
+            // Rectangles for intervals
             this.rectangles = function (data) {
-
-                var leveledData = this.getLeveledData(data, this.isLevelFreeIntervals);
 
                 var rectangles = context.append("g")
                     .attr("class", "time records")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 rectangles.selectAll(".rect")
-                    .data(leveledData)
+                    .data(data)
                     .enter().append("rect")
                     .attr("class", "rect")
                     .attr("x", function (d) {
-                        return x(getDate(d.data.begin));
+                        return x(getDate(d.begin));
                     })
                     .attr("y", function (d, i) {
                         return y(d.level);
@@ -246,14 +190,13 @@ class TimeLine {
                     .attr("rx", size.rx)
                     .attr("ry", size.ry)
                     .attr("width", function (d) {
-                        var e = x(getDate(d.data.end));
-                        var b = x(getDate(d.data.begin));
+                        var e = x(getDate(d.end));
+                        var b = x(getDate(d.begin));
                         return ( e - b );
                     })
                     .attr("height", size.height)
-                    .on("click", (d) => callback(d.data));
+                    .on("click", callback);
             };
-
             drawFunc();
         }
     }

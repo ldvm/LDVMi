@@ -6,17 +6,15 @@ import {TimeRange} from "../models";
 import {getInstants, getInstantsReset, instantsSelector, instantsStatusSelector} from "../ducks/instants";
 import {getInstantsCount} from "../ducks/count";
 import {limitSelector} from "../../../app/ducks/limit";
-import {getSelectedTimeReset, timeRangeSelector} from "../ducks/timeRange";
+import {setTimeRangeReset, timeRangeSelector} from "../ducks/timeRange";
 import {firstLevelSelector} from "../ducks/firstLevel";
-import {setSelectTimeRecord, setSelectTimeRecordReset} from "../ducks/selectedTimeRecord";
 import PromiseResult from "../../../core/components/PromiseResult";
-import TimeLine from "../misc/TimeLine";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import CountZeroLevelContainer from "../components/CountTimeRecord";
-import TimeRangeContainer from "./TimeRangeContainer";
+import TimeRangeContainer from "../components/TimeRange";
 import {Paper} from "material-ui";
 
-class TimeLineInstantsContainer extends Component {
+class InstantsLoader extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         isInitial: PropTypes.bool,
@@ -36,9 +34,6 @@ class TimeLineInstantsContainer extends Component {
     componentWillMount() {
         const {dispatch, timeRange, limit} = this.props;
 
-        this.className = "timeseries-chart";
-        this.chart = new TimeLine(this.className, (r) => dispatch(setSelectTimeRecord(r)));
-
         if (this.props.isInitial) {
             dispatch(getInstants([], timeRange, limit));
             dispatch(getInstantsCount([], timeRange));
@@ -48,25 +43,10 @@ class TimeLineInstantsContainer extends Component {
     componentWillReceiveProps(nextProps) {
         const {dispatch, firstLevel, timeRange, limit} = this.props;
 
-        var needUpdate = (firstLevel != nextProps.firstLevel || timeRange != nextProps.timeRange);
-
-        if (needUpdate) {
+        if (firstLevel != nextProps.firstLevel || timeRange != nextProps.timeRange) {
             var urls = nextProps.firstLevel.map(t => t.inner);
             dispatch(getInstants(urls, nextProps.timeRange, limit));
             dispatch(getInstantsCount(urls, nextProps.timeRange));
-        }
-
-        if (nextProps.status.done && nextProps.instants != this.props.instants) {
-            dispatch(setSelectTimeRecordReset());
-            this.needChartUpdate = true;
-        }
-    }
-
-    componentDidUpdate() {
-        const {instants} = this.props;
-        if (this.needChartUpdate) {
-            this.chart.instants(instants);
-            this.needChartUpdate = false;
         }
     }
 
@@ -74,27 +54,16 @@ class TimeLineInstantsContainer extends Component {
         const {dispatch} = this.props;
 
         dispatch(getInstantsReset());
-        dispatch(getSelectedTimeReset());
-        dispatch(setSelectTimeRecordReset());
-
-        this.chart.destroy();
+        dispatch(setTimeRangeReset());
     }
 
     render() {
-        const {status, instants, isInitial} = this.props;
+        const {status, instants} = this.props;
 
         if (!status.done) {
-            // Upper level is loading
-            if (!isInitial && !status.isLoading) {
-                var fakeStatus = new PromiseStatus({done: false, isLoading: true, error: status.error});
-                return <PromiseResult status={fakeStatus} error={fakeStatus.error}
-                                      loadingMessage="Loading connected things..."/>
-            }
-            // Instants are loading
-            else {
-                return <PromiseResult status={status} error={status.error} loadingMessage="Loading instants..."/>
-            }
+            return <PromiseResult status={status} error={status.error} loadingMessage="Loading instants..."/>
         }
+
         if (instants.length == 0) {
             return <Paper>
                 <TimeRangeContainer/>
@@ -102,10 +71,8 @@ class TimeLineInstantsContainer extends Component {
             </Paper>
         }
 
-        require('../misc/TimeLineStyle.css');
         return <Paper>
             <TimeRangeContainer/>
-            <div className={this.className}/>
             <CountZeroLevelContainer/>
         </Paper>
     }
@@ -119,4 +86,4 @@ const selector = createStructuredSelector({
     limit: limitSelector
 });
 
-export default connect(selector)(TimeLineInstantsContainer);
+export default connect(selector)(InstantsLoader);

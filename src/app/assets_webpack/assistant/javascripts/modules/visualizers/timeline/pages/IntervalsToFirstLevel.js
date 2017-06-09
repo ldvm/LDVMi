@@ -1,33 +1,36 @@
 import React, {Component} from "react";
-import {getFirstLevelIntervals} from "../ducks/firstLevel";
 import {getFirstLevelIntervalsCount} from "../ducks/count";
 import BodyPadding from "../../../../components/BodyPadding";
 import FirstLevelLoader from "../containers/FirstLevelLoader";
-import TimeLineIntervalsContainer from "../containers/TimeLineIntervalsContainer";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
-import IntervalVisualizer from "../components/IntervalVisualizer";
 import ConfigurationToolbar from "../../../common/ConfigurationToolbar";
+import TimeLineIntervals from "../containers/TimeLineIntervals";
+import IntervalsLoader from "../containers/IntervalsLoader";
+import {getFirstLevelIntervals} from "../ducks/firstLevel";
+import IntervalVisualizer from "../components/IntervalVisualizer";
 
 class IntervalsToFirstLevel extends Component {
     render() {
-        let configurations = new Map();
-        configurations.set(
-            "FIRST LEVEL",
-            <FirstLevelLoader
-                isInitial={true}
-                firstLevelLoader={getFirstLevelIntervals}
-                firstLevelCount={getFirstLevelIntervalsCount}
-            />);
-        configurations.set(
-            "LIMIT",
-            <LimiterContainer/>
-        );
+        let configurations = new Map([
+            ["FIRST LEVEL",
+                <FirstLevelLoader
+                    isInitial={true}
+                    firstLevelLoader={getFirstLevelIntervals}
+                    firstLevelCount={getFirstLevelIntervalsCount}
+                />],
+            ["TIME RANGE",
+                <IntervalsLoader
+                    isInitial={false}
+                />],
+            ["LIMIT",
+                <LimiterContainer/>]
 
+        ]);
         return (
             <BodyPadding>
                 <ConfigurationToolbar label="Configure Connections" children={configurations}/>
                 <hr/>
-                <TimeLineIntervalsContainer/>
+                <TimeLineIntervals/>
                 <hr/>
                 <IntervalVisualizer/>
             </BodyPadding>
