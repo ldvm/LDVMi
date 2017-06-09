@@ -62,13 +62,11 @@ class TimeLine {
             for (var d of data) {
                 var level = 0;
                 while (!levelCheckerFunc(level, leveledData, d)) {
-                    if (level < GRAPH_LEVELS) {
-                        ++level;
-                    }
-                    else {
+                    if (level >= GRAPH_LEVELS - 1) {
                         level = parseInt(Math.random() * GRAPH_LEVELS);
                         break;
                     }
+                    ++level;
                 }
                 leveledData.push({level: level, data: d});
             }
@@ -131,8 +129,8 @@ class TimeLine {
             if (!element) return;
 
             // Axes
-            var width = getAvailableHorizontalSpace(element) - 10;
-            var height = 300 - margin.top - margin.bottom;
+            var width = getAvailableHorizontalSpace(element) - 50;
+            var height = 350 - margin.top - margin.bottom;
 
             var x = d3.time.scale().range([0 + margin.right, width - margin.left]),
                 y = d3.time.scale().range([margin.top, height - margin.bottom - margin.top]);
@@ -154,10 +152,41 @@ class TimeLine {
                 .tickSize(-width + margin.right, margin.left)
                 .tickFormat(d3.time.format(yFormat));
 
+            // ZOOM
+            var zoomed = function() {
+                // the "zoom" event populates d3.event with an object that has
+                // a "translate" property (a 2-element Array in the form [x, y])
+                // and a numeric "scale" property
+                debugger;
+                var e = d3.event,
+                    // now, constrain the x and y components of the translation by the
+                    // dimensions of the viewport
+                    tx = Math.min(0, Math.max(e.translate[0], width - width * e.scale));
+                // then, update the zoom behavior's internal translation, so that
+                // it knows how to properly manipulate it on the next movement
+                zoom.translate([tx, 1]);
+                // and finally, update the <g> element's transform attribute with the
+                // correct translation and scale (in reverse order)
+                svg.selectAll(".time.records").remove();
+                svg.selectAll(".x.axis").remove();
+                svg.selectAll(".context")
+                    .append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(" + margin.left + "," + (margin.top + (height - margin.bottom)) + ")")
+                    .call(xAxis);
+                drawFunc();
+            };
+
+            var zoom = d3.behavior.zoom()
+                .x(x)
+                .scaleExtent([1, 10])
+                .on("zoom", zoomed);
+
             // SVG drawing
             var svg = d3.select("." + classd).append("svg")
                 .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom);
+                .attr("height", height + margin.top + margin.bottom)
+                .call(zoom);
 
             var context = svg.append("g")
                 .attr("class", "context")
@@ -178,6 +207,7 @@ class TimeLine {
                 var leveledData = this.getLeveledData(data, this.isLevelFreeInstants);
 
                 var circles = context.append("g")
+                    .attr("class", "time records")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 circles.selectAll(".circ")
@@ -188,7 +218,7 @@ class TimeLine {
                         return x(getDate(d.data.date));
                     })
                     .attr("cy", function (d, i) {
-                        return y(size.height * 1.5 * d.level);
+                        return y(d.level);
                     })
                     .attr("r", size.radius)
                     .on("click", (d) => callback(d.data));
@@ -200,6 +230,7 @@ class TimeLine {
                 var leveledData = this.getLeveledData(data, this.isLevelFreeIntervals);
 
                 var rectangles = context.append("g")
+                    .attr("class", "time records")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 rectangles.selectAll(".rect")
@@ -210,7 +241,7 @@ class TimeLine {
                         return x(getDate(d.data.begin));
                     })
                     .attr("y", function (d, i) {
-                        return y(size.height * 1.5 * d.level);
+                        return y(d.level);
                     })
                     .attr("rx", size.rx)
                     .attr("ry", size.ry)

@@ -86,10 +86,19 @@ class TimeLineIntervalsContainer extends Component {
     }
 
     render() {
-        const {status, intervals} = this.props;
+        const {status, intervals, isInitial} = this.props;
 
         if (!status.done) {
-            return <PromiseResult status={status} error={status.error} loadingMessage="Loading intervals..."/>
+            // Upper level is loading
+            if (!isInitial && !status.isLoading) {
+                var fakeStatus = new PromiseStatus({done: false, isLoading: true, error: status.error});
+                return <PromiseResult status={fakeStatus} error={fakeStatus.error}
+                                      loadingMessage="Loading connected things..."/>
+            }
+            // Instants are loading
+            else {
+                return <PromiseResult status={status} error={status.error} loadingMessage="Loading intervals..."/>
+            }
         }
 
         if (intervals.length == 0) {

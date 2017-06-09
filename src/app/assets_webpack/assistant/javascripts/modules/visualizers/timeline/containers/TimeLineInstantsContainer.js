@@ -81,12 +81,20 @@ class TimeLineInstantsContainer extends Component {
     }
 
     render() {
-        const {status, instants} = this.props;
+        const {status, instants, isInitial} = this.props;
 
         if (!status.done) {
-            return <PromiseResult status={status} error={status.error} loadingMessage="Loading instants..."/>
+            // Upper level is loading
+            if (!isInitial && !status.isLoading) {
+                var fakeStatus = new PromiseStatus({done: false, isLoading: true, error: status.error});
+                return <PromiseResult status={fakeStatus} error={fakeStatus.error}
+                                      loadingMessage="Loading connected things..."/>
+            }
+            // Instants are loading
+            else {
+                return <PromiseResult status={status} error={status.error} loadingMessage="Loading instants..."/>
+            }
         }
-
         if (instants.length == 0) {
             return <Paper>
                 <TimeRangeContainer/>
