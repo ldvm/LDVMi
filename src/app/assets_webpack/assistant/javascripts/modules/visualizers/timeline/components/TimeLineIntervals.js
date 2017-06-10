@@ -13,6 +13,7 @@ import PromiseResult from "../../../core/components/PromiseResult";
 import {intervalsSelector, intervalsStatusSelector} from "../ducks/intervals";
 import {colorsSelector, setColors, setColorsReset} from "../ducks/colors";
 import {Map as ImmutableMap} from "immutable";
+import {createAggregatedPromiseStatusSelector} from "../../../core/ducks/promises";
 
 class TimeLineIntervals extends Component {
     static propTypes = {
@@ -24,9 +25,7 @@ class TimeLineIntervals extends Component {
         secondLevel: PropTypes.array.isRequired,
 
         // Loading status
-        intervalsStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
-        firstLevelStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
-        secondLevelStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
+        status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         colors: PropTypes.instanceOf(ImmutableMap).isRequired
     };
@@ -74,7 +73,7 @@ class TimeLineIntervals extends Component {
         this.chart = new TimeLine(this.className, (r) => dispatch(setSelectTimeRecord(r)));
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.colors = this.props.colors;
     }
 
@@ -96,8 +95,8 @@ class TimeLineIntervals extends Component {
             var intToRender = getLeveledIntervals(this.props.intervals, MAX_GRAPH_LEVELS);
 
             // Colors
-            intToRender  = this.addColors(intToRender);
-            if (this.props.colors != this.colors){
+            intToRender = this.addColors(intToRender);
+            if (this.props.colors != this.colors) {
                 dispatch(setColors(this.colors));
             }
 
@@ -117,21 +116,11 @@ class TimeLineIntervals extends Component {
     }
 
     render() {
-        const {intervals, intervalsStatus, firstLevelStatus, secondLevelStatus} = this.props;
+        const {intervals, status} = this.props;
 
-        if (intervalsStatus.isLoading) {
-            return <PromiseResult status={intervalsStatus} error={intervalsStatus.error}
-                                  loadingMessage="Loading intervals..."/>
-        }
-
-        if (firstLevelStatus.isLoading) {
-            return <PromiseResult status={firstLevelStatus} error={firstLevelStatus.error}
-                                  loadingMessage="Loading connected things..."/>
-        }
-
-        if (secondLevelStatus.isLoading) {
-            return <PromiseResult status={secondLevelStatus} error={secondLevelStatus.error}
-                                  loadingMessage="Loading connected things (II)..."/>
+        if (status.isLoading) {
+            return <PromiseResult status={status} error={status.error}
+                                  loadingMessage="Loading data..."/>
         }
 
         if (intervals.length == 0) {
@@ -145,15 +134,15 @@ class TimeLineIntervals extends Component {
     }
 }
 
+const statusSelector = createAggregatedPromiseStatusSelector(
+    [intervalsStatusSelector, firstLevelStatusSelector, secondLevelStatusSelector]
+);
+
 const selector = createStructuredSelector({
     intervals: intervalsSelector,
     firstLevel: firstLevelSelector,
     secondLevel: secondLevelSelector,
-
-    intervalsStatus: intervalsStatusSelector,
-    firstLevelStatus: firstLevelStatusSelector,
-    secondLevelStatus: secondLevelStatusSelector,
-
+    status: statusSelector,
     colors: colorsSelector
 });
 

@@ -13,6 +13,7 @@ import {Paper} from "material-ui";
 import PromiseResult from "../../../core/components/PromiseResult";
 import {colorsSelector, setColors, setColorsReset} from "../ducks/colors";
 import {Map as ImmutableMap} from "immutable";
+import {createAggregatedPromiseStatusSelector} from "../../../core/ducks/promises";
 
 class TimeLineInstants extends Component {
     static propTypes = {
@@ -24,9 +25,7 @@ class TimeLineInstants extends Component {
         secondLevel: PropTypes.array.isRequired,
 
         // Loading status
-        instantsStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
-        firstLevelStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
-        secondLevelStatus: PropTypes.instanceOf(PromiseStatus).isRequired,
+        status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
         colors: PropTypes.instanceOf(ImmutableMap).isRequired
     };
@@ -74,7 +73,7 @@ class TimeLineInstants extends Component {
         this.chart = new TimeLine(this.className, (r) => dispatch(setSelectTimeRecord(r)));
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.colors = this.props.colors;
     }
 
@@ -82,7 +81,7 @@ class TimeLineInstants extends Component {
         if (this.props.instants != nextProps.instants) {
             this.needChartUpdate = true;
         }
-        if (this.props.colors != nextProps.colors){
+        if (this.props.colors != nextProps.colors) {
             this.colors = nextProps.colors;
         }
     }
@@ -117,21 +116,11 @@ class TimeLineInstants extends Component {
     }
 
     render() {
-        const {instants, instantsStatus, firstLevelStatus, secondLevelStatus} = this.props;
+        const {instants, status} = this.props;
 
-        if (instantsStatus.isLoading) {
-            return <PromiseResult status={instantsStatus} error={instantsStatus.error}
-                                  loadingMessage="Loading instants..."/>
-        }
-
-        if (firstLevelStatus.isLoading) {
-            return <PromiseResult status={firstLevelStatus} error={firstLevelStatus.error}
-                                  loadingMessage="Loading connected things..."/>
-        }
-
-        if (secondLevelStatus.isLoading) {
-            return <PromiseResult status={secondLevelStatus} error={secondLevelStatus.error}
-                                  loadingMessage="Loading connected things (II)..."/>
+        if (status.isLoading) {
+            return <PromiseResult status={status} error={status.error}
+                                  loadingMessage="Loading data..."/>
         }
 
         if (instants.length == 0) {
@@ -145,15 +134,15 @@ class TimeLineInstants extends Component {
     }
 }
 
+const statusSelector = createAggregatedPromiseStatusSelector(
+    [instantsStatusSelector, firstLevelStatusSelector, secondLevelStatusSelector]
+);
+
 const selector = createStructuredSelector({
     instants: instantsSelector,
     firstLevel: firstLevelSelector,
     secondLevel: secondLevelSelector,
-
-    instantsStatus: instantsStatusSelector,
-    firstLevelStatus: firstLevelStatusSelector,
-    secondLevelStatus: secondLevelStatusSelector,
-
+    status: statusSelector,
     colors: colorsSelector
 });
 
