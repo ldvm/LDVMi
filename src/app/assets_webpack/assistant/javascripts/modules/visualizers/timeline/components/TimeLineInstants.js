@@ -11,7 +11,7 @@ import {secondLevelSelector, secondLevelStatusSelector} from "../ducks/secondLev
 import {getLeveledInstants} from "../misc/TimeLineUtils";
 import {Paper} from "material-ui";
 import PromiseResult from "../../../core/components/PromiseResult";
-import {colorsSelector, setColors} from "../ducks/colors";
+import {colorsSelector, setColors, setColorsReset} from "../ducks/colors";
 import {Map as ImmutableMap} from "immutable";
 
 class TimeLineInstants extends Component {
@@ -74,14 +74,17 @@ class TimeLineInstants extends Component {
         this.chart = new TimeLine(this.className, (r) => dispatch(setSelectTimeRecord(r)));
     }
 
+    componentDidMount(){
+        this.colors = this.props.colors;
+    }
+
     componentWillReceiveProps(nextProps) {
         if (this.props.instants != nextProps.instants) {
             this.needChartUpdate = true;
         }
-    }
-
-    componentWillUpdate() {
-        this.colors = this.props.colors;
+        if (this.props.colors != nextProps.colors){
+            this.colors = nextProps.colors;
+        }
     }
 
     componentDidUpdate() {
@@ -107,6 +110,9 @@ class TimeLineInstants extends Component {
     }
 
     componentWillUnmount() {
+        const {dispatch} = this.props;
+
+        dispatch(setColorsReset());
         this.chart.destroy();
     }
 

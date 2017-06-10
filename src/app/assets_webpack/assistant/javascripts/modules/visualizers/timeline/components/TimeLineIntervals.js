@@ -74,14 +74,17 @@ class TimeLineIntervals extends Component {
         this.chart = new TimeLine(this.className, (r) => dispatch(setSelectTimeRecord(r)));
     }
 
+    componentDidMount(){
+        this.colors = this.props.colors;
+    }
+
     componentWillReceiveProps(nextProps) {
         if (this.props.intervals != nextProps.intervals) {
             this.needChartUpdate = true;
         }
-    }
-
-    componentWillUpdate(){
-        this.colors = this.props.colors;
+        if (nextProps.colors != this.props.colors) {
+            this.colors = nextProps.colors;
+        }
     }
 
     componentDidUpdate() {

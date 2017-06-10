@@ -12,6 +12,7 @@ import selectedPlacePredicates from "./ducks/selectedPlacePredicates";
 import selectedValuePredicates from "./ducks/selectedValuePredicates";
 import selectedPlaceTypes from "./ducks/selectedPlaceTypes";
 import selectedQuantifiedThings from "./ducks/selectedQuantifiedThings";
+import colors from "./ducks/colors";
 import count from "./ducks/counts";
 import dirty from "./ducks/dirty";
 
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
     selectedPlacePredicates,
     selectedValuePredicates,
     selectedPlaceTypes,
+    colors,
     count,
     dirty
 });
