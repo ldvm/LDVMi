@@ -33,8 +33,8 @@ class PlacesLoader extends Component {
         limit: PropTypes.number.isRequired
     };
 
-    load() {
-        const {dispatch, quantifiedThings, selectedPlaceTypes, limit} = this.props;
+    load(quantifiedThings) {
+        const {dispatch, selectedPlaceTypes, limit} = this.props;
 
         var urls = quantifiedThings.map(p => p.place);
         dispatch(getPlaces(urls, [...selectedPlaceTypes], limit));
@@ -59,8 +59,16 @@ class PlacesLoader extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.quantifiedThings != this.props.quantifiedThings) {
-            this.reload(nextProps.quantifiedThings);
+        const {dispatch, quantifiedThings} = this.props;
+
+        if (nextProps.quantifiedThings != quantifiedThings) {
+
+            // Do not reset selected place types on app startup
+            if (quantifiedThings.length > 0){
+                dispatch(setSelectedPlaceTypesReset());
+                this.reload(nextProps.quantifiedThings);
+            }
+            else this.load(quantifiedThings);
         }
     }
 
@@ -91,7 +99,7 @@ class PlacesLoader extends Component {
             />
             <Button raised={true}
                     primary={true}
-                    onTouchTap={() => this.load()}
+                    onTouchTap={() => this.load(quantifiedThings)}
                     disabled={!buttonsEnabled}
                     label="LOAD"
             />

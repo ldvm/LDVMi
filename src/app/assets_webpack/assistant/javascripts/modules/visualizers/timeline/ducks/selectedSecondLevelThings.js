@@ -4,6 +4,7 @@ import {GET_APPLICATION_START} from "../../../app/ducks/application";
 import {createSelector} from "reselect";
 import {Set as ImmutableSet} from "immutable";
 import moduleSelector from "../selector";
+import {GET_CONFIGURATION_SUCCESS} from "./configuration";
 
 // Actions
 export const SET_SELECT_SL_THING = prefix('SET_SELECT_SECOND_LEVEL_THING');
@@ -27,6 +28,10 @@ export default function selectedSecondLevelThingsReducer(state = initialState, a
             return initialState;
         case SET_SELECT_SL_THING:
             return state.contains(action.payload.key) ? state.remove(action.payload.key) : state.add(action.payload.key);
+        case GET_CONFIGURATION_SUCCESS:
+            if ("selectedSecondLevelThings" in action.payload) {
+                return state.union(action.payload.selectedSecondLevelThings);
+            }
     }
     return state;
 };

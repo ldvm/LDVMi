@@ -4,6 +4,7 @@ import {GET_APPLICATION_START} from "../../../app/ducks/application";
 import {createSelector} from "reselect";
 import {Set as ImmutableSet} from "immutable";
 import moduleSelector from "../selector";
+import {GET_CONFIGURATION_SUCCESS} from "./configuration";
 
 // Actions
 export const SET_SELECT_FL_TYPE = prefix('SET_SELECT_FIRST_LEVEL_TYPE');
@@ -27,6 +28,10 @@ export default function selectedFirstLevelTypeReducer(state = initialState, acti
             return initialState;
         case SET_SELECT_FL_TYPE:
             return state.contains(action.payload.key) ? state.remove(action.payload.key) : state.add(action.payload.key);
+        case GET_CONFIGURATION_SUCCESS:
+            if ("selectedFirstLevelTypes" in action.payload) {
+                return state.union(action.payload.selectedFirstLevelTypes);
+            }
     }
     return state;
 };

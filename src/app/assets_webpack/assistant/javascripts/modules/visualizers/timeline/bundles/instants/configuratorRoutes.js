@@ -5,6 +5,6 @@ import Instants from "../../pages/Instants";
 
 export default function createRoutes(dispatch) {
     return (
-        <Route component={Instants} path={MODULE_PREFIX}/>
+        <Route component={Instants} configurable={true} path={MODULE_PREFIX}/>
     );
 }

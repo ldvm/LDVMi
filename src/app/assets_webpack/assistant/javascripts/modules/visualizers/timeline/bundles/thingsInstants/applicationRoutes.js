@@ -7,7 +7,8 @@ import InstantsToFirstLevel from "../../pages/InstantsToFirstLevel";
 export default function createRoutes(dispatch) {
     return (
         <Route component={ApplicationLoader} path='/'>
-            <IndexRoute component={InstantsToFirstLevel}/>
+            <IndexRoute component={InstantsToFirstLevel} configurable={false}/>
+            <Route component={InstantsToFirstLevel} configurable={false} path='embed'/>
             <Route component={NotFound} path='*'/>
         </Route>
     );

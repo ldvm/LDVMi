@@ -5,6 +5,6 @@ import InstantsToFirstLevel from "../../pages/InstantsToFirstLevel";
 
 export default function createRoutes(dispatch) {
     return (
-        <Route component={InstantsToFirstLevel} path={MODULE_PREFIX}/>
+        <Route component={InstantsToFirstLevel} configurable={true} path={MODULE_PREFIX}/>
     );
 }

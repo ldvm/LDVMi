@@ -4,6 +4,7 @@ import {GET_APPLICATION_START} from "../../../app/ducks/application";
 import {createSelector} from "reselect";
 import moduleSelector from "../selector";
 import {TimeRange} from "../models";
+import {GET_CONFIGURATION_SUCCESS} from "./configuration";
 
 // Actions
 export const SET_TIME_RANGE = prefix('SET_TIME_RANGE');
@@ -27,6 +28,13 @@ export default function timeRangeReducer(state = initialState, action) {
             return initialState;
         case SET_TIME_RANGE:
             return new TimeRange(action.payload);
+        case GET_CONFIGURATION_SUCCESS:
+            if ("timeRange" in action.payload) {
+                return new TimeRange({
+                    begin: new Date(action.payload.timeRange.begin),
+                    end: new Date(action.payload.timeRange.end)
+                });
+            }
     }
     return state;
 };

@@ -1,13 +1,35 @@
-import React, {Component} from "react";
+import React, {Component, PropTypes} from "react";
 import BodyPadding from "../../../../components/BodyPadding";
 import TimeLineInstants from "../components/TimeLineInstants";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
 import InstantVisualizer from "../components/InstantVisualizer";
-import ConfigurationToolbar from "../../../common/components/ConfigurationToolbar";
 import InstantsLoader from "../containers/InstantsLoader";
+import {PromiseStatus} from "../../../core/models";
+import {getConfiguration, getConfigurationStatusSelector} from "../ducks/configuration";
+import {connect} from "react-redux";
+import {createStructuredSelector} from "reselect";
+import PromiseResult from "../../../core/components/PromiseResult";
+import Toolbar from "../components/Toolbar";
 
 class Instants extends Component {
+    static propTypes = {
+        dispatch: PropTypes.func.isRequired,
+        status: PropTypes.instanceOf(PromiseStatus).isRequired
+    };
+
+    componentWillMount() {
+        const {dispatch} = this.props;
+        dispatch(getConfiguration());
+    }
+
     render() {
+        const {status} = this.props;
+
+        if (!status.done) {
+            return <PromiseResult status={status} error={status.error}
+                                  loadingMessage="Loading configuration..."/>
+        }
+
         let configurations = new Map([
             ["TIME RANGE",
                 <InstantsLoader
@@ -17,9 +39,13 @@ class Instants extends Component {
                 <LimiterContainer/>]
 
         ]);
+
+        var hidden = true;
+        if (this.props.route.configurable) hidden = false;
+
         return (
             <BodyPadding>
-                <ConfigurationToolbar label="Configure Connections" children={configurations}/>
+                <Toolbar configurations={configurations} hidden={hidden}/>
                 <hr/>
                 <TimeLineInstants/>
                 <hr/>
@@ -28,4 +54,7 @@ class Instants extends Component {
         )
     }
 }
-export default Instants;
+const selector = createStructuredSelector({
+    status: getConfigurationStatusSelector
+});
+export default connect(selector)(Instants);

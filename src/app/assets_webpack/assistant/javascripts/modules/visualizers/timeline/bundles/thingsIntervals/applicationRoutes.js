@@ -7,7 +7,8 @@ import IntervalsToFirstLevel from "../../pages/IntervalsToFirstLevel";
 export default function createRoutes(dispatch) {
     return (
         <Route component={ApplicationLoader} path='/'>
-            <IndexRoute component={IntervalsToFirstLevel}/>
+            <IndexRoute component={IntervalsToFirstLevel} configurable={false}/>
+            <Route component={IntervalsToFirstLevel} configurable={false} path='embed'/>
             <Route component={NotFound} path='*'/>
         </Route>
     );

@@ -5,6 +5,6 @@ import Intervals from "../../pages/Intervals";
 
 export default function createRoutes(dispatch) {
     return (
-        <Route component={Intervals} path={MODULE_PREFIX}/>
+        <Route component={Intervals} configurable={true} path={MODULE_PREFIX}/>
     );
 }

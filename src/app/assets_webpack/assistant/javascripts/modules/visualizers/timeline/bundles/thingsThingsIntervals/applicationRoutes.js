@@ -7,7 +7,8 @@ import IntervalsToSecondLevel from "../../pages/IntervalsToSecondLevel";
 export default function createRoutes(dispatch) {
     return (
         <Route component={ApplicationLoader} path='/'>
-            <IndexRoute component={IntervalsToSecondLevel}/>
+            <IndexRoute component={IntervalsToSecondLevel} configurable={false}/>
+            <Route component={IntervalsToSecondLevel} configurable={false} path='embed'/>
             <Route component={NotFound} path='*'/>
         </Route>
     );

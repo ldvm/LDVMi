@@ -64,12 +64,6 @@ class QuantifiedPlacesLoader extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.quantifiedThings != this.props.quantifiedThings) {
-            this.reload(nextProps.quantifiedThings);
-        }
-    }
-
     componentWillUnmount() {
         const {dispatch} = this.props;
         dispatch(getQuantifiedPlacesReset());

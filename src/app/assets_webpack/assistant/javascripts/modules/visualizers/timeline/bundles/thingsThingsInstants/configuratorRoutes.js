@@ -5,6 +5,6 @@ import InstantsToSecondLevel from "../../pages/InstantsToSecondLevel";
 
 export default function createRoutes(dispatch) {
     return (
-        <Route component={InstantsToSecondLevel} path={MODULE_PREFIX}/>
+        <Route component={InstantsToSecondLevel} configurable={true} path={MODULE_PREFIX}/>
     );
 }

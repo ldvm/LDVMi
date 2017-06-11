@@ -7,7 +7,8 @@ import Intervals from "../../pages/Intervals";
 export default function createRoutes(dispatch) {
     return (
         <Route component={ApplicationLoader} path='/'>
-            <IndexRoute component={Intervals}/>
+            <IndexRoute component={Intervals} configurable={false}/>
+            <Route component={Intervals} configurable={false} path='embed'/>
             <Route component={NotFound} path='*'/>
         </Route>
     );

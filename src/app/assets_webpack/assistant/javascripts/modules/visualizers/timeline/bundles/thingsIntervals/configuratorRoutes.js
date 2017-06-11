@@ -5,6 +5,6 @@ import IntervalsToFirstLevel from "../../pages/IntervalsToFirstLevel";
 
 export default function createRoutes(dispatch) {
     return (
-        <Route component={IntervalsToFirstLevel} path={MODULE_PREFIX}/>
+        <Route component={IntervalsToFirstLevel} configurable={true} path={MODULE_PREFIX}/>
     );
 }

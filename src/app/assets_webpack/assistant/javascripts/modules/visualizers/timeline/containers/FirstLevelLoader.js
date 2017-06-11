@@ -46,18 +46,29 @@ class FirstLevelLoader extends Component {
     };
 
     componentWillMount() {
-        if (this.props.isInitial) this.load();
+        const {isInitial, secondLevel} = this.props;
+
+        if (isInitial) {
+            this.load(secondLevel);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
         const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
         if (secondLevel != nextProps.secondLevel) {
-            dispatch(setSelectedFirstLevelTypesReset());
-            dispatch(setSelectedFirstLevelPredicatesReset());
 
-            var urls = nextProps.secondLevel.map(l => l.inner);
-            dispatch(firstLevelLoader(urls, [], [], limit));
-            dispatch(firstLevelCount(urls, [], []));
+            // Do not reset selected things on app startup
+            if (secondLevel.length > 0) {
+                dispatch(setSelectedFirstLevelTypesReset());
+                dispatch(setSelectedFirstLevelPredicatesReset());
+
+                var urls = nextProps.secondLevel.map(l => l.inner);
+                dispatch(firstLevelLoader(urls, [], [], limit));
+                dispatch(firstLevelCount(urls, [], []));
+            }
+            else {
+                this.load(nextProps.secondLevel);
+            }
         }
     }
 
@@ -69,8 +80,8 @@ class FirstLevelLoader extends Component {
         dispatch(setSelectedFirstLevelPredicatesReset());
     }
 
-    load() {
-        const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, selectedFirstLevelTypes, selectedFirstLevelPredicates, limit} = this.props;
+    load(secondLevel) {
+        const {dispatch, firstLevelLoader, firstLevelCount, selectedFirstLevelTypes, selectedFirstLevelPredicates, limit} = this.props;
 
         var urls = secondLevel.map(l => l.inner);
         dispatch(firstLevelLoader(urls, [...selectedFirstLevelTypes], [...selectedFirstLevelPredicates], limit));
@@ -90,7 +101,7 @@ class FirstLevelLoader extends Component {
     }
 
     render() {
-        const {dispatch, status, firstLevel, selectedFirstLevelTypes, selectedFirstLevelPredicates} = this.props;
+        const {dispatch, status, secondLevel, firstLevel, selectedFirstLevelTypes, selectedFirstLevelPredicates} = this.props;
 
         if (!status.done) {
             return <PromiseResult status={status} error={status.error}
@@ -120,7 +131,7 @@ class FirstLevelLoader extends Component {
             />
             <Button raised={true}
                     primary={true}
-                    onTouchTap={() => this.load()}
+                    onTouchTap={() => this.load(secondLevel)}
                     disabled={!buttonsEnabled}
                     label="LOAD"
             />
