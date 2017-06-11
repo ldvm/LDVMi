@@ -7,7 +7,8 @@ import QuantifiedPlaces from "../../pages/QuantifiedPlaces";
 export default function createRoutes(dispatch) {
     return (
         <Route component={ApplicationLoader} path='/'>
-            <IndexRoute component={QuantifiedPlaces}/>
+            <IndexRoute component={QuantifiedPlaces} configurable={false}/>
+            <Route component={QuantifiedPlaces} configurable={false} path='embed'/>
             <Route component={NotFound} path='*'/>
         </Route>
     );

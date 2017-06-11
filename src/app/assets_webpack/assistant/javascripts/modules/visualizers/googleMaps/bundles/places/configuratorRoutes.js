@@ -5,6 +5,6 @@ import Places from "../../pages/Places";
 
 export default function createRoutes(dispatch) {
     return (
-        <Route component={Places} path={MODULE_PREFIX}/>
+        <Route component={Places} path={MODULE_PREFIX} configurable={true}/>
     );
 }

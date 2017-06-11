@@ -7,7 +7,8 @@ import Places from "../../pages/Places";
 export default function createRoutes(dispatch) {
     return (
         <Route component={ApplicationLoader} path='/'>
-            <IndexRoute component={Places}/>
+            <IndexRoute component={Places} configurable={false}/>
+            <Route component={Places} configurable={false} path='embed'/>
             <Route component={NotFound} path='*'/>
         </Route>
     );

@@ -5,6 +5,6 @@ import QuantifiedPlaces from "../../pages/QuantifiedPlaces";
 
 export default function createRoutes(dispatch) {
     return (
-        <Route component={QuantifiedPlaces} path={MODULE_PREFIX}/>
+        <Route component={QuantifiedPlaces} path={MODULE_PREFIX} configurable={true}/>
     );
 }

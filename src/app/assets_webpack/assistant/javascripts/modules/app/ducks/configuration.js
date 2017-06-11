@@ -5,6 +5,7 @@ import { applicationSelector } from './application'
 import createAction from '../../../misc/createAction'
 import prefix from '../prefix'
 import moduleSelector from '../selector'
+import {createPromiseStatusSelector} from "../../core/ducks/promises";
 
 // Most visualizers need to be able to save and load configuration. Following action factories represent
 // shared business logic which is identical for all visualizers. The functionality cannot be shared
@@ -37,7 +38,8 @@ export const GET_CONFIGURATION_RESET = prefix('GET_CONFIGURATION_RESET');
 const commonConfigurationSelector = createSelector(
   [moduleSelector],
   state => ({
-    customLabels: state.customLabels.toJS()
+    customLabels: state.customLabels.toJS(),
+    limit: state.limit
   })
 );
 

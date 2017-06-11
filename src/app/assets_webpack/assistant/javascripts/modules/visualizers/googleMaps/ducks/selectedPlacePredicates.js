@@ -5,6 +5,7 @@ import {GET_APPLICATION_START} from "../../../app/ducks/application";
 import {createSelector} from "reselect";
 import {Set as ImmutableSet} from "immutable";
 import moduleSelector from "../selector";
+import {GET_CONFIGURATION_SUCCESS} from "./configuration";
 
 // Actions
 export const SET_SELECT_PLACE_PREDICATES = prefix('SET_SELECT_PLACE_PREDICATES');
@@ -30,6 +31,10 @@ export default function selectedPlacePredicatesReducer(state = initialState, act
             return initialState;
         case SET_SELECT_PLACE_PREDICATES:
             return state.contains(action.payload.url) ? state.remove(action.payload.url) : state.add(action.payload.url);
+        case GET_CONFIGURATION_SUCCESS:
+            if ("selectedPlacePredicates" in action.payload) {
+                return state.union(action.payload.selectedPlacePredicates);
+            }
     }
     return state;
 };

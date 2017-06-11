@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 
-import {getLimitReset, limit_default, limitSelector, setLimit} from "../ducks/limit";
+import {setLimitReset, limit_default, limitSelector, setLimit} from "../ducks/limit";
 
 import Button from "../../../components/Button";
 
@@ -15,7 +15,15 @@ class LimiterContainer extends Component {
     componentWillUnmount() {
         const {dispatch} = this.props;
 
-        dispatch(getLimitReset());
+        dispatch(setLimitReset());
+    }
+
+    componentDidUpdate(){
+        const {limit} = this.props;
+        var elements = document.getElementsByName("limit");
+        if (elements.length > 0) {
+            elements[0].value = limit;
+        }
     }
 
     setLimit() {
@@ -30,7 +38,7 @@ class LimiterContainer extends Component {
 
     resetLimit() {
         const {dispatch, limit} = this.props;
-        dispatch(getLimitReset());
+        dispatch(setLimitReset());
 
         var elements = document.getElementsByName("limit");
         if (elements.length > 0) {

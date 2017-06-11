@@ -5,6 +5,7 @@ import {NavigationClose} from "material-ui/svg-icons/index";
 
 export default class ConfigurationToolbar extends Component {
     static propTypes = {
+        hidden: PropTypes.bool.isRequired,
         label: PropTypes.string.isRequired,
         children: PropTypes.instanceOf(Map).isRequired
     };
@@ -19,7 +20,7 @@ export default class ConfigurationToolbar extends Component {
     }
 
     render() {
-        const {children, label} = this.props;
+        const {children, label, hidden} = this.props;
 
         // Tabs
         let tabs = [];
@@ -38,14 +39,21 @@ export default class ConfigurationToolbar extends Component {
         let width = "0%";
         if (this.open) width = "40%";
 
+        let configButton = <RaisedButton
+            label={label}
+            primary={true}
+            onTouchTap={() => this.changeOpen()}
+        />;
+
+        if (hidden){
+            width = "0%";
+            configButton = <div/>
+        }
+
         // Rendering
         return (
             <div>
-                <RaisedButton
-                    label={label}
-                    primary={true}
-                    onTouchTap={() => this.changeOpen()}
-                />
+                {configButton}
                 <Drawer open={this.open} width={width}>
                     <AppBar
                         title={label}

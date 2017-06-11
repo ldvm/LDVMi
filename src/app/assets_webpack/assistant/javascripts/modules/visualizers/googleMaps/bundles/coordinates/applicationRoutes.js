@@ -7,7 +7,8 @@ import Coordinates from "../../pages/Coordinates";
 export default function createRoutes(dispatch) {
     return (
         <Route component={ApplicationLoader} path='/'>
-            <IndexRoute component={Coordinates}/>
+            <IndexRoute component={Coordinates} configurable={false}/>
+            <Route component={Coordinates} configurable={false} path='embed'/>
             <Route component={NotFound} path='*'/>
         </Route>
     );
