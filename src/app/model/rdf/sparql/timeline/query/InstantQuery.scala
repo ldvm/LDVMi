@@ -7,8 +7,8 @@ import model.rdf.sparql.query.SparqlCountQuery
 
 class InstantQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInstantUrls: Option[Seq[String]], maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?instant ?date"
-    val group = "GROUP BY ?instant ?date"
+    val select = "SELECT ?instant ?date ?hour ?minute ?second"
+    val group = "GROUP BY ?instant ?date ?hour ?minute ?second"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select, group, limit)
   }
@@ -28,6 +28,10 @@ class InstantQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInstan
        |${select}
        |WHERE {
        |  ?instant time:inDateTime ?date_url.
+       |
+       |  OPTIONAL { ?date_url time:hour ?hour }
+       |  OPTIONAL { ?date_url time:minute ?minute }
+       |  OPTIONAL { ?date_url time:second ?second }
        |
        |  ${QueryHelpers.bindTimeDescriptionToXSDDate("date_url", "date")}
        |

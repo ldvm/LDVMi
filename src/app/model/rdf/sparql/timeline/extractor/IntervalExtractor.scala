@@ -30,7 +30,17 @@ class IntervalExtractor extends QueryExecutionResultExtractor[IntervalQuery, Seq
   private def getDate(qs: QuerySolution, fieldName: String): Date = {
     val dateFormat = new SimpleDateFormat("yyyy-MM-dd")
     val fieldValue = qs.getLiteral(fieldName).getString()
-    val date =  dateFormat.parse(fieldValue)
-    return date;
+
+    val hour = qs.getLiteral(fieldName + "_hour")
+    val minute = qs.getLiteral(fieldName + "_minute")
+    val second = qs.getLiteral(fieldName + "_second")
+
+    val date = dateFormat.parse(fieldValue)
+
+    if (hour != null) date.setHours(hour.getInt)
+    if (minute != null) date.setMinutes(minute.getInt)
+    if (second!= null) date.setSeconds(second.getInt)
+
+    return date
   }
 }

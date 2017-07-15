@@ -37,7 +37,7 @@ export default class ConfigurationToolbar extends Component {
 
         // Drawer bug - if width is set, component ignores open property
         let width = "0%";
-        if (this.open) width = "40%";
+        if (this.open) width = "20%";
 
         let configButton = <RaisedButton
             label={label}

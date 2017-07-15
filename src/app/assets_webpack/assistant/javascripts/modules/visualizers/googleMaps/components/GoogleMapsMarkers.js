@@ -7,7 +7,7 @@ import GoogleMap from "../../../../components/GoogleMap";
 import {mapStateSelector, updateMapState} from "../ducks/mapState";
 import {toggledMarkersSelector, toggleMarker} from "../ducks/toggledMarkers";
 import {coordinatesSelector} from "../ducks/coordinates";
-import MapMarker from "../components/MapMarkerInfoWindow";
+import MapMarker from "./MapMarkerInfoWindow";
 import {MapState} from "../models";
 import {createStructuredSelector} from "reselect";
 

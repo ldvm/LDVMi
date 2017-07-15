@@ -48,7 +48,6 @@ class PlacesLoader extends Component {
         var urls = quantifiedThings.map(p => p.place);
         dispatch(getPlaces(urls, [], limit));
         dispatch(getPlacesCount(urls, []));
-
     }
 
     componentWillMount() {
@@ -68,7 +67,7 @@ class PlacesLoader extends Component {
                 dispatch(setSelectedPlaceTypesReset());
                 this.reload(nextProps.quantifiedThings);
             }
-            else this.load(quantifiedThings);
+            else this.load(nextProps.quantifiedThings);
         }
     }
 

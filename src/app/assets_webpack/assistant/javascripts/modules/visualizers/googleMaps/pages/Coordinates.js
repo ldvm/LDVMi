@@ -3,7 +3,7 @@ import BodyPadding from "../../../../components/BodyPadding";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
 import FillInScreen from "../../../../components/FillInScreen";
 import CoordinatesLoader from "../containers/CoordinatesLoader";
-import GoogleMapsMarkers from "../containers/GoogleMapsMarkers";
+import GoogleMapsMarkers from "../components/GoogleMapsMarkers";
 import {getConfiguration, getConfigurationStatusSelector} from "../ducks/configuration";
 import ToolbarV2 from "../components/ToolbarV2";
 import {createStructuredSelector} from "reselect";

@@ -3,7 +3,7 @@ import BodyPadding from "../../../../components/BodyPadding";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
 import FillInScreen from "../../../../components/FillInScreen";
 import CoordinatesLoader from "../containers/CoordinatesLoader";
-import GoogleMapsCircles from "../containers/GoogleMapsCircles";
+import GoogleMapsCircles from "../components/GoogleMapsCircles";
 import QuantifiedPlacesLoader from "../containers/QuantifiedPlacesLoader";
 import {getConfiguration, getConfigurationStatusSelector} from "../ducks/configuration";
 import ToolbarV2 from "../components/ToolbarV2";

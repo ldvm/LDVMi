@@ -7,8 +7,8 @@ import model.rdf.sparql.query.SparqlCountQuery
 
 class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeIntervalUrls: Option[Seq[String]], maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?interval ?begin ?end"
-    val group = "GROUP BY ?interval ?begin ?end"
+    val select = "SELECT ?interval ?begin ?begin_hour ?begin_minute ?begin_second ?end ?end_hour ?end_minute ?end_second"
+    val group = "GROUP BY ?interval ?begin ?begin_hour ?begin_minute ?begin_second ?end ?end_hour ?end_minute ?end_second"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select, group, limit)
   }
@@ -32,6 +32,14 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
        |
        |  ?begin_desc time:inDateTime ?begin_url.
        |  ?end_desc   time:inDateTime ?end_url.
+       |
+       |  OPTIONAL { ?begin_url time:hour ?begin_hour }
+       |  OPTIONAL { ?begin_url time:minute ?begin_minute }
+       |  OPTIONAL { ?begin_url time:second ?begin_second }
+       |
+       |  OPTIONAL { ?end_url time:hour ?begin_hour }
+       |  OPTIONAL { ?end_url time:minute ?begin_minute }
+       |  OPTIONAL { ?end_url time:second ?begin_second }
        |
        |  ${QueryHelpers.bindTimeDescriptionToXSDDate("begin_url", "begin")}
        |  ${QueryHelpers.bindTimeDescriptionToXSDDate("end_url", "end")}

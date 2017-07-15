@@ -17,7 +17,7 @@ class InstantExtractor extends QueryExecutionResultExtractor[InstantQuery, Seq[I
       val resList = input.execSelect().toList
       Some(resList.map(e => new Instant(
         e.getResource("instant").getURI,
-        getDate(e, "date")
+        getDate(e)
       )))
     }
     catch {
@@ -27,9 +27,20 @@ class InstantExtractor extends QueryExecutionResultExtractor[InstantQuery, Seq[I
     }
   }
 
-  private def getDate(qs: QuerySolution, fieldName: String): Date = {
+  private def getDate(qs: QuerySolution): Date = {
     val dateFormat = new SimpleDateFormat("yyyy-MM-dd")
-    val fieldValue = qs.getLiteral(fieldName).getString()
-    return dateFormat.parse(fieldValue)
+    val fieldValue = qs.getLiteral("date").getString()
+
+    val hour = qs.getLiteral("hour")
+    val minute = qs.getLiteral("minute")
+    val second = qs.getLiteral("second")
+
+    val date = dateFormat.parse(fieldValue)
+
+    if (hour != null) date.setHours(hour.getInt)
+    if (minute != null) date.setMinutes(minute.getInt)
+    if (second!= null) date.setSeconds(second.getInt)
+
+    return date
   }
 }
