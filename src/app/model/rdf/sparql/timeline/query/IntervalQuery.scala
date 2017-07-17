@@ -36,10 +36,12 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
        |  OPTIONAL { ?begin_url time:hour ?begin_hour }
        |  OPTIONAL { ?begin_url time:minute ?begin_minute }
        |  OPTIONAL { ?begin_url time:second ?begin_second }
+       |  OPTIONAL { ?begin_url time:timeZone ?begin_zone }
        |
        |  OPTIONAL { ?end_url time:hour ?begin_hour }
        |  OPTIONAL { ?end_url time:minute ?begin_minute }
        |  OPTIONAL { ?end_url time:second ?begin_second }
+       |  OPTIONAL { ?end_url time:timeZone ?end_zone }
        |
        |  ${QueryHelpers.bindTimeDescriptionToXSDDate("begin_url", "begin")}
        |  ${QueryHelpers.bindTimeDescriptionToXSDDate("end_url", "end")}

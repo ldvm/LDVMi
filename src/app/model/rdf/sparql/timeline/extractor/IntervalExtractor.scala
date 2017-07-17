@@ -1,7 +1,7 @@
 package model.rdf.sparql.timeline.extractor
 
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.{Date, TimeZone}
 
 import model.rdf.extractor.QueryExecutionResultExtractor
 import model.rdf.sparql.timeline.models.Interval
@@ -28,19 +28,24 @@ class IntervalExtractor extends QueryExecutionResultExtractor[IntervalQuery, Seq
   }
 
   private def getDate(qs: QuerySolution, fieldName: String): Date = {
-    val dateFormat = new SimpleDateFormat("yyyy-MM-dd")
-    val fieldValue = qs.getLiteral(fieldName).getString()
+    val dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 
+    // Set time zone
+    val zone = qs.getLiteral(fieldName + "_zone")
+    val zoneString = if (zone == null) "GMT" else zone.getString
+    dateFormat.setTimeZone(TimeZone.getTimeZone(zoneString))
+
+    // Parse optional time
     val hour = qs.getLiteral(fieldName + "_hour")
     val minute = qs.getLiteral(fieldName + "_minute")
     val second = qs.getLiteral(fieldName + "_second")
 
-    val date = dateFormat.parse(fieldValue)
+    val HH = if (hour == null) "00" else hour.getString
+    val mm = if (minute == null) "00" else minute.getString
+    val ss = if (second == null) "00" else second.getString
 
-    if (hour != null) date.setHours(hour.getInt)
-    if (minute != null) date.setMinutes(minute.getInt)
-    if (second!= null) date.setSeconds(second.getInt)
-
-    return date
+    // Parse full date-time value
+    val date = qs.getLiteral(fieldName).getString
+    return dateFormat.parse(s"""${date} ${HH}:${mm}:${ss}""")
   }
 }

@@ -32,6 +32,7 @@ class InstantQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInstan
        |  OPTIONAL { ?date_url time:hour ?hour }
        |  OPTIONAL { ?date_url time:minute ?minute }
        |  OPTIONAL { ?date_url time:second ?second }
+       |  OPTIONAL { ?date_url time:timeZone ?zone }
        |
        |  ${QueryHelpers.bindTimeDescriptionToXSDDate("date_url", "date")}
        |

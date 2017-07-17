@@ -7,7 +7,6 @@ import LevelsVisualizer from "./LevelsVisualizer";
 import makePureRender from "../../../../misc/makePureRender";
 import ObjectInfo from "../../../app/containers/ObjectInfo";
 import SubHeadLine from "../../../../components/Subheadline";
-import moment from "moment";
 
 class InstantVisualizer extends Component {
     static propTypes = {
@@ -28,7 +27,7 @@ class InstantVisualizer extends Component {
             <ObjectInfo header="Instant" url={instant.url}/>
             <br/>
             <b>Date-Time: </b>
-            {moment(instant.date).toString()}
+            {new Date(instant.date).toUTCString()}
             <hr/>
             <LevelsVisualizer timeRecordUrl={instant.url}/>
         </div>

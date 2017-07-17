@@ -6,7 +6,6 @@ import SubHeadLine from "../../../../components/Subheadline";
 import {selectedTimeRecordSelector} from "../ducks/selectedTimeRecord";
 import LevelsVisualizer from "./LevelsVisualizer";
 import ObjectInfo from "../../../app/containers/ObjectInfo";
-import moment from "moment";
 
 class IntervalVisualizer extends Component {
     static propTypes = {
@@ -26,10 +25,10 @@ class IntervalVisualizer extends Component {
             <ObjectInfo header="Interval" url={interval.url}/>
             <br/>
             <b>Begin: </b>
-            {moment(interval.begin).toString()}
+            {new Date(interval.begin).toUTCString()}
             <br/>
             <b>End: </b>
-            {moment(interval.end).toString()}
+            {new Date(interval.end).toUTCString()}
             <hr/>
             <LevelsVisualizer timeRecordUrl={interval.url}/>
         </div>
