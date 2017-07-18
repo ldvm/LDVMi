@@ -35,7 +35,7 @@ class ThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
        |    ?instant time:inDateTime ?date.
        |  }
        |
-       |  # Limiting values to configurations and higher levels
+       |  # Restricting values to configurations and higher levels
        |  ${QueryHelpers.limitValues("thing", maybeThingsUrls)}
        |  ${QueryHelpers.limitValues("thingType", maybeThingsTypes)}
        |  ${QueryHelpers.limitValues("predicate", maybePredicates)}

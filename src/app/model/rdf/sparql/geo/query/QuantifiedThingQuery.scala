@@ -30,12 +30,17 @@ class QuantifiedThingQuery(maybeThingUrls: Option[Seq[String]],
        |  ?thing ?placePredicate ?place ;
        |    ?valuePredicate ?value .
        |
+       |  # Ensuring lower levels contain data
        |  FILTER EXISTS {
        |    ?place s:geo ?coordinates .
+       |
+       |    ?coordinates s:longitude ?longitude ;
+       |      s:latitude ?latitude .
        |  }
        |
        |  FILTER(ISNUMERIC(?value))
        |
+       |  # Restricting values to configurations and higher levels
        |  ${QueryHelpers.limitValues("thing", maybeThingUrls)}
        |  ${QueryHelpers.limitValues("valuePredicate", maybeValuePredicates)}
        |  ${QueryHelpers.limitValues("placePredicate", maybePlacePredicates)}

@@ -29,6 +29,13 @@ class PlaceQuery(maybePlaceUrls: Option[Seq[String]],
        |  ?place  a ?placeType ;
        |    s:geo ?coordinates .
        |
+       |  # Ensuring lower levels contain data
+       |  FILTER EXISTS {
+       |    ?coordinates s:longitude ?longitude ;
+       |      s:latitude ?latitude .
+       |  }
+       |
+       |  # Restricting values to configurations and higher levels
        |  ${QueryHelpers.limitValues("place", maybePlaceUrls)}
        |  ${QueryHelpers.limitValues("placeType", maybePlaceTypes)}
        |}

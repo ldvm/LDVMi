@@ -27,6 +27,7 @@ class CoordinatesQuery(maybeCoordinatesUrls: Option[Seq[String]], maybeLimit: Op
        |  ?coordinates s:longitude ?longitude ;
        |    s:latitude ?latitude .
        |
+       |  # Restricting values to configurations and higher levels
        |  ${QueryHelpers.limitValues("coordinates", maybeCoordinatesUrls)}
        |}
        |

@@ -39,7 +39,7 @@ class ThingsWithThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]],
        |    ?interval time:hasEnd ?end .
        |  }
        |
-       |  # Limiting values to configurations and higher levels
+       |   # Restricting values to configurations and higher levels
        |  ${QueryHelpers.limitValues("outerThing", maybeThingsUrls)}
        |  ${QueryHelpers.limitValues("outerThingType", maybeThingsTypes)}
        |  ${QueryHelpers.limitValues("predicate", maybePredicates)}

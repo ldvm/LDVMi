@@ -31,8 +31,15 @@ class QuantifiedPlaceQuery(maybePlaceUrls: Option[Seq[String]],
        |    s:geo ?coordinates ;
        |    ?valuePredicate ?value .
        |
+       |  # Ensuring lower levels contain data
+       |  FILTER EXISTS {
+       |    ?coordinates s:longitude ?longitude ;
+       |      s:latitude ?latitude .
+       |  }
+       |
        |  FILTER(ISNUMERIC(?value))
        |
+       |  # Restricting values to configurations and higher levels
        |  ${QueryHelpers.limitValues("place", maybePlaceUrls)}
        |  ${QueryHelpers.limitValues("placeType", maybePlaceTypes)}
        |  ${QueryHelpers.limitValues("valuePredicate", maybeValuePredicates)}
