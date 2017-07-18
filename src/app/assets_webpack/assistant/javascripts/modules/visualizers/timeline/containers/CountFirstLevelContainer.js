@@ -2,13 +2,13 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import {PromiseStatus} from "../../../core/models";
-import {countSecondSelector, countSecondStatusSelector} from "../ducks/count";
-import {secondLevelSelector, secondLevelStatusSelector} from "../ducks/secondLevel";
+import {countFirstSelector, countFirstStatusSelector} from "../ducks/count";
+import {firstLevelSelector, firstLevelStatusSelector} from "../ducks/firstLevel";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import {getDistinctCount} from "../../../common/utils/arrayUtils";
 
-class CountSecondLevel extends Component {
+class CountFirstLevelContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
 
@@ -39,11 +39,11 @@ class CountSecondLevel extends Component {
 }
 
 const selector = createStructuredSelector({
-    count: countSecondSelector,
-    countStatus: countSecondStatusSelector,
+    count: countFirstSelector,
+    countStatus: countFirstStatusSelector,
 
-    things: secondLevelSelector,
-    thingsStatus: secondLevelStatusSelector
+    things: firstLevelSelector,
+    thingsStatus: firstLevelStatusSelector
 });
 
-export default connect(selector)(CountSecondLevel);
+export default connect(selector)(CountFirstLevelContainer);

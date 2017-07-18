@@ -19,7 +19,7 @@ import RecordSelector from "../../../common/components/RecordSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
 import {Paper} from "material-ui";
-import CountSecondLevelContainer from "../components/CountSecondLevel";
+import CountSecondLevelContainer from "./CountSecondLevelContainer";
 import {Set as ImmutableSet} from "immutable";
 
 class SecondLevelLoader extends Component {

@@ -9,7 +9,7 @@ import {setTimeRangeReset, timeRangeSelector} from "../ducks/timeRange";
 import {firstLevelSelector} from "../ducks/firstLevel";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
-import CountZeroLevelContainer from "../components/CountTimeRecord";
+import CountZeroLevelContainer from "./CountZeroLevelContainer";
 import TimeRangeContainer from "./TimeRangeContainer";
 import {Paper} from "material-ui";
 import {connect} from "react-redux";

@@ -20,7 +20,7 @@ import RecordSelector from "../../../common/components/RecordSelector";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import Button from "../../../../components/Button";
 import {Paper} from "material-ui";
-import CountFirstLevelContainer from "../components/CountFirstLevel";
+import CountFirstLevelContainer from "./CountFirstLevelContainer";
 import {Set as ImmutableSet} from "immutable";
 
 
