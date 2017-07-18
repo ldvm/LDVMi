@@ -8,7 +8,7 @@ class ThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
                              maybePredicates: Option[Seq[String]],
                              maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?thing ?thingType ?predicate ?instant"
+    val select = "SELECT DISTINCT ?thing ?thingType ?predicate ?instant"
     val group = "GROUP BY ?thing ?thingType ?predicate ?instant"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select, group, limit)
@@ -30,8 +30,12 @@ class ThingsWithInstantQuery(maybeThingsUrls: Option[Seq[String]],
        |  ?thing ?predicate ?instant.
        |  ?thing a ?thingType.
        |
-       |  ?instant time:inDateTime ?date.
+       |  # Ensuring lower levels contain data
+       |  FILTER EXISTS {
+       |    ?instant time:inDateTime ?date.
+       |  }
        |
+       |  # Limiting values to configurations and higher levels
        |  ${QueryHelpers.limitValues("thing", maybeThingsUrls)}
        |  ${QueryHelpers.limitValues("thingType", maybeThingsTypes)}
        |  ${QueryHelpers.limitValues("predicate", maybePredicates)}

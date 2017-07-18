@@ -8,7 +8,7 @@ class ThingsWithThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]],
                                         maybePredicates: Option[Seq[String]],
                                         maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?outerThing ?outerThingType ?predicate ?innerThing"
+    val select = "SELECT DISTINCT ?outerThing ?outerThingType ?predicate ?innerThing"
     val group = "GROUP BY ?outerThing ?outerThingType ?predicate ?innerThing"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select, group, limit)
@@ -31,11 +31,15 @@ class ThingsWithThingsWithIntervalQuery(maybeThingsUrls: Option[Seq[String]],
        |
        |  ?outerThing a ?outerThingType.
        |
-       |  ?innerThing ?hasInterval ?interval.
+       |  # Ensuring lower levels contain data
+       |  FILTER EXISTS {
+       |    ?innerThing ?hasInterval ?interval.
        |
-       |  ?interval time:hasBeginning ?beginning .
-       |  ?interval time:hasEnd ?end .
+       |    ?interval time:hasBeginning ?beginning .
+       |    ?interval time:hasEnd ?end .
+       |  }
        |
+       |  # Limiting values to configurations and higher levels
        |  ${QueryHelpers.limitValues("outerThing", maybeThingsUrls)}
        |  ${QueryHelpers.limitValues("outerThingType", maybeThingsTypes)}
        |  ${QueryHelpers.limitValues("predicate", maybePredicates)}

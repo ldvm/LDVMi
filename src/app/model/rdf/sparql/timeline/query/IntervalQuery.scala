@@ -7,7 +7,7 @@ import model.rdf.sparql.query.SparqlCountQuery
 
 class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeIntervalUrls: Option[Seq[String]], maybeLimit: Option[Int]) extends SparqlCountQuery {
   def get: String = {
-    val select = "SELECT ?interval ?begin ?begin_hour ?begin_minute ?begin_second ?end ?end_hour ?end_minute ?end_second"
+    val select = "SELECT DISTINCT ?interval ?begin ?begin_hour ?begin_minute ?begin_second ?end ?end_hour ?end_minute ?end_second"
     val group = "GROUP BY ?interval ?begin ?begin_hour ?begin_minute ?begin_second ?end ?end_hour ?end_minute ?end_second"
     val limit = QueryHelpers.limit(maybeLimit)
     return query(select, group, limit)
@@ -33,6 +33,7 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
        |  ?begin_desc time:inDateTime ?begin_url.
        |  ?end_desc   time:inDateTime ?end_url.
        |
+       |  # Time is optional, the main value lies in the date
        |  OPTIONAL { ?begin_url time:hour ?begin_hour }
        |  OPTIONAL { ?begin_url time:minute ?begin_minute }
        |  OPTIONAL { ?begin_url time:second ?begin_second }
@@ -43,12 +44,15 @@ class IntervalQuery(maybeStart: Option[Date], maybeEnd: Option[Date], maybeInter
        |  OPTIONAL { ?end_url time:second ?begin_second }
        |  OPTIONAL { ?end_url time:timeZone ?end_zone }
        |
+       |  # Construct XSD date (which can be compared) from the time: properties
        |  ${QueryHelpers.bindTimeDescriptionToXSDDate("begin_url", "begin")}
        |  ${QueryHelpers.bindTimeDescriptionToXSDDate("end_url", "end")}
        |
+       |  # Load data between start and end of the required interval
        |  ${startFilter}
        |  ${endFilter}
        |
+       |  # Limiting values to configurations and higher levels
        |  ${QueryHelpers.limitValues("interval", maybeIntervalUrls)}
        |}
        |
