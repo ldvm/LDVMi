@@ -38,7 +38,7 @@ class FirstLevelLoader extends Component {
         firstLevelCount: PropTypes.func.isRequired,
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
-        // Value selectors
+        // Configurations selectors
         selectedFirstLevelTypes: PropTypes.instanceOf(ImmutableSet).isRequired,
         selectedFirstLevelPredicates: PropTypes.instanceOf(ImmutableSet).isRequired,
 
@@ -48,24 +48,23 @@ class FirstLevelLoader extends Component {
     componentWillMount() {
         const {isInitial, secondLevel} = this.props;
 
+        // Load data only if this loader is initial (responsible for the first load)
         if (isInitial) {
             this.load(secondLevel);
         }
     }
 
     componentWillReceiveProps(nextProps) {
-        const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
+        const {secondLevel} = this.props;
+
+        // Reload data only on second level change
         if (secondLevel != nextProps.secondLevel) {
 
-            // Do not reset selected things on app startup
+            // Previous second level data contained data => reset whole component
             if (secondLevel.length > 0) {
-                dispatch(setSelectedFirstLevelTypesReset());
-                dispatch(setSelectedFirstLevelPredicatesReset());
-
-                var urls = nextProps.secondLevel.map(l => l.inner);
-                dispatch(firstLevelLoader(urls, [], [], limit));
-                dispatch(firstLevelCount(urls, [], []));
+                this.reset(nextProps.secondLevel);
             }
+            // Previous second level data was empty => Application startup (level 2 finished, starting level 1) => just load.
             else {
                 this.load(nextProps.secondLevel);
             }
@@ -80,6 +79,7 @@ class FirstLevelLoader extends Component {
         dispatch(setSelectedFirstLevelPredicatesReset());
     }
 
+    // Load first level data according to second level data
     load(secondLevel) {
         const {dispatch, firstLevelLoader, firstLevelCount, selectedFirstLevelTypes, selectedFirstLevelPredicates, limit} = this.props;
 
@@ -88,8 +88,9 @@ class FirstLevelLoader extends Component {
         dispatch(firstLevelCount(urls, [...selectedFirstLevelTypes], [...selectedFirstLevelPredicates]))
     }
 
-    reset() {
-        const {dispatch, firstLevelLoader, firstLevelCount, secondLevel, limit} = this.props;
+    // Reset the loaded data + all configurations supported at this level
+    reset(secondLevel) {
+        const {dispatch, firstLevelLoader, firstLevelCount, limit} = this.props;
 
         dispatch(setSelectedFirstLevelTypesReset());
         dispatch(setSelectedFirstLevelPredicatesReset());
@@ -109,7 +110,14 @@ class FirstLevelLoader extends Component {
         }
 
         else if (firstLevel.length == 0) {
-            return <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
+            return <div>
+                <CenteredMessage>No first level things were loaded. Check the configuration.</CenteredMessage>
+                <Button raised={true}
+                        onTouchTap={() => this.reset(secondLevel)}
+                        disabled={false}
+                        label="RESET"
+                />
+            </div>
         }
 
         var buttonsEnabled = selectedFirstLevelTypes.size > 0 || selectedFirstLevelPredicates.size > 0;
@@ -136,7 +144,7 @@ class FirstLevelLoader extends Component {
                     label="LOAD"
             />
             <Button raised={true}
-                    onTouchTap={() => this.reset()}
+                    onTouchTap={() => this.reset(secondLevel)}
                     disabled={false}
                     label="RESET"
             />
@@ -146,11 +154,14 @@ class FirstLevelLoader extends Component {
 }
 
 const selector = createStructuredSelector({
-    firstLevel: firstLevelSelector,
     secondLevel: secondLevelSelector,
+
+    firstLevel: firstLevelSelector,
     status: firstLevelStatusSelector,
+
     selectedFirstLevelTypes: selectedFirstLevelTypesSelector,
     selectedFirstLevelPredicates: selectedFirstLevelPredicatesSelector,
+
     limit: limitSelector
 });
 

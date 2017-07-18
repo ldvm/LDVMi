@@ -9,6 +9,7 @@ import {setTimeRangeReset, setTimeRange, timeRangeSelector} from "../ducks/timeR
 import Button from "../../../../components/Button";
 import {setSelectTimeRecordReset} from "../ducks/selectedTimeRecord";
 
+
 class TimeRangeContainer extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
@@ -34,6 +35,7 @@ class TimeRangeContainer extends Component {
     componentDidUpdate() {
         const {timeRange} = this.props;
 
+        // The render() method sets only default value, so we will have to add the actual value manually
         var beginString = moment(timeRange.begin).format('YYYY-MM-DD');
         var endString = moment(timeRange.end).format('YYYY-MM-DD');
 

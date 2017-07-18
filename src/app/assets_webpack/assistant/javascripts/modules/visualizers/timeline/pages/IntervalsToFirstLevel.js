@@ -6,7 +6,7 @@ import LimiterContainer from "../../../app/containers/LimiterContainer";
 import TimeLineIntervals from "../components/TimeLineIntervals";
 import IntervalsLoader from "../containers/IntervalsLoader";
 import {getFirstLevelIntervals} from "../ducks/firstLevel";
-import IntervalVisualizer from "../components/IntervalVisualizer";
+import IntervalInfoWindow from "../components/IntervalInfoWindow";
 import {PromiseStatus} from "../../../core/models";
 import {getConfiguration, getConfigurationStatusSelector} from "../ducks/configuration";
 import {connect} from "react-redux";
@@ -33,6 +33,7 @@ class IntervalsToFirstLevel extends Component {
                                   loadingMessage="Loading configuration..."/>
         }
 
+        // Specify which loaders are in the configuration toolbar
         let configurations = new Map([
             ["FIRST LEVEL",
                 <FirstLevelLoader
@@ -49,6 +50,7 @@ class IntervalsToFirstLevel extends Component {
 
         ]);
 
+        // Configuration toolbar is visible only in configurator UI, not in the application one.
         var hidden = true;
         if (this.props.route.configurable) hidden = false;
 
@@ -58,7 +60,7 @@ class IntervalsToFirstLevel extends Component {
                 <hr/>
                 <TimeLineIntervals/>
                 <hr/>
-                <IntervalVisualizer/>
+                <IntervalInfoWindow/>
             </BodyPadding>
         )
     }

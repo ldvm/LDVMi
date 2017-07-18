@@ -11,7 +11,7 @@ import {firstLevelSelector} from "../ducks/firstLevel";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import CountZeroLevelContainer from "../components/CountTimeRecord";
-import TimeRangeContainer from "./TimeRange";
+import TimeRangeContainer from "./TimeRangeContainer";
 import {Paper} from "material-ui";
 
 class InstantsLoader extends Component {
@@ -34,6 +34,7 @@ class InstantsLoader extends Component {
     componentWillMount() {
         const {dispatch, timeRange, limit} = this.props;
 
+        // Load data only if this loader is initial (responsible for the first load)
         if (this.props.isInitial) {
             dispatch(getInstants([], timeRange, limit));
             dispatch(getInstantsCount([], timeRange));

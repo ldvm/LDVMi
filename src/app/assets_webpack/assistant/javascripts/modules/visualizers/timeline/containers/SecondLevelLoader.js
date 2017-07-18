@@ -35,7 +35,7 @@ class SecondLevelLoader extends Component {
         secondLevelCount: PropTypes.func.isRequired,
         status: PropTypes.instanceOf(PromiseStatus).isRequired,
 
-        // Value selectors
+        // Configurations selectors
         selectedSecondLevelThings: PropTypes.instanceOf(ImmutableSet).isRequired,
         selectedSecondLevelPredicates: PropTypes.instanceOf(ImmutableSet).isRequired,
 
@@ -43,7 +43,10 @@ class SecondLevelLoader extends Component {
     };
 
     componentWillMount() {
-        if (this.props.isInitial) this.load();
+        // Load data only if this loader is initial (responsible for the first load)
+        if (this.props.isInitial) {
+            this.load();
+        }
     }
 
     componentWillUnmount() {
@@ -79,7 +82,14 @@ class SecondLevelLoader extends Component {
         }
 
         else if (secondLevel.length == 0) {
-            return <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
+            return <div>
+                <CenteredMessage>No connected things were loaded. Check the settings please.</CenteredMessage>
+                <Button raised={true}
+                        onTouchTap={() => this.reset()}
+                        disabled={false}
+                        label="RESET"
+                />
+            </div>
         }
 
         var buttonsEnabled = selectedSecondLevelThings.size > 0 || selectedSecondLevelPredicates.size > 0;
@@ -118,8 +128,10 @@ class SecondLevelLoader extends Component {
 const selector = createStructuredSelector({
     secondLevel: secondLevelSelector,
     status: secondLevelStatusSelector,
+
     selectedSecondLevelThings: selectedSecondLevelThingsSelector,
     selectedSecondLevelPredicates: selectedSecondLevelPredicatesSelector,
+
     limit: limitSelector
 });
 

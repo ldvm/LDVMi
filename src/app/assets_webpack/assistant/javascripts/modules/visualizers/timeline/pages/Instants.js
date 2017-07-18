@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from "react";
 import BodyPadding from "../../../../components/BodyPadding";
 import TimeLineInstants from "../components/TimeLineInstants";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
-import InstantVisualizer from "../components/InstantVisualizer";
+import InstantInfoWindow from "../components/InstantInfoWindow";
 import InstantsLoader from "../containers/InstantsLoader";
 import {PromiseStatus} from "../../../core/models";
 import {getConfiguration, getConfigurationStatusSelector} from "../ducks/configuration";
@@ -30,6 +30,7 @@ class Instants extends Component {
                                   loadingMessage="Loading configuration..."/>
         }
 
+        // Specify which loaders are in the configuration toolbar
         let configurations = new Map([
             ["TIME RANGE",
                 <InstantsLoader
@@ -40,6 +41,7 @@ class Instants extends Component {
 
         ]);
 
+        // Configuration toolbar is visible only in configurator UI, not in the application one.
         var hidden = true;
         if (this.props.route.configurable) hidden = false;
 
@@ -49,7 +51,7 @@ class Instants extends Component {
                 <hr/>
                 <TimeLineInstants/>
                 <hr/>
-                <InstantVisualizer/>
+                <InstantInfoWindow/>
             </BodyPadding>
         )
     }

@@ -3,7 +3,7 @@ import BodyPadding from "../../../../components/BodyPadding";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
 import TimeLineIntervals from "../components/TimeLineIntervals";
 import IntervalsLoader from "../containers/IntervalsLoader";
-import IntervalVisualizer from "../components/IntervalVisualizer";
+import IntervalInfoWindow from "../components/IntervalInfoWindow";
 import {PromiseStatus} from "../../../core/models";
 import {getConfiguration, getConfigurationStatusSelector} from "../ducks/configuration";
 import {connect} from "react-redux";
@@ -30,6 +30,7 @@ class Intervals extends Component {
                                   loadingMessage="Loading configuration..."/>
         }
 
+        // Specify which loaders are in the configuration toolbar
         let configurations = new Map([
             ["TIME RANGE",
                 <IntervalsLoader
@@ -40,6 +41,7 @@ class Intervals extends Component {
 
         ]);
 
+        // Configuration toolbar is visible only in configurator UI, not in the application one.
         var hidden = true;
         if (this.props.route.configurable) hidden = false;
 
@@ -49,7 +51,7 @@ class Intervals extends Component {
                 <hr/>
                 <TimeLineIntervals/>
                 <hr/>
-                <IntervalVisualizer/>
+                <IntervalInfoWindow/>
             </BodyPadding>
         )
     }

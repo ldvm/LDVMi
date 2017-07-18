@@ -10,7 +10,7 @@ import {firstLevelSelector} from "../ducks/firstLevel";
 import PromiseResult from "../../../core/components/PromiseResult";
 import CenteredMessage from "../../../../components/CenteredMessage";
 import CountZeroLevelContainer from "../components/CountTimeRecord";
-import TimeRangeContainer from "./TimeRange";
+import TimeRangeContainer from "./TimeRangeContainer";
 import {Paper} from "material-ui";
 import {connect} from "react-redux";
 
@@ -34,8 +34,9 @@ class IntervalsLoader extends Component {
     componentWillMount() {
         const {dispatch, timeRange, limit} = this.props;
 
+        // Load data only if this loader is initial (responsible for the first load)
         if (this.props.isInitial) {
-            dispatch(getIntervals([], timeRange, limit))
+            dispatch(getIntervals([], timeRange, limit));
             dispatch(getIntervalsCount([], timeRange));
         }
     }

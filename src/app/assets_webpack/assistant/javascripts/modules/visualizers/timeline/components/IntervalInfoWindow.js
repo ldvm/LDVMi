@@ -2,13 +2,12 @@ import React, {Component, PropTypes} from "react";
 import {connect} from "react-redux";
 import {createStructuredSelector} from "reselect";
 import CenteredMessage from "../../../../components/CenteredMessage";
-import {selectedTimeRecordSelector} from "../ducks/selectedTimeRecord";
-import LevelsVisualizer from "./LevelsVisualizer";
-import makePureRender from "../../../../misc/makePureRender";
-import ObjectInfo from "../../../app/containers/ObjectInfo";
 import SubHeadLine from "../../../../components/Subheadline";
+import {selectedTimeRecordSelector} from "../ducks/selectedTimeRecord";
+import LevelsInfoWindow from "./LevelsInfoWindow";
+import ObjectInfo from "../../../app/containers/ObjectInfo";
 
-class InstantVisualizer extends Component {
+class IntervalInfoWindow extends Component {
     static propTypes = {
         selectedTimeRecord: PropTypes.instanceOf(Array).isRequired
     };
@@ -20,17 +19,20 @@ class InstantVisualizer extends Component {
             return <CenteredMessage>Select events on the Time Line to view them.</CenteredMessage>
         }
 
-        var instant = selectedTimeRecord[0];
-
+        var interval = selectedTimeRecord[0];
         return <div>
-            <SubHeadLine title="Instant"/>
-            <ObjectInfo header="Instant" url={instant.url}/>
+            <SubHeadLine title="Interval"/>
+            <ObjectInfo header="Interval" url={interval.url}/>
             <br/>
-            <b>Date-Time: </b>
-            {new Date(instant.date).toUTCString()}
+            <b>Begin: </b>
+            {new Date(interval.begin).toUTCString()}
+            <br/>
+            <b>End: </b>
+            {new Date(interval.end).toUTCString()}
             <hr/>
-            <LevelsVisualizer timeRecordUrl={instant.url}/>
+            <LevelsInfoWindow timeRecordUrl={interval.url}/>
         </div>
+
     }
 }
 
@@ -38,4 +40,4 @@ const selector = createStructuredSelector({
     selectedTimeRecord: selectedTimeRecordSelector,
 });
 
-export default connect(selector)(makePureRender(InstantVisualizer));
+export default connect(selector)(IntervalInfoWindow);

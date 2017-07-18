@@ -7,7 +7,7 @@ import SecondLevelLoader from "../containers/SecondLevelLoader";
 import FirstLevelLoader from "../containers/FirstLevelLoader";
 import TimeLineInstants from "../components/TimeLineInstants";
 import LimiterContainer from "../../../app/containers/LimiterContainer";
-import InstantVisualizer from "../components/InstantVisualizer";
+import InstantInfoWindow from "../components/InstantInfoWindow";
 import InstantsLoader from "../containers/InstantsLoader";
 import {PromiseStatus} from "../../../core/models";
 import {getConfiguration, getConfigurationStatusSelector} from "../ducks/configuration";
@@ -35,6 +35,7 @@ class InstantsToSecondLevel extends Component {
                                   loadingMessage="Loading configuration..."/>
         }
 
+        // Specify which loaders are in the configuration toolbar
         let configurations = new Map([
             ["SECOND LEVEL",
                 <SecondLevelLoader
@@ -57,6 +58,7 @@ class InstantsToSecondLevel extends Component {
 
         ]);
 
+        // Configuration toolbar is visible only in configurator UI, not in the application one.
         var hidden = true;
         if (this.props.route.configurable) hidden = false;
 
@@ -66,7 +68,7 @@ class InstantsToSecondLevel extends Component {
                 <hr/>
                 <TimeLineInstants/>
                 <hr/>
-                <InstantVisualizer/>
+                <InstantInfoWindow/>
             </BodyPadding>
         )
     }

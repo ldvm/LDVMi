@@ -8,7 +8,7 @@ import {secondLevelSelector} from "../ducks/secondLevel";
 import SubHeadLine from "../../../../components/Subheadline";
 import ObjectInfo from "../../../app/containers/ObjectInfo";
 
-class LevelsVisualizer extends Component {
+class LevelsInfoWindow extends Component {
     static propTypes = {
         timeRecordUrl: PropTypes.string.isRequired,
         firstLevel: PropTypes.instanceOf(Array).isRequired,
@@ -70,4 +70,4 @@ const selector = createStructuredSelector({
     secondLevel: secondLevelSelector
 });
 
-export default connect(selector)(LevelsVisualizer);
+export default connect(selector)(LevelsInfoWindow);
