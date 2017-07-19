@@ -104,7 +104,7 @@ class SecondLevelLoader extends Component {
             />
             <RecordSelector
                 records={secondLevel}
-                header="Predicates:"
+                header="Properties:"
                 getKey={t => t.predicate}
                 selectedKeys={selectedSecondLevelPredicates}
                 onKeySelect={k => dispatch(setSelectSecondLevelPredicate(k))}

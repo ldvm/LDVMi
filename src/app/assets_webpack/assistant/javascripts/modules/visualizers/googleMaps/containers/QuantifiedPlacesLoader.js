@@ -91,7 +91,7 @@ class QuantifiedPlacesLoader extends Component {
             />
             <RecordSelector
                 records={quantifiedPlaces}
-                header="Value Connections:"
+                header="Properties with value:"
                 getKey={t => t.valuePredicate}
                 selectedKeys={selectedValuePredicates}
                 onKeySelect={k => dispatch(setSelectValuePredicate(k))}

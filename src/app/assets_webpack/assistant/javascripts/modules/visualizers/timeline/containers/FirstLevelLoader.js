@@ -132,7 +132,7 @@ class FirstLevelLoader extends Component {
             />
             <RecordSelector
                 records={firstLevel}
-                header="Predicates:"
+                header="Properties:"
                 getKey={t => t.predicate}
                 selectedKeys={selectedFirstLevelPredicates}
                 onKeySelect={k => dispatch(setSelectFirstLevelPredicate(k))}

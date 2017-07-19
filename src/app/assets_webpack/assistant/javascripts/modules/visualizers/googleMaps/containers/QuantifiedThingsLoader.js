@@ -103,14 +103,14 @@ class QuantifiedThingsLoader extends Component {
             />
             <RecordSelector
                 records={quantifiedThings}
-                header="Value predicate"
+                header="Properties with quantifiers:"
                 getKey={t => t.valuePredicate}
                 selectedKeys={selectedValuePredicates}
                 onKeySelect={k => dispatch(setSelectValuePredicate(k))}
             />
             <RecordSelector
                 records={quantifiedThings}
-                header="Place predicate"
+                header="Properties with places:"
                 getKey={t => t.placePredicate}
                 selectedKeys={selectedPlacePredicates}
                 onKeySelect={k => dispatch(setSelectPlacePredicate(k))}
