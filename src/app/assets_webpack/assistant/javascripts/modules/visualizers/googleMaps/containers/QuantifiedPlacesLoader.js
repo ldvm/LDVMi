@@ -93,7 +93,7 @@ class QuantifiedPlacesLoader extends Component {
                 records={quantifiedPlaces}
                 header="Value Connections:"
                 getKey={t => t.valuePredicate}
-                selectedKeys={selectedPlaceTypes}
+                selectedKeys={selectedValuePredicates}
                 onKeySelect={k => dispatch(setSelectValuePredicate(k))}
             />
             <Button raised={true}
