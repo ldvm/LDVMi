@@ -17,16 +17,16 @@ object InstallBundle {
     "RÚIAN" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/datasources/ldvm-ds-ruian.ttl",
     "linked.opendata.cz" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/datasources/ldvm-ds-ldcz.ttl",
     "internal.opendata.cz" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/datasources/ldvm-ds-int-od-cz.ttl",
-    "Time Line Instants Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-instants.ttl",
-    "Time Line Things with Instants Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-instants.ttl",
-    "Time Line Things with Things with Instants Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-things-instants.ttl",
-    "Time Line Intervals Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-intervals.ttl",
-    "Time Line Things with Intervals Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-intervals.ttl",
-    "Time Line Things with Things with Intervals Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-things-intervals.ttl",
-    "Google Maps Coordinates Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-coordinates.ttl",
-    "Google Maps Places Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-places.ttl",
-    "Google Maps Quantified Places Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-quantified-places.ttl",
-    "Google Maps Quantified Things Visualizer" -> "https://raw.githubusercontent.com/vvancak/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-quantified-things.ttl"
+    "Time Line Instants Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-instants.ttl",
+    "Time Line Things with Instants Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-instants.ttl",
+    "Time Line Things with Things with Instants Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-things-instants.ttl",
+    "Time Line Intervals Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-intervals.ttl",
+    "Time Line Things with Intervals Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-intervals.ttl",
+    "Time Line Things with Things with Intervals Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-things-intervals.ttl",
+    "Google Maps Coordinates Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-coordinates.ttl",
+    "Google Maps Places Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-places.ttl",
+    "Google Maps Quantified Places Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-quantified-places.ttl",
+    "Google Maps Quantified Things Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-quantified-things.ttl"
   )
 
   val dataSources = List(
