@@ -11,7 +11,7 @@ class ConfiguratorsRouteFactory {
   register(createRoutes) {
     this.routeFactories.push(createRoutes);
   }
-  
+
   createRoutes(dispatch) {
     // Make a copy & add not found fallback route.
     const routeFactories = this.routeFactories.slice();
@@ -40,7 +40,8 @@ class ConfiguratorsRouteFactory {
    */
   getRegisteredPaths() {
     return this.routeFactories.map(createRoutes =>
-      createRoutes(() => { }).props.path);
+      createRoutes(() => {
+      }).props.path);
   }
 }
 

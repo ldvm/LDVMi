@@ -44,14 +44,14 @@ export default function validateVisualizer(VisualizerConfiguratorComponent, path
       // (In case of path == "*", which is the fallback <NotFound /> component, we don't redirect
       // anywhere, there is no point)
       const { dispatch, application, visualizer } = props;
-      if (getConfiguratorPath(visualizer) != path && path != "*") {
+      if (getConfiguratorPath(visualizer) != path && path != '*') {
         dispatch(routes.application(application.id));
       }
     }
 
     render() {
       const { visualizer } = this.props;
-      if (getConfiguratorPath(visualizer) != path && path != "*") {
+      if (getConfiguratorPath(visualizer) != path && path != '*') {
         return null;
       }
 

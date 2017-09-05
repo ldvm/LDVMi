@@ -1,12 +1,8 @@
-import prefix from "../prefix";
-import moduleSelector from "../selector";
-import {createPromiseStatusSelector} from "../../../core/ducks/promises";
-import {
-    createGetConfiguration,
-    createGetConfigurationReset,
-    createSaveConfiguration
-} from "../../../app/ducks/configuration";
-import {createSelector} from "reselect";
+import prefix from '../prefix'
+import moduleSelector from '../selector'
+import { createPromiseStatusSelector } from '../../../core/ducks/promises'
+import { createGetConfiguration, createGetConfigurationReset, createSaveConfiguration } from '../../../app/ducks/configuration'
+import { createSelector } from 'reselect'
 
 // Actions
 
@@ -27,20 +23,20 @@ export const saveConfigurationStatusSelector = createPromiseStatusSelector(SAVE_
 export const getConfigurationStatusSelector = createPromiseStatusSelector(GET_CONFIGURATION);
 
 export const configurationSelector = createSelector(
-    [moduleSelector],
-    state => ({
-        selectedFirstLevelPredicates: state.selectedFirstLevelPredicates.toJS(),
-        selectedFirstLevelTypes: state.selectedFirstLevelTypes.toJS(),
-        selectedSecondLevelThings: state.selectedSecondLevelThings.toJS(),
-        selectedSecondLevelPredicates: state.selectedSecondLevelPredicates.toJS(),
-        timeRange: state.timeRange.toJS()
-    })
+  [moduleSelector],
+  state => ({
+    selectedFirstLevelPredicates: state.selectedFirstLevelPredicates.toJS(),
+    selectedFirstLevelTypes: state.selectedFirstLevelTypes.toJS(),
+    selectedSecondLevelThings: state.selectedSecondLevelThings.toJS(),
+    selectedSecondLevelPredicates: state.selectedSecondLevelPredicates.toJS(),
+    timeRange: state.timeRange.toJS()
+  })
 );
 
 // Actual actions created using factories
 export const saveConfiguration =
-    createSaveConfiguration(SAVE_CONFIGURATION, configurationSelector);
+  createSaveConfiguration(SAVE_CONFIGURATION, configurationSelector);
 export const getConfiguration =
-    createGetConfiguration(GET_CONFIGURATION);
+  createGetConfiguration(GET_CONFIGURATION);
 export const getConfigurationReset =
-    createGetConfigurationReset(GET_CONFIGURATION_RESET);
+  createGetConfigurationReset(GET_CONFIGURATION_RESET);

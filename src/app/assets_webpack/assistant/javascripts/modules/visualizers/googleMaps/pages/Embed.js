@@ -1,4 +1,4 @@
-import React from "react";
-import Application from "../containers/Application";
+import React from 'react'
+import Application from '../containers/Application'
 
 export default () => <Application embed/>
