@@ -1,7 +1,7 @@
 package model.rdf.sparql.rgml.extractor
 
 import model.rdf.extractor.QueryExecutionResultExtractor
-import model.rdf.sparql.rgml.Graph
+import model.rdf.sparql.rgml.models.Graph
 import model.rdf.sparql.rgml.query.GraphQuery
 import org.apache.jena.query.QueryExecution
 

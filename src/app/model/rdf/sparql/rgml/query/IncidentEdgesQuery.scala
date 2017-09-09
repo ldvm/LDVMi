@@ -1,6 +1,6 @@
 package model.rdf.sparql.rgml.query
 
-import model.rdf.sparql.rgml.EdgeDirection._
+import model.rdf.sparql.rgml.models.EdgeDirection._
 
 class IncidentEdgesQuery(nodeUri: String, direction: EdgeDirection) extends EdgesQuery {
 

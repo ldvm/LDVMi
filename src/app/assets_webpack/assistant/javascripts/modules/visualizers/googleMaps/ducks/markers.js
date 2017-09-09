@@ -1,7 +1,7 @@
 import { List } from 'immutable'
 import { createSelector } from 'reselect'
 import prefix from '../prefix'
-import moduleSelector  from '../selector'
+import moduleSelector from '../selector'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
 import { notification } from '../../../core/ducks/notifications'
 import createAction from '../../../../misc/createAction'
@@ -24,7 +24,7 @@ export function getMarkers() {
 
     const mapQueryData = {
       filters: filters.filter(filter => filter.enabled).map(filter => filter.options
-        .map(option => ({uri: option.skosConcept.uri, isActive: option.selected})).toList()
+        .map(option => ({ uri: option.skosConcept.uri, isActive: option.selected })).toList()
       ).toJS()
     };
 

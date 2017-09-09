@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable'
+import { fromJS, Map } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import { GET_CONFIGURATION_SUCCESS } from './configuration'
@@ -16,7 +16,7 @@ export function configureFilter(propertyUri, settings) {
 export const EXPAND_FILTER = prefix('EXPANED_FILTER');
 
 export function expandFilter(propertyUri, expanded) {
-  const update = fromJS({ [propertyUri]: { expanded }});
+  const update = fromJS({ [propertyUri]: { expanded } });
   return createAction(EXPAND_FILTER, { propertyUri, update });
 }
 
@@ -28,7 +28,7 @@ export default function filtersConfigReducer(state = initialState, action) {
   switch (action.type) {
     case GET_APPLICATION_START:
       return initialState;
-    
+
     case GET_CONFIGURATION_SUCCESS:
       if ("filtersConfig" in action.payload) {
         return initialState.mergeDeep(action.payload.filtersConfig);

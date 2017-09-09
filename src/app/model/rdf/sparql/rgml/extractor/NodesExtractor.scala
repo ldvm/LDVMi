@@ -2,7 +2,7 @@ package model.rdf.sparql.rgml.extractor
 
 import model.rdf.LocalizedValue
 import model.rdf.extractor.QueryExecutionResultExtractor
-import model.rdf.sparql.rgml.Node
+import model.rdf.sparql.rgml.models.Node
 import model.rdf.sparql.rgml.query.NodesQuery
 import model.rdf.vocabulary.RGML
 import org.apache.jena.query.QueryExecution

@@ -16,7 +16,17 @@ object InstallBundle {
     "SPARQL endpoint data source" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/datasources/ldvm-ds-sparql.ttl",
     "RÚIAN" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/datasources/ldvm-ds-ruian.ttl",
     "linked.opendata.cz" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/datasources/ldvm-ds-ldcz.ttl",
-    "internal.opendata.cz" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/datasources/ldvm-ds-int-od-cz.ttl"
+    "internal.opendata.cz" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/datasources/ldvm-ds-int-od-cz.ttl",
+    "Time Line Instants Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-instants.ttl",
+    "Time Line Things with Instants Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-instants.ttl",
+    "Time Line Things with Things with Instants Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-things-instants.ttl",
+    "Time Line Intervals Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-intervals.ttl",
+    "Time Line Things with Intervals Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-intervals.ttl",
+    "Time Line Things with Things with Intervals Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-timeline-things-things-intervals.ttl",
+    "Google Maps Coordinates Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-coordinates.ttl",
+    "Google Maps Places Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-places.ttl",
+    "Google Maps Quantified Places Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-quantified-places.ttl",
+    "Google Maps Quantified Things Visualizer" -> "https://raw.githubusercontent.com/ldvm/vocabulary/master/rdf/examples/visualizers/ldvm-v-googlemaps-quantified-things.ttl"
   )
 
   val dataSources = List(
@@ -28,6 +38,16 @@ object InstallBundle {
 
   val visualizers = List (
     ("D3.js Chord Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/chord/ChordVisualizerTemplate", "chord", "donut_large"),
-    ("Google Maps Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate", "googleMaps", "map")
+    ("Google Maps Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/gmaps/GoogleMapsVisualizerTemplate", "googleMaps", "map"),
+    ("Time Line Instants Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/timeline-instants/TimeLineVisualizerTemplate", "timeline-instants", "timeline"),
+    ("Time Line Things with Instants Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/timeline-things-instants/TimeLineVisualizerTemplate", "timeline-things-instants", "timeline"),
+    ("Time Line Things with Things with Instants Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/timeline-things-things-instants/TimeLineVisualizerTemplate", "timeline-things-things-instants", "timeline"),
+    ("Time Line Intervals Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/timeline-intervals/TimeLineVisualizerTemplate", "timeline-intervals", "timeline"),
+    ("Time Line Things with Intervals Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/timeline-things-intervals/TimeLineVisualizerTemplate", "timeline-things-intervals", "timeline"),
+    ("Time Line Things with Things with Intervals Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/timeline-things-things-intervals/TimeLineVisualizerTemplate", "timeline-things-things-intervals", "timeline"),
+    ("Google Maps Coordinates Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/googlemaps-coordinates/GoogleMapsVisualizerTemplate","googleMaps-coordinates", "map"),
+    ("Google Maps Places Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/googlemaps-places/GoogleMapsVisualizerTemplate", "googleMaps-places", "map"),
+    ("Google Maps Quantified Places Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/googlemaps-quantified-places/GoogleMapsVisualizerTemplate", "googleMaps-quantified-places", "map"),
+    ("Google Maps Quantified Things Visualizer", "http://linked.opendata.cz/resource/ldvm/visualizer/googlemaps-quantified-things/GoogleMapsVisualizerTemplate", "googleMaps-quantified-things", "map")
   )
 }

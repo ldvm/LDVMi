@@ -5,9 +5,9 @@ import { Visualizer } from '../../../core/models'
 import ApplicationHeader from '../../../app/components/ApplicationHeader'
 
 const Standalone = ({ application, visualizer }) => <div>
-    <ApplicationHeader application={application} visualizer={visualizer} />
-    <Application />
-  </div>;
+  <ApplicationHeader application={application} visualizer={visualizer}/>
+  <Application />
+</div>;
 
 Standalone.propTypes = {
   // As the component is at first initialized by the router, these props might not be available

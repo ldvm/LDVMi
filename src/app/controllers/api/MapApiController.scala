@@ -1,12 +1,12 @@
 package controllers.api
 
 import model.entity.PipelineEvaluation
-import model.rdf.sparql.geo.MapQueryData
 import play.api.db.slick.DBAction
 import play.api.libs.json._
 import play.api.mvc.Result
 import scaldi.Injector
 import JsonImplicits._
+import model.rdf.sparql.geo.models.MapQueryData
 import play.api.db.slick._
 
 

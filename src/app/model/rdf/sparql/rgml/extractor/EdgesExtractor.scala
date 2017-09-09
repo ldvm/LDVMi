@@ -1,7 +1,7 @@
 package model.rdf.sparql.rgml.extractor
 
 import model.rdf.extractor.QueryExecutionResultExtractor
-import model.rdf.sparql.rgml.Edge
+import model.rdf.sparql.rgml.models.Edge
 import model.rdf.sparql.rgml.query.EdgesQuery
 import model.rdf.vocabulary.RGML
 import org.apache.jena.query.QueryExecution

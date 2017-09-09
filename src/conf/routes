@@ -97,68 +97,100 @@ POST        /api/v1/datacube/values/:id                                         
 POST        /api/v1/datacube/slices/:id                                                   @controllers.api.DataCubeApiController.sliceCube(id: Long)
 
 GET         /dereference/labels                                                           @controllers.api.VisualizationApiController.dereferenceLabels(uri: String)
+GET         /dereference/comments                                                         @controllers.api.VisualizationApiController.dereferenceComments(uri: String)
 
-# Assistant
-POST        /assistant/api/auth/signUp                         @controllers.assistant.api.AuthApiController.signUp
-POST        /assistant/api/auth/signIn                         @controllers.assistant.api.AuthApiController.signIn
-POST        /assistant/api/auth/googleSignIn                   @controllers.assistant.api.AuthApiController.googleSignIn
-POST        /assistant/api/auth/signOut                        @controllers.assistant.api.AuthApiController.signOut
-POST        /assistant/api/auth/getUser                        @controllers.assistant.api.AuthApiController.getUser
+# === ASSISTANT ===
+POST        /assistant/api/auth/signUp                                                    @controllers.assistant.api.AuthApiController.signUp
+POST        /assistant/api/auth/signIn                                                    @controllers.assistant.api.AuthApiController.signIn
+POST        /assistant/api/auth/googleSignIn                                              @controllers.assistant.api.AuthApiController.googleSignIn
+POST        /assistant/api/auth/signOut                                                   @controllers.assistant.api.AuthApiController.signOut
+POST        /assistant/api/auth/getUser                                                   @controllers.assistant.api.AuthApiController.getUser
 
-POST        /assistant/api/install                             @controllers.assistant.api.InstallApiController.install
+POST        /assistant/api/install                                                        @controllers.assistant.api.InstallApiController.install
 
-POST        /assistant/api/createApp/addDataSource             @controllers.assistant.api.CreateAppApiController.addDataSource
-POST        /assistant/api/createApp/getDataSources            @controllers.assistant.api.CreateAppApiController.getDataSources
-POST        /assistant/api/createApp/runDiscovery              @controllers.assistant.api.CreateAppApiController.runDiscovery
-POST        /assistant/api/createApp/getDiscovery/:id          @controllers.assistant.api.CreateAppApiController.getDiscovery(id: Long)
-POST        /assistant/api/createApp/runEvaluation/:id         @controllers.assistant.api.CreateAppApiController.runEvaluation(id: Long)
-POST        /assistant/api/createApp/getEvaluations/:id        @controllers.assistant.api.CreateAppApiController.getEvaluations(id: Long)
-POST        /assistant/api/createApp/createApp                 @controllers.assistant.api.CreateAppApiController.createApp
+POST        /assistant/api/createApp/addDataSource                                        @controllers.assistant.api.CreateAppApiController.addDataSource
+POST        /assistant/api/createApp/getDataSources                                       @controllers.assistant.api.CreateAppApiController.getDataSources
+POST        /assistant/api/createApp/runDiscovery                                         @controllers.assistant.api.CreateAppApiController.runDiscovery
+POST        /assistant/api/createApp/getDiscovery/:id                                     @controllers.assistant.api.CreateAppApiController.getDiscovery(id: Long)
+POST        /assistant/api/createApp/runEvaluation/:id                                    @controllers.assistant.api.CreateAppApiController.runEvaluation(id: Long)
+POST        /assistant/api/createApp/getEvaluations/:id                                   @controllers.assistant.api.CreateAppApiController.getEvaluations(id: Long)
+POST        /assistant/api/createApp/createApp                                            @controllers.assistant.api.CreateAppApiController.createApp
 
-POST        /assistant/api/app/getApp/:id                      @controllers.assistant.api.AppApiController.getApp(id: Long)
-POST        /assistant/api/app/getAppConfiguration/:id         @controllers.assistant.api.AppApiController.getAppConfiguration(id: Long)
-POST        /assistant/api/catalog/getPublishedApps            @controllers.assistant.api.CatalogApiController.getPublishedApps
+POST        /assistant/api/app/getApp/:id                                                 @controllers.assistant.api.AppApiController.getApp(id: Long)
+POST        /assistant/api/app/getAppConfiguration/:id                                    @controllers.assistant.api.AppApiController.getAppConfiguration(id: Long)
+POST        /assistant/api/catalog/getPublishedApps                                       @controllers.assistant.api.CatalogApiController.getPublishedApps
 
-POST        /assistant/api/manageApp/updateAppSettings/:id     @controllers.assistant.api.ManageAppApiController.updateAppSettings(id: Long)
-POST        /assistant/api/manageApp/saveAppConfiguration/:id  @controllers.assistant.api.ManageAppApiController.saveAppConfiguration(id: Long)
-POST        /assistant/api/manageApp/publishApp/:id            @controllers.assistant.api.ManageAppApiController.publishApp(id: Long)
-POST        /assistant/api/manageApp/deleteApp/:id             @controllers.assistant.api.ManageAppApiController.deleteApp(id: Long)
+POST        /assistant/api/manageApp/updateAppSettings/:id                                @controllers.assistant.api.ManageAppApiController.updateAppSettings(id: Long)
+POST        /assistant/api/manageApp/saveAppConfiguration/:id                             @controllers.assistant.api.ManageAppApiController.saveAppConfiguration(id: Long)
+POST        /assistant/api/manageApp/publishApp/:id                                       @controllers.assistant.api.ManageAppApiController.publishApp(id: Long)
+POST        /assistant/api/manageApp/deleteApp/:id                                        @controllers.assistant.api.ManageAppApiController.deleteApp(id: Long)
 
-POST        /assistant/api/dashboard/getApplications           @controllers.assistant.api.DashboardApiController.getApplications
-POST        /assistant/api/dashboard/getDiscoveries            @controllers.assistant.api.DashboardApiController.getDiscoveries
-POST        /assistant/api/dashboard/getDiscovery/:id          @controllers.assistant.api.DashboardApiController.getDiscovery(id: Long)
-POST        /assistant/api/dashboard/deleteDiscovery/:id       @controllers.assistant.api.DashboardApiController.deleteDiscovery(id: Long)
-POST        /assistant/api/dashboard/deleteAllDiscoveries      @controllers.assistant.api.DashboardApiController.deleteAllDiscoveries
-POST        /assistant/api/dashboard/getDataSources            @controllers.assistant.api.DashboardApiController.getDataSources
-POST        /assistant/api/dashboard/deleteDataSource/:id      @controllers.assistant.api.DashboardApiController.deleteDataSource(id: Long)
-POST        /assistant/api/dashboard/updateDataSource/:id      @controllers.assistant.api.DashboardApiController.updateDataSource(id: Long)
-POST        /assistant/api/dashboard/getVisualizerComponents   @controllers.assistant.api.DashboardApiController.getVisualizerComponents
-POST        /assistant/api/dashboard/addVisualizer             @controllers.assistant.api.DashboardApiController.addVisualizer
-POST        /assistant/api/dashboard/deleteVisualizer/:id      @controllers.assistant.api.DashboardApiController.deleteVisualizer(id: Long)
-POST        /assistant/api/dashboard/updateVisualizer/:id      @controllers.assistant.api.DashboardApiController.updateVisualizer(id: Long)
+POST        /assistant/api/dashboard/getApplications                                      @controllers.assistant.api.DashboardApiController.getApplications
+POST        /assistant/api/dashboard/getDiscoveries                                       @controllers.assistant.api.DashboardApiController.getDiscoveries
+POST        /assistant/api/dashboard/getDiscovery/:id                                     @controllers.assistant.api.DashboardApiController.getDiscovery(id: Long)
+POST        /assistant/api/dashboard/deleteDiscovery/:id                                  @controllers.assistant.api.DashboardApiController.deleteDiscovery(id: Long)
+POST        /assistant/api/dashboard/deleteAllDiscoveries                                 @controllers.assistant.api.DashboardApiController.deleteAllDiscoveries
+POST        /assistant/api/dashboard/getDataSources                                       @controllers.assistant.api.DashboardApiController.getDataSources
+POST        /assistant/api/dashboard/deleteDataSource/:id                                 @controllers.assistant.api.DashboardApiController.deleteDataSource(id: Long)
+POST        /assistant/api/dashboard/updateDataSource/:id                                 @controllers.assistant.api.DashboardApiController.updateDataSource(id: Long)
+POST        /assistant/api/dashboard/getVisualizerComponents                              @controllers.assistant.api.DashboardApiController.getVisualizerComponents
+POST        /assistant/api/dashboard/addVisualizer                                        @controllers.assistant.api.DashboardApiController.addVisualizer
+POST        /assistant/api/dashboard/deleteVisualizer/:id                                 @controllers.assistant.api.DashboardApiController.deleteVisualizer(id: Long)
+POST        /assistant/api/dashboard/updateVisualizer/:id                                 @controllers.assistant.api.DashboardApiController.updateVisualizer(id: Long)
 
-POST        /assistant/api/common/getVisualizers               @controllers.assistant.api.CommonApiController.getVisualizers
-POST        /assistant/api/common/getVirtuosoStatus            @controllers.assistant.api.CommonApiController.getVirtuosoStatus
+POST        /assistant/api/common/getVisualizers                                          @controllers.assistant.api.CommonApiController.getVisualizers
+POST        /assistant/api/common/getVirtuosoStatus                                       @controllers.assistant.api.CommonApiController.getVirtuosoStatus
 
-POST        /assistant/api/commonVisualizer/getLabels/:id      @controllers.assistant.api.visualizers.CommonVisualizerApiController.getLabels(id: Long)
+POST        /assistant/api/commonVisualizer/getLabels/:id                                 @controllers.assistant.api.visualizers.CommonVisualizerApiController.getLabels(id: Long)
+POST        /assistant/api/commonVisualizer/getComments/:id                               @controllers.assistant.api.visualizers.CommonVisualizerApiController.getComments(id: Long)
 
-POST        /assistant/api/mapsVisualizer/getProperties/:id             @controllers.assistant.api.visualizers.MapsVisualizerApiController.getProperties(id: Long)
-POST        /assistant/api/mapsVisualizer/getSkosConcepts/:id           @controllers.assistant.api.visualizers.MapsVisualizerApiController.getSkosConcepts(id: Long)
-POST        /assistant/api/mapsVisualizer/getSkosConceptsCounts/:id     @controllers.assistant.api.visualizers.MapsVisualizerApiController.getSkosConceptsCounts(id: Long)
-POST        /assistant/api/mapsVisualizer/getMarkers/:id                @controllers.assistant.api.visualizers.MapsVisualizerApiController.getMarkers(id: Long)
+#maps - v1
+POST        /assistant/api/mapsVisualizer/getProperties/:id                               @controllers.assistant.api.visualizers.MapsVisualizerApiController.getProperties(id: Long)
+POST        /assistant/api/mapsVisualizer/getSkosConcepts/:id                             @controllers.assistant.api.visualizers.MapsVisualizerApiController.getSkosConcepts(id: Long)
+POST        /assistant/api/mapsVisualizer/getSkosConceptsCounts/:id                       @controllers.assistant.api.visualizers.MapsVisualizerApiController.getSkosConceptsCounts(id: Long)
+POST        /assistant/api/mapsVisualizer/getMarkers/:id                                  @controllers.assistant.api.visualizers.MapsVisualizerApiController.getMarkers(id: Long)
 
-POST        /assistant/api/chordVisualizer/getGraph/:id                 @controllers.assistant.api.visualizers.ChordVisualizerApiController.getGraph(id: Long)
-POST        /assistant/api/chordVisualizer/getSampleNodes/:id           @controllers.assistant.api.visualizers.ChordVisualizerApiController.getSampleNodes(id: Long)
-POST        /assistant/api/chordVisualizer/getNodes/:id                 @controllers.assistant.api.visualizers.ChordVisualizerApiController.getNodes(id: Long)
-POST        /assistant/api/chordVisualizer/getEdges/:id                 @controllers.assistant.api.visualizers.ChordVisualizerApiController.getEdges(id: Long)
-POST        /assistant/api/chordVisualizer/getMatrix/:id                @controllers.assistant.api.visualizers.ChordVisualizerApiController.getMatrix(id: Long)
-POST        /assistant/api/chordVisualizer/getSearchableLens/:id        @controllers.assistant.api.visualizers.ChordVisualizerApiController.getSearchableLens(id: Long)
-POST        /assistant/api/chordVisualizer/searchNodes/:id              @controllers.assistant.api.visualizers.ChordVisualizerApiController.searchNodes(id: Long)
-POST        /assistant/api/chordVisualizer/getRelatedNodes/:id          @controllers.assistant.api.visualizers.ChordVisualizerApiController.getRelatedNodes(id: Long)
+#maps - v2 getters
+POST        /assistant/api/mapsVisualizer/getCoordinates/:id                              @controllers.assistant.api.visualizers.MapsVisualizerApiController.getCoordinates(id: Long)
+POST        /assistant/api/mapsVisualizer/getPlaces/:id                                   @controllers.assistant.api.visualizers.MapsVisualizerApiController.getPlaces(id: Long)
+POST        /assistant/api/mapsVisualizer/getQuantifiedThings/:id                         @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiedThings(id: Long)
+POST        /assistant/api/mapsVisualizer/getQuantifiedPlaces/:id                         @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiedPlaces(id: Long)
 
-GET         /assistant$any<.*>                                          @controllers.assistant.PlatformController.index(any)
-GET         /app/:id/:uid                                               @controllers.assistant.ApplicationController.index(id: Long, uid: String, any = null)
-GET         /app/:id/:uid/$any<.*>                                      @controllers.assistant.ApplicationController.index(id: Long, uid: String, any)
+#maps - v2 counts
+POST        /assistant/api/mapsVisualizer/getCoordinates/count/:id                        @controllers.assistant.api.visualizers.MapsVisualizerApiController.getCoordinatesCount(id: Long)
+POST        /assistant/api/mapsVisualizer/getPlaces/count/:id                             @controllers.assistant.api.visualizers.MapsVisualizerApiController.getPlacesCount(id: Long)
+POST        /assistant/api/mapsVisualizer/getQuantifiedThings/count/:id                   @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiedThingsCount(id: Long)
+POST        /assistant/api/mapsVisualizer/getQuantifiedPlaces/count/:id                   @controllers.assistant.api.visualizers.MapsVisualizerApiController.getQuantifiedPlacesCount(id: Long)
+
+#chord
+POST        /assistant/api/chordVisualizer/getGraph/:id                                   @controllers.assistant.api.visualizers.ChordVisualizerApiController.getGraph(id: Long)
+POST        /assistant/api/chordVisualizer/getSampleNodes/:id                             @controllers.assistant.api.visualizers.ChordVisualizerApiController.getSampleNodes(id: Long)
+POST        /assistant/api/chordVisualizer/getNodes/:id                                   @controllers.assistant.api.visualizers.ChordVisualizerApiController.getNodes(id: Long)
+POST        /assistant/api/chordVisualizer/getEdges/:id                                   @controllers.assistant.api.visualizers.ChordVisualizerApiController.getEdges(id: Long)
+POST        /assistant/api/chordVisualizer/getMatrix/:id                                  @controllers.assistant.api.visualizers.ChordVisualizerApiController.getMatrix(id: Long)
+POST        /assistant/api/chordVisualizer/getSearchableLens/:id                          @controllers.assistant.api.visualizers.ChordVisualizerApiController.getSearchableLens(id: Long)
+POST        /assistant/api/chordVisualizer/searchNodes/:id                                @controllers.assistant.api.visualizers.ChordVisualizerApiController.searchNodes(id: Long)
+POST        /assistant/api/chordVisualizer/getRelatedNodes/:id                            @controllers.assistant.api.visualizers.ChordVisualizerApiController.getRelatedNodes(id: Long)
+
+#timeline - getters
+POST        /assistant/api/timeLineVisualizer/getIntervals/:id                            @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getIntervals(id: Long)
+POST        /assistant/api/timeLineVisualizer/getInstants/:id                             @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getInstants(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWIntervals/:id                     @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithIntervals(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWInstants/:id                      @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithInstants(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWThingsWIntervals/:id              @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithThingsWithIntervals(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWThingsWInstants/:id               @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithThingsWithInstants(id: Long)
+
+#timeline - counts
+POST        /assistant/api/timeLineVisualizer/getIntervals/count/:id                      @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getIntervalsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getInstants/count/:id                       @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getInstantsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWIntervals/count/:id               @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithIntervalsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWInstants/count/:id                @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithInstantsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWThingsWIntervals/count/:id        @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithThingsWithIntervalsCount(id: Long)
+POST        /assistant/api/timeLineVisualizer/getThingsWThingsWInstants/count/:id         @controllers.assistant.api.visualizers.TimeLineVisualizerApiController.getThingsWithThingsWithInstantsCount(id: Long)
+
+GET         /assistant$any<.*>                                                            @controllers.assistant.PlatformController.index(any)
+GET         /app/:id/:uid                                                                 @controllers.assistant.ApplicationController.index(id: Long, uid: String, any = null)
+GET         /app/:id/:uid/$any<.*>                                                        @controllers.assistant.ApplicationController.index(id: Long, uid: String, any)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /vassets/*file                                                                controllers.Assets.versioned(path="/public", file: Asset)

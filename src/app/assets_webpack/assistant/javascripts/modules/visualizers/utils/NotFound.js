@@ -14,6 +14,6 @@ const NotFound = () => (
 
 export default function createRoutes(dispatch) {
   return (
-    <Route component={NotFound} path="*" />
+    <Route component={NotFound} path="*"/>
   );
 }

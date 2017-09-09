@@ -6,7 +6,7 @@ import { queryDataset } from '../actions'
 import { getConfiguration } from '../ducks/configuration'
 import { filtersSelector } from '../ducks/filters'
 import { propertiesStatusSelector } from '../ducks/properties'
-import { PromiseStatus } from "../../../core/models";
+import { PromiseStatus } from '../../../core/models'
 import Layout from '../components/Layout'
 import Toolbar from '../components/Toolbar'
 import SidebarTabs from '../components/SidebarTabs'
@@ -24,13 +24,13 @@ class Configurator extends Component {
 
     if (!status.done) {
       return <Layout insetShadow
-        sidebar={<PropertiesLoadingStatus status={status} />}
+                     sidebar={<PropertiesLoadingStatus status={status}/>}
       />;
     }
 
     return <Layout insetShadow
-      toolbar={<Toolbar />}
-      sidebar={<SidebarTabs filters={filters} />}
+                   toolbar={<Toolbar />}
+                   sidebar={<SidebarTabs filters={filters}/>}
     />;
   }
 }

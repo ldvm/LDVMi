@@ -3,8 +3,8 @@ package model.rdf.sparql.visualization
 import _root_.model.service.SessionScoped
 import model.entity.PipelineEvaluation
 import model.rdf.LocalizedValue
-import model.rdf.extractor.LabelsExtractor
-import model.rdf.sparql.query.LabelsDereferenceQuery
+import model.rdf.extractor.{CommentsExtractor, LabelsExtractor}
+import model.rdf.sparql.query.{CommentsQuery, LabelsDereferenceQuery}
 import model.rdf.sparql.visualization.extractor.{ConceptCountExtractor, ConceptsExtractor, SchemeExtractor, SchemesExtractor}
 import model.rdf.sparql.visualization.query._
 import model.rdf.sparql.{GenericSparqlEndpoint, SparqlEndpointService}
@@ -65,6 +65,17 @@ class VisualizationServiceImpl(implicit val inj: Injector) extends Visualization
       evaluationToSparqlEndpoint(evaluation),
       new LabelsDereferenceQuery(uri),
       new LabelsExtractor)
+  }
+
+  def getComments(uri: String): Option[LocalizedValue] = {
+    sparqlEndpointService.dereference(uri, new CommentsQuery(uri), new CommentsExtractor)
+  }
+
+  def getComments(evaluation: PipelineEvaluation, uri: String): Option[LocalizedValue] = {
+    sparqlEndpointService.getResult(
+      evaluationToSparqlEndpoint(evaluation),
+      new CommentsQuery(uri),
+      new CommentsExtractor)
   }
 
   private def evaluationToSparqlEndpoint(evaluation: PipelineEvaluation): GenericSparqlEndpoint = {

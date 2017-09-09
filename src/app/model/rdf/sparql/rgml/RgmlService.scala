@@ -2,7 +2,8 @@ package model.rdf.sparql.rgml
 
 import model.entity.PipelineEvaluation
 import play.api.db.slick.Session
-import model.rdf.sparql.rgml.EdgeDirection._
+import model.rdf.sparql.rgml.models._
+import model.rdf.sparql.rgml.models.EdgeDirection._
 
 trait RgmlService {
   def graph(evaluation: PipelineEvaluation)(implicit session: Session): Option[Graph]

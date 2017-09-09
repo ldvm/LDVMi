@@ -1,6 +1,6 @@
 package model.rdf.sparql.geo.query
 
-import model.rdf.sparql.geo.MapQueryData
+import model.rdf.sparql.geo.models.MapQueryData
 import model.rdf.sparql.query.SparqlQuery
 import model.rdf.sparql.{ValueFilter, VariableGenerator}
 import model.rdf.vocabulary.{SCHEMA, SKOS}

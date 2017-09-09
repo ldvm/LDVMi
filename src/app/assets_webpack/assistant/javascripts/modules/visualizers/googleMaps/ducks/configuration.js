@@ -27,7 +27,12 @@ export const configurationSelector = createSelector(
     filtersConfig: state.filters.filtersConfig.toJS(),
     optionsConfig: state.filters.optionsConfig.toJS(),
     mapState: state.mapState.toJS(),
-    publishSettings: state.publishSettings.toJS()
+    publishSettings: state.publishSettings.toJS(),
+
+    selectedQuantifiedThings: state.selectedQuantifiedThings.toJS(),
+    selectedPlaceTypes: state.selectedPlaceTypes.toJS(),
+    selectedPlacePredicates: state.selectedPlacePredicates.toJS(),
+    selectedValuePredicates: state.selectedValuePredicates.toJS()
   })
 );
 

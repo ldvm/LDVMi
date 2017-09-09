@@ -2,7 +2,8 @@ package model.rdf.sparql
 
 import _root_.model.rdf.Graph
 import _root_.model.rdf.extractor.QueryExecutionResultExtractor
-import _root_.model.rdf.sparql.query.SparqlQuery
+import _root_.model.rdf.Count
+import _root_.model.rdf.sparql.query.{SparqlQuery, SparqlCountQuery}
 import org.apache.jena.query.{QueryExecution, QueryExecutionFactory}
 import org.apache.jena.sparql.engine.http.QueryExceptionHTTP
 import scaldi.Injector
@@ -15,6 +16,15 @@ class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointSe
     try {
       extractor.extract(execution(sparqlEndpoint, query))
     } catch {
+      case qEx: QueryExceptionHTTP => throw qEx
+    }
+  }
+
+  def getCount[Q<: SparqlCountQuery](sparqlEndpoint: SparqlEndpoint, query: Q, extractor: QueryExecutionResultExtractor[Q,Count]): Option[Count] = {
+    try {
+      extractor.extract(count(sparqlEndpoint,query))
+    }
+    catch {
       case qEx: QueryExceptionHTTP => throw qEx
     }
   }
@@ -42,5 +52,9 @@ class SparqlEndpointServiceImpl(implicit inj: Injector) extends SparqlEndpointSe
 
   def execution(sparqlEndpoint: SparqlEndpoint, query: SparqlQuery): QueryExecution = {
     sparqlEndpoint.queryExecutionFactory()(query.get)
+  }
+
+  def count(sparqlEndpoint: SparqlEndpoint, query: SparqlCountQuery):QueryExecution = {
+    sparqlEndpoint.queryExecutionFactory()(query.getCount)
   }
 }

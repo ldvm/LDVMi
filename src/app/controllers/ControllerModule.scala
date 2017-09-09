@@ -1,7 +1,7 @@
 package controllers
 
 import controllers.assistant.api._
-import controllers.assistant.api.visualizers.{ChordVisualizerApiController, CommonVisualizerApiController, MapsVisualizerApiController}
+import controllers.assistant.api.visualizers.{ChordVisualizerApiController, CommonVisualizerApiController, MapsVisualizerApiController, TimeLineVisualizerApiController}
 import controllers.util.AngularController
 import scaldi.Module
 
@@ -22,6 +22,7 @@ class ControllerModule extends Module {
   binding to new CommonApiController
   binding to new MapsVisualizerApiController
   binding to new ChordVisualizerApiController
+  binding to new TimeLineVisualizerApiController
   binding to new CommonVisualizerApiController
   binding to new DashboardApiController
   binding to new CatalogApiController

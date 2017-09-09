@@ -24,7 +24,7 @@ export default function publishSettingsReducer(state = initialState, action) {
       return initialState;
 
     case GET_CONFIGURATION_SUCCESS:
-      if ("publishSettings" in action.payload) {
+      if ('publishSettings' in action.payload) {
         return initialState.mergeDeep(action.payload.publishSettings);
       }
       break;

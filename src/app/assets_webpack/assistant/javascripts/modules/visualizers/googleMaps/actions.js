@@ -26,9 +26,9 @@ export function queryDataset() {
           const conceptUris = skosConcepts[property.schemeUri].map(concept => concept.uri);
           const getSkosConceptsCountsPromise =
             api.getSkosConceptsCounts(appId, property.uri, conceptUris)
-            .then(counts => ({
-              [property.uri]: counts
-            }));
+              .then(counts => ({
+                [property.uri]: counts
+              }));
 
           dispatch(createAction(GET_SKOS_CONCEPTS_COUNTS,
             { promise: getSkosConceptsCountsPromise },

@@ -4,6 +4,7 @@ import controllers.api.JsonImplicits._
 import model.rdf.sparql.visualization.VisualizationService
 import model.assistant.entity.ApplicationId
 import model.assistant.rest.GetLabelsRequest.GetLabelsRequest
+import model.assistant.rest.GetCommentsRequest.GetCommentsRequest
 import model.assistant.rest.Response._
 import scaldi.Injector
 import play.api.libs.concurrent.Execution.Implicits._
@@ -26,6 +27,20 @@ class CommonVisualizerApiController(implicit inj: Injector) extends VisualizerAp
         (uri, label)
       }).toMap
       Future(Ok(SuccessResponse(data = Seq("labels" -> labels))))
+    }
+  }
+
+  def getComments(id: Long) = RestAsyncAction[GetCommentsRequest] { implicit request => json =>
+    withEvaluation(ApplicationId(id)) { evaluation =>
+      val comments = json.resourceUris.map(uri => {
+        val comment = visualizationService
+          .getComments(evaluation, uri)
+          .flatMap(l => if (l.size == 0) visualizationService.getComments(uri) else Some(l))
+          .flatMap(l => if (l.size == 0) None else Some(l))
+
+        (uri, comment)
+      }).toMap
+      Future(Ok(SuccessResponse(data = Seq("comments" -> comments))))
     }
   }
 }

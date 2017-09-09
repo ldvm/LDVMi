@@ -15,7 +15,7 @@ class Label extends Component {
     availableLabels: PropTypes.instanceOf(Map).isRequired
   };
 
-  componentDidMount() {
+  load() {
     // Prop 'label' might be a "custom label" or passed down from wherever, we don't care,
     // if it's missing, we will try to load a new one from the server.
     const { dispatch, uri, label, availableLabels } = this.props;
@@ -24,10 +24,18 @@ class Label extends Component {
     }
   }
 
+  componentWillMount() {
+    this.load();
+  }
+
+  componentDidUpdate() {
+    this.load();
+  }
+
   render() {
     const { uri, label, availableLabels } = this.props;
     const finalLabel = isLocalizedValueEmpty(label) ? availableLabels.get(uri) : label;
-    return <LocalizedValue localizedValue={finalLabel} defaultValue={uri} />
+    return <LocalizedValue localizedValue={finalLabel} defaultValue={uri}/>
   }
 }
 

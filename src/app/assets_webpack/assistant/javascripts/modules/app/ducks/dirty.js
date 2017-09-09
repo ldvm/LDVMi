@@ -1,17 +1,20 @@
 import { GET_APPLICATION_START } from './application'
-import { SAVE_CONFIGURATION_START, SAVE_CONFIGURATION_ERROR, GET_CONFIGURATION_SUCCESS } from './configuration'
+import { GET_CONFIGURATION_SUCCESS, SAVE_CONFIGURATION_ERROR, SAVE_CONFIGURATION_START } from './configuration'
 import { UPDATE_CUSTOM_LABEL } from './customLabels'
+import { SET_LIMIT, SET_LIMIT_RESET } from './limit'
 
 export function createDirtyReducer(actions) {
   return function dirtyReducer(state = false, action) {
     // Custom actions provided by visualizer
-    if (actions.indexOf(action.type) !== -1)  {
+    if (actions.indexOf(action.type) !== -1) {
       return true;
     }
-    
+
     switch (action.type) {
       case UPDATE_CUSTOM_LABEL:
       case SAVE_CONFIGURATION_ERROR:
+      case SET_LIMIT:
+      case SET_LIMIT_RESET:
         return true;
 
       // We need to use the START event, not the SUCCESS, as the START event marks the snapshot

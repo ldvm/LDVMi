@@ -1,4 +1,4 @@
-import { Map, fromJS } from 'immutable'
+import { fromJS, Map } from 'immutable'
 import prefix from '../prefix'
 import createAction from '../../../../misc/createAction'
 import { CONFIGURE_FILTER } from './filtersConfig'
@@ -27,7 +27,7 @@ export function validateOptionsUpdate(state, update) {
       return optionUpdate
         .set('mode', nextMode)
         .set('selected', nextSelected);
-  }));
+    }));
 }
 
 // Actions
@@ -39,7 +39,8 @@ export function configureOption(propertyUri, skosConceptUri, settings) {
   const update = fromJS({
     [propertyUri]: {
       [skosConceptUri]: settings
-    }});
+    }
+  });
 
   return createAction(CONFIGURE_OPTION, { update });
 }
@@ -73,9 +74,9 @@ export default function optionsConfigsReducer(state = initialState, action) {
       return initialState;
 
     case GET_CONFIGURATION_SUCCESS:
-        if ("optionsConfig" in action.payload) {
-          return initialState.mergeDeep(action.payload.optionsConfig);
-        }
+      if ("optionsConfig" in action.payload) {
+        return initialState.mergeDeep(action.payload.optionsConfig);
+      }
       break;
 
     case CONFIGURE_OPTION:

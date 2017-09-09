@@ -1,5 +1,4 @@
-import { List, Record } from 'immutable';
-import { PromiseStatus } from '../../core/models'
+import { List, Record } from 'immutable'
 
 export const Property = Record({
   label: '',
@@ -46,6 +45,34 @@ export const Coordinates = Record({
   lng: 0
 });
 
+export const FullCoordinates = Record({
+  url: 'url',
+  longitude: 0,
+  latitude: 0
+});
+
+export const Place = Record({
+  url: 'url',
+  placeType: 'type',
+  coordinates: 'crd_url'
+});
+
+export const QuantifiedThing = Record({
+  url: 'url',
+  valuePredicate: 'value_conn',
+  value: 0,
+  placePredicate: 'place_conn',
+  place: 'place_url'
+});
+
+export const QuantifiedPlace = Record({
+  url: 'url',
+  placeType: 'type',
+  valuePredicate: 'value_conn',
+  value: 0,
+  coordinates: 'crd_url'
+});
+
 export const MapState = Record({
   center: new Coordinates(),
   zoomLevel: 0
@@ -55,4 +82,11 @@ export const PublishSettings = Record({
   refreshOnStartUp: true,
   showFilters: true,
   collapsibleFilters: true
+});
+
+export const Counts = Record({
+  coordinates: 0,
+  places: 0,
+  quantifiedThings: 0,
+  quantifiedPlaces: 0
 });

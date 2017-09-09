@@ -2,12 +2,12 @@ package model.rdf.sparql.rgml
 
 import model.entity.PipelineEvaluation
 import model.rdf.sparql.rgml.extractor._
+import model.rdf.sparql.rgml.models.EdgeDirection._
+import model.rdf.sparql.rgml.models.{EdgeDirection => _, _}
 import model.rdf.sparql.rgml.query._
-import model.rdf.sparql.{EvaluationToSparqlEndpoint, GenericSparqlEndpoint, SparqlEndpointService}
+import model.rdf.sparql.{EvaluationToSparqlEndpoint, SparqlEndpointService}
 import play.api.db.slick.Session
 import scaldi.{Injectable, Injector}
-import model.rdf.sparql.rgml.EdgeDirection._
-import utils.Profiler
 
 import scala.collection.mutable
 
@@ -308,11 +308,11 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
     * @param pB probability that the "fire" will spread over an incoming edge
     */
   override def sampleNodesWithForestFire(
-    evaluation: PipelineEvaluation,
-    size: Int,
-    useWeights: Boolean = true,
-    pF: Double = 0.2,
-    pB: Double = 0.05)(implicit session: Session):
+                                          evaluation: PipelineEvaluation,
+                                          size: Int,
+                                          useWeights: Boolean = true,
+                                          pF: Double = 0.2,
+                                          pB: Double = 0.05)(implicit session: Session):
   Option[Seq[Node]] = {
 
     val random = scala.util.Random
@@ -365,7 +365,7 @@ class RgmlServiceImpl(implicit val inj: Injector) extends RgmlService with Injec
         .filterNot(sample.contains)
         .distinct
         .take(size - sample.size) // To make sure that we don't collect more nodes than we need.
-      
+
       if (nextFrontier.isEmpty)
         sample
       else

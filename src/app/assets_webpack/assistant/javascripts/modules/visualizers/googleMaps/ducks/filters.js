@@ -1,11 +1,11 @@
-import { Record, Map, List } from 'immutable'
+import { Map, Record } from 'immutable'
 import { createSelector } from 'reselect'
 import moduleSelector from '../selector'
 import propertiesReducer, { GET_PROPERTIES_SUCCESS } from './properties'
 import skosConceptsReducer, { GET_SKOS_CONCEPTS_SUCCESS } from './skosConcepts'
 import skosConceptsCountsReducer, { GET_SKOS_CONCEPTS_COUNTS_SUCCESS } from './skosConceptsCounts'
 import filtersConfigReducer, { CONFIGURE_FILTER, EXPAND_FILTER } from './filtersConfig'
-import optionsConfigReducer, { CONFIGURE_OPTION, CONFIGURE_ALL_OPTIONS, validateOptionsUpdate } from './optionsConfig'
+import optionsConfigReducer, { CONFIGURE_ALL_OPTIONS, CONFIGURE_OPTION, validateOptionsUpdate } from './optionsConfig'
 import { Filter, Option } from '../models'
 import { GET_APPLICATION_START } from '../../../app/ducks/application'
 

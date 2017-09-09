@@ -37,7 +37,8 @@ export const GET_CONFIGURATION_RESET = prefix('GET_CONFIGURATION_RESET');
 const commonConfigurationSelector = createSelector(
   [moduleSelector],
   state => ({
-    customLabels: state.customLabels.toJS()
+    customLabels: state.customLabels.toJS(),
+    limit: state.limit
   })
 );
 

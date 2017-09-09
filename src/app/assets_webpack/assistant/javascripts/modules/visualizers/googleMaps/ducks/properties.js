@@ -1,9 +1,7 @@
-import { createSelector } from 'reselect'
-import { List, fromJS } from 'immutable'
+import { fromJS, List } from 'immutable'
 import { arrayToObject } from '../../../../misc/utils'
 import prefix from '../prefix'
 import { createPromiseStatusSelector } from '../../../core/ducks/promises'
-import { moduleSelector } from '../selector'
 import { Property } from '../models'
 import { GET_APPLICATION_START } from '../../../app/ducks/application'
 
