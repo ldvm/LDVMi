@@ -17,4 +17,4 @@ before_script:
 
 script:
  - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
- - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+ - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --coverage-input-type cobertura
