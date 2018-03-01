@@ -15,5 +15,5 @@ before_script:
  - ./cc-test-reporter before-build
 
 script:
- - sbt clean coverage test coverageReport
+ - sbt clean test
  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
