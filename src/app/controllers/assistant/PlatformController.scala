@@ -9,6 +9,6 @@ class PlatformController(implicit inj: Injector) extends Controller with Injecta
     Ok(views.html.assistant.reactView(
       title = "LinkedPipes Visualization Assistant",
       description = "Welcome to LinkedPipes Visualization Assistant.",
-      bundleName = "platform", baseUrl))
+      bundleName = "platform", baseUrl = baseUrl))
   }
 }
