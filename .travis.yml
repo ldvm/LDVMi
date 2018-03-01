@@ -1,8 +1,20 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=655a0cbd6099194d9c7b5072e5abdc69e0a4b9789b9170058e2dbc6c080ce88e
+
 language: scala
 scala:
   - 2.11.1
 jdk:
   - oraclejdk8
   
-before_script: cd src
-script: java -jar activator-launch-1.2.2.jar test
+before_script:
+ - cd src
+ - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+ - chmod +x ./cc-test-reporter
+ - ./cc-test-reporter before-build
+
+script:
+ - java -jar activator-launch-1.2.2.jar test
+ - bundle exec rspec
+ - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
