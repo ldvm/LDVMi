@@ -5,5 +5,5 @@ jdk:
   - oraclejdk8
   
 before_script: cd src
-script: sbt ++$TRAVIS_SCALA_VERSION test
+script: activator test
 
