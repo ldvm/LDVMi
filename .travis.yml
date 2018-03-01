@@ -16,5 +16,4 @@ before_script:
 
 script:
  - java -jar activator-launch-1.2.2.jar test
- - bundle exec rspec
  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
