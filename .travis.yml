@@ -5,5 +5,4 @@ jdk:
   - oraclejdk8
   
 before_script: cd src
-script: java -jar activator-launch-1.2.2.jar tes
-
+script: java -jar activator-launch-1.2.2.jar test
