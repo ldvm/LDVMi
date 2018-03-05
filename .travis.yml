@@ -1,9 +1,19 @@
 language: scala
 scala:
-  - 2.11.1
+  - 2.11.4
+
 jdk:
   - oraclejdk8
   
-before_script: cd src
-script: sbt ++$TRAVIS_SCALA_VERSION test
+before_script:
+ - cd src
+ - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+ - chmod +x ./cc-test-reporter
+ - ./cc-test-reporter before-build
 
+script:
+ - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
+
+after_script:
+ - cd target/scala-2.11/scoverage-report
+ - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --coverage-input-type cobertura
