@@ -1,7 +1,8 @@
-import play.PlayScala
-import com.typesafe.sbt.SbtNativePackager._
-import NativePackagerKeys._
-import com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV
+//import play.PlayScala
+//import com.typesafe.sbt.SbtNativePackager._
+//import NativePackagerKeys._
+import com.typesafe.sbt.packager.archetypes.systemloader.ServerLoader.SystemV
+import scala.sys.process._
 
 name := "LinkedPipes Visualization"
 
@@ -14,7 +15,7 @@ packageSummary in Linux := "LinkedPipes Visualization - Linked Data visualizatio
 
 packageDescription := "LinkedPipes Visualization - Linked Data visualizations"
 
-serverLoading in Debian := SystemV
+//serverLoading in Debian := SystemV
 
 debianPackageDependencies ++= Seq("openjdk-7-jre-headless")
 
@@ -29,8 +30,9 @@ resolvers ++= Seq(
 
 libraryDependencies ++= Seq(
   jdbc,
-  anorm,
-  cache,
+  //anorm,
+  ehcache,
+  cacheApi,
   ws,
   filters,
   "com.typesafe.slick" %% "slick" % "2.1.0",
@@ -88,9 +90,9 @@ buildAssistantJs := {
   "npm install" #&& "npm update" #&& "npm run assistant-build" !
 }
 
-stage <<= stage dependsOn buildAssistantJs
+stage := (stage dependsOn buildAssistantJs).value
 
-dist <<= dist dependsOn buildAssistantJs
+dist := (dist dependsOn buildAssistantJs).value
 
 lazy val printWebpackWarning = taskKey[Unit]("Print Webpack warning")
 
@@ -98,4 +100,4 @@ printWebpackWarning := {
   println("You're in dev mode. Run 'npm run assistant-dev' to start Webpack server for frontend development of the assistant.")
 }
 
-run in Compile <<= run in Compile dependsOn printWebpackWarning
+run in Compile := run in Compile dependsOn printWebpackWarning
