@@ -72,7 +72,7 @@
     "style-loader": "0.13.x",
     "webpack": "1.13.x",
     "webpack-dev-middleware": "1.6.x",
-    "webpack-dev-server": "1.14.x",
+    "webpack-dev-server": "3.10.x",
     "webpack-hot-middleware": "2.10.x"
   }
 }
