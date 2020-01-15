@@ -31,12 +31,8 @@ It also provides a simple JSON API in order to allow creating datasources and vi
 - in the `src` folder execute `activator run` (you need to have activator in your PATH)
 - if you don't have any SPARQL endpoint running at `http://localhost:8890/sparql`, you may need to change the configuration in order to have everything running smoothly (e.g. pipeline execution, creating a datasource from TTL, ...)
 
-## Authors & License
-
-© Copyright 2014 - 2015
-
-### Project lead
+### Authors
 
 - [Jirka Helmich](https://github.com/jirihelmich)
 - [Jakub Klímek](https://github.com/jakubklimek)
-- [Martin Nečaský](http://www.ksi.mff.cuni.cz/~necasky)
+- [Martin Nečaský](https://github.com/martinnec)
