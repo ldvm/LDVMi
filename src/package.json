@@ -17,7 +17,7 @@
     "immutable": "3.7.x",
     "lodash": "4.6.x",
     "material-ui": "0.15.x",
-    "moment": "2.13.x",
+    "moment": "2.19.x",
     "react": "15.2.x",
     "react-dom": "15.1.x",
     "react-flexbox-grid": "0.9.x",
