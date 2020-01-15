@@ -10,7 +10,7 @@
     "babel-polyfill": "6.3.x",
     "classnames": "2.2.x",
     "d3": "3.5.x",
-    "debug": "2.2.x",
+    "debug": "2.6.x",
     "flexboxgrid": "6.3.x",
     "hash-string": "1.0.x",
     "history": "2.0.0-rc2",
