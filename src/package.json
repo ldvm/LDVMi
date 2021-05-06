@@ -15,7 +15,7 @@
     "hash-string": "1.0.x",
     "history": "2.0.0-rc2",
     "immutable": "3.7.x",
-    "lodash": "4.6.x",
+    "lodash": "4.17.x",
     "material-ui": "0.15.x",
     "moment": "2.13.x",
     "react": "15.2.x",
